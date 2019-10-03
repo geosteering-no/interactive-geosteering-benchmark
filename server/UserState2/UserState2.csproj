@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>d1cc15e5-4651-47ba-8dcb-63b4df69de2f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ResistivitySimulator\ResistivitySimulator.csproj" />
+    <ProjectReference Include="..\ServerDataStructures2\ServerDataStructures2.csproj" />
+    <ProjectReference Include="..\ServerStateInterfaces2\ServerStateInterfaces2.csproj" />
+    <ProjectReference Include="..\TrajectoryOptimization\TrajectoryOptimization.csproj" />
+  </ItemGroup>
+
+</Project>

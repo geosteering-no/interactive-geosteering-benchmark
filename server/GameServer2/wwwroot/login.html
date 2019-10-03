@@ -1,0 +1,200 @@
+<!DOCTYPE html><html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
+    <link rel="stylesheet" type="text/css" href="login-style.css">
+
+    <!-- Tags to make nice preview here -->
+    <meta property="og:site_name" content="GEOSTEERING the NORCE way"/>
+    <meta property="og:title" 
+        content="GEOSTEERING game the NORCE way"/>
+    <meta property="og:description" 
+        content="Steer your wells and then challenge your friends to beat your score! Position your well in an uncertin layered environment with up to two sand layers to score points. Recieve points for every meter in a sand layer."/>
+    <meta property="og:image" content="./assets/hero.png">
+    <meta property="og:url" content="http://game.geosteering.no/">
+    <!-- <meta property="og:type" content="blog"/> -->
+</head>
+<body>
+    <header>
+        <!-- Title / Welcome text -->
+        <a href=http://game.geosteering.no> 
+        <h1 class="">GEOSTEERING game the NORCE way</h1>
+        </a>
+    </header>
+    <main>
+
+        <div class="login container">
+
+            <!-- Hero Image -->
+            <div class="container hero-container">
+                <img id="hero-img" src="./assets/hero.png">
+                <!-- <section id="hero"></section> -->
+            </div>
+
+            <!-- Challenger Text Score -->
+            <h3 class="" id="challengeText" style="margin-bottom:0.25rem">
+                Steer your wells and then challenge your friends to beat your score!
+            </h3>
+
+
+            <!-- Login -->
+            <form method="post" class="row" style="margin-bottom:0" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
+                <input type="text" name="userName" placeholder="Name" class="inputChangeVal" data-js-input-type="text" />
+                <button class="btn btn-primary" type="submit" name="confirm" id="newUserBtn">Create Game</button>
+            </form>
+
+            <h5 style="margin-top:0;margin-bottom:2rem">Logged in already? <a style="margin-top:0" href="/index.html">Continue game!</a></h5>
+            <!-- <p><b>*On iPhone</b> rotate device to portrait and back if you have scaling issues of the game UI.</p> -->
+        
+            <!-- Short instructions -->
+            <!-- <div class="line-break full-width border"></div> -->
+            <h4 id="instructionsTitle">
+                Navigate in layered environment with up to two sand layers (white) to score points:
+            </h4>
+
+            <div id="shortInstructions" class="row" style="margin-top:0.25rem">
+                <div id="layers" class="col">
+                </div>
+                <div id="scoring" class="col">
+                    <ul class="instructions" style="margin-top:0">
+                        <li class="money"><strong>h</strong>points for every meter in sand layer (along x-axis)</li>
+                        <li class="double-money"><strong>2*h</strong>points when you stay in sweet spot near the roof</li>
+                        <li class="decline"><strong>-c</strong>points cost of drilling drilling is subtracted for every meter</li>
+                    </ul>
+                    <ul class="tight">
+                        <li><strong>h</strong>is the layer thickness</li>
+                        <li>sweet spot:0.5 to 1.5 from the roof</li>
+                        <li><strong>c</strong>= 0.086</li>
+                    </ul>
+
+                </div>
+            </div>
+            <div>
+                <h4>
+                    Read and cite our papers about the competition platform and the AI (it's free):
+                </h4>
+                <ul class="instructions">
+                    <li>The decision-support-system AI: <a href="https://doi.org/10.1016/j.petrol.2019.106381">Alyaev et al. [2019]: A decision support system for multi-target geosteering</a></li>
+                    <li>The benchmark platform and its application: <a href="https://doi.org/10.1016/j.acags.2021.100072">Alyaev et al. [2021]: An interactive sequential-decision benchmark from geosteering</a></li>
+                    <li>Report of user-system interaction: <a href="https://doi.org/10.2118/204133-MS">Alyaev et al. [2021spe]: Systematic Decisions Under Uncertainty: An Experiment Towards Better Geosteering Operations</a></li>
+                    <li>Summary of our initial DSS concept in SPE JPT: <a href="https://doi.org/10.2118/0918-0102-JPT">Wilson [2018]: New Geosteering Work Flow Integrates Real-Time Measurements With Geomodels</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- invisible modal-->
+        <div class="modal fade" id="hiddenModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Instructions</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <strong>Steer your wells and then challenge your friends to beat your score!</strong>
+                            Position your well in an uncertin layered environment with up to two sand layers to score points.
+                            Recieve points equal to layer's thickness for every meter in a sand layer.
+                            Recieve double points when drilling 0.5 - 1.5 meters from a sand layer's roof.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Privacy/Cookie/Data Policy</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <strong>Data we store: </strong>
+                            In order to track scores and give out prizes, 
+                            we must identify and track results through username identity.
+                            In order to accomplish this, 
+                            we will store the given username and associate it with your submitted decisions in a database.
+                            Additionally, a cookie with just your username will be stored on your machine for cross-session identification.
+                        </p>
+                        <p>
+                            <strong>Data usage: </strong>
+                            The server owner reserves the right to use this 
+                            anonymised game data for further research and marketing purposes.
+                        </p>
+                        <p>
+                            Click 'Edit' to review or change your username before proceeding (This username may be displayed and will be used to claim your prize if you happen to win)
+                            or click 'Agree & Continue' to confirm you have read and accept these terms and begin playing.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Edit Username</button>
+                        <button class="btn btn-primary" id="continuebtn">Agree & Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+<footer>
+    <div>
+        <!-- Sponsor/Team -->
+        <div id="sponsor-list" class="container">
+            <h2 class="pt-5 mb-0 mt-4">Acknowledgements</h2>
+            <p>
+                This <b>Interactive Sequential-decision Geosteering Benchmark</b> software
+                was supported by the research project <b>Geosteering for IOR</b>
+                (NFR-Petromaks2 project no. 268122) hosted by NORCE and funded by the Research Council of Norway, Aker BP, Equinor, Vår Energi, and Baker Hughes Norge.
+                The open-source release of the code is supported by the research project <b>DISTINGUISH</b>
+                (NFR-Petromaks2 project no. 344236) hosted by NORCE and funded by the Research Council of Norway, Aker BP, and Equinor.
+            </p>
+        </div>
+        <div id="aknowledgement-list" class="container">
+            <h2 class="pt-5 mb-0 mt-4">The creative development team at NORCE</h2>
+                <p>
+                    <a href="https://www.norceresearch.no/en/persons/sergey-alyaev">
+                    Sergey Alyaev</a> (lead developer and principal investigator),
+                    <a href="https://www.norceresearch.no/en/persons/andrew-holsaeter">
+                    Andrew Holsaeter</a> (front-end and GUI refinement),
+                    <a href="https://www.webstep.no/ansatt/morten-bendiksen/">
+                    Morten Bendiksen</a> (server and client-server interaction development),
+                    Sofija Ivanova (user-experience design),
+                    Erich Suter (decision-support-system contributions);
+                    special thanks to 
+                    Kristian Fossum, Robert Ewald, and Rolf Johan Lorentzen.
+            </p>
+        </div>
+    </div>
+    <div class="contact">
+    With all requests concerning the competition platform, please contact <a href="mailto:Sergey.Alyaev@norceresearch.no">Sergey.Alyaev@norceresearch.no</a>
+</div>
+</footer>
+
+</html>
+
+<script>
+    $('document').ready(function(){
+    
+    $('#newUserBtn').on('click',function(e){
+      e.preventDefault();
+      $('#myModal').modal('toggle');
+  
+    });
+  
+    $('#continuebtn').on('click',function(){
+      $('form').submit();
+    });
+  });
+</script>

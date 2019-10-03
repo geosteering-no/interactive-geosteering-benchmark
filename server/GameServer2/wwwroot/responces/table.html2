@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html><html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
+    <link rel="stylesheet" type="text/css" href="login-style.css">
+    <link rel="stylesheet" type="text/css" href="alternate.css">
+
+    <!-- Tags to make nice preview here -->
+    <meta property="og:site_name" content="GEOSTEERING the NORCE way"/>
+    <meta property="og:title" 
+        content="GEOSTEERING game the NORCE way"/>
+    <meta property="og:description" 
+        content="Live ranking based on three best consecutive games"/>
+    <meta property="og:image" content="./assets/hero.png">
+    <meta property="og:url" content="http://game.geosteering.no/">
+    <!-- <meta property="og:type" content="blog"/> -->
+</head>
+<body>
+    <header>
+        <!-- Title / Welcome text -->
+        <a href=http://game.geosteering.no>
+        <h1 class="">GEOSTEERING game the NORCE way</h1>
+        </a>
+    </header>
+    <main>
+
+        <div class="login container">
+
+            <!-- Challenger Text Score -->
+            <h3 class="" id="challengeText" style="margin-bottom:0.25rem">
+                Live ranking based on three best concecutive games
+            </h3>
+            <center>
+                <table class="alternate" align="right|left|right">
+                    <tr>
+                      <th>
+                        Rank 
+                      </th>
+                      <th class="tduser">
+                        Name
+                      </th>
+                      <th>
+                        Rating
+                      </th>
+                    </tr>
+                    {{TABLE_HERE}}
+                    </table>
+            </center>
+        </div>
+
+        <div>
+            Read Alyaev et al.[2019]: <a href="https://doi.org/10.1016/j.petrol.2019.106381">A decision support system for multi-target geosteering</a>
+        </div>
+
+
+    </main>
+</body>
+
+<footer>
+    <div>
+        <!-- Sponsor/Team -->
+        <div id="sponsor-list" class="container">
+            <h2 class="pt-5 mb-0 mt-4">Acknowledgements</h2>
+            <p>
+                This <b>Interactive Sequential-decision Geosteering Benchmark</b> software
+                was supported by the research project <b>Geosteering for IOR</b>
+                (NFR-Petromaks2 project no. 268122) hosted by NORCE and funded by the Research Council of Norway, Aker BP, Equinor, Vår Energi, and Baker Hughes Norge.
+                The open-source release of the code is supported by the research project <b>DISTINGUISH</b>
+                (NFR-Petromaks2 project no. 344236) hosted by NORCE and funded by the Research Council of Norway, Aker BP, and Equinor.
+            </p>
+        </div>
+        <div id="aknowledgement-list" class="container">
+            <h2 class="pt-5 mb-0 mt-4">The creative development team at NORCE</h2>
+                <p>
+                    <a href="https://www.norceresearch.no/en/persons/sergey-alyaev">
+                    Sergey Alyaev</a> (lead developer and principal investigator),
+                    <a href="https://www.norceresearch.no/en/persons/andrew-holsaeter">
+                    Andrew Holsaeter</a> (front-end and GUI refinement),
+                    <a href="https://www.webstep.no/ansatt/morten-bendiksen/">
+                    Morten Bendiksen</a> (server and client-server interaction development),
+                    Sofija Ivanova (user-experience design),
+                    Erich Suter (decision-support-system contributions);
+                    special thanks to 
+                    Kristian Fossum, Robert Ewald, and Rolf Johan Lorentzen.
+            </p>
+        </div>
+    </div>
+    <div class="contact">
+    With all requests concerning the competition platform, please contact <a href="mailto:Sergey.Alyaev@norceresearch.no">Sergey.Alyaev@norceresearch.no</a>
+</div>
+</footer>
+
+</html>
+
+<script>
+
+    // // Challenger
+    // // Get challenger username and score
+    // var challenger = "Sergey"
+    // var score = 3674;
+
+    // var challengeDiv = $("#challengeText");
+    // var instructionsDiv = $("#instructionsTitle");
+    
+    // var challengeText;
+    // var instructionsText;
+    
+    // if (challenger && score){
+    //     challengeText = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
+    //     instructionsText = "Here's how to beat their score:"
+        
+    // }
+    // else{
+    //     challengeText = "Steer your wells and then challenge your friends to beat your score!";
+    //     instructionsText = "Here's how to score:";
+    // }
+
+    // challengeDiv.text(challengeText);
+    // instructionsDiv.text(instructionsText);
+
+    $('document').ready(function(){
+    
+    $('#newUserBtn').on('click',function(e){
+      e.preventDefault();
+      $('#myModal').modal('toggle');
+  
+    });
+  
+    $('#continuebtn').on('click',function(){
+      $('form').submit();
+    });
+  });
+</script>
