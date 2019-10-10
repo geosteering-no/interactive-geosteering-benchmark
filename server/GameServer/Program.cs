@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.IO;
 
 namespace GameServer
 {
@@ -20,7 +21,14 @@ namespace GameServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+
+                    String dir = Directory.GetCurrentDirectory();
+                    String www = dir + "/wwwroot";
+                    webBuilder.UseStartup<Startup>()
+                    .UseContentRoot(dir)
+                    .UseWebRoot(www)
+                    .UseStaticWebAssets();
                 });
+
     }
 }
