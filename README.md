@@ -3,7 +3,11 @@
 Server/Client for November Geosteering Demo
 
 ## Server
-Dotnet Core Kestrel Server
+Dotnet Core 3.0 Kestrel Server
+
+#### Requires:
+* Asp.NetCore 3.0
+  * Which requires Visual Studio 2019 or MSBuild 16(??)
 
 ### Server Overview
 1.	Cookie-based identification
@@ -14,12 +18,8 @@ Dotnet Core Kestrel Server
 6.	Logging all on backend 
 
 
-## [Client](./client/gsgc/README.md)
-Written in Clojurescript using the [re-frame framework](https://github.com/Day8/re-frame)
-Dependencies:
-* Leiningen
+## Client
+Written in javascript using the [p5](https://p5js.org/) client-side library
 
-### Client Overview
-1.	Implementation of the stratigraphy (SVG on backend…)
-2.	Frequency plot
+
 
