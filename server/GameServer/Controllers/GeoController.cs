@@ -12,11 +12,6 @@ namespace GameServer.Controllers
     [Route("[controller]")]
     public class GeoController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<GeoController> _logger;
 
         public GeoController(ILogger<GeoController> logger)
