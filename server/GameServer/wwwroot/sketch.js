@@ -8,31 +8,31 @@ var updateTimerEnabled = false;
 var updateTimerLeft = 0;
 
 
+var prevButton;
+var nextButton;
+var angleSlider;
+
 
 function setup() {
-  canvasWidth = windowWidth - oneMarginInScript * 2;
-  canvasHeigth = windowHeight  - oneMarginInScript;
-  if (canvasWidth > canvasHeigth) {
-    canvasWidth = canvasHeigth / 4 * 3;
-  }
-
-  //detect screen orientation
-  //mobile
-  // if (windowWidth * 5 / 3 < windowHeight){
-  //   canvasWidth = windowWidth;
-  //   canvasHeigth = windowHeight/2;
-  // }
-  // else //(windowWidth * 5 / 3 >= windowHeight)
-  // {
-  //   //make 1/2 aspect ratio
-  //   canvasHeigth = windowHeight/2;
-  //   canvasWidth = windowHeight;
-  // }
 
 
-  createCanvas(canvasWidth, canvasHeigth);
 
-  drawBuffer();
+  createCanvas(100, 100);
+
+
+
+
+  prevButton = createButton("<- Previous");
+  prevButton.mousePressed(previous);
+
+
+  nextButton = createButton("Next ->");
+  nextButton.mousePressed(next);
+
+  angleSlider = createSlider(0.0, 1.0, 0, 0);
+  angleSlider.input(angleChange);
+
+  setSizesAndPositions();
 
   fetch("/geo/init", { credentials: 'include' })
     .then(function (res) {
@@ -50,41 +50,50 @@ function setup() {
     });
 }
 
+function setSizesAndPositions() {
+  canvasWidth = windowWidth - oneMarginInScript * 2;
+  canvasHeigth = windowHeight  - oneMarginInScript;
+  if (canvasWidth > canvasHeigth) {
+    canvasWidth = canvasHeigth / 4 * 3;
+  }
+
+  resizeCanvas(canvasWidth, canvasHeigth);
+
+  drawBuffer();
+
+  prevButton.size(canvasWidth/2 - 15, 100);
+  prevButton.position(10, buffer.height + 5);
+
+  nextButton.position(canvasWidth/2 + 5, buffer.height + 5);
+  nextButton.size(canvasWidth/2 - 15, 100);
+
+  angleSlider.position( 10, buffer.height + prevButton.height + 10);
+  angleSlider.size( canvasWidth - 40, 50);
+
+
+}
+
+function angleChange() {
+  angleSlider.value(angleSlider.value());
+  console.log(angleSlider.value());
+}
+
+function previous() {
+  angleSlider.value(0.4);
+  console.log("previous");
+}
+
+function next() {
+  console.log("next");
+}
+
 function buttonSubmitPressed() {
   
 }
 
 function windowResized() {
-  //TODO implement
-  //resizeCanvas(windowWidth, windowHeight);
+  setSizesAndPositions();
 }
-
-function mousePressed() {
-  console.log("start mouse");
-}
-
-function touchStarted() {
-  console.log("start touch");
-}
-
-function touchMoved() {
-  buffer.stroke(255, 0, 0);
-  buffer.line(mouseX, mouseY, pmouseX, pmouseY);
-  return false;
-}
-
-function touchEnded() {
-  buffer.stroke(0, 0, 255);
-  buffer.line(mouseX, mouseY, pmouseX, pmouseY);
-  return false;
-}
-
-
-
-// function mouseDragged(){
-//   buffer.stroke(0, 255, 0);
-//   buffer.line(mouseX, mouseY, pmouseX, pmouseY);
-// }
 
 let buffer;
 let realizationObj;
