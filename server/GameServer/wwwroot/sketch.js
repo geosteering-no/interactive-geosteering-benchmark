@@ -1,35 +1,63 @@
-var width;
-var heigth;
+var canvasWidth;
+var canvasHeigth;
 var realization = null;
-var committedPoints = [{x:0.0, y: 0.0}, {x: 0.5, y: 0.5}];
-var nextPoints = [{x: 0.98, y: 1.0}];
+var committedPoints = [{ x: 0.0, y: 0.0 }, { x: 0.5, y: 0.5 }];
+var nextPoints = [{ x: 0.98, y: 1.0 }];
+var oneMarginInScript = 16;
+var updateTimerEnabled = false;
+var updateTimerLeft = 0;
+
+
 
 function setup() {
-  width = windowWidth ;
-  heigth = windowHeight;
-  if (width > heigth) {
-    width = heigth/4 *3;
+  canvasWidth = windowWidth - oneMarginInScript * 2;
+  canvasHeigth = windowHeight  - oneMarginInScript;
+  if (canvasWidth > canvasHeigth) {
+    canvasWidth = canvasHeigth / 4 * 3;
   }
-  createCanvas(width, heigth);
+
+  //detect screen orientation
+  //mobile
+  // if (windowWidth * 5 / 3 < windowHeight){
+  //   canvasWidth = windowWidth;
+  //   canvasHeigth = windowHeight/2;
+  // }
+  // else //(windowWidth * 5 / 3 >= windowHeight)
+  // {
+  //   //make 1/2 aspect ratio
+  //   canvasHeigth = windowHeight/2;
+  //   canvasWidth = windowHeight;
+  // }
+
+
+  createCanvas(canvasWidth, canvasHeigth);
 
   drawBuffer();
 
-  fetch("/geo/init",{credentials: 'include'})
-  .then(function(res) {
-    console.log("init success");
-    fetch("/geo/realization",{credentials: 'include'})
-    .then(function(res2) {
-      res2.json()
-      .then(function(json) {
-        console.log("got realization:" + json );
-        realization = json;
-        drawBuffer();
-      });
-      
+  fetch("/geo/init", { credentials: 'include' })
+    .then(function (res) {
+      console.log("init success");
+      fetch("/geo/realization", { credentials: 'include' })
+        .then(function (res2) {
+          res2.json()
+            .then(function (json) {
+              console.log("got realization:" + JSON.stringify(json));
+              realization = json;
+              drawBuffer();
+            });
+
+        });
     });
-  });
 }
 
+function buttonSubmitPressed() {
+  
+}
+
+function windowResized() {
+  //TODO implement
+  //resizeCanvas(windowWidth, windowHeight);
+}
 
 function mousePressed() {
   console.log("start mouse");
@@ -39,18 +67,20 @@ function touchStarted() {
   console.log("start touch");
 }
 
-function touchMoved(){
+function touchMoved() {
   buffer.stroke(255, 0, 0);
   buffer.line(mouseX, mouseY, pmouseX, pmouseY);
   return false;
 }
 
-function touchEnded(){
+function touchEnded() {
   buffer.stroke(0, 0, 255);
   buffer.line(mouseX, mouseY, pmouseX, pmouseY);
   return false;
 }
-  
+
+
+
 // function mouseDragged(){
 //   buffer.stroke(0, 255, 0);
 //   buffer.line(mouseX, mouseY, pmouseX, pmouseY);
@@ -60,25 +90,25 @@ let buffer;
 let realizationObj;
 
 function drawBuffer() {
-  buffer = createGraphics(width, heigth/8 * 3);
+  buffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
 
   buffer.background(0, 0, 0);
-  buffer.blendMode(BLEND);  
+  buffer.blendMode(BLEND);
   buffer.strokeWeight(1);
 
 
   if (realization != null) {
-    var alpha = 2.55/realization.length;
-    buffer.stroke('rgba(100%, 100%, 100%, ' + alpha +')');
-    buffer.fill('rgba(100%, 100%, 100%, ' + alpha +')');
-    for (guessi=0;guessi <realization.length; guessi++) {
-      console.log("guess:" + guessi );
-      for(polygoni=0; polygoni < realization[guessi].polygons.length; polygoni++) {
+    var alpha = 2.55 / realization.length;
+    buffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
+    buffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
+    for (guessi = 0; guessi < realization.length; guessi++) {
+      console.log("guess:" + guessi);
+      for (polygoni = 0; polygoni < realization[guessi].polygons.length; polygoni++) {
         console.log("poly:" + polygoni);
         var poly = realization[guessi].polygons[polygoni];
 
         buffer.beginShape();
-        for(vertexi = 0; vertexi <poly.length; vertexi++) {
+        for (vertexi = 0; vertexi < poly.length; vertexi++) {
           var x = poly[vertexi].item1 * buffer.width;
           var y = poly[vertexi].item2 * buffer.height;
           buffer.vertex(x, y);
@@ -90,16 +120,16 @@ function drawBuffer() {
     // draw triangles for debug
     var points = 3;
     var shapes = 10;
-    var alpha = 2.55/shapes;
-    buffer.stroke('rgba(100%, 100%, 100%, ' + alpha +')');
-    buffer.fill('rgba(100%, 100%, 100%, ' + alpha +')');
-  
-    var rotate = TWO_PI/points/shapes;
-    buffer.translate(buffer.width/2, buffer.height/2)
+    var alpha = 2.55 / shapes;
+    buffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
+    buffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
 
-    for(var i=0; i<shapes;i++){
+    var rotate = TWO_PI / points / shapes;
+    buffer.translate(buffer.width / 2, buffer.height / 2)
+
+    for (var i = 0; i < shapes; i++) {
       buffer.rotate(rotate);
-      drawCircle(buffer, 0, 0, buffer.height/2, points);
+      drawCircle(buffer, 0, 0, buffer.height / 2, points);
     }
   }
 }
@@ -115,7 +145,15 @@ function drawCircle(buffer, x, y, radius, npoints) {
   }
   buffer.endShape(CLOSE);
 
-  
+
+}
+
+function drawFrame(){
+  noFill();
+  strokeWeight(4);
+  stroke(51,255,10);
+  rect(0,0,width, height);
+
 }
 
 function draw() {
@@ -124,6 +162,10 @@ function draw() {
 
   drawWell();
 
+  //for debugging
+  drawFrame();
+
+
 }
 
 function drawWell() {
@@ -131,29 +173,29 @@ function drawWell() {
   stroke('rgba(100%, 0%, 0%, 1.0)');
   fill('rgba(100%, 0%, 0%, 1.0)');
   strokeWeight(2);
-    for(i=0; i< committedPoints.length; i++) {
-      if (i > 0) {
-        line(
-          committedPoints[i].x * buffer.width, 
-          committedPoints[i].y * buffer.height, 
-          committedPoints[i-1].x * buffer.width, 
-          committedPoints[i-1].y * buffer.height);
-      }
-      circle()
+  for (i = 0; i < committedPoints.length; i++) {
+    if (i > 0) {
+      line(
+        committedPoints[i].x * buffer.width,
+        committedPoints[i].y * buffer.height,
+        committedPoints[i - 1].x * buffer.width,
+        committedPoints[i - 1].y * buffer.height);
     }
+    //circlecircle()
+  }
 
 
-  for (i=0; i<nextPoints.length; i++) {
+  for (i = 0; i < nextPoints.length; i++) {
     var prev;
-    if (i===0) {
-      prev = committedPoints[committedPoints.length-1];
+    if (i === 0) {
+      prev = committedPoints[committedPoints.length - 1];
     } else {
-      prev = nextPoints[i-1];
+      prev = nextPoints[i - 1];
     }
     dashedLine(
-      prev.x * buffer.width, 
-      prev.y * buffer.height, 
-      nextPoints[i].x * buffer.width, 
+      prev.x * buffer.width,
+      prev.y * buffer.height,
+      nextPoints[i].x * buffer.width,
       nextPoints[i].y * buffer.height,
       4, 4);
     circle(nextPoints[i].x * buffer.width, nextPoints[i].y * buffer.height, 10);
@@ -168,45 +210,45 @@ function dashedLine(x1, y1, x2, y2, l, g) {
   var xx1 = yy1 = xx2 = yy2 = 0;
 
   while (int(pcCount * pc) < l) {
-      pcCount++
+    pcCount++
   }
   lPercent = pcCount;
   pcCount = 1;
   while (int(pcCount * pc) < g) {
-      pcCount++
+    pcCount++
   }
   gPercent = pcCount;
 
   lPercent = lPercent / 100;
   gPercent = gPercent / 100;
   while (currentPos < 1) {
-      xx1 = lerp(x1, x2, currentPos);
-      yy1 = lerp(y1, y2, currentPos);
-      xx2 = lerp(x1, x2, currentPos + lPercent);
-      yy2 = lerp(y1, y2, currentPos + lPercent);
-      if (x1 > x2) {
-          if (xx2 < x2) {
-              xx2 = x2;
-          }
+    xx1 = lerp(x1, x2, currentPos);
+    yy1 = lerp(y1, y2, currentPos);
+    xx2 = lerp(x1, x2, currentPos + lPercent);
+    yy2 = lerp(y1, y2, currentPos + lPercent);
+    if (x1 > x2) {
+      if (xx2 < x2) {
+        xx2 = x2;
       }
-      if (x1 < x2) {
-          if (xx2 > x2) {
-              xx2 = x2;
-          }
+    }
+    if (x1 < x2) {
+      if (xx2 > x2) {
+        xx2 = x2;
       }
-      if (y1 > y2) {
-          if (yy2 < y2) {
-              yy2 = y2;
-          }
+    }
+    if (y1 > y2) {
+      if (yy2 < y2) {
+        yy2 = y2;
       }
-      if (y1 < y2) {
-          if (yy2 > y2) {
-              yy2 = y2;
-          }
+    }
+    if (y1 < y2) {
+      if (yy2 > y2) {
+        yy2 = y2;
       }
+    }
 
-      line(xx1, yy1, xx2, yy2);
-      currentPos = currentPos + lPercent + gPercent;
+    line(xx1, yy1, xx2, yy2);
+    currentPos = currentPos + lPercent + gPercent;
   }
 }
 
