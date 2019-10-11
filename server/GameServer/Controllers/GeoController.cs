@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GameServer.Controllers
 {
@@ -67,7 +66,6 @@ namespace GameServer.Controllers
             //System.Console.WriteLine("wrote angle: " + angle);
             System.Console.WriteLine("angles: " + session.angles.Count);
             WriteSession(session);
-
         }
 
         private SessionState GetSession()
