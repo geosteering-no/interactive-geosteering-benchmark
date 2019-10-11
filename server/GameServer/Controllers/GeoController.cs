@@ -12,10 +12,14 @@ namespace GameServer.Controllers
     public class GeoController : ControllerBase
     {
         private readonly ILogger<GeoController> _logger;
+        private readonly ServerStateInterfaces.IFullServerState<TrajectoryInterfaces.IContinousState> _serverState;
 
-        public GeoController(ILogger<GeoController> logger)
+        public GeoController(ILogger<GeoController> logger, 
+            ServerStateInterfaces.IFullServerState<TrajectoryInterfaces.IContinousState> serverState)
         {
+            //Note! this is magic
             _logger = logger;
+            _serverState = serverState;
         }
 
         private List<Realization> createRealization()

@@ -35,6 +35,8 @@ namespace GameServer
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
+            services.AddSingleton<ServerStateInterfaces.IFullServerState<TrajectoryInterfaces.IContinousState>, 
+                UserState.FullServerState>();
 
             services.AddControllers();
 
