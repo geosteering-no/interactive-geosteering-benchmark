@@ -1,38 +1,45 @@
 var canvasWidth;
 var canvasHeigth;
 var realization = null;
-var committedPoints = [{ x: 0.0, y: 0.0 }, { x: 0.5, y: 0.5 }];
-var nextPoints = [{ x: 0.98, y: 1.0 }];
+var xTravelDistance = 0.1;
+var maxAngleChange = 0.2;
+var minAngle = 0;
+var maxAngle = 1.4;
+var committedAngles = [1];
+var nextAngles = [ 1, 1, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05, 0.02];
+var editNextAngleNo = 0;
 var oneMarginInScript = 16;
 var updateTimerEnabled = false;
 var updateTimerLeft = 0;
 
 
+var prevButton;
+var nextButton;
+var angleSlider;
+
+let buffer;
+let realizationObj;
 
 function setup() {
-  canvasWidth = windowWidth - oneMarginInScript * 2;
-  canvasHeigth = windowHeight  - oneMarginInScript;
-  if (canvasWidth > canvasHeigth) {
-    canvasWidth = canvasHeigth / 4 * 3;
-  }
-
-  //detect screen orientation
-  //mobile
-  // if (windowWidth * 5 / 3 < windowHeight){
-  //   canvasWidth = windowWidth;
-  //   canvasHeigth = windowHeight/2;
-  // }
-  // else //(windowWidth * 5 / 3 >= windowHeight)
-  // {
-  //   //make 1/2 aspect ratio
-  //   canvasHeigth = windowHeight/2;
-  //   canvasWidth = windowHeight;
-  // }
 
 
-  createCanvas(canvasWidth, canvasHeigth);
 
-  drawBuffer();
+  createCanvas(100, 100);
+
+
+
+
+  prevButton = createButton("<- Previous");
+  prevButton.mousePressed(previous);
+
+
+  nextButton = createButton("Next ->");
+  nextButton.mousePressed(next);
+
+  angleSlider = createSlider(minAngle, maxAngle, 0, 0);
+  angleSlider.input(angleChange);
+
+  setSizesAndPositions();
 
   fetch("/geo/init", { credentials: 'include' })
     .then(function (res) {
@@ -50,44 +57,59 @@ function setup() {
     });
 }
 
+function setSizesAndPositions() {
+  canvasWidth = windowWidth - oneMarginInScript * 2;
+  canvasHeigth = windowHeight  - oneMarginInScript;
+  if (canvasWidth > canvasHeigth) {
+    canvasWidth = canvasHeigth / 4 * 3;
+  }
+
+  resizeCanvas(canvasWidth, canvasHeigth);
+
+  drawBuffer();
+
+  prevButton.size(canvasWidth/2 - 15, 100);
+  prevButton.position(10, buffer.height + 5);
+
+  nextButton.position(canvasWidth/2 + 5, buffer.height + 5);
+  nextButton.size(canvasWidth/2 - 15, 100);
+
+  angleSlider.position( 10, buffer.height + prevButton.height + 10);
+  angleSlider.size( canvasWidth - 40, 50);
+
+
+}
+
+function angleChange() {
+  if (editNextAngleNo < nextAngles.length) {
+    nextAngles[editNextAngleNo] = angleSlider.value();
+  }
+  console.log(angleSlider.value());
+}
+
+function previous() {
+  if (editNextAngleNo > 0) {
+    editNextAngleNo--;
+  }
+  angleSlider.value(nextAngles[editNextAngleNo]);
+}
+
+function next() {
+  if (editNextAngleNo < nextAngles.length -1) {
+    editNextAngleNo++;
+  }
+  angleSlider.value(nextAngles[editNextAngleNo]);
+}
+
 function buttonSubmitPressed() {
   
 }
 
 function windowResized() {
-  //TODO implement
-  //resizeCanvas(windowWidth, windowHeight);
-}
-
-function mousePressed() {
-  console.log("start mouse");
-}
-
-function touchStarted() {
-  console.log("start touch");
-}
-
-function touchMoved() {
-  buffer.stroke(255, 0, 0);
-  buffer.line(mouseX, mouseY, pmouseX, pmouseY);
-  return false;
-}
-
-function touchEnded() {
-  buffer.stroke(0, 0, 255);
-  buffer.line(mouseX, mouseY, pmouseX, pmouseY);
-  return false;
+  setSizesAndPositions();
 }
 
 
-
-// function mouseDragged(){
-//   buffer.stroke(0, 255, 0);
-//   buffer.line(mouseX, mouseY, pmouseX, pmouseY);
-// }
-
-let buffer;
-let realizationObj;
 
 function drawBuffer() {
   buffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
@@ -98,13 +120,14 @@ function drawBuffer() {
 
 
   if (realization != null) {
+    console.log("drawing realization");
     var alpha = 2.55 / realization.length;
     buffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
     buffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
     for (guessi = 0; guessi < realization.length; guessi++) {
-      console.log("guess:" + guessi);
+      //console.log("guess:" + guessi);
       for (polygoni = 0; polygoni < realization[guessi].polygons.length; polygoni++) {
-        console.log("poly:" + polygoni);
+        //console.log("poly:" + polygoni);
         var poly = realization[guessi].polygons[polygoni];
 
         buffer.beginShape();
@@ -117,6 +140,7 @@ function drawBuffer() {
       }
     }
   } else {
+    console.log("drawing triangles");
     // draw triangles for debug
     var points = 3;
     var shapes = 10;
@@ -173,33 +197,47 @@ function drawWell() {
   stroke('rgba(100%, 0%, 0%, 1.0)');
   fill('rgba(100%, 0%, 0%, 1.0)');
   strokeWeight(2);
-  for (i = 0; i < committedPoints.length; i++) {
-    if (i > 0) {
-      line(
-        committedPoints[i].x * buffer.width,
-        committedPoints[i].y * buffer.height,
-        committedPoints[i - 1].x * buffer.width,
-        committedPoints[i - 1].y * buffer.height);
-    }
+  var x = 0.0;
+  var y = 0.0;
+  for (i = 0; i < committedAngles.length; i++) {
+    var angle = committedAngles[i];
+
+    var x2 = x + xTravelDistance;
+    var y2 = y + tan(angle) * xTravelDistance;
+    line(
+      x * buffer.width,
+      y * buffer.height,
+      x2 * buffer.width,
+      y2 * buffer.height);
+  
+    x = x2;
+    y = y2;
     //circlecircle()
   }
 
 
-  for (i = 0; i < nextPoints.length; i++) {
-    var prev;
-    if (i === 0) {
-      prev = committedPoints[committedPoints.length - 1];
-    } else {
-      prev = nextPoints[i - 1];
-    }
+  for (i = 0; i < nextAngles.length; i++) {
+    stroke('rgba(100%, 0%, 0%, 1.0)');
+    fill('rgba(100%, 0%, 0%, 1.0)');
+    var angle = nextAngles[i];
+    var x2 = x + xTravelDistance;
+    var y2 = y + tan(angle) * xTravelDistance;
     dashedLine(
-      prev.x * buffer.width,
-      prev.y * buffer.height,
-      nextPoints[i].x * buffer.width,
-      nextPoints[i].y * buffer.height,
+      x * buffer.width,
+      y * buffer.height,
+      x2 * buffer.width,
+      y2 * buffer.height,
       4, 4);
-    circle(nextPoints[i].x * buffer.width, nextPoints[i].y * buffer.height, 10);
+    
+    if (editNextAngleNo === i) {
+      stroke('rgba(100%, 100%, 0%, 1.0)');
+      fill('rgba(100%, 100%, 0%, 1.0)');
+    }
+    circle(x * buffer.width, y * buffer.height, 10);
+    x = x2;
+    y = y2;
   }
+
 }
 
 function dashedLine(x1, y1, x2, y2, l, g) {
