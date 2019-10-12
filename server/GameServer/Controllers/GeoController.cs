@@ -14,6 +14,7 @@ namespace GameServer.Controllers
     {
         private readonly ILogger<GeoController> _logger;
         private readonly IFullServerState<WellPoint, UserData> _state;
+
         public GeoController(ILogger<GeoController> logger, 
             IFullServerState<WellPoint, UserData> state)
         {
@@ -22,63 +23,50 @@ namespace GameServer.Controllers
             _state = state;
         }
 
-        //TODO remove
-        private List<Realization> createRealization()
+        //TODO add a secret token here or as an argument
+        [Route("admin/restart/secret_token")]
+        public void Restart(int seed = 0)
         {
-            Random r = new Random();
-
-            List<Realization> rs = Enumerable.Range(0, 100).Select(i =>
-            {
-                var startY = 0.2 + r.NextDouble();
-                var startX = 0.0;
-                var points = new List<Tuple<Double, Double>>();
-                for (double x = 0.0; x <= 1.0; x += 0.1)
-                {
-                    points.Add(new Tuple<Double, Double>(x, 0.3 + (r.NextDouble() - 0.5) / 10));
-                }
-                for (double x = 1.0; x >= 0.0; x -= 0.1)
-                {
-                    points.Add(new Tuple<Double, Double>(x, 0.6 + (r.NextDouble() - 0.5) / 10));
-                }
-                var realization = new Realization();
-                realization.polygons.Add(points);
-                return realization;
-            }).ToList();
-
-            return rs;
+            _state.RestartServer(seed);
         }
+
+        
 
         [Route("init")]
-        public void Init()
+        public UserData InitUser(string userName)
         {
-            var session = new SessionState();
-
-            //todo remove
-            session.realizations.Add(createRealization());
-            WriteSession(session);
+            var sessionId = userName;
+            var result = _state.AddUser(sessionId);
+            if (!result)
+            {
+                throw new Exception("Username already taken");
+            }
+            WriteSession(sessionId);
+            return _state.GetUserState(sessionId);
         }
 
-        private void WriteSession(SessionState session)
+        private void WriteSession(string sessionId)
         {
-            HttpContext.Session.SetString("session", session.toJson());
+            HttpContext.Session.SetString("sessionId", sessionId);
         }
 
         [Route("commit")]
-        public void Commit(double angle)
+        public void Commit(WellPoint pt)
         {
-            var session = GetSession();
-            session.angles.Add(angle);
-            //System.Console.WriteLine("wrote angle: " + angle);
-            System.Console.WriteLine("angles: " + session.angles.Count);
-            WriteSession(session);
+            var sessionId = GetSessionId();
+            var res = _state.UpdateUser(sessionId, pt);
+            if (!res)
+            {
+                throw new Exception("We cannot update using this point on this user");
+            }
         }
 
-        private SessionState GetSession()
+        private string GetSessionId()
         {
             var sessionString = HttpContext.Session.GetString("session");
             if (sessionString != null)
             {
-                return SessionState.fromJson(sessionString);
+                return sessionString;
             }
             else
             {
@@ -88,12 +76,10 @@ namespace GameServer.Controllers
 
         //TODO remove
         [Route("userdata")]
-        public List<Realization> GetRealizations()
+        public UserData GetUserState()
         {
-
-            var session = GetSession();
-            return session.realizations.Last();
-
+            var sessionId = GetSessionId();
+            return _state.GetUserState(sessionId);
         }
     }
 
