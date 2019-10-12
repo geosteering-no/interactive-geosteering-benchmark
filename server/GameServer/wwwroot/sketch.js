@@ -1,11 +1,10 @@
 var canvasWidth;
 var canvasHeigth;
-var realization = null;
-var xTravelDistance = 0.1;
-var maxAngleChange = 0.2;
+var userdata = null;
+var xTravelDistance = 50;
+var maxAngleChange = 3.14/180.0 * 2;
 var minAngle = 0;
 var maxAngle = 1.4;
-var committedAngles = [1];
 var nextAngles = [ 1, 1, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05, 0.02];
 var editNextAngleNo = 0;
 var oneMarginInScript = 16;
@@ -17,8 +16,9 @@ var prevButton;
 var nextButton;
 var angleSlider;
 
-let buffer;
-let realizationObj;
+var buffer;
+var wellBuffer;
+var realizationObj;
 
 function setup() {
 
@@ -41,20 +41,64 @@ function setup() {
 
   setSizesAndPositions();
 
-  fetch("/geo/init", { credentials: 'include' })
-    .then(function (res) {
-      console.log("init success");
-      fetch("/geo/realization", { credentials: 'include' })
-        .then(function (res2) {
-          res2.json()
-            .then(function (json) {
-              console.log("got realization:" + JSON.stringify(json));
-              realization = json;
-              drawBuffer();
-            });
+  // fetch("/geo/init", { credentials: 'include' })
+  //   .then(function (res) {
+  //     console.log("init success");
+  //     fetch("/geo/userdata", { credentials: 'include' })
+  //       .then(function (res2) {
+  //         res2.json()
+  //           .then(function (json) {
+  //             console.log("got userdata:" + JSON.stringify(json));
+  //             userdata = json;
+  //             drawBuffer();
+  //           });
 
-        });
-    });
+  //       });
+  //   });
+  var layerH = 20;
+  var r1l1 = [70, 80, 60, 90, 85, 65];
+  var r1l2 = [120, 100, 90, 80, 60, 50];
+  var r2l1 = r1l1.map(function(n) { return n + 10;});
+  var r2l2 = r1l2.map(function(n) { return n + 10;});
+  var addH = function(n) {
+    return n + layerH;
+  };
+   userdata = {
+      XtopLeft : 50,
+      Ytopleft : 50,
+      Width : 500,
+      Height : 100,
+
+      wellPoints : [
+        {X : 50, Y:50, Angle:PI/180.0*10},
+        {X : 100, Y:52, Angle:PI/180.0*11}
+      ],
+      Xdist : 50,
+
+      xList : [50, 100, 200, 300, 400, 500],
+      realizations : [
+        {
+          YLists: [
+            r1l1,
+            r1l1.map(addH).reverse(),
+            r1l2,
+            r1l2.map(addH).reverse()
+          ] 
+        },
+        {
+          YLists: [
+            r2l1,
+            r2l1.map(addH).reverse(),
+            r2l2,
+            r2l2.map(addH).reverse()
+          ]
+        } 
+      ]
+   };
+
+   console.log("userdata = " + JSON.stringify(userdata));
+
+   drawBuffer();
 }
 
 function setSizesAndPositions() {
@@ -113,28 +157,43 @@ function windowResized() {
 
 function drawBuffer() {
   buffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
+  wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
+
+  if (userdata != null) {
+    buffer.scale(buffer.width/userdata.Width, buffer.height/userdata.Height);
+  }
 
   buffer.background(0, 0, 0);
   buffer.blendMode(BLEND);
   buffer.strokeWeight(1);
 
 
-  if (realization != null) {
-    console.log("drawing realization");
-    var alpha = 2.55 / realization.length;
+  if (userdata != null) {
+    console.log("drawing userdat");
+    var reals = userdata.realizations;
+    var alpha = 2.55 / reals.length;
     buffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
     buffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
-    for (guessi = 0; guessi < realization.length; guessi++) {
-      //console.log("guess:" + guessi);
-      for (polygoni = 0; polygoni < realization[guessi].polygons.length; polygoni++) {
+    for (reali = 0; reali < reals.length; reali++) {
+      var layerBuffer = createGraphics(buffer.width, buffer.height);
+      var xlist = userdata.xList;
+      var xreverse = xlist.slice().reverse();
+      //console.log("guess:" + reali);
+      var polyCount = reals[reali].YLists.length/2;
+      for (polygoni = 0; polygoni < polyCount; polygoni++) {
         //console.log("poly:" + polygoni);
-        var poly = realization[guessi].polygons[polygoni];
+        var polytop = reals[reali].YLists[polygoni*2];
+        var polybottom = reals[reali].YLists[polygoni*2 +1].reverse();
 
         buffer.beginShape();
-        for (vertexi = 0; vertexi < poly.length; vertexi++) {
-          var x = poly[vertexi].item1 * buffer.width;
-          var y = poly[vertexi].item2 * buffer.height;
-          buffer.vertex(x, y);
+        for (vertexi = 0; vertexi < polytop.length; vertexi++) {
+          var y = polytop[vertexi].item2;
+          buffer.vertex(xlist[vertexi], y);
+        }
+
+        for (vertexi = 0; vertexi < polybottom.length; vertexi++) {
+          var y = polybottom[vertexi].item2;
+          buffer.vertex(xreverse[vertexi], y);
         }
         buffer.endShape(CLOSE);
       }
@@ -186,29 +245,35 @@ function draw() {
 
   drawWell();
 
+  image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.heigth);
+
   //for debugging
   drawFrame();
-
 
 }
 
 function drawWell() {
+  if (userdata == null) return ;
 
-  stroke('rgba(100%, 0%, 0%, 1.0)');
-  fill('rgba(100%, 0%, 0%, 1.0)');
-  strokeWeight(2);
+  wellBuffer.clear();
+
+  wellBuffer.scale(wellBuffer.width/userdata.Width, wellBuffer.height/userdata.Height);
+
+  wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
+  wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
+  wellBuffer. strokeWeight(2);
   var x = 0.0;
   var y = 0.0;
-  for (i = 0; i < committedAngles.length; i++) {
-    var angle = committedAngles[i];
-
-    var x2 = x + xTravelDistance;
-    var y2 = y + tan(angle) * xTravelDistance;
-    line(
-      x * buffer.width,
-      y * buffer.height,
-      x2 * buffer.width,
-      y2 * buffer.height);
+  var committedPoints = userdata.wellPoints;
+  for (i = 0; i < committedPoints.length; i++) {
+    var point = committedPoints[i];
+    var prev = point;
+    if (i > 0) prev = committedPoints[i-1];
+    wellBuffer.line(
+      point.X,
+      point.Y,
+      prev.X,
+      prev.Y);
   
     x = x2;
     y = y2;
@@ -217,23 +282,23 @@ function drawWell() {
 
 
   for (i = 0; i < nextAngles.length; i++) {
-    stroke('rgba(100%, 0%, 0%, 1.0)');
-    fill('rgba(100%, 0%, 0%, 1.0)');
+    wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
+    wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
     var y2 = y + tan(angle) * xTravelDistance;
-    dashedLine(
-      x * buffer.width,
-      y * buffer.height,
-      x2 * buffer.width,
-      y2 * buffer.height,
-      4, 4);
+    // dashedLine(
+    //   x,
+    //   y,
+    //   x2,
+    //   y2,
+    //   4, 4);
     
     if (editNextAngleNo === i) {
-      stroke('rgba(100%, 100%, 0%, 1.0)');
-      fill('rgba(100%, 100%, 0%, 1.0)');
+      wellBuffer.stroke('rgba(100%, 100%, 0%, 1.0)');
+      wellBuffer.fill('rgba(100%, 100%, 0%, 1.0)');
     }
-    circle(x * buffer.width, y * buffer.height, 10);
+    //wellBuffer.circle(x, y, 10);
     x = x2;
     y = y2;
   }
@@ -285,14 +350,14 @@ function dashedLine(x1, y1, x2, y2, l, g) {
       }
     }
 
-    line(xx1, yy1, xx2, yy2);
+    wellBuffer.line(xx1, yy1, xx2, yy2);
     currentPos = currentPos + lPercent + gPercent;
   }
 }
 
-function drawRealization(gr, realizationObj, realization) {
+function drawRealization(gr, realizationObj, userdat) {
   var xArray = realizationObj.xArray;
-  var interface = realization.interfaces[0];
+  var interface = userdata.interfaces[0];
   gr.stroke(126);
   for (var k = 0; k < 4; ++k) {
     for (var i = 0; i < xArray.length - 1; ++i) {
@@ -325,14 +390,14 @@ function getRealizations() {
 let initPositions = [10.0, 15.0, 23.0, 24.0];
 
 function getOneRealiztion(xArray) {
-  var realization = {};
-  realization.interfaces = [];
+  var userdata = {};
+  userdata.interfaces = [];
   for (var k = 0; k < 4; ++k) {
     var positions = [];
     for (var j = 0; j < xArray.length; ++j) {
       positions[j] = initPositions[j] + random(-2, 2);
     }
-    realization.interfaces[k] = positions;
+    userdata.interfaces[k] = positions;
   }
-  return realization;
+  return userdat;
 }
