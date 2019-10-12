@@ -14,5 +14,9 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ServerStateInterfaces\ServerStateInterfaces.csproj" />
+  </ItemGroup>
+
 
 </Project>
