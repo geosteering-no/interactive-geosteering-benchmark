@@ -10,73 +10,43 @@ using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
 namespace UserState
 {
-    public class FullServerState : IFullServerState<IContinousState, UserData>
+    public class FullServerState : ServerStateBase<IContinousState, UserData, UserState, TrueModelState>
     {
-        private TrueModelState _syntheticTruth = null;
-        private ConcurrentDictionary<string, UserState> _users = new ConcurrentDictionary<string, UserState>();
+       
 
         public FullServerState()
         {
             InitializeNewSyntheticTruth();
         }
 
-        private void InitializeNewSyntheticTruth(int seed = 0)
+        protected sealed override void InitializeNewSyntheticTruth(int seed = 0)
         {
             Console.WriteLine("Initialized synthetic truth with seed: " + seed);
-            _syntheticTruth = new TrueModelState(seed);
+            _secret = new TrueModelState(seed);
         }
 
-        public bool AddUser(string userId)
-        {
-            return _users.TryAdd(userId, new UserState());
-        }
-
-        public bool UserExists(string userId)
-        {
-            return _users.ContainsKey(userId);
-        }
-
-        public UserData GetUserState(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool UpdateUser(string userId, IContinousState updatePoint = default)
-        {
-            if (!UserExists(userId))
-            {
-                return false;
-            }
-
-            var curUser = _users.GetOrAdd(userId, new UserState());
-            //TODO update at a ref point
-            //TODO accept only certain points
-
-            //var updatePoint = (ContinousState)load ?? curUser.GetNextStateDefault();
 
 
-            Console.WriteLine("Using Default next point for the update: " + updatePoint);
-            var result = curUser.OfferUpdatePoint(updatePoint, _syntheticTruth.GetData);
-            //Console.WriteLine("Update successful: " + result);
-            return result;
-        }
+        //public bool UpdateUser(string userId, IContinousState updatePoint = default)
+        //{
+        //    if (!UserExists(userId))
+        //    {
+        //        return false;
+        //    }
 
-        public void RestartServer(int seed = 0)
-        {
-            var newDict = new ConcurrentDictionary<string, UserState>();
-            foreach (var user in _users)
-            {
-                while (!newDict.TryAdd(user.Key, new UserState()))
-                {
-                    //will add everything eventually
-                }
-            }
+        //    var curUser = GetUser(userId);
+        //    //TODO update at a ref point
+        //    //TODO accept only certain points
 
-            //put a clean user state
-            _users = newDict;
-            //put a new truth
-            InitializeNewSyntheticTruth(seed);
+        //    //var updatePoint = (ContinousState)load ?? curUser.GetNextStateDefault();
 
-        }
+
+        //    Console.WriteLine("Using Default next point for the update: " + updatePoint);
+        //    var result = curUser.OfferUpdatePoint(updatePoint, _syntheticTruth.GetData);
+        //    //Console.WriteLine("Update successful: " + result);
+        //    return result;
+        //}
+
+
     }
 }

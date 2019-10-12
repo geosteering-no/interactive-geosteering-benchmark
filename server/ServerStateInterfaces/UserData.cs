@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 namespace ServerStateInterfaces {
-    public class UserData {
+    public class UserData  {
 
         double Xtopleft { get; set; }
         double Ytopleft { get; set; }
@@ -13,6 +13,7 @@ namespace ServerStateInterfaces {
         IList<double> xList { get; set; }
 
         IList<RealizationData> realizations  { get; set; }
+
     }
 
     public class RealizationData {

@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.Security.AccessControl;
 using EnKFLib;
 using ResistivitySimulator;
+using ServerStateInterfaces;
 using TrajectoryInterfaces;
 using TrajectoryOptimization;
 
@@ -11,7 +12,7 @@ using TrajectoryOptimization;
 namespace UserState
 {
     [DataContract]
-    public class UserState
+    public class UserState : IUserImplementaion<UserData, IContinousState, TrueModelState>
     {
         [DataMember]
         private EarthModelManipulator _earthManipulator;
@@ -156,6 +157,12 @@ namespace UserState
                     _emSim);
             _enkf.DataProviders.Add(_dataProvider);
             _enkf.SetRealizations(eManip.Realizations);
+        }
+
+        public UserData UserData { get; }
+        public bool UpdateUser(IContinousState updatePoint, TrueModelState secret)
+        {
+            return OfferUpdatePoint(updatePoint, secret.GetData);
         }
     }
 }

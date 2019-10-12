@@ -1,8 +1,8 @@
 namespace ServerStateInterfaces
 {
     public class WellPoint {
-        double X;
-        double Y;
-        double Angle;
+        public double X { get; set; }
+        public double Y { get; set;  }
+        public double Angle { get; set; }
     }
 }
