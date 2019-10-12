@@ -159,8 +159,10 @@ function drawBuffer() {
   buffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
   wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
 
+
   if (userdata != null) {
     buffer.scale(buffer.width/userdata.Width, buffer.height/userdata.Height);
+    wellBuffer.scale(wellBuffer.width/userdata.Width, wellBuffer.height/userdata.Height);
   }
 
   buffer.background(0, 0, 0);
@@ -257,7 +259,7 @@ function drawWell() {
 
   wellBuffer.clear();
 
-  wellBuffer.scale(wellBuffer.width/userdata.Width, wellBuffer.height/userdata.Height);
+
 
   wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
   wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
