@@ -81,7 +81,7 @@ namespace GameServer.Controllers
             }
         }
 
-        [Route("realization")]
+        [Route("userdata")]
         public List<Realization> GetRealizations()
         {
 
