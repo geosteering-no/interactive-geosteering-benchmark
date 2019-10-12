@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ServerStateInterfaces;
 
 namespace GameServer.Controllers
 {
@@ -12,10 +13,13 @@ namespace GameServer.Controllers
     public class GeoController : ControllerBase
     {
         private readonly ILogger<GeoController> _logger;
-        public GeoController(ILogger<GeoController> logger)
+        private readonly IFullServerState<WellPoint, UserData> _state;
+        public GeoController(ILogger<GeoController> logger, 
+            IFullServerState<WellPoint, UserData> state)
         {
             //Note! this is magic
             _logger = logger;
+            _state = state;
         }
 
         private List<Realization> createRealization()

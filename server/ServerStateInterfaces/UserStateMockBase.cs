@@ -1,6 +1,6 @@
 ﻿namespace ServerStateInterfaces
 {
-    public class UserStateMockBase<T> : IUserImplementaion<UserData, WellPoint, T>
+    public class UserStateMockBase<TSecret> : IUserImplementaion<UserData, WellPoint, TSecret>
     {
         private readonly UserData _userData;
 
@@ -9,7 +9,7 @@
             get => _userData;
         } 
 
-        public bool UpdateUser(WellPoint updatePoint, T secret)
+        public bool UpdateUser(WellPoint updatePoint, TSecret secret)
         {
             return true;
         }

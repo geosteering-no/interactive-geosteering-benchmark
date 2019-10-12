@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ServerStateInterfaces;
 
 namespace GameServer
 {
@@ -35,8 +36,9 @@ namespace GameServer
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
             });
-            // services.AddSingleton<ServerStateInterfaces.IFullServerState<TrajectoryInterfaces.IContinousState>, 
-            //     UserState.FullServerState>();
+            services.AddSingleton<
+                IFullServerState<WellPoint, UserData>,
+                ServerStateBase<WellPoint, UserData, UserStateMockBase<int>, int>>();
 
             services.AddControllers();
 
