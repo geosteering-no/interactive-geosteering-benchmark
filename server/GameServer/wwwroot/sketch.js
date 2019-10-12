@@ -5,7 +5,17 @@ var xTravelDistance = 50;
 var maxAngleChange = 3.14/180.0 * 2;
 var minAngle = 0;
 var maxAngle = 1.4;
-var nextAngles = [ 1, 1, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05, 0.02];
+var beginAngle = 3.14/180*10;
+var nextAngles = [ 
+  beginAngle, 
+  beginAngle - maxAngleChange,
+  beginAngle - maxAngleChange*2, 
+  beginAngle - maxAngleChange*3, 
+  beginAngle - maxAngleChange*4,
+  beginAngle - maxAngleChange*5,
+  beginAngle - maxAngleChange*6, 
+  beginAngle - maxAngleChange*7,
+  beginAngle - maxAngleChange*8];
 var editNextAngleNo = 0;
 var oneMarginInScript = 16;
 var updateTimerEnabled = false;
@@ -64,7 +74,7 @@ function setup() {
     return n + layerH;
   };
    userdata = {
-      XtopLeft : 50,
+      Xtopleft : 50,
       Ytopleft : 50,
       Width : 500,
       Height : 100,
@@ -162,7 +172,10 @@ function drawBuffer() {
 
   if (userdata != null) {
     buffer.scale(buffer.width/userdata.Width, buffer.height/userdata.Height);
+    
     wellBuffer.scale(wellBuffer.width/userdata.Width, wellBuffer.height/userdata.Height);
+    wellBuffer.translate(-userdata.Xtopleft, -userdata.Ytopleft);
+    console.log("scaled")
   }
 
   buffer.background(0, 0, 0);
@@ -259,13 +272,9 @@ function drawWell() {
 
   wellBuffer.clear();
 
-
-
   wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
   wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
-  wellBuffer. strokeWeight(2);
-  var x = 0.0;
-  var y = 0.0;
+  wellBuffer. strokeWeight(1.5);
   var committedPoints = userdata.wellPoints;
   for (i = 0; i < committedPoints.length; i++) {
     var point = committedPoints[i];
@@ -276,11 +285,11 @@ function drawWell() {
       point.Y,
       prev.X,
       prev.Y);
-  
-    x = x2;
-    y = y2;
     //circlecircle()
   }
+
+  var x = userdata.wellPoints[userdata.wellPoints.length-1].X;
+  var y = userdata.wellPoints[userdata.wellPoints.length-1].Y;
 
 
   for (i = 0; i < nextAngles.length; i++) {
@@ -289,18 +298,24 @@ function drawWell() {
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
     var y2 = y + tan(angle) * xTravelDistance;
-    // dashedLine(
+    dashedLine(
+      x,
+      y,
+      x2,
+      y2,
+      8, 8);
+
+    // wellBuffer.line(
     //   x,
     //   y,
     //   x2,
-    //   y2,
-    //   4, 4);
+    //   y2);
     
     if (editNextAngleNo === i) {
       wellBuffer.stroke('rgba(100%, 100%, 0%, 1.0)');
       wellBuffer.fill('rgba(100%, 100%, 0%, 1.0)');
     }
-    //wellBuffer.circle(x, y, 10);
+    wellBuffer.circle(x, y, 10);
     x = x2;
     y = y2;
   }
