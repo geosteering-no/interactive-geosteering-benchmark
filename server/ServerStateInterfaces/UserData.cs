@@ -9,6 +9,7 @@ namespace ServerStateInterfaces {
         double Width { get; set; }
         double Height { get; set; }
 
+        double Xdist {get; set;}
 
         IList<double> xList { get; set; }
 
