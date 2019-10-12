@@ -4,21 +4,17 @@ using System.Collections.Generic;
 namespace ServerStateInterfaces {
     public class UserData  {
 
-        double Xtopleft { get; set; }
-        double Ytopleft { get; set; }
-        double Width { get; set; }
-        double Height { get; set; }
+        public double Xtopleft { get; set; }
+        public double Ytopleft { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
 
-        double Xdist {get; set;}
+        public double Xdist {get; set;}
 
-        IList<double> xList { get; set; }
+        public IList<double> xList { get; set; }
 
-        IList<RealizationData> realizations  { get; set; }
+        public IList<RealizationData> realizations  { get; set; }
 
-        IList<WellPoint> wellPoints  { get; set; }
-    }
-
-    public class RealizationData {
-        IList<IList<double>> YLists { get; set; }
+        public IList<WellPoint> wellPoints  { get; set; }
     }
 }

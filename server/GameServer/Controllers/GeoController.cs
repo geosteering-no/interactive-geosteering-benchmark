@@ -22,6 +22,7 @@ namespace GameServer.Controllers
             _state = state;
         }
 
+        //TODO remove
         private List<Realization> createRealization()
         {
             Random r = new Random();
@@ -52,7 +53,7 @@ namespace GameServer.Controllers
         {
             var session = new SessionState();
 
-
+            //todo remove
             session.realizations.Add(createRealization());
             WriteSession(session);
         }
@@ -85,6 +86,7 @@ namespace GameServer.Controllers
             }
         }
 
+        //TODO remove
         [Route("userdata")]
         public List<Realization> GetRealizations()
         {
