@@ -5,7 +5,17 @@ var xTravelDistance = 50;
 var maxAngleChange = 3.14/180.0 * 2;
 var minAngle = 0;
 var maxAngle = 1.4;
-var nextAngles = [ 1, 1, 0.8, 0.6, 0.4, 0.2, 0.1, 0.05, 0.02];
+var beginAngle = 3.14/180*10;
+var nextAngles = [ 
+  beginAngle, 
+  beginAngle - maxAngleChange,
+  beginAngle - maxAngleChange*2, 
+  beginAngle - maxAngleChange*3, 
+  beginAngle - maxAngleChange*4,
+  beginAngle - maxAngleChange*5,
+  beginAngle - maxAngleChange*6, 
+  beginAngle - maxAngleChange*7,
+  beginAngle - maxAngleChange*8];
 var editNextAngleNo = 0;
 var oneMarginInScript = 16;
 var updateTimerEnabled = false;
@@ -55,18 +65,18 @@ function setup() {
 
   //       });
   //   });
-  var layerH = 20;
-  var r1l1 = [70, 80, 60, 90, 85, 65];
+  var layerH = 15;
+  var r1l1 = [100, 80, 60, 90, 85, 65];
   var r1l2 = [120, 100, 90, 80, 60, 50];
-  var r2l1 = r1l1.map(function(n) { return n + 10;});
-  var r2l2 = r1l2.map(function(n) { return n + 10;});
+  var r2l1 = r1l1.map(function(n) { return n + 20;});
+  var r2l2 = r1l2.map(function(n) { return n + 20;});
   var addH = function(n) {
     return n + layerH;
   };
    userdata = {
-      XtopLeft : 50,
+      Xtopleft : 50,
       Ytopleft : 50,
-      Width : 500,
+      Width : 450,
       Height : 100,
 
       wellPoints : [
@@ -80,17 +90,17 @@ function setup() {
         {
           YLists: [
             r1l1,
-            r1l1.map(addH).reverse(),
+            r1l1.map(addH),
             r1l2,
-            r1l2.map(addH).reverse()
+            r1l2.map(addH)
           ] 
         },
         {
           YLists: [
             r2l1,
-            r2l1.map(addH).reverse(),
+            r2l1.map(addH),
             r2l2,
-            r2l2.map(addH).reverse()
+            r2l2.map(addH)
           ]
         } 
       ]
@@ -153,7 +163,10 @@ function windowResized() {
   setSizesAndPositions();
 }
 
-
+function scaleBufferForView(b) {
+  b.scale(b.width/userdata.Width, b.height/userdata.Height);
+  b.translate(-userdata.Xtopleft, -userdata.Ytopleft);
+}
 
 function drawBuffer() {
   buffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
@@ -161,8 +174,10 @@ function drawBuffer() {
 
 
   if (userdata != null) {
-    buffer.scale(buffer.width/userdata.Width, buffer.height/userdata.Height);
-    wellBuffer.scale(wellBuffer.width/userdata.Width, wellBuffer.height/userdata.Height);
+    //scaleBufferForView(buffer);
+
+    scaleBufferForView(wellBuffer);    
+    console.log("scaled");
   }
 
   buffer.background(0, 0, 0);
@@ -173,33 +188,37 @@ function drawBuffer() {
   if (userdata != null) {
     console.log("drawing userdat");
     var reals = userdata.realizations;
-    var alpha = 2.55 / reals.length;
-    buffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
-    buffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
-    for (reali = 0; reali < reals.length; reali++) {
+    var alpha = 255.0 / reals.length;
+    for (var reali = 0; reali < reals.length; reali++) {
       var layerBuffer = createGraphics(buffer.width, buffer.height);
+      scaleBufferForView(layerBuffer);
+      layerBuffer.stroke('rgb(100%, 100%, 100%)');
+      layerBuffer.fill('rgb(100%, 100%, 100%)');
       var xlist = userdata.xList;
-      var xreverse = xlist.slice().reverse();
       //console.log("guess:" + reali);
       var polyCount = reals[reali].YLists.length/2;
-      for (polygoni = 0; polygoni < polyCount; polygoni++) {
+      for (var polygoni = 0; polygoni < polyCount; polygoni++) {
         //console.log("poly:" + polygoni);
         var polytop = reals[reali].YLists[polygoni*2];
-        var polybottom = reals[reali].YLists[polygoni*2 +1].reverse();
+        var polybottom = reals[reali].YLists[polygoni*2 +1];
 
-        buffer.beginShape();
-        for (vertexi = 0; vertexi < polytop.length; vertexi++) {
-          var y = polytop[vertexi].item2;
-          buffer.vertex(xlist[vertexi], y);
+        layerBuffer.beginShape();
+        for (var vertexi = 0; vertexi < polytop.length; vertexi++) {
+          var y = polytop[vertexi];
+          layerBuffer.vertex(xlist[vertexi], y);
         }
 
-        for (vertexi = 0; vertexi < polybottom.length; vertexi++) {
-          var y = polybottom[vertexi].item2;
-          buffer.vertex(xreverse[vertexi], y);
+        for (var vertexi = polybottom.length-1; vertexi >= 0 ; vertexi--) {
+          var y = polybottom[vertexi];
+          layerBuffer.vertex(xlist[vertexi], y);
         }
-        buffer.endShape(CLOSE);
+        layerBuffer.endShape(CLOSE);
       }
+      buffer.tint(255, alpha);
+      buffer.image(layerBuffer, 0, 0, layerBuffer.width, layerBuffer.heigth);
+      
     }
+    tint(255, 255);
   } else {
     console.log("drawing triangles");
     // draw triangles for debug
@@ -259,15 +278,11 @@ function drawWell() {
 
   wellBuffer.clear();
 
-
-
   wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
   wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
-  wellBuffer. strokeWeight(2);
-  var x = 0.0;
-  var y = 0.0;
+  wellBuffer. strokeWeight(1.5);
   var committedPoints = userdata.wellPoints;
-  for (i = 0; i < committedPoints.length; i++) {
+  for (var i = 0; i < committedPoints.length; i++) {
     var point = committedPoints[i];
     var prev = point;
     if (i > 0) prev = committedPoints[i-1];
@@ -276,31 +291,37 @@ function drawWell() {
       point.Y,
       prev.X,
       prev.Y);
-  
-    x = x2;
-    y = y2;
     //circlecircle()
   }
 
+  var x = userdata.wellPoints[userdata.wellPoints.length-1].X;
+  var y = userdata.wellPoints[userdata.wellPoints.length-1].Y;
 
-  for (i = 0; i < nextAngles.length; i++) {
-    wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
-    wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
+
+  for (var i = 0; i < nextAngles.length; i++) {
+    wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
+    wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
     var y2 = y + tan(angle) * xTravelDistance;
-    // dashedLine(
+    dashedLine(
+      x,
+      y,
+      x2,
+      y2,
+      8, 8);
+
+    // wellBuffer.line(
     //   x,
     //   y,
     //   x2,
-    //   y2,
-    //   4, 4);
+    //   y2);
     
     if (editNextAngleNo === i) {
       wellBuffer.stroke('rgba(100%, 100%, 0%, 1.0)');
       wellBuffer.fill('rgba(100%, 100%, 0%, 1.0)');
     }
-    //wellBuffer.circle(x, y, 10);
+    wellBuffer.circle(x, y, 10);
     x = x2;
     y = y2;
   }
