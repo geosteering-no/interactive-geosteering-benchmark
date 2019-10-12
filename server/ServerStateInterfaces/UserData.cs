@@ -13,6 +13,8 @@ namespace ServerStateInterfaces {
         IList<double> xList { get; set; }
 
         IList<RealizationData> realizations  { get; set; }
+
+        IList<WellPoint> wellPoints  { get; set; }
     }
 
     public class RealizationData {
