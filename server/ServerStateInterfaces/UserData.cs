@@ -18,10 +18,4 @@ namespace ServerStateInterfaces {
     public class RealizationData {
         IList<IList<double>> YLists { get; set; }
     }
-
-    public class WellPoint {
-        double X;
-        double Y;
-        double Angle;
-    }
 }

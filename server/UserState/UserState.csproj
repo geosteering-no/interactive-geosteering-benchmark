@@ -63,7 +63,6 @@
     <Compile Include="FullServerState.cs" />
     <Compile Include="ServerObjectiveEvaluator.cs" />
     <Compile Include="TrueModelState.cs" />
-    <Compile Include="UserData.cs" />
     <Compile Include="UserState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

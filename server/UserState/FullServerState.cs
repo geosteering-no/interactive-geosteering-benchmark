@@ -10,7 +10,7 @@ using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
 namespace UserState
 {
-    public class FullServerState : IFullServerState<IContinousState>
+    public class FullServerState : IFullServerState<IContinousState, UserData>
     {
         private TrueModelState _syntheticTruth = null;
         private ConcurrentDictionary<string, UserState> _users = new ConcurrentDictionary<string, UserState>();
@@ -34,6 +34,11 @@ namespace UserState
         public bool UserExists(string userId)
         {
             return _users.ContainsKey(userId);
+        }
+
+        public UserData GetUserState(string userId)
+        {
+            throw new NotImplementedException();
         }
 
         public bool UpdateUser(string userId, IContinousState updatePoint = default)

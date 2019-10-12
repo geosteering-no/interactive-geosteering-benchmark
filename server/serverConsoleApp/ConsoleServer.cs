@@ -4,13 +4,14 @@ using System.Runtime.Serialization.Json;
 using ServerStateInterfaces;
 using TrajectoryInterfaces;
 using UserState;
+using UserData = ServerStateInterfaces.UserData;
 
 namespace serverConsoleApp
 {
     class ConsoleServer
     {
         private const string Value = "Command not recognised";
-        static IFullServerState<IContinousState> serverState = new FullServerState();
+        static IFullServerState<IContinousState, UserData> serverState = new FullServerState();
 
         static void Main(string[] args)
         {
