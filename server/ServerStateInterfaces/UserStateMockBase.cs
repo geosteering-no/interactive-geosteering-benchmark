@@ -16,6 +16,7 @@
 
         public WellPoint GetNextStateDefault()
         {
+            //TODO consider a better implementation, but this is not needed functionality once client is good
             var point = new WellPoint()
             {
                 X = 50,

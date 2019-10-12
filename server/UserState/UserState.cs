@@ -97,11 +97,17 @@ namespace UserState
 
         public bool OfferUpdatePoint(IContinousState newState, GetMeasurementForPoint measuringFunction)
         {
-            //TODO add the synthetic truth to the input
+            if (newState == null)
+            {
+                newState = GetNextStateDefault();
+            }
+
             if (!PointOnNextStep(newState))
             {
                 return false;
             }
+
+
             //correcting for EPS error
             newState.X = GetNextDecisionX();
             _Update(newState, measuringFunction);
