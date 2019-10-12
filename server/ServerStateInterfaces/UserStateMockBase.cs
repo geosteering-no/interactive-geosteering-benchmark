@@ -8,6 +8,8 @@ namespace ServerStateInterfaces
     {
         private readonly UserData _userData;
 
+        //TODO implemnt adding points
+
         private UserData CreateUserData()
         {
             Random r = new Random();
