@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using ServerStateInterfaces;
+using Newtonsoft.Json;
 
 namespace GameServer.Controllers
 {
@@ -30,8 +32,6 @@ namespace GameServer.Controllers
             _state.RestartServer(seed);
         }
 
-        
-
         [Route("init")]
         public UserData InitUser(string userName)
         {
@@ -42,8 +42,11 @@ namespace GameServer.Controllers
                 throw new Exception("Username already taken");
             }
             WriteSession(sessionId);
-            return _state.GetUserState(sessionId);
+            var userState = _state.GetUserState(sessionId);
+
+            return userState;
         }
+
 
         private void WriteSession(string sessionId)
         {

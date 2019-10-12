@@ -38,6 +38,9 @@
     <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.7.0\lib\net461\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="NuGet.Frameworks">
+      <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\nuget.frameworks\4.7.0\lib\netstandard1.6\NuGet.Frameworks.dll</HintPath>
+    </Reference>
     <Reference Include="ResistivitySimulator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Debug\ResistivitySimulator.dll</HintPath>

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace ServerStateInterfaces
 {
@@ -15,11 +17,45 @@ namespace ServerStateInterfaces
 
         public bool AddUser(string userId)
         {
-            return _users.TryAdd(userId, new TUserModel());
+            var newUser = new TUserModel();
+            var res = _users.TryAdd(userId, newUser);
+            if (!res)
+            {
+                return false;
+            }
+
+            var user = GetUser(userId);
+            DumpUserStateToFile(userId, user.UserData);
+            return res;
         }
+
+        public void DumpUserStateToFile(string userId, TUserDataModel data)
+        {
+            var dirId = "userLod_" + userId;
+            if (!Directory.Exists(dirId))
+            {
+                Directory.CreateDirectory(dirId);
+            }
+            var jsonStr = JsonConvert.SerializeObject(data);
+            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
+        }
+
+        public void DumpSectetStateToFile(int data)
+        {
+            var dirId = "secret";
+            if (!Directory.Exists(dirId))
+            {
+                Directory.CreateDirectory(dirId);
+            }
+            var jsonStr = JsonConvert.SerializeObject(data);
+            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
+        }
+
 
         protected virtual void InitializeNewSyntheticTruth(int seed = 0)
         {
+            DumpSectetStateToFile(seed);
+            //TODO fix
             //Console.WriteLine("Initialized synthetic truth with seed: " + seed);
             //_syntheticTruth = new TrueModelState(seed);
         }
@@ -35,10 +71,12 @@ namespace ServerStateInterfaces
             var newDict = new ConcurrentDictionary<string, TUserModel>();
             foreach (var user in _users)
             {
-                while (!newDict.TryAdd(user.Key, new TUserModel()))
+                var newUserState = new TUserModel();
+                while (!newDict.TryAdd(user.Key, newUserState))
                 {
                     //will add everything eventually
                 }
+                DumpUserStateToFile(user.Key, newUserState.UserData);
             }
 
             //put a clean user state
@@ -55,7 +93,9 @@ namespace ServerStateInterfaces
             }
 
             var user = GetUser(userId);
-            return user.UpdateUser(load, _secret);
+            var res = user.UpdateUser(load, _secret);
+            DumpUserStateToFile(userId, user.UserData);
+            return res;
         }
 
         public bool UserExists(string userId)

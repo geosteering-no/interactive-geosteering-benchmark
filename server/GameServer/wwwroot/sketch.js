@@ -118,8 +118,8 @@ function setSizesAndPositions() {
   nextButton.position(canvasWidth/2 + 5, buffer.height + 5);
   nextButton.size(canvasWidth/2 - 15, 100);
 
-  angleSlider.position( 10, buffer.height + prevButton.height + 10);
-  angleSlider.size( canvasWidth - 40, 50);
+  angleSlider.position( 80, buffer.height + prevButton.height + 10);
+  angleSlider.size( canvasWidth - 80*2, 50);
 
 
 }

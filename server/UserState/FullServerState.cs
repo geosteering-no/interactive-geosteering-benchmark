@@ -21,8 +21,11 @@ namespace UserState
 
         protected sealed override void InitializeNewSyntheticTruth(int seed = 0)
         {
+            
             Console.WriteLine("Initialized synthetic truth with seed: " + seed);
             _secret = new TrueModelState(seed);
+            
+            base.InitializeNewSyntheticTruth(seed);
         }
 
 

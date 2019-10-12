@@ -165,7 +165,56 @@ namespace UserState
             _enkf.SetRealizations(eManip.Realizations);
         }
 
-        public UserData UserData { get; }
+        private RealizationData convertToRealizationData(IEarthModelRealization realization)
+        {
+            var realizationData = new RealizationData();
+            
+            realizationData.YLists = realization.GetBoundaryLists();
+            return realizationData;
+            //realizationData.YLists.Add();
+        }
+
+        private WellPoint convertToWellPoint(IContinousState pt)
+        {
+            var wp = new WellPoint()
+            {
+                X = pt.X,
+                Y = pt.Y,
+                Angle = pt.Alpha
+            };
+            return wp;
+        }
+
+        public UserData UserData
+        {
+            get
+            {
+                var realizations = new List<RealizationData>();
+                foreach (var earthManipulatorRealization in _earthManipulator.Realizations)
+                {
+                    realizations.Add(convertToRealizationData(earthManipulatorRealization));
+                }
+                var wellPoints = new List<WellPoint>();
+                foreach (var p in _trajectory)
+                {
+                    wellPoints.Add(convertToWellPoint(p));
+                }
+
+                var data = new UserData()
+                {
+                    Ytopleft = -Offset,
+                    Xtopleft = MinX,
+                    Width = MaxX-MinX,
+                    Height = 50,
+                    realizations = realizations,
+                    wellPoints = wellPoints,
+                    xList = _earthManipulator.XPositions,
+                    Xdist = DefaultDecisionStep,
+                };
+                return data;
+            }
+        }
+
         public bool UpdateUser(IContinousState updatePoint, TrueModelState secret)
         {
             return OfferUpdatePoint(updatePoint, secret.GetData);
