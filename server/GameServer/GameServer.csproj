@@ -14,45 +14,5 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ServerStateInterfaces\ServerStateInterfaces.csproj" />
-    <ProjectReference Include="..\UserState\UserState.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="EnKFLib">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\EnKFLib.dll</HintPath>
-    </Reference>
-    <Reference Include="IRIS.Math">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\IRIS.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="IRIS.Std">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\IRIS.Std.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\MathNet.Numerics.dll</HintPath>
-    </Reference>
-    <Reference Include="RandomNumberGenerator">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\RandomNumberGenerator.dll</HintPath>
-    </Reference>
-    <Reference Include="ResistivitySimulator">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\ResistivitySimulator.dll</HintPath>
-    </Reference>
-    <Reference Include="TrajectoryInterfaces">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Debug\TrajectoryInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="TrajectoryOptimization">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\TrajectoryOptimization.dll</HintPath>
-    </Reference>
-    <Reference Include="UserState">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\UserState.dll</HintPath>
-    </Reference>
-    <Reference Include="Variogram">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\Variogram.dll</HintPath>
-    </Reference>
-    <Reference Include="Vectorizable">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\serverConsoleApp\bin\Debug\netcoreapp2.2\Vectorizable.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
 </Project>
