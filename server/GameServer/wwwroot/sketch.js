@@ -51,20 +51,28 @@ function setup() {
 
   setSizesAndPositions();
 
-  // fetch("/geo/init", { credentials: 'include' })
-  //   .then(function (res) {
-  //     console.log("init success");
-  //     fetch("/geo/userdata", { credentials: 'include' })
-  //       .then(function (res2) {
-  //         res2.json()
-  //           .then(function (json) {
-  //             console.log("got userdata:" + JSON.stringify(json));
-  //             userdata = json;
-  //             drawBuffer();
-  //           });
+  fetch("/geo/init?userName=morten", { credentials: 'include' })
+    .then(function (res) {
+      // if (!res.ok) {
+      //   alert("init failed");
+      //   throw Error("init failed");
+      // }
+      console.log("init success");
+      fetch("/geo/userdata", { credentials: 'include' })
+        .then(function (res2) {
+          if (!res2.ok) {
+            alert("getting userdata failed");
+            throw Error("getting userdata failed");
+          }
+          res2.json()
+            .then(function (json) {
+              console.log("got userdata:" + JSON.stringify(json));
+              userdata = json;
+              drawBuffer();
+            });
 
-  //       });
-  //   });
+        });
+    });
   var layerH = 15;
   var r1l1 = [100, 80, 60, 90, 85, 65];
   var r1l2 = [120, 100, 90, 80, 60, 50];
@@ -73,7 +81,7 @@ function setup() {
   var addH = function(n) {
     return n + layerH;
   };
-   userdata = {
+   userdataFake = {
       Xtopleft : 50,
       Ytopleft : 50,
       Width : 450,
@@ -88,7 +96,7 @@ function setup() {
       xList : [50, 100, 200, 300, 400, 500],
       realizations : [
         {
-          YLists: [
+          yLists: [
             r1l1,
             r1l1.map(addH),
             r1l2,
@@ -96,7 +104,7 @@ function setup() {
           ] 
         },
         {
-          YLists: [
+          yLists: [
             r2l1,
             r2l1.map(addH),
             r2l2,
@@ -106,9 +114,9 @@ function setup() {
       ]
    };
 
-   console.log("userdata = " + JSON.stringify(userdata));
+   //console.log("userdata = " + JSON.stringify(userdata));
 
-   drawBuffer();
+   //drawBuffer();
 }
 
 function setSizesAndPositions() {
@@ -164,8 +172,8 @@ function windowResized() {
 }
 
 function scaleBufferForView(b) {
-  b.scale(b.width/userdata.Width, b.height/userdata.Height);
-  b.translate(-userdata.Xtopleft, -userdata.Ytopleft);
+  b.scale(b.width/userdata.width, b.height/userdata.height);
+  b.translate(-userdata.xtopleft, -userdata.ytopleft);
 }
 
 function drawBuffer() {
@@ -196,11 +204,11 @@ function drawBuffer() {
       layerBuffer.fill('rgb(100%, 100%, 100%)');
       var xlist = userdata.xList;
       //console.log("guess:" + reali);
-      var polyCount = reals[reali].YLists.length/2;
+      var polyCount = reals[reali].yLists.length/2;
       for (var polygoni = 0; polygoni < polyCount; polygoni++) {
         //console.log("poly:" + polygoni);
-        var polytop = reals[reali].YLists[polygoni*2];
-        var polybottom = reals[reali].YLists[polygoni*2 +1];
+        var polytop = reals[reali].yLists[polygoni*2];
+        var polybottom = reals[reali].yLists[polygoni*2 +1];
 
         layerBuffer.beginShape();
         for (var vertexi = 0; vertexi < polytop.length; vertexi++) {
@@ -287,15 +295,15 @@ function drawWell() {
     var prev = point;
     if (i > 0) prev = committedPoints[i-1];
     wellBuffer.line(
-      point.X,
-      point.Y,
-      prev.X,
-      prev.Y);
+      point.x,
+      point.y,
+      prev.x,
+      prev.y);
     //circlecircle()
   }
 
-  var x = userdata.wellPoints[userdata.wellPoints.length-1].X;
-  var y = userdata.wellPoints[userdata.wellPoints.length-1].Y;
+  var x = userdata.wellPoints[userdata.wellPoints.length-1].x;
+  var y = userdata.wellPoints[userdata.wellPoints.length-1].y;
 
 
   for (var i = 0; i < nextAngles.length; i++) {
@@ -304,12 +312,11 @@ function drawWell() {
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
     var y2 = y + tan(angle) * xTravelDistance;
-    dashedLine(
+    wellBuffer.line(
       x,
       y,
       x2,
-      y2,
-      8, 8);
+      y2);
 
     // wellBuffer.line(
     //   x,

@@ -16,15 +16,16 @@ namespace ServerStateInterfaces
             Random r = new Random();
             var userData = new UserData()
             {
-                Width = 1.0,
-                Height = 1.0,
+                Width = 100.0,
+                Height = 10.0,
                 wellPoints = new List<WellPoint>() { GetNextStateDefault()},
-                Xtopleft = 0.0,
-                Ytopleft = 0.0,
+                Xtopleft = 10.0,
+                Ytopleft = 10.0,
 
             };
             var xs = new List<double>();
-            for (double x = 0.0; x <= 1.0; x += 0.1)
+
+            for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width/10.0)
             {
                 xs.Add(x);
             }
@@ -34,18 +35,18 @@ namespace ServerStateInterfaces
             List<RealizationData> rs = Enumerable.Range(0, 100).Select(i =>
             {
                 var realization = new RealizationData();
-                var startY = 0.2 + r.NextDouble();
-                var startX = 0.0;
-                var points = new List<double>();
 
-                realization.YLists.Add(points);
-                points = new List<double>();
-                for (double x = 1.0; x >= 0.0; x -= 0.1)
+                var y1 = new List<double>();
+                var y2 = new List<double>();
+
+                for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width/10.0)
                 {
-                    points.Add(0.6 + (r.NextDouble() - 0.5) / 10);
+                    y1.Add(userData.Ytopleft + userData.Height * 0.3 - (r.NextDouble()*userData.Height/2.0) / 10);
+                    y2.Add(userData.Ytopleft + userData.Height * 0.3 + (r.NextDouble()*userData.Height/2.0) / 10);
                 }
-                realization.YLists.Add(points);
 
+                realization.YLists.Add(y1);
+                realization.YLists.Add(y2);
 
                 //realization.polygons.Add(points);
                 return realization;

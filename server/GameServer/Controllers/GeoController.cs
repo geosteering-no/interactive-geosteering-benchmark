@@ -40,16 +40,16 @@ namespace GameServer.Controllers
             var result = _state.AddUser(sessionId);
             if (!result)
             {
-                throw new Exception("Username already taken");
+                //throw new Exception("Username already taken");
             }
-            WriteSession(sessionId);
+            WriteSessionId(sessionId);
             var userState = _state.GetUserState(sessionId);
 
             return userState;
         }
 
 
-        private void WriteSession(string sessionId)
+        private void WriteSessionId(string sessionId)
         {
             HttpContext.Session.SetString("sessionId", sessionId);
         }
@@ -67,7 +67,7 @@ namespace GameServer.Controllers
 
         private string GetSessionId()
         {
-            var sessionString = HttpContext.Session.GetString("session");
+            var sessionString = HttpContext.Session.GetString("sessionId");
             if (sessionString != null)
             {
                 return sessionString;
