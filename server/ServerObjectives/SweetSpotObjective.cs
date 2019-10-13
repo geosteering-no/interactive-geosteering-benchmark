@@ -65,8 +65,9 @@ namespace ServerObjectives
         public double ComputeReservoirValue<T>(IList<double> xs, T model, ThicknessAndDistenceAboveDelegate<T> thicknessAndDistenceAbove, double x0, double y0, double x1, double y1)
         {
             //double length = Hypot(DX, DY * nextState.AngleJumpInY);
-            double length = Utils.Hypot(x1 - x0, y1 - x0);
-            double dLength = length / NumPoint;
+            //double length = Utils.Hypot(x1 - x0, y1 - x0);
+            //this should be a horizontal length intentionally
+            double dLength = (x1 - x0) / NumPoint;
             var sum = 0.0;
             for (var lambda = 1.0 / NumPoint / 2; lambda < 1.0; lambda += 1.0 / NumPoint)
             {
