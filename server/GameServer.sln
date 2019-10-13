@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserState", "UserState\User
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerConsoleApp", "serverConsoleApp\ServerConsoleApp.csproj", "{DA9B5D6B-42D5-4938-BDD7-4201260E84FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerObjectives", "ServerObjectives\ServerObjectives.csproj", "{DEBBD503-C2C0-437C-840E-7DF682EFAF91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerObjectives", "ServerObjectives\ServerObjectives.csproj", "{DEBBD503-C2C0-437C-840E-7DF682EFAF91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerDataStructures", "ServerDataStructures\ServerDataStructures.csproj", "{3543B534-EC3B-4BB5-80E7-CA0208E3A488}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerDataStructures", "ServerDataStructures\ServerDataStructures.csproj", "{3543B534-EC3B-4BB5-80E7-CA0208E3A488}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
