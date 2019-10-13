@@ -74,6 +74,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ServerDataStructures\ServerDataStructures.csproj">
+      <Project>{3543B534-EC3B-4BB5-80E7-CA0208E3A488}</Project>
+      <Name>ServerDataStructures</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ServerStateInterfaces\ServerStateInterfaces.csproj">
       <Project>{11867f26-51ba-44c3-9fd4-f071145d9299}</Project>
       <Name>ServerStateInterfaces</Name>

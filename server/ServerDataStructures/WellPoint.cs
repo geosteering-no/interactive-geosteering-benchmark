@@ -1,4 +1,4 @@
-namespace ServerStateInterfaces
+namespace ServerDataStructures
 {
     public class WellPoint {
         public double X { get; set; }

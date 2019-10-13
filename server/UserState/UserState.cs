@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 using System.Security.AccessControl;
 using EnKFLib;
 using ResistivitySimulator;
+using ServerDataStructures;
 using ServerStateInterfaces;
 using TrajectoryInterfaces;
 using TrajectoryOptimization;

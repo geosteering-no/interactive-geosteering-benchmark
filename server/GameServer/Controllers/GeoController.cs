@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using ServerStateInterfaces;
 using Newtonsoft.Json;
+using ServerDataStructures;
 
 namespace GameServer.Controllers
 {

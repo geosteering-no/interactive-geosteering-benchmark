@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ServerStateInterfaces
+namespace ServerDataStructures
 {
     public class RealizationData {
         private IList<IList<double>> _yLists = new List<IList<double>>();
