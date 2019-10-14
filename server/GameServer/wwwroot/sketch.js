@@ -44,28 +44,20 @@ function setup() {
 
   setSizesAndPositions();
 
-  fetch("/geo/init?userName=morten", { credentials: 'include' })
+  fetch("/geo/userdata", { credentials: 'include' })
     .then(function (res) {
-      // if (!res.ok) {
-      //   alert("init failed");
-      //   throw Error("init failed");
-      // }
-      console.log("init success");
-      fetch("/geo/userdata", { credentials: 'include' })
-        .then(function (res2) {
-          if (!res2.ok) {
-            alert("getting userdata failed");
-            throw Error("getting userdata failed");
-          }
-          res2.json()
-            .then(function (json) {
-              console.log("got userdata:" + JSON.stringify(json));
-              userdata = json;
-              drawGeomodelToBuffer(userdata);
-              redrawEnabledForAninterval();
-            });
-
+      if (!res.ok) {
+        alert("getting userdata failed");
+        throw Error("getting userdata failed");
+      }
+      res.json()
+        .then(function (json) {
+          console.log("got userdata:" + JSON.stringify(json));
+          userdata = json;
+          drawGeomodelToBuffer(userdata);
+          redrawEnabledForAninterval();
         });
+
     });
 
   var layerH = 15;
@@ -109,9 +101,6 @@ function setup() {
     ]
   };
 
-  //console.log("userdata = " + JSON.stringify(userdata));
-
-  drawGeomodelToBuffer(userdata);
   noLoop();
 }
 

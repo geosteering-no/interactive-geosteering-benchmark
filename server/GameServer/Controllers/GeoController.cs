@@ -31,27 +31,12 @@ namespace GameServer.Controllers
         }
 
         [Route("init")]
-        public UserData InitNewUser(string userName)
+        [HttpPost]
+        public void InitNewUser([FromForm] string userName)
         {
-            var userIdStored = GetUserId();
-            if (userIdStored == null)
-            {
-                if (_state.UserExists(userName))
-                {
-                    throw new Exception("User with this name exists");
-                }
-                WriteUserId(userName);
-
-                return _state.GetOrAddUserState(userName);             
-            }
-            //if we are a returning user
-            if (userIdStored == userName)
-            {
-                return GetUserState();
-            }
-
-            throw new Exception("Mismatch between expected and provided user name");
-
+            WriteUserId(userName);
+            _state.GetOrAddUserState(userName);
+            Response.Redirect("/index.html");
         }
 
         [Route("checkUser")]
