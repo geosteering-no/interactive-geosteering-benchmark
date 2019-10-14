@@ -11,7 +11,7 @@ using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
 namespace UserState
 {
-    public class FullServerState : ServerStateBase<IContinousState, UserData, UserState, TrueModelState>
+    public class FullServerState : ServerStateBase<IContinousState, UserData, UserState, TrueModelState, UserEvaluation>
     {
        
 

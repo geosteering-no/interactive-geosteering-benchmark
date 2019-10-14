@@ -13,7 +13,7 @@ using TrajectoryOptimization;
 namespace UserState
 {
     [DataContract]
-    public class UserState : IUserImplementaion<UserData, IContinousState, TrueModelState>
+    public class UserState : IUserImplementaion<UserData, IContinousState, TrueModelState, UserEvaluation>
     {
         [DataMember]
         private EarthModelManipulator _earthManipulator;
@@ -87,6 +87,11 @@ namespace UserState
                 Alpha = angle,
             };
             return state;
+        }
+
+        public UserEvaluation GetEvaluation(IList<IContinousState> trajectory)
+        {
+            throw new NotImplementedException();
         }
 
         public double GetNextDecisionX()

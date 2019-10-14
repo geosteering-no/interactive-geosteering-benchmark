@@ -13,10 +13,10 @@ namespace GameServer.Controllers
     {
         private const string UserId_ID = "geobanana-user-id";
         private readonly ILogger<GeoController> _logger;
-        private readonly IFullServerState<WellPoint, UserData> _state;
+        private readonly IFullServerState<WellPoint, UserData, UserEvaluation, PopulationScoreData> _state;
 
         public GeoController(ILogger<GeoController> logger, 
-            IFullServerState<WellPoint, UserData> state)
+            IFullServerState<WellPoint, UserData, UserEvaluation, PopulationScoreData> state)
         {
             //Note! this is magic
             _logger = logger;

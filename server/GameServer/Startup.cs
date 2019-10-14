@@ -39,8 +39,9 @@ namespace GameServer
                 options.Cookie.IsEssential = true;
             });
             services.AddSingleton<
-                IFullServerState<WellPoint, UserData>,
-                ServerStateBase<WellPoint, UserData, UserStateMockBase<int>, int>>();
+                IFullServerState<WellPoint, UserData, UserEvaluation, PopulationScoreData>,
+                ServerStateBase<WellPoint, UserData, UserStateMockBase<int>, int, UserEvaluation>
+            >();
 
             services.AddControllers();
 

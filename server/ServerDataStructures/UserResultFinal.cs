@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ServerDataStructures
 {
-    public class UserResult
+    public class UserResultFinal 
     {
         public string UserName { get; set; }
         public IList<WellPointWithScore> TrajectoryWithScore { get; set; }

@@ -5,7 +5,7 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public class UserStateMockBase<TSecret> : IUserImplementaion<UserData, WellPoint, TSecret>
+    public class UserStateMockBase<TSecret> : IUserImplementaion<UserData, WellPoint, TSecret, UserEvaluation>
     {
         private readonly UserData _userData;
         const int DISCRETIZATION_POINTS = 10;
@@ -13,6 +13,9 @@ namespace ServerStateInterfaces
         const double Y_TOP_LEFT = 10.0;
         private const double X_WIDTH = 100;
 
+        public delegate double ObjectiveEvaulationFunction(RealizationData realizationData);
+
+        public ObjectiveEvaulationFunction Evaluator { get; set; }
 
         //TODO implemnt adding points
 
@@ -88,6 +91,29 @@ namespace ServerStateInterfaces
                 Angle = 10.0/180*3.1415,
             };
             return point;
+        }
+
+        public UserEvaluation GetEvaluation(IList<WellPoint> trajectory)
+        {
+            //convert to avoid erroers
+            var userData = UserData;
+            
+            var values = new List<double>(userData.realizations.Count);
+            var inds = new List<int>(userData.realizations.Count);
+            var ind = 0;
+            foreach (var realization in userData.realizations)
+            {
+                values.Add(Evaluator(realization));
+                inds.Add(ind);
+                ind++;
+            }
+            inds.Sort((a, b) => Math.Sign(values[b] - values[a]));
+            var result = new UserEvaluation()
+            {
+                RealizationScores = values,
+                SortedIndexes = inds
+            };
+            return result;
         }
 
         public WellPoint GetNextStateDefault2()

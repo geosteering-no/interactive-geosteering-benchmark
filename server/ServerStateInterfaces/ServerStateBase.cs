@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
+using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public class ServerStateBase<TWellPoint, TUserDataModel, TUserModel, TSecretState> : 
-        IFullServerState<TWellPoint, TUserDataModel>
-        where TUserModel : IUserImplementaion<TUserDataModel, TWellPoint, TSecretState>, new()
+    public class ServerStateBase<TWellPoint, TUserDataModel, TUserModel, TSecretState, TUserResult> : 
+        IFullServerState<
+            TWellPoint, TUserDataModel, TUserResult, PopulationScoreData>
+        where TUserModel : IUserImplementaion<
+            TUserDataModel, TWellPoint, TSecretState, TUserResult>, new()
        
     {
         private ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
@@ -106,6 +109,18 @@ namespace ServerStateInterfaces
         public TUserDataModel GetOrAddUserState(string userId)
         {
             return GetOrAddUser(userId).UserData;
+        }
+
+        public TUserResult GetUserEvaluationData(string userId, IList<TWellPoint> trajectory)
+        {
+            var user = GetOrAddUser(userId);
+            var result = user.GetEvaluation(trajectory);
+            return result;
+        }
+
+        public PopulationScoreData GetScoreboard()
+        {
+            throw new NotImplementedException();
         }
     }
 }

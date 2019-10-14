@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ServerDataStructures
 {
-    class MultiRealizationEvaluationResults
+    public class UserEvaluation
     {
         /// <summary>
         /// Scores for original indexes

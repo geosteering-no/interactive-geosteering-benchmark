@@ -4,10 +4,11 @@ using System.Text;
 
 namespace ServerStateInterfaces
 {
-    public interface IUserImplementaion<TUserData, TWellPoint, TSecretState>
+    public interface IUserImplementaion<TUserData, TWellPoint, TSecretState, TEvaluationResult>
     {
         TUserData UserData { get; }
         bool UpdateUser(TWellPoint updatePoint, TSecretState secret);
         TWellPoint GetNextStateDefault();
+        TEvaluationResult GetEvaluation(IList<TWellPoint> trajectory);
     }
 }

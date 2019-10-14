@@ -2,9 +2,9 @@
 
 namespace ServerDataStructures
 {
-    public class PopulationData
+    public class PopulationScoreData
     {
         public RealizationData SecretRealization { get; set; }
-        public IList<UserResult> UserResults { get; set; }
+        public IList<UserResultFinal> UserResults { get; set; }
     }
 }

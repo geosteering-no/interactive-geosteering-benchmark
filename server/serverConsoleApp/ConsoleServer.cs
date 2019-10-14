@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Json;
+using ServerDataStructures;
 using ServerStateInterfaces;
 using TrajectoryInterfaces;
 using UserState;
@@ -11,7 +12,7 @@ namespace serverConsoleApp
     class ConsoleServer
     {
         private const string Value = "Command not recognised";
-        static IFullServerState<IContinousState, UserData> serverState = new FullServerState();
+        static IFullServerState<IContinousState, UserData, UserEvaluation, PopulationScoreData> serverState = new FullServerState();
 
         static void Main(string[] args)
         {
