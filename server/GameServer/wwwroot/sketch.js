@@ -62,7 +62,7 @@ function setup() {
               console.log("got userdata:" + JSON.stringify(json));
               userdata = json;
               drawGeomodelToBuffer();
-              redraw();
+              redrawEnabledForAninterval();
             });
 
         });
@@ -138,14 +138,18 @@ function setSizesAndPositions() {
 
 }
 
+function redrawEnabledForAninterval(){
+  loop();
+  timerCountdown = 30;
+}
+
 function angleChange() {
   if (editNextAngleNo < nextAngles.length) {
     nextAngles[editNextAngleNo] = angleSlider.value();
   }
   //console.log(angleSlider.value());
-  //redraw();
-  loop();
-  timerCountdown = 1*60;
+  redrawEnabledForAninterval();
+
 }
 
 function previous() {
@@ -153,7 +157,7 @@ function previous() {
     editNextAngleNo--;
   }
   angleSlider.value(nextAngles[editNextAngleNo]);
-  redraw();
+  redrawEnabledForAninterval();
 }
 
 function next() {
@@ -161,7 +165,7 @@ function next() {
     editNextAngleNo++;
   }
   angleSlider.value(nextAngles[editNextAngleNo]);
-  redraw();
+  redrawEnabledForAninterval();
 }
 
 function buttonSubmitPressed() {
@@ -170,7 +174,7 @@ function buttonSubmitPressed() {
 
 function windowResized() {
   setSizesAndPositions();
-  redraw();
+  redrawEnabledForAninterval();
 }
 
 function scaleBufferForView(b) {
