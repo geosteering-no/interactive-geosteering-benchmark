@@ -31,17 +31,9 @@ var wellBuffer;
 var realizationObj;
 
 function setup() {
-
-
-
   createCanvas(100, 100);
-
-
-
-
   prevButton = createButton("<- Previous");
   prevButton.mousePressed(previous);
-
 
   nextButton = createButton("Next ->");
   nextButton.mousePressed(next);
@@ -69,6 +61,7 @@ function setup() {
               console.log("got userdata:" + JSON.stringify(json));
               userdata = json;
               drawBuffer();
+              redraw();
             });
 
         });
@@ -117,7 +110,8 @@ function setup() {
 
   //console.log("userdata = " + JSON.stringify(userdata));
 
-  //drawBuffer();
+  drawBuffer();
+  noLoop();
 }
 
 function setSizesAndPositions() {
@@ -147,7 +141,8 @@ function angleChange() {
   if (editNextAngleNo < nextAngles.length) {
     nextAngles[editNextAngleNo] = angleSlider.value();
   }
-  console.log(angleSlider.value());
+  //console.log(angleSlider.value());
+  redraw();
 }
 
 function previous() {
@@ -258,7 +253,6 @@ function drawCircle(buffer, x, y, radius, npoints) {
   }
   buffer.endShape(CLOSE);
 
-
 }
 
 function drawFrame() {
@@ -279,18 +273,6 @@ function draw() {
 
   //for debugging
   drawFrame();
-
-  //TODO remove was for testing
-  if (random(1000) < 1) {
-    fetch("/geo/checkUser?userName=morten", { credentials: 'include' })
-      .then(function (res) {
-        console.log("user checked");
-        res.json()
-          .then(function (json) {
-            console.log("got userdata:" + JSON.stringify(json));
-          });
-      });
-  }
 
 }
 
