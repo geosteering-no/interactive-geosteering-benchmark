@@ -145,17 +145,31 @@ function redrawEnabledForAninterval() {
   timerCountdown = 30;
 }
 
+function allowedAngle(prev, dA) {
+  //var newDA = Math.max(-dA, -maxAngleChange);
+  //newDA = Math.max(-dA, -maxAngleChange);
+  dA = Math.max(dA, -maxAngleChange);
+  dA = Math.min(dA, maxAngleChange);
+  return Math.max(prev + dA, 0);
+}
+
+function prevAngle(editNextAngleNo) {
+  if (editNextAngleNo > 0) {
+    return nextAngles[editNextAngleNo - 1];
+  } else {
+    if (userdata != null) {
+      return userdata.wellPoints[userdata.wellPoints.length - 1].angle;
+    }
+  }
+  return 0;
+}
+
 function angleChange() {
   if (editNextAngleNo < nextAngles.length) {
-    if (editNextAngleNo > 0) {
-      nextAngles[editNextAngleNo] =
-        nextAngles[editNextAngleNo - 1] + angleSlider.value();
-    } else {
-      if (userdata != null) {
-        nextAngles[editNextAngleNo] =
-          userdata.wellPoints[userdata.wellPoints.length - 1].angle
-          + angleSlider.value();
-      }
+    var prev = prevAngle(editNextAngleNo);
+    nextAngles[editNextAngleNo] = allowedAngle(prev, -angleSlider.value());
+    for (var i = editNextAngleNo + 1; i < nextAngles.length; ++i) {
+      nextAngles[i] = allowedAngle(nextAngles[i - 1], nextAngles[i] - nextAngles[i - 1])
     }
   }
   //console.log(angleSlider.value());
@@ -167,7 +181,7 @@ function previous() {
   if (editNextAngleNo > 0) {
     editNextAngleNo--;
   }
-  angleSlider.value(nextAngles[editNextAngleNo]);
+  angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
   redrawEnabledForAninterval();
 }
 
@@ -175,7 +189,7 @@ function next() {
   if (editNextAngleNo < nextAngles.length - 1) {
     editNextAngleNo++;
   }
-  angleSlider.value(nextAngles[editNextAngleNo]);
+  angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
   redrawEnabledForAninterval();
 }
 
@@ -197,7 +211,7 @@ function drawLayerToBuffer() {
 
 }
 
-function drawGeomodelToBuffer() {
+function drawGeomodelToBuffer(specificIndices = null) {
   var t0 = performance.now();
   geoModelBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
   wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
@@ -212,41 +226,44 @@ function drawGeomodelToBuffer() {
   }
 
   geoModelBuffer.background(0, 0, 0);
-  //geoModelBuffer.blendMode(BLEND);
+  geoModelBuffer.blendMode(ADD);
   geoModelBuffer.strokeWeight(1);
 
 
   if (userdata != null) {
-  //if (false){
+    //if (false){
     scaleBufferForView(geoModelBuffer);
     console.log("drawing userdat");
     var reals = userdata.realizations;
-    //var alpha = 2.55 / reals.length;
+    var alpha = 1.0 / reals.length;
     //TODO this formula needs improvement
-    var alpha = 2*(1.0 - Math.pow(0.5, 2 / reals.length));
+    //var alpha = 2 * (1.0 - Math.pow(0.5, 2 / reals.length));
     geoModelBuffer.noStroke();
     //geoModelBuffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
     geoModelBuffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
     var xlist = userdata.xList;
-    for (var reali = 0; reali < reals.length; reali++) {
-      var polyCount = reals[reali].yLists.length / 2;
-      for (var polygoni = 0; polygoni < polyCount; polygoni++) {
-        //console.log("poly:" + polygoni);
-        var polytop = reals[reali].yLists[polygoni * 2];
-        var polybottom = reals[reali].yLists[polygoni * 2 + 1];
-        //TODO do shape intersection
-        geoModelBuffer.beginShape();
-        for (var vertexi = 0; vertexi < polytop.length; vertexi++) {
-          var y = polytop[vertexi];
-          geoModelBuffer.vertex(xlist[vertexi], y);
-        }
+    if (specificIndices == null) {
+      for (var reali = 0; reali < reals.length; reali++) {
+        var polyCount = reals[reali].yLists.length / 2;
+        for (var polygoni = 0; polygoni < polyCount; polygoni++) {
+          //console.log("poly:" + polygoni);
+          var polytop = reals[reali].yLists[polygoni * 2];
+          var polybottom = reals[reali].yLists[polygoni * 2 + 1];
+          //TODO do shape intersection
+          geoModelBuffer.beginShape();
+          for (var vertexi = 0; vertexi < polytop.length; vertexi++) {
+            var y = polytop[vertexi];
+            geoModelBuffer.vertex(xlist[vertexi], y);
+          }
 
-        for (var vertexi = polybottom.length - 1; vertexi >= 0; vertexi--) {
-          var y = polybottom[vertexi];
-          geoModelBuffer.vertex(xlist[vertexi], y);
+          for (var vertexi = polybottom.length - 1; vertexi >= 0; vertexi--) {
+            var y = polybottom[vertexi];
+            geoModelBuffer.vertex(xlist[vertexi], y);
+          }
+          geoModelBuffer.endShape(CLOSE);
         }
-        geoModelBuffer.endShape(CLOSE);
       }
+
       // var layerBuffer = createGraphics(geoModelBuffer.width, geoModelBuffer.height);
       // scaleBufferForView(layerBuffer);
       // layerBuffer.stroke('rgb(100%, 100%, 100%)');
@@ -274,15 +291,16 @@ function drawGeomodelToBuffer() {
       // geoModelBuffer.image(layerBuffer, 0, 0, layerBuffer.width, layerBuffer.heigth);
 
     }
-    tint(255, 255);
+    //tint(255, 255);
   } else {
     console.log("drawing triangles");
     // draw triangles for debug
     //TODO check colors again
     var points = 3;
-    var shapes = 20;
+    var shapes = 256;
     //var fixColor = 0.8;
-    var alpha = 1.0 - Math.pow(0.5, 2 / shapes);
+    var alpha = 1 / (shapes);
+    //var alpha = 1.0 - Math.pow(0.5, 2 / shapes);
     //var alpha = 2.71/shapes;
     geoModelBuffer.noStroke();
     //geoModelBuffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
