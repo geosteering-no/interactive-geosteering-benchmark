@@ -20,13 +20,14 @@ var editNextAngleNo = 0;
 var oneMarginInScript = 16;
 var updateTimerEnabled = false;
 var updateTimerLeft = 0;
+var timerCountdown = 0;
 
 
 var prevButton;
 var nextButton;
 var angleSlider;
 
-var buffer;
+var geoModelBuffer;
 var wellBuffer;
 var realizationObj;
 
@@ -60,7 +61,7 @@ function setup() {
             .then(function (json) {
               console.log("got userdata:" + JSON.stringify(json));
               userdata = json;
-              drawBuffer();
+              drawGeomodelToBuffer();
               redraw();
             });
 
@@ -110,7 +111,7 @@ function setup() {
 
   //console.log("userdata = " + JSON.stringify(userdata));
 
-  drawBuffer();
+  drawGeomodelToBuffer();
   noLoop();
 }
 
@@ -123,15 +124,15 @@ function setSizesAndPositions() {
 
   resizeCanvas(canvasWidth, canvasHeigth);
 
-  drawBuffer();
+  drawGeomodelToBuffer();
 
   prevButton.size(canvasWidth / 2 - 15, 100);
-  prevButton.position(10, buffer.height + 5);
+  prevButton.position(10, geoModelBuffer.height + 5);
 
-  nextButton.position(canvasWidth / 2 + 5, buffer.height + 5);
+  nextButton.position(canvasWidth / 2 + 5, geoModelBuffer.height + 5);
   nextButton.size(canvasWidth / 2 - 15, 100);
 
-  angleSlider.position(80, buffer.height + prevButton.height + 10);
+  angleSlider.position(80, geoModelBuffer.height + prevButton.height + 10);
   angleSlider.size(canvasWidth - 80 * 2, 50);
 
 
@@ -142,7 +143,9 @@ function angleChange() {
     nextAngles[editNextAngleNo] = angleSlider.value();
   }
   //console.log(angleSlider.value());
-  redraw();
+  //redraw();
+  loop();
+  timerCountdown = 1*60;
 }
 
 function previous() {
@@ -175,8 +178,9 @@ function scaleBufferForView(b) {
   b.translate(-userdata.xtopleft, -userdata.ytopleft);
 }
 
-function drawBuffer() {
-  buffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
+function drawGeomodelToBuffer() {
+  var t0 = performance.now();
+  geoModelBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
   wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
 
 
@@ -187,9 +191,9 @@ function drawBuffer() {
     console.log("scaled");
   }
 
-  buffer.background(0, 0, 0);
-  buffer.blendMode(BLEND);
-  buffer.strokeWeight(1);
+  geoModelBuffer.background(0, 0, 0);
+  geoModelBuffer.blendMode(BLEND);
+  geoModelBuffer.strokeWeight(1);
 
 
   if (userdata != null) {
@@ -197,7 +201,7 @@ function drawBuffer() {
     var reals = userdata.realizations;
     var alpha = 255.0 / reals.length;
     for (var reali = 0; reali < reals.length; reali++) {
-      var layerBuffer = createGraphics(buffer.width, buffer.height);
+      var layerBuffer = createGraphics(geoModelBuffer.width, geoModelBuffer.height);
       scaleBufferForView(layerBuffer);
       layerBuffer.stroke('rgb(100%, 100%, 100%)');
       layerBuffer.fill('rgb(100%, 100%, 100%)');
@@ -221,8 +225,8 @@ function drawBuffer() {
         }
         layerBuffer.endShape(CLOSE);
       }
-      buffer.tint(255, alpha);
-      buffer.image(layerBuffer, 0, 0, layerBuffer.width, layerBuffer.heigth);
+      geoModelBuffer.tint(255, alpha);
+      geoModelBuffer.image(layerBuffer, 0, 0, layerBuffer.width, layerBuffer.heigth);
 
     }
     tint(255, 255);
@@ -232,17 +236,19 @@ function drawBuffer() {
     var points = 3;
     var shapes = 10;
     var alpha = 2.55 / shapes;
-    buffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
-    buffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
+    geoModelBuffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
+    geoModelBuffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
 
     var rotate = TWO_PI / points / shapes;
-    buffer.translate(buffer.width / 2, buffer.height / 2)
+    geoModelBuffer.translate(geoModelBuffer.width / 2, geoModelBuffer.height / 2)
 
     for (var i = 0; i < shapes; i++) {
-      buffer.rotate(rotate);
-      drawCircle(buffer, 0, 0, buffer.height / 2, points);
+      geoModelBuffer.rotate(rotate);
+      drawCircle(geoModelBuffer, 0, 0, geoModelBuffer.height / 2, points);
     }
   }
+  var t1 = performance.now();
+  console.log("draw geomodel to buffer " + (t1 - t0) + " milliseconds.");
 }
 
 function drawCircle(buffer, x, y, radius, npoints) {
@@ -268,25 +274,30 @@ function drawFrame() {
 
 function draw() {
   clear();
-  image(buffer, 0, 0, buffer.width, buffer.heigth);
+  image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
 
-  drawWell();
+  drawWellToBuffer();
 
   image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.heigth);
 
   //for debugging
   drawFrame();
 
+  timerCountdown--;
+  if (timerCountdown <= 0) {
+    noLoop();
+  }
 }
 
-function drawWell() {
-  if (userdata == null) return;
+function drawWellToBuffer() {
 
+  if (userdata == null) return;
+  //var t0 = performance.now();
   wellBuffer.clear();
 
   wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
   wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
-  wellBuffer.strokeWeight(1.5/userdata.height);
+  wellBuffer.strokeWeight(1.5 / userdata.height);
   var committedPoints = userdata.wellPoints;
   for (var i = 0; i < committedPoints.length; i++) {
     var point = committedPoints[i];
@@ -322,18 +333,33 @@ function drawWell() {
     //   x2,
     //   y2);
 
+
+    x = x2;
+    y = y2;
+  }
+  x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
+  y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
+  for (var i = 0; i < nextAngles.length; i++) {
+    var angle = nextAngles[i];
+    var x2 = x + xTravelDistance;
+    var y2 = y + tan(angle) * xTravelDistance;
+    x = x2;
+    y = y2;
+    wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
+    wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
     if (editNextAngleNo === i) {
       wellBuffer.stroke('rgba(100%, 100%, 0%, 1.0)');
       wellBuffer.fill('rgba(100%, 100%, 0%, 1.0)');
     }
     //TODO fix the scaling here
-    wellBuffer.ellipse(x, y, 
-      .01*wellBuffer.width/userdata.width, 
-      .01*wellBuffer.height/userdata.height);
-    x = x2;
-    y = y2;
+    wellBuffer.ellipse(x, y,
+      .01 * wellBuffer.width / userdata.width,
+      .01 * wellBuffer.height / userdata.height);
   }
 
+
+  //var t1 = performance.now();
+  //console.log("draw well to buffer " + (t1 - t0) + " milliseconds.");
 }
 
 function dashedLine(x1, y1, x2, y2, l, g) {
@@ -384,6 +410,7 @@ function dashedLine(x1, y1, x2, y2, l, g) {
     wellBuffer.line(xx1, yy1, xx2, yy2);
     currentPos = currentPos + lPercent + gPercent;
   }
+
 }
 
 function drawRealization(gr, realizationObj, userdat) {

@@ -36,8 +36,8 @@ namespace ServerStateInterfaces
             }
 
             userData.xList = xs;
-
-            List<RealizationData> rs = Enumerable.Range(0, 100).Select(i =>
+            //TODO add more realizations
+            List<RealizationData> rs = Enumerable.Range(0, 10).Select(i =>
             {
                 var realization = new RealizationData();
 
