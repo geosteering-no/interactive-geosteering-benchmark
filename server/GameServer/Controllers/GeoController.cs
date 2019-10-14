@@ -41,7 +41,8 @@ namespace GameServer.Controllers
                     throw new Exception("User with this name exists");
                 }
                 WriteUserId(userName);
-                return GetUserState();
+
+                return _state.GetOrAddUserState(userName);             
             }
             //if we are a returning user
             if (userIdStored == userName)
