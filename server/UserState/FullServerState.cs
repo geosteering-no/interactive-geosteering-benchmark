@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ServerDataStructures;
 using ServerStateInterfaces;
 using TrajectoryInterfaces;
 using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;

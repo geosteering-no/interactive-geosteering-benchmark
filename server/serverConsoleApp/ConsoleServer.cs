@@ -4,7 +4,7 @@ using System.Runtime.Serialization.Json;
 using ServerStateInterfaces;
 using TrajectoryInterfaces;
 using UserState;
-using UserData = ServerStateInterfaces.UserData;
+using UserData = ServerDataStructures.UserData;
 
 namespace serverConsoleApp
 {

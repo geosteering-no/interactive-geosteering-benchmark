@@ -169,7 +169,8 @@ namespace UserState
         private RealizationData convertToRealizationData(IEarthModelRealization realization)
         {
             var realizationData = new RealizationData();
-            
+
+            realizationData.XList = realization.GetXs();
             realizationData.YLists = realization.GetBoundaryLists();
             return realizationData;
             //realizationData.YLists.Add();

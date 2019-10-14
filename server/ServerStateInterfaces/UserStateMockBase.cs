@@ -39,7 +39,10 @@ namespace ServerStateInterfaces
             //TODO add more realizations
             List<RealizationData> rs = Enumerable.Range(0, 100).Select(i =>
             {
-                var realization = new RealizationData();
+                var realization = new RealizationData()
+                {
+                    XList = xs
+                };
 
                 var y1 = new List<double>();
                 var y2 = new List<double>();

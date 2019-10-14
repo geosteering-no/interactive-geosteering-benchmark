@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
-using ServerDataStructures;
 
-namespace ServerStateInterfaces {
+namespace ServerDataStructures {
     public class UserData  {
 
         public double Xtopleft { get; set; }
