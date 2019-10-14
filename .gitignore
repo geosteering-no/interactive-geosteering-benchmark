@@ -548,3 +548,4 @@ MigrationBackup/
 
 # End of https://www.gitignore.io/api/csharp,clojure,dotnetcore,visualstudio,visualstudiocode
 server/ServerObjectivesBridge/
+server/GameServer/

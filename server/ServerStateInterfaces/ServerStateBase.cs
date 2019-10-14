@@ -24,7 +24,7 @@ namespace ServerStateInterfaces
                 return false;
             }
 
-            var user = GetUser(userId);
+            var user = GetOrAddUser(userId);
             DumpUserStateToFile(userId, user.UserData);
             return res;
         }
@@ -60,7 +60,7 @@ namespace ServerStateInterfaces
             //_syntheticTruth = new TrueModelState(seed);
         }
 
-        protected TUserModel GetUser(string userId)
+        protected TUserModel GetOrAddUser(string userId)
         {
             //TODO check if default works
             return _users.GetOrAdd(userId, new TUserModel());
@@ -92,7 +92,7 @@ namespace ServerStateInterfaces
                 return false;
             }
 
-            var user = GetUser(userId);
+            var user = GetOrAddUser(userId);
             var res = user.UpdateUser(load, _secret);
             DumpUserStateToFile(userId, user.UserData);
             return res;
@@ -103,9 +103,9 @@ namespace ServerStateInterfaces
             return _users.ContainsKey(userId);
         }
 
-        public TUserDataModel GetUserState(string userId)
+        public TUserDataModel GetOrAddUserState(string userId)
         {
-            return GetUser(userId).UserData;
+            return GetOrAddUser(userId).UserData;
         }
     }
 }

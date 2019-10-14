@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using ServerStateInterfaces;
-using Newtonsoft.Json;
 using ServerDataStructures;
+using ServerStateInterfaces;
+using System;
 
 namespace GameServer.Controllers
 {
@@ -15,6 +11,7 @@ namespace GameServer.Controllers
     [Route("[controller]")]
     public class GeoController : ControllerBase
     {
+        private const string UserId_ID = "geobanana-user-id";
         private readonly ILogger<GeoController> _logger;
         private readonly IFullServerState<WellPoint, UserData> _state;
 
@@ -34,30 +31,50 @@ namespace GameServer.Controllers
         }
 
         [Route("init")]
-        public UserData InitUser(string userName)
+        public UserData InitNewUser(string userName)
         {
-            var sessionId = userName;
-            var result = _state.AddUser(sessionId);
-            if (!result)
+            var userIdStored = GetUserId();
+            if (userIdStored == null)
             {
-                //throw new Exception("Username already taken");
+                if (_state.UserExists(userName))
+                {
+                    throw new Exception("User with this name exists");
+                }
+                WriteUserId(userName);
+                return GetUserState();
             }
-            WriteSessionId(sessionId);
-            var userState = _state.GetUserState(sessionId);
+            //if we are a returning user
+            if (userIdStored == userName)
+            {
+                return GetUserState();
+            }
 
-            return userState;
+            throw new Exception("Mismatch between expected and provided user name");
+
         }
 
-
-        private void WriteSessionId(string sessionId)
+        [Route("checkUser")]
+        public bool CheckUser(string userName)
         {
-            HttpContext.Session.SetString("sessionId", sessionId);
+            var userId = GetUserId();
+            return userId == userName;
+        }
+
+        private void WriteUserId(string userId)
+        {
+            CookieOptions option = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(1),
+                IsEssential = true
+            };
+            
+            Response.Cookies.Append(UserId_ID, userId, option);
         }
 
         [Route("commit")]
         public void Commit(WellPoint pt)
         {
-            var sessionId = GetSessionId();
+            var sessionId = GetUserId();
             var res = _state.UpdateUser(sessionId, pt);
             if (!res)
             {
@@ -65,25 +82,19 @@ namespace GameServer.Controllers
             }
         }
 
-        private string GetSessionId()
+        private string GetUserId()
         {
-            var sessionString = HttpContext.Session.GetString("sessionId");
-            if (sessionString != null)
-            {
-                return sessionString;
-            }
-            else
-            {
-                throw new Exception("bad user! you need to init!");
-            }
+            //var userId = HttpContext.Session.GetString("userId");
+            var userId = HttpContext.Request.Cookies[UserId_ID];
+            return userId;
         }
 
         //TODO remove
         [Route("userdata")]
         public UserData GetUserState()
         {
-            var sessionId = GetSessionId();
-            return _state.GetUserState(sessionId);
+            var userId = GetUserId();
+            return _state.GetOrAddUserState(userId);
         }
     }
 
