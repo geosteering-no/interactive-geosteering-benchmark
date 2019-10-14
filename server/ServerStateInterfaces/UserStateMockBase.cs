@@ -37,7 +37,7 @@ namespace ServerStateInterfaces
 
             userData.xList = xs;
             //TODO add more realizations
-            List<RealizationData> rs = Enumerable.Range(0, 10).Select(i =>
+            List<RealizationData> rs = Enumerable.Range(0, 30).Select(i =>
             {
                 var realization = new RealizationData();
 
@@ -46,8 +46,8 @@ namespace ServerStateInterfaces
 
                 for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width/DISCRETIZATION_POINTS)
                 {
-                    y1.Add(userData.Ytopleft + userData.Height * 0.3 - (r.NextDouble()*userData.Height/2.0) / 10);
-                    y2.Add(userData.Ytopleft + userData.Height * 0.3 + (r.NextDouble()*userData.Height/2.0) / 10);
+                    y1.Add(userData.Ytopleft + userData.Height * 0.2 - (r.NextDouble()*userData.Height/2.0) / 2);
+                    y2.Add(userData.Ytopleft + userData.Height * 0.5 + (r.NextDouble()*userData.Height/2.0) / 2);
                 }
 
                 realization.YLists.Add(y1);
