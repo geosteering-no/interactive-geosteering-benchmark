@@ -4,7 +4,42 @@ var oneMarginInScript = 16;
 
 var geoModelBuffer;
 var wellBuffer;
+var barBuffer;
+var realizationScores;
 
+function drawBarCharts() {
+    barBuffer.clear();
+    barBuffer.background(0,0,0);
+
+    barBuffer.fill(255,0,0);
+    var max = Math.max.apply(null, realizationScores);
+    //barBuffer.scale(barBuffer.height/max, 1.0/barBuffer.width);
+    var sorted = realizationScores
+        .slice()
+        .map(function(val, i) { return [val, i];})
+        .sort(function(a, b) {return a[0] - b[0]});
+
+    var start = 0;
+    var end = 10;
+    for (var i = 0; i< 10; i++) {
+        console.log("start: " + start);
+        console.log("end: " + end);
+        var current = sorted.slice(start, end);
+        var score = current.reduce(function(acc, val) {return acc + val[0];}, 0) / 10;
+        console.log("score: " + score);
+        barBuffer.fill(20,50,80);
+        barBuffer.strokeWeight(1);
+        barBuffer.stroke(255, 255, 255);
+        barBuffer.rect(
+            i/10 * barBuffer.width, 
+            (max - score)/max*barBuffer.height, 
+            (i+1)/10 * barBuffer.width,
+             barBuffer.height );
+        start = end;
+        end = start + 10;
+    }
+    console.log("done");
+}
 
 function drawUserWell(wellBuffer, committedPoints) {
     for (var i = 0; i < committedPoints.length; i++) {
@@ -33,10 +68,23 @@ function drawFrame() {
     rect(0, 0, width, height);
 }
 
+function calculateScores() {
+    var scores = [];
+    if (userdata != null) {
+        for (var i = 0; i < userdata.realizations.length; i++) {
+            var score = random(0, 100);
+            scores.push(score);
+        }
+    }
+    realizationScores = scores;
+    drawBarCharts();
+}
+
 function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
     var t0 = performance.now();
     geoModelBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
     wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
+    barBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 2);
 
 
 
@@ -55,17 +103,24 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
         scaleBufferForView(geoModelBuffer);
         console.log("drawing userdat");
         var reals = userdata.realizations;
-        var alpha = 1.0 / reals.length;
+        var realcount = reals.length;
+        if (specificIndices != null) realcount = specificIndices.length;
+        var alpha = 1.0 / realcount;
         //TODO this formula needs improvement
         //var alpha = 2 * (1.0 - Math.pow(0.5, 2 / reals.length));
         geoModelBuffer.noStroke();
-        //geoModelBuffer.stroke('rgba(100%, 100%, 100%, ' + alpha + ')');
         geoModelBuffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
         var xlist = userdata.xList;
         if (specificIndices == null) {
             for (var reali = 0; reali < reals.length; reali++) {
                 drawRealizationToBuffer(geoModelBuffer,xlist, reals[reali]);
             }
+        } else {
+            for (var reali in specificIndices) {
+                drawRealizationToBuffer(geoModelBuffer,xlist, reals[reali]);
+            }
+        }
+        calculateScores();
 
             // var layerBuffer = createGraphics(geoModelBuffer.width, geoModelBuffer.height);
             // scaleBufferForView(layerBuffer);
@@ -93,7 +148,7 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
             // geoModelBuffer.tint(255, alpha);
             // geoModelBuffer.image(layerBuffer, 0, 0, layerBuffer.width, layerBuffer.heigth);
 
-        }
+        
         //tint(255, 255);
     } else {
         console.log("drawing triangles");

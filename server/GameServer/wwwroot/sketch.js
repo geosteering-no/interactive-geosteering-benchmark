@@ -54,6 +54,7 @@ function setup() {
         .then(function (json) {
           console.log("got userdata:" + JSON.stringify(json));
           userdata = json;
+          calculateScores();
           drawGeomodelToBuffer(userdata);
           redrawEnabledForAninterval();
         });
@@ -208,6 +209,14 @@ function draw() {
   drawWellToBuffer();
 
   image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.heigth);
+  
+  if (barBuffer != null) {
+    console.log("draw bars");
+    image(barBuffer, 0, wellBuffer.height + 170, barBuffer.width, barBuffer.height);
+    //image(barBuffer, 0, 10, 100, 100);
+  }
+
+
 
   //for debugging
   drawFrame();
