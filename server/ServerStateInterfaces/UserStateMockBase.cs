@@ -8,6 +8,11 @@ namespace ServerStateInterfaces
     public class UserStateMockBase<TSecret> : IUserImplementaion<UserData, WellPoint, TSecret>
     {
         private readonly UserData _userData;
+        const int DISCRETIZATION_POINTS = 10;
+        const double X_TOP_LEFT = 10.0;
+        const double Y_TOP_LEFT = 10.0;
+        private const double X_WIDTH = 100;
+
 
         //TODO implemnt adding points
 
@@ -16,16 +21,16 @@ namespace ServerStateInterfaces
             Random r = new Random();
             var userData = new UserData()
             {
-                Width = 100.0,
+                Width = X_WIDTH,
+                Xdist = X_WIDTH / 10.0,
                 Height = 10.0,
                 wellPoints = new List<WellPoint>() { GetNextStateDefault()},
-                Xtopleft = 10.0,
-                Ytopleft = 10.0,
-
+                Xtopleft = X_TOP_LEFT,
+                Ytopleft = Y_TOP_LEFT,
             };
             var xs = new List<double>();
 
-            for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width/10.0)
+            for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width/DISCRETIZATION_POINTS)
             {
                 xs.Add(x);
             }
@@ -39,7 +44,7 @@ namespace ServerStateInterfaces
                 var y1 = new List<double>();
                 var y2 = new List<double>();
 
-                for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width/10.0)
+                for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width/DISCRETIZATION_POINTS)
                 {
                     y1.Add(userData.Ytopleft + userData.Height * 0.3 - (r.NextDouble()*userData.Height/2.0) / 10);
                     y2.Add(userData.Ytopleft + userData.Height * 0.3 + (r.NextDouble()*userData.Height/2.0) / 10);
@@ -75,8 +80,8 @@ namespace ServerStateInterfaces
             //TODO consider a better implementation, but this is not needed functionality once client is good
             var point = new WellPoint()
             {
-                X = 0.0,
-                Y = 0.0,
+                X = X_TOP_LEFT,
+                Y = Y_TOP_LEFT,
                 Angle = 1.0,
             };
             return point;

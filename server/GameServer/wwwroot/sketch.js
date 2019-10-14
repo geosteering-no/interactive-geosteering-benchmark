@@ -1,7 +1,7 @@
 var canvasWidth;
 var canvasHeigth;
 var userdata = null;
-var xTravelDistance = 50;
+//var xTravelDistance = 50;
 var maxAngleChange = 3.14 / 180.0 * 2;
 var minAngle = 0;
 var maxAngle = 1.4;
@@ -150,6 +150,7 @@ function previous() {
     editNextAngleNo--;
   }
   angleSlider.value(nextAngles[editNextAngleNo]);
+  redraw();
 }
 
 function next() {
@@ -157,6 +158,7 @@ function next() {
     editNextAngleNo++;
   }
   angleSlider.value(nextAngles[editNextAngleNo]);
+  redraw();
 }
 
 function buttonSubmitPressed() {
@@ -165,6 +167,7 @@ function buttonSubmitPressed() {
 
 function windowResized() {
   setSizesAndPositions();
+  redraw();
 }
 
 function scaleBufferForView(b) {
@@ -283,7 +286,7 @@ function drawWell() {
 
   wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
   wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
-  wellBuffer.strokeWeight(1.5);
+  wellBuffer.strokeWeight(1.5/userdata.height);
   var committedPoints = userdata.wellPoints;
   for (var i = 0; i < committedPoints.length; i++) {
     var point = committedPoints[i];
@@ -299,7 +302,7 @@ function drawWell() {
 
   var x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
   var y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
-
+  var xTravelDistance = userdata.xdist;
 
   for (var i = 0; i < nextAngles.length; i++) {
     wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
@@ -323,7 +326,10 @@ function drawWell() {
       wellBuffer.stroke('rgba(100%, 100%, 0%, 1.0)');
       wellBuffer.fill('rgba(100%, 100%, 0%, 1.0)');
     }
-    wellBuffer.circle(x, y, 10);
+    //TODO fix the scaling here
+    wellBuffer.ellipse(x, y, 
+      .01*wellBuffer.width/userdata.width, 
+      .01*wellBuffer.height/userdata.height);
     x = x2;
     y = y2;
   }
