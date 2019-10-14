@@ -9,13 +9,13 @@ var beginAngle = 3.14 / 180 * 10;
 var nextAngles = [
   beginAngle,
   beginAngle - maxAngleChange,
-  beginAngle - maxAngleChange * 2,
-  beginAngle - maxAngleChange * 3,
-  beginAngle - maxAngleChange * 4,
-  beginAngle - maxAngleChange * 5,
-  beginAngle - maxAngleChange * 6,
-  beginAngle - maxAngleChange * 7,
-  beginAngle - maxAngleChange * 8];
+  beginAngle - maxAngleChange * 1.2,
+  beginAngle - maxAngleChange * 1.3,
+  beginAngle - maxAngleChange * 1.4,
+  beginAngle - maxAngleChange * 1.5,
+  beginAngle - maxAngleChange * 1.6,
+  beginAngle - maxAngleChange * 1.7,
+  beginAngle - maxAngleChange * 1.8];
 var editNextAngleNo = 0;
 var oneMarginInScript = 16;
 var updateTimerEnabled = false;
@@ -39,8 +39,10 @@ function setup() {
   nextButton = createButton("Next ->");
   nextButton.mousePressed(next);
 
-  angleSlider = createSlider(minAngle, maxAngle, 0, 0);
+  angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
   angleSlider.input(angleChange);
+  angleSlider.style('width', '280px');
+  angleSlider.style('height', '180px');
 
   setSizesAndPositions();
 
@@ -138,14 +140,23 @@ function setSizesAndPositions() {
 
 }
 
-function redrawEnabledForAninterval(){
+function redrawEnabledForAninterval() {
   loop();
   timerCountdown = 30;
 }
 
 function angleChange() {
   if (editNextAngleNo < nextAngles.length) {
-    nextAngles[editNextAngleNo] = angleSlider.value();
+    if (editNextAngleNo > 0) {
+      nextAngles[editNextAngleNo] =
+        nextAngles[editNextAngleNo - 1] + angleSlider.value();
+    } else {
+      if (userdata != null) {
+        nextAngles[editNextAngleNo] =
+          userdata.wellPoints[userdata.wellPoints.length - 1].angle
+          + angleSlider.value();
+      }
+    }
   }
   //console.log(angleSlider.value());
   redrawEnabledForAninterval();
@@ -315,13 +326,14 @@ function drawWellToBuffer() {
     //circlecircle()
   }
 
+  //main trajectory
   var x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
   var y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
   var xTravelDistance = userdata.xdist;
 
+  wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
+  wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
   for (var i = 0; i < nextAngles.length; i++) {
-    wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
-    wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
     var y2 = y + tan(angle) * xTravelDistance;
@@ -330,17 +342,68 @@ function drawWellToBuffer() {
       y,
       x2,
       y2);
-
     // wellBuffer.line(
     //   x,
     //   y,
     //   x2,
     //   y2);
-
-
     x = x2;
     y = y2;
   }
+  //possible trajectory up
+  if (nextAngles.length > 0) {
+    x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
+    y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
+    var myAngle = nextAngles[0];
+    x = x + xTravelDistance;
+    y = y + tan(myAngle) * xTravelDistance;
+    wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
+    wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
+    for (var i = 1; i < nextAngles.length; i++) {
+      myAngle = myAngle + maxAngleChange;
+      var x2 = x + xTravelDistance;
+      var y2 = y + tan(myAngle) * xTravelDistance;
+      wellBuffer.line(
+        x,
+        y,
+        x2,
+        y2);
+      // wellBuffer.line(
+      //   x,
+      //   y,
+      //   x2,
+      //   y2);
+      x = x2;
+      y = y2;
+    }
+    x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
+    y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
+    myAngle = nextAngles[0];
+    x = x + xTravelDistance;
+    y = y + tan(myAngle) * xTravelDistance;
+    wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
+    wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
+    for (var i = 1; i < nextAngles.length; i++) {
+      myAngle = Math.max(0, myAngle - maxAngleChange);
+      var x2 = x + xTravelDistance;
+      var y2 = y + tan(myAngle) * xTravelDistance;
+      wellBuffer.line(
+        x,
+        y,
+        x2,
+        y2);
+      // wellBuffer.line(
+      //   x,
+      //   y,
+      //   x2,
+      //   y2);
+      x = x2;
+      y = y2;
+    }
+
+  }
+
+  //ellipses
   x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
   y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
   for (var i = 0; i < nextAngles.length; i++) {

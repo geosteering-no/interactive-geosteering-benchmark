@@ -82,7 +82,7 @@ namespace ServerStateInterfaces
             {
                 X = X_TOP_LEFT,
                 Y = Y_TOP_LEFT,
-                Angle = 1.0,
+                Angle = 10.0/180*3.1415,
             };
             return point;
         }
