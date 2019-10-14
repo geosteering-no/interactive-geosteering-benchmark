@@ -362,30 +362,28 @@ function drawWellToBuffer() {
   //var t0 = performance.now();
   wellBuffer.clear();
 
-  wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
-  wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
-  wellBuffer.strokeWeight(1.5 / userdata.height);
+  wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
+  wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
+  wellBuffer.strokeWeight(2 / userdata.height);
   var committedPoints = userdata.wellPoints;
-  for (var i = 0; i < committedPoints.length; i++) {
-    var point = committedPoints[i];
-    var prev = point;
-    if (i > 0) prev = committedPoints[i - 1];
-    wellBuffer.line(
-      point.x,
-      point.y,
-      prev.x,
-      prev.y);
-    //circlecircle()
-  }
+  drawUserWell(wellBuffer, committedPoints);
 
   //main trajectory
   var x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
   var y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
   var xTravelDistance = userdata.xdist;
 
-  wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
-  wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
   for (var i = 0; i < nextAngles.length; i++) {
+	  if (i==0){
+      wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
+      wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
+      //wellBuffer.strokeWeight(3 / userdata.height);
+    }
+    else{
+      wellBuffer.stroke('rgba(40%, 70%, 10%, 1.0)');
+      wellBuffer.fill('rgba(40%, 70%, 10%, 1.0)');
+      wellBuffer.strokeWeight(1 / userdata.height);
+    }
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
     var y2 = y + tan(angle) * xTravelDistance;
@@ -402,6 +400,11 @@ function drawWellToBuffer() {
     x = x2;
     y = y2;
   }
+
+  wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
+  wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
+  wellBuffer.strokeWeight(0.5 / userdata.height)
+
   //possible trajectory up
   if (nextAngles.length > 0) {
     x = userdata.wellPoints[userdata.wellPoints.length - 1].x;

@@ -2,21 +2,7 @@
 # Created by https://www.gitignore.io/api/csharp,clojure,dotnetcore,visualstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=csharp,clojure,dotnetcore,visualstudio,visualstudiocode
 
-### Clojure ###
-pom.xml
-pom.xml.asc
-*.jar
-*.class
-/lib/
-/classes/
-/target/
-/checkouts/
-.lein-deps-sum
-.lein-repl-history
-.lein-plugins/
-.lein-failures
-.nrepl-port
-.cpcache/
+
 
 ### Csharp ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -546,6 +532,5 @@ MigrationBackup/
 
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 
-# End of https://www.gitignore.io/api/csharp,clojure,dotnetcore,visualstudio,visualstudiocode
-server/ServerObjectivesBridge/
-server/GameServer/
+
+server/GameServer/userLod_morten/

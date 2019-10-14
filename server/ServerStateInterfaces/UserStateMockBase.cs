@@ -24,7 +24,7 @@ namespace ServerStateInterfaces
                 Width = X_WIDTH,
                 Xdist = X_WIDTH / 10.0,
                 Height = 10.0,
-                wellPoints = new List<WellPoint>() { GetNextStateDefault()},
+                wellPoints = new List<WellPoint>() { GetNextStateDefault() , GetNextStateDefault2()},
                 Xtopleft = X_TOP_LEFT,
                 Ytopleft = Y_TOP_LEFT,
             };
@@ -83,6 +83,18 @@ namespace ServerStateInterfaces
                 X = X_TOP_LEFT,
                 Y = Y_TOP_LEFT,
                 Angle = 10.0/180*3.1415,
+            };
+            return point;
+        }
+
+        public WellPoint GetNextStateDefault2()
+        {
+            //TODO consider a better implementation, but this is not needed functionality once client is good
+            var point = new WellPoint()
+            {
+                X = X_TOP_LEFT + X_WIDTH / 10.0,
+                Y = Y_TOP_LEFT + 1.0,
+                Angle = 10.0 / 180 * 3.1415,
             };
             return point;
         }
