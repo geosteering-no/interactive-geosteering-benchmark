@@ -20,14 +20,14 @@ function setup() {
 
 	setSizesAndPositions();
 
-	fetch("http://localhost:5000/geo/init?userName=morten", { credentials: 'include' })
+	fetch("/geo/init?userName=morten", { credentials: 'include' })
 		.then(function (res) {
 			// if (!res.ok) {
 			//   alert("init failed");
 			//   throw Error("init failed");
 			// }
 			console.log("init success");
-			fetch("http://localhost:5000/geo/userdata", { credentials: 'include' })
+			fetch("/geo/userdata", { credentials: 'include' })
 				.then(function (res2) {
 					if (!res2.ok) {
 						alert("getting userdata failed");
