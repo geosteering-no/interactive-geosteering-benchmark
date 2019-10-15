@@ -15,13 +15,13 @@ namespace ServerObjectives
             _sweetSpotObjective = new SweetSpotObjective();
         }
         public double TheObjective(
-            IList<double> xs,
             RealizationData realization,
             double x0,
             double y0,
             double x1,
             double y1)
         {
+            var xs = realization.XList;
             var sum = 0.0;
             sum += _drillingCostObjective.ComputeDrillingCost(x0, y0, x1, y1);
             sum += _sweetSpotObjective.ComputeReservoirValue(xs, realization, Utils.TnDRealizationData,

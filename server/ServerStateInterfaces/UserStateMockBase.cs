@@ -8,14 +8,22 @@ namespace ServerStateInterfaces
     public class UserStateMockBase<TSecret> : IUserImplementaion<UserData, WellPoint, TSecret, UserEvaluation>
     {
         private readonly UserData _userData;
+        private ObjectiveEvaluationDelegate<UserData,WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
         const int DISCRETIZATION_POINTS = 10;
         const double X_TOP_LEFT = 10.0;
         const double Y_TOP_LEFT = 10.0;
         private const double X_WIDTH = 100;
 
-        public delegate double ObjectiveEvaulationFunction(RealizationData realizationData);
+        
 
-        public ObjectiveEvaulationFunction Evaluator { get; set; }
+        public ObjectiveEvaluationDelegate<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction 
+            Evaluator {
+            get
+            {
+                return _evaluator;
+            }
+            set { _evaluator = value; }
+        }
 
         //TODO implemnt adding points
 
@@ -98,21 +106,8 @@ namespace ServerStateInterfaces
             //convert to avoid erroers
             var userData = UserData;
             
-            var values = new List<double>(userData.realizations.Count);
-            var inds = new List<int>(userData.realizations.Count);
-            var ind = 0;
-            foreach (var realization in userData.realizations)
-            {
-                values.Add(Evaluator(realization));
-                inds.Add(ind);
-                ind++;
-            }
-            inds.Sort((a, b) => Math.Sign(values[b] - values[a]));
-            var result = new UserEvaluation()
-            {
-                RealizationScores = values,
-                SortedIndexes = inds
-            };
+            var result = Evaluator(userData, trajectory);
+
             return result;
         }
 

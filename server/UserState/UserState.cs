@@ -192,6 +192,18 @@ namespace UserState
             return wp;
         }
 
+        public ObjectiveEvaluationDelegate<UserData, IContinousState, UserEvaluation>.ObjectiveEvaluationFunction Evaluator
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public UserData UserData
         {
             get

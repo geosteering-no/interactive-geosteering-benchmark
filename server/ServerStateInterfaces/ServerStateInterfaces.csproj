@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ServerDataStructures\ServerDataStructures.csproj" />
+    <ProjectReference Include="..\ServerObjectives\ServerObjectives.csproj" />
   </ItemGroup>
 
 </Project>

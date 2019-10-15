@@ -15,12 +15,18 @@ namespace ServerStateInterfaces
             TUserDataModel, TWellPoint, TSecretState, TUserResult>, new()
        
     {
+
         private ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
         protected TSecretState _secret = default;
+        private ObjectiveEvaluationDelegate<TUserDataModel, 
+            TWellPoint, TUserResult>.ObjectiveEvaluationFunction _evaluator;
 
         public bool AddUser(string userId)
         {
-            var newUser = new TUserModel();
+            var newUser = new TUserModel()
+            {
+                Evaluator = _evaluator
+            };
             var res = _users.TryAdd(userId, newUser);
             if (!res)
             {
