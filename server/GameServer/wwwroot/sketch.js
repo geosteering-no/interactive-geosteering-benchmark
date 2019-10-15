@@ -52,9 +52,8 @@ var submitDecisionButton;
 //variable for selected index
 var selectedIndexP;
 
-
-var realizationObj;
-
+var userEvaluationOld;
+var userEvaluation;
 
 function buttonSelectSubSet(subsetIndex){
   if (subsetIndex == -1){
@@ -64,7 +63,22 @@ function buttonSelectSubSet(subsetIndex){
 }
 
 function updateBars(){
+  fetch("/geo/evaluate", { credentials: 'include' })
+    .then(function (res) {
+      if (!res.ok) {
+        alert("getting evaluation for a user failed");
+        //throw Error("getting userdata failed");
+      }
+      res.json()
+        .then(function (json) {
+          console.log("got user evaluation data:" + JSON.stringify(json));
+          userEvaluationOld = userEvaluation;
+          userEvaluation = json;
+          drawBarCharts();
+          redrawEnabledForAninterval();
+        });
 
+    });
 }
 
 function submitDecicion(){

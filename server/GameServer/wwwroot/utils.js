@@ -6,55 +6,69 @@ var geoModelBuffer;
 var wellBuffer;
 var barBuffer;
 var realizationScores;
+var percentileBins = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 
-function drawBarChartsToBufferWithShift(sorted, buffer, min, max, shiftFirst){
+//bins is an array of percentiles (part * 100)
+function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shiftFirst) {
     var shift = buffer.width / 10 / 5;
     var start = 0;
-    var end = 10;
-    
+    var end = 0;
+    var scores = aUserEvaluation.realizationScores;
+    var sortedInds = aUserEvaluation.sortedIndexes;
+
     //TODO do negative
-    for (var i = 0; i< 10; i++) {
+    for (var i = 0; i < percentileBins.length; i++) {
+        //we subtract 1 so that for P10 for 100 it is based n index 9
+        end = Math.floor(percentileBins[i] * (scores.length - 1) / 100.0);
         console.log("start: " + start);
         console.log("end: " + end);
-        var current = sorted.slice(start, end);
-        var score = current.reduce(function(acc, val) {return acc + val[0];}, 0) / 10;
+
+        var scoreInd = sortedInds[end];
+        var score = Math.max(scores[scoreInd], 0.0);
         console.log("score: " + score);
 
         buffer.rect(
-            i/10 * buffer.width + shift + shiftFirst, 
-            (max - score)/max*buffer.height, 
-            0.1 * buffer.width - shift*2,
-             buffer.height );
+            i / 10 * buffer.width + shift + shiftFirst,
+            (max - score) / max * buffer.height,
+            0.1 * buffer.width - shift * 2,
+            buffer.height);
         start = end;
-        end = start + 10;
     }
     console.log("done");
 
 }
 
 function drawBarCharts() {
+    //var userEvaluationOld; //from another file
+    //var userEvaluation; //from another file
     barBuffer.clear();
-    barBuffer.background(0,0,0);
+    barBuffer.background(0, 0, 0);
 
-    barBuffer.fill(255,0,0);
-    var max = Math.max.apply(null, realizationScores);
-    //barBuffer.scale(barBuffer.height/max, 1.0/barBuffer.width);
-    var sorted = realizationScores
-        .slice()
-        .map(function(val, i) { return [val, i];})
-        .sort(function(a, b) {return a[0] - b[0]});
-    barBuffer.fill(90,90,90);
-    barBuffer.noStroke();
+    barBuffer.fill(255, 0, 0);
+    var max = 1.0;
+    if (userEvaluationOld != null){
+        max = Math.max.apply(null, userEvaluationOld.realizationScores);
+    }
+    if (userEvaluation != null){
+        var newMax = Math.max.apply(null, userEvaluation.realizationScores);
+        max = Math.max(max, newMax);
+    }
+    if (userEvaluationOld != null) {
+        //barBuffer.scale(barBuffer.height/max, 1.0/barBuffer.width);
+        barBuffer.fill(90, 90, 90);
+        barBuffer.noStroke();
 
-    
-    var offset = barBuffer.width / 10 / 7;
-    //TODO plot old values instead
-    drawBarChartsToBufferWithShift(sorted, barBuffer, 0, max, -offset);
-    barBuffer.fill(20,50,255);
-    barBuffer.strokeWeight(1);
-    barBuffer.stroke(255, 255, 255);
-    drawBarChartsToBufferWithShift(sorted, barBuffer, 0, max, 0.0);
+        var offset = barBuffer.width / 10 / 7;
+        //TODO plot old values instead
+        drawBarChartsToBufferWithShift(sorted, barBuffer, 0, max, -offset);
+    }
+    if (userEvaluation != null){
+        barBuffer.fill(20, 50, 255);
+        barBuffer.strokeWeight(1);
+        barBuffer.stroke(255, 255, 255);
+        drawBarChartsToBufferWithShift(sorted, barBuffer, 0, max, 0.0);
+    }
 }
 
 function drawUserWell(wellBuffer, committedPoints) {
@@ -129,42 +143,42 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
         var xlist = userdata.xList;
         if (specificIndices == null) {
             for (var reali = 0; reali < reals.length; reali++) {
-                drawRealizationToBuffer(geoModelBuffer,xlist, reals[reali]);
+                drawRealizationToBuffer(geoModelBuffer, xlist, reals[reali]);
             }
         } else {
             for (var reali in specificIndices) {
-                drawRealizationToBuffer(geoModelBuffer,xlist, reals[reali]);
+                drawRealizationToBuffer(geoModelBuffer, xlist, reals[reali]);
             }
         }
         calculateScores();
 
-            // var layerBuffer = createGraphics(geoModelBuffer.width, geoModelBuffer.height);
-            // scaleBufferForView(layerBuffer);
-            // layerBuffer.stroke('rgb(100%, 100%, 100%)');
-            // layerBuffer.fill('rgb(100%, 100%, 100%)');
-            // //console.log("guess:" + reali);
-            // var polyCount = reals[reali].yLists.length / 2;
-            // for (var polygoni = 0; polygoni < polyCount; polygoni++) {
-            //   //console.log("poly:" + polygoni);
-            //   var polytop = reals[reali].yLists[polygoni * 2];
-            //   var polybottom = reals[reali].yLists[polygoni * 2 + 1];
+        // var layerBuffer = createGraphics(geoModelBuffer.width, geoModelBuffer.height);
+        // scaleBufferForView(layerBuffer);
+        // layerBuffer.stroke('rgb(100%, 100%, 100%)');
+        // layerBuffer.fill('rgb(100%, 100%, 100%)');
+        // //console.log("guess:" + reali);
+        // var polyCount = reals[reali].yLists.length / 2;
+        // for (var polygoni = 0; polygoni < polyCount; polygoni++) {
+        //   //console.log("poly:" + polygoni);
+        //   var polytop = reals[reali].yLists[polygoni * 2];
+        //   var polybottom = reals[reali].yLists[polygoni * 2 + 1];
 
-            //   layerBuffer.beginShape();
-            //   for (var vertexi = 0; vertexi < polytop.length; vertexi++) {
-            //     var y = polytop[vertexi];
-            //     layerBuffer.vertex(xlist[vertexi], y);
-            //   }
+        //   layerBuffer.beginShape();
+        //   for (var vertexi = 0; vertexi < polytop.length; vertexi++) {
+        //     var y = polytop[vertexi];
+        //     layerBuffer.vertex(xlist[vertexi], y);
+        //   }
 
-            //   for (var vertexi = polybottom.length - 1; vertexi >= 0; vertexi--) {
-            //     var y = polybottom[vertexi];
-            //     layerBuffer.vertex(xlist[vertexi], y);
-            //   }
-            //   layerBuffer.endShape(CLOSE);
-            // }
-            // geoModelBuffer.tint(255, alpha);
-            // geoModelBuffer.image(layerBuffer, 0, 0, layerBuffer.width, layerBuffer.heigth);
+        //   for (var vertexi = polybottom.length - 1; vertexi >= 0; vertexi--) {
+        //     var y = polybottom[vertexi];
+        //     layerBuffer.vertex(xlist[vertexi], y);
+        //   }
+        //   layerBuffer.endShape(CLOSE);
+        // }
+        // geoModelBuffer.tint(255, alpha);
+        // geoModelBuffer.image(layerBuffer, 0, 0, layerBuffer.width, layerBuffer.heigth);
 
-        
+
         //tint(255, 255);
     } else {
         console.log("drawing triangles");
@@ -193,7 +207,7 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
 }
 
 
-function drawRealizationToBuffer(buffer, xlist, real){
+function drawRealizationToBuffer(buffer, xlist, real) {
     var polyCount = real.yLists.length / 2;
     for (var polygoni = 0; polygoni < polyCount; polygoni++) {
         //console.log("poly:" + polygoni);
