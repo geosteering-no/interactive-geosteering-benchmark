@@ -72,7 +72,7 @@ namespace ServerObjectives
             for (var lambda = 1.0 / NumPoint / 2; lambda < 1.0; lambda += 1.0 / NumPoint)
             {
                 var x = x0 * lambda + x1 * (1.0 - lambda);
-                var y = x0 * lambda + x1 * (1.0 - lambda);
+                var y = y0 * lambda + y1 * (1.0 - lambda);
                 var thicknessAndDistance = thicknessAndDistenceAbove(xs, model, x, y);
                 sum += _reservoirValueFunction(thicknessAndDistance, dLength);
             }

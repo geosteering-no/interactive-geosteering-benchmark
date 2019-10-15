@@ -66,7 +66,7 @@ namespace ServerObjectives
             }
 
             //check if one layer only (degenerate model)
-            if (zBot >= zTop2)
+            if (realization.YLists.Count >= 4 && zBot >= zTop2)
             {
                 if (zTop <= z && z <= zBot2)
                 {

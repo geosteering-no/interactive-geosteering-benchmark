@@ -24,8 +24,9 @@ namespace ServerObjectives
             var xs = realization.XList;
             var sum = 0.0;
             sum += _drillingCostObjective.ComputeDrillingCost(x0, y0, x1, y1);
-            sum += _sweetSpotObjective.ComputeReservoirValue(xs, realization, Utils.TnDRealizationData,
+            var profit = _sweetSpotObjective.ComputeReservoirValue(xs, realization, Utils.TnDRealizationData,
                 x0, y0, x1, y1);
+            sum += profit;
             return sum;
         }
     }

@@ -38,7 +38,7 @@ namespace ServerStateInterfaces
                 inds.Add(ind);
                 ind++;
             }
-            inds.Sort((a, b) => Math.Sign(values[b] - values[a]));
+            inds.Sort((a, b) => Math.Sign(values[a] - values[b]));
 
             var result = new UserEvaluation()
             {
