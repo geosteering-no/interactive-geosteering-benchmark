@@ -7,6 +7,32 @@ var wellBuffer;
 var barBuffer;
 var realizationScores;
 
+
+function drawBarChartsToBufferWithShift(sorted, buffer, min, max, shiftFirst){
+    var shift = buffer.width / 10 / 5;
+    var start = 0;
+    var end = 10;
+    
+    //TODO do negative
+    for (var i = 0; i< 10; i++) {
+        console.log("start: " + start);
+        console.log("end: " + end);
+        var current = sorted.slice(start, end);
+        var score = current.reduce(function(acc, val) {return acc + val[0];}, 0) / 10;
+        console.log("score: " + score);
+
+        buffer.rect(
+            i/10 * buffer.width + shift + shiftFirst, 
+            (max - score)/max*buffer.height, 
+            0.1 * buffer.width - shift*2,
+             buffer.height );
+        start = end;
+        end = start + 10;
+    }
+    console.log("done");
+
+}
+
 function drawBarCharts() {
     barBuffer.clear();
     barBuffer.background(0,0,0);
@@ -18,27 +44,17 @@ function drawBarCharts() {
         .slice()
         .map(function(val, i) { return [val, i];})
         .sort(function(a, b) {return a[0] - b[0]});
+    barBuffer.fill(90,90,90);
+    barBuffer.noStroke();
 
-    var start = 0;
-    var end = 10;
-    for (var i = 0; i< 10; i++) {
-        console.log("start: " + start);
-        console.log("end: " + end);
-        var current = sorted.slice(start, end);
-        var score = current.reduce(function(acc, val) {return acc + val[0];}, 0) / 10;
-        console.log("score: " + score);
-        barBuffer.fill(20,50,80);
-        barBuffer.strokeWeight(1);
-        barBuffer.stroke(255, 255, 255);
-        barBuffer.rect(
-            i/10 * barBuffer.width, 
-            (max - score)/max*barBuffer.height, 
-            (i+1)/10 * barBuffer.width,
-             barBuffer.height );
-        start = end;
-        end = start + 10;
-    }
-    console.log("done");
+    
+    var offset = barBuffer.width / 10 / 7;
+    //TODO plot old values instead
+    drawBarChartsToBufferWithShift(sorted, barBuffer, 0, max, -offset);
+    barBuffer.fill(20,50,255);
+    barBuffer.strokeWeight(1);
+    barBuffer.stroke(255, 255, 255);
+    drawBarChartsToBufferWithShift(sorted, barBuffer, 0, max, 0.0);
 }
 
 function drawUserWell(wellBuffer, committedPoints) {

@@ -21,13 +21,55 @@ var updateTimerEnabled = false;
 var updateTimerLeft = 0;
 var timerCountdown = 0;
 
+//===============================
+//controls
+//===============================
 
+//navigation
 var prevButton;
 var nextButton;
+//angle
 var angleSlider;
+
+//stop/continue
+var stopButton;
+var continueButton;
+
+//selction buttons
+var pButtons = [];
+var pShowAllButton;
+
+//evaluation 
+var updateBarsButton;
+
+//submission
+var submitDecisionButton;
+
+//===============================
+//end of controls
+//===============================
+
+//variable for selected index
+var selectedIndexP;
 
 
 var realizationObj;
+
+
+function buttonSelectSubSet(subsetIndex){
+  if (subsetIndex == -1){
+    //TODO show all
+    return;
+  }
+}
+
+function updateBars(){
+
+}
+
+function submitDecicion(){
+
+}
 
 function setup() {
   createCanvas(100, 100);
@@ -36,6 +78,45 @@ function setup() {
 
   nextButton = createButton("Next ->");
   nextButton.mousePressed(next);
+
+  //TODO fix the button positions @morten
+  for (var i = 0; i<10; ++i){
+    if (i<9){
+      pButtons[i] = createButton("P"+((i+1)*10));
+    }else{
+      pButtons[i] = createButton("max");
+    }
+    pButtons[i].mousePressed(function (){
+      buttonSelectSubSet(i);
+    });
+    pButtons[i].position(i*800.0/10, 800);
+  }
+
+  pShowAllButton = createButton("Show all");
+  //TODO reposition
+  pShowAllButton.position(0, 830);
+  pShowAllButton.mousePressed(function (){
+    buttonSelectSubSet(-1);
+  });
+
+  updateBarsButton = createButton("Reevaluate the objective");
+  updateBarsButton.mousePressed(updateBars);
+  //TODO reposition
+  updateBarsButton.position(200, 850);
+
+  submitDecisionButton = createButton("Submit current decision");
+  submitDecisionButton.mousePressed(submitDecicion);
+  //TODO reposition
+  submitDecisionButton.position(200, 900);
+
+  stopButton = createButton("Stop");
+  stopButton.mousePressed(stopDecision);
+  stopButton.position(0, 450);
+
+  continueButton = createButton("Continue");
+  continueButton.mousePressed(continueDecision);
+  continueButton.position(0, 480);
+
 
   angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
   angleSlider.input(angleChange);
@@ -169,6 +250,15 @@ function previous() {
   }
   angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
   redrawEnabledForAninterval();
+}
+
+function stopDecision(){
+  //TODO implemetn
+}
+
+
+function continueDecision(){
+  //TODO implemetn
 }
 
 function next() {
