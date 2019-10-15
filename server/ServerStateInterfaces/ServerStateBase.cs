@@ -8,7 +8,7 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public class ServerStateBase<TWellPoint, TUserDataModel, TUserModel, TSecretState, TUserResult> : 
+    public abstract class ServerStateBase<TWellPoint, TUserDataModel, TUserModel, TSecretState, TUserResult> : 
         IFullServerState<
             TWellPoint, TUserDataModel, TUserResult, PopulationScoreData>
         where TUserModel : IUserImplementaion<
@@ -18,15 +18,14 @@ namespace ServerStateInterfaces
 
         private ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
         protected TSecretState _secret = default;
-        private ObjectiveEvaluationDelegate<TUserDataModel, 
-            TWellPoint, TUserResult>.ObjectiveEvaluationFunction _evaluator;
+
+        protected abstract ObjectiveEvaluationDelegate<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
+            Evaluator { get; }
+
 
         public bool AddUser(string userId)
         {
-            var newUser = new TUserModel()
-            {
-                Evaluator = _evaluator
-            };
+            var newUser = GetDefaultNewUser();
             var res = _users.TryAdd(userId, newUser);
             if (!res)
             {
@@ -36,6 +35,15 @@ namespace ServerStateInterfaces
             var user = GetOrAddUser(userId);
             DumpUserStateToFile(userId, user.UserData);
             return res;
+        }
+
+        public TUserModel GetDefaultNewUser()
+        {
+            var newUser = new TUserModel()
+            {
+                Evaluator = Evaluator
+            };
+            return newUser;
         }
 
         public void DumpUserStateToFile(string userId, TUserDataModel data)
@@ -72,7 +80,7 @@ namespace ServerStateInterfaces
         protected TUserModel GetOrAddUser(string userId)
         {
             //TODO check if default works
-            return _users.GetOrAdd(userId, new TUserModel());
+            return _users.GetOrAdd(userId, GetDefaultNewUser());
         }
 
         public void RestartServer(int seed = 0)

@@ -5,6 +5,7 @@ using ServerDataStructures;
 using ServerStateInterfaces;
 using System;
 using System.Collections.Generic;
+using System.IO.Pipelines;
 
 namespace GameServer.Controllers
 {
@@ -16,7 +17,7 @@ namespace GameServer.Controllers
         private readonly ILogger<GeoController> _logger;
         private readonly IFullServerState<WellPoint, UserData, UserEvaluation, PopulationScoreData> _state;
 
-        public GeoController(ILogger<GeoController> logger, 
+        public GeoController(ILogger<GeoController> logger,
             IFullServerState<WellPoint, UserData, UserEvaluation, PopulationScoreData> state)
         {
             //Note! this is magic
@@ -54,7 +55,7 @@ namespace GameServer.Controllers
                 Expires = DateTime.Now.AddDays(1),
                 IsEssential = true
             };
-            
+
             Response.Cookies.Append(UserId_ID, userId, option);
         }
 
@@ -71,13 +72,14 @@ namespace GameServer.Controllers
         }
 
         [Route("evaluate")]
-        public UserEvaluation GetEvaluationForTrajectory(IList<WellPoint> trajectory)
+        [HttpPost]
+        public UserEvaluation GetEvaluationForTrajectory([FromBody] IList<WellPoint> trajectory)
         {
             //TODO perform testing
             var userId = GetUserId();
             var res = _state.GetUserEvaluationData(userId, trajectory);
             return res;
-        } 
+        }
 
         private string GetUserId()
         {

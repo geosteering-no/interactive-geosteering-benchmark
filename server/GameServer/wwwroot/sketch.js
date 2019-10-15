@@ -63,7 +63,17 @@ function buttonSelectSubSet(subsetIndex){
 }
 
 function updateBars(){
-  fetch("/geo/evaluate", { credentials: 'include' })
+  //TODO add full trajectory
+  var bodyString = JSON.stringify(userdata.wellPoints);
+  //+"/?"+bodyString
+  fetch("/geo/evaluate", 
+    { credentials: 'include' , 
+      method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body : bodyString})
     .then(function (res) {
       if (!res.ok) {
         alert("getting evaluation for a user failed");
@@ -149,7 +159,7 @@ function setup() {
         .then(function (json) {
           console.log("got userdata:" + JSON.stringify(json));
           userdata = json;
-          calculateScores();
+          updateBars();
           drawGeomodelToBuffer(userdata);
           redrawEnabledForAninterval();
         });

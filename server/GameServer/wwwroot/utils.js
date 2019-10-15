@@ -61,13 +61,13 @@ function drawBarCharts() {
 
         var offset = barBuffer.width / 10 / 7;
         //TODO plot old values instead
-        drawBarChartsToBufferWithShift(sorted, barBuffer, 0, max, -offset);
+        drawBarChartsToBufferWithShift(userEvaluationOld, barBuffer, 0, max, -offset);
     }
     if (userEvaluation != null){
         barBuffer.fill(20, 50, 255);
         barBuffer.strokeWeight(1);
         barBuffer.stroke(255, 255, 255);
-        drawBarChartsToBufferWithShift(sorted, barBuffer, 0, max, 0.0);
+        drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0);
     }
 }
 
@@ -96,18 +96,6 @@ function drawFrame() {
     strokeWeight(4);
     stroke(51, 255, 10);
     rect(0, 0, width, height);
-}
-
-function calculateScores() {
-    var scores = [];
-    if (userdata != null) {
-        for (var i = 0; i < userdata.realizations.length; i++) {
-            var score = random(0, 100);
-            scores.push(score);
-        }
-    }
-    realizationScores = scores;
-    drawBarCharts();
 }
 
 function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
@@ -150,7 +138,8 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
                 drawRealizationToBuffer(geoModelBuffer, xlist, reals[reali]);
             }
         }
-        calculateScores();
+        
+        //updateBars();
 
         // var layerBuffer = createGraphics(geoModelBuffer.width, geoModelBuffer.height);
         // scaleBufferForView(layerBuffer);

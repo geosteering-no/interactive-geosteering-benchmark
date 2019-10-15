@@ -40,7 +40,7 @@ namespace GameServer
             });
             services.AddSingleton<
                 IFullServerState<WellPoint, UserData, UserEvaluation, PopulationScoreData>,
-                ServerStateBase<WellPoint, UserData, UserStateMockBase<int>, int, UserEvaluation>
+                ServerStateMock
             >();
 
             services.AddControllers();

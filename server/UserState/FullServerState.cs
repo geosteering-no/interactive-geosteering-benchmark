@@ -11,13 +11,23 @@ using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
 namespace UserState
 {
-    public class FullServerState : ServerStateBase<IContinousState, UserData, UserState, TrueModelState, UserEvaluation>
+    public class FullServerState : 
+        ServerStateBase<IContinousState, UserData, UserState, TrueModelState, UserEvaluation>
     {
        
 
         public FullServerState()
         {
             InitializeNewSyntheticTruth();
+        }
+
+        protected override ObjectiveEvaluationDelegate<UserData, IContinousState, UserEvaluation>.ObjectiveEvaluationFunction Evaluator
+        {
+            get
+            {
+                throw new NotImplementedException();
+                //TODO look up in mock implementation
+            }
         }
 
         protected sealed override void InitializeNewSyntheticTruth(int seed = 0)
