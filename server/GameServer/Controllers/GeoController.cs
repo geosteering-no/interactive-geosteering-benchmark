@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using ServerDataStructures;
 using ServerStateInterfaces;
 using System;
+using System.Collections.Generic;
 
 namespace GameServer.Controllers
 {
@@ -60,13 +61,23 @@ namespace GameServer.Controllers
         [Route("commit")]
         public void Commit(WellPoint pt)
         {
-            var sessionId = GetUserId();
-            var res = _state.UpdateUser(sessionId, pt);
+            //TODO perform testing
+            var userId = GetUserId();
+            var res = _state.UpdateUser(userId, pt);
             if (!res)
             {
                 throw new Exception("We cannot update using this point on this user");
             }
         }
+
+        [Route("evaluate")]
+        public UserEvaluation GetEvaluationForTrajectory(IList<WellPoint> trajectory)
+        {
+            //TODO perform testing
+            var userId = GetUserId();
+            var res = _state.GetUserEvaluationData(userId, trajectory);
+            return res;
+        } 
 
         private string GetUserId()
         {
