@@ -8,10 +8,10 @@ var maxIndex = 10;
 function setup() {
 	createCanvas(100, 100);
 	prevButton = createButton("<- Previous");
-	prevButton.mousePressed(previous);
+	prevButton.mousePressed(buttonPreviousClick);
 
 	nextButton = createButton("Next ->");
-	nextButton.mousePressed(next);
+	nextButton.mousePressed(buttonNextClick);
 
 	angleSlider = createSlider(0, 10, 0, 0);
 	angleSlider.input(sliderAngleChange);
@@ -66,14 +66,14 @@ function draw() {
 	}
 }
 
-function previous() {
+function buttonPreviousClick() {
 	if (revealIndex > 0){
 		revealIndex--;
 	}
 	redrawEnabledForAninterval();
 }
 
-function next() {
+function buttonNextClick() {
 	if (revealIndex < maxIndex){
 		revealIndex++;
 	} 

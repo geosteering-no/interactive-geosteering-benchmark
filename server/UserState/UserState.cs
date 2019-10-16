@@ -236,7 +236,14 @@ namespace UserState
 
         public bool UpdateUser(IContinousState updatePoint, TrueModelState secret)
         {
-            return OfferUpdatePoint(updatePoint, secret.GetData);
+            var res = OfferUpdatePoint(updatePoint, secret.GetData);
+            if (res)
+            {
+                _trajectory.Add(updatePoint);
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -12,6 +12,11 @@ namespace ServerStateInterfaces
         protected override ObjectiveEvaluationDelegate<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction 
             Evaluator => _evaluatorClass.EvaluateDefault;
 
+        public ServerStateMock() : base()
+        {
+
+        }
+
         protected override void InitializeNewSyntheticTruth(int seed = 0)
         {
             var defaultUser = GetDefaultNewUser();

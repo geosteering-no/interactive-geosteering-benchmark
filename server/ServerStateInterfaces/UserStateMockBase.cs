@@ -87,14 +87,14 @@ namespace ServerStateInterfaces
         public bool UpdateUser(WellPoint updatePoint, RealizationData secret)
         {
             int prevIndex;
-            for (prevIndex = 0; prevIndex < secret.XList.Count; ++prevIndex)
+            for (prevIndex = 0; prevIndex < secret.XList.Count-1; ++prevIndex)
             {
                 if (updatePoint.X < secret.XList[prevIndex])
                 {
                     break;
                 }
             }
-
+            
             
             foreach (var userDataRealization in _userData.realizations)
             {
@@ -104,6 +104,8 @@ namespace ServerStateInterfaces
                     userDataRealization.YLists[j][prevIndex] = secret.YLists[j][prevIndex];
                 }
             }
+
+            UserData.wellPoints.Add(updatePoint);
 
             return true;
         }

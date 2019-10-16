@@ -534,3 +534,6 @@ MigrationBackup/
 
 
 server/GameServer/userLod_morten/
+server/GameServer/secret/
+server/GameServer/serverstatelog/
+server/GameServer/userLog/

@@ -18,7 +18,7 @@ namespace UserState
 
         public FullServerState()
         {
-            InitializeNewSyntheticTruth();
+            InitializeNewSyntheticTruth(0);
         }
 
         protected override ObjectiveEvaluationDelegate<UserData, IContinousState, UserEvaluation>.ObjectiveEvaluationFunction Evaluator

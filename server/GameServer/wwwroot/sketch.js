@@ -95,17 +95,80 @@ function updateBars() {
     });
 }
 
-function submitDecicion() {
+function commitNextPoint(wellPoint) {
+  var bodyString = JSON.stringify(wellPoint);
+  fetch("/geo/commitpoint", {
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: bodyString
+  }).then(function (res) {
+      if (!res.ok) {
+        alert("updating userdata failed");
+        //throw Error("updating userdata failed");
+      }
+      
+      res.json()
+        .then(function (json) {
+          console.log("got updated userdata:" + JSON.stringify(json));
+          userdata = json;
+          //need to remove the first angle now that it is accepted
+          nextAngles.shift();
+          if (editNextAngleNo > 0){
+            editNextAngleNo--;
+          }
+          updateBars();
+          drawGeomodelToBuffer(userdata);
+          redrawEnabledForAninterval();
+        });
+    });
+}
 
+function commitStop() {
+  fetch("/geo/commitstop",
+    {
+      credentials: 'include',
+      method: 'POST'
+    })
+    .then(function (res) {
+      if (!res.ok) {
+        alert("stopping was not accepted?!");
+        //throw Error("getting userdata failed");
+      }
+      else {
+        console.log("stopping went normally let's wait for others");
+        //TODO consider making it impossible to add new points
+        //TODO consider sending a message to user
+      }
+    });
+}
+
+function commitDecicion() {
+  var fullUserTrajectory = getFullUserTrajectory();
+  if (userdata != null && fullUserTrajectory != null) {
+    var nextIndex = userdata.wellPoints.length;
+    //check if we have a point to commit
+    if (nextIndex < fullUserTrajectory.length) {
+      var nextPoint = fullUserTrajectory[nextIndex];
+      commitNextPoint(nextPoint);
+      //this function should also do the new evaluation
+    }
+    else {
+      commitStop();
+    }
+  }
 }
 
 function setup() {
   createCanvas(100, 100);
   prevButton = createButton("<- Previous");
-  prevButton.mousePressed(previous);
+  prevButton.mousePressed(buttonPreviousClick);
 
   nextButton = createButton("Next ->");
-  nextButton.mousePressed(next);
+  nextButton.mousePressed(buttonNextClick);
 
   //TODO fix the button positions @morten
   for (var i = 0; i < 10; ++i) {
@@ -133,7 +196,7 @@ function setup() {
   updateBarsButton.position(200, 850);
 
   submitDecisionButton = createButton("Submit current decision");
-  submitDecisionButton.mousePressed(submitDecicion);
+  submitDecisionButton.mousePressed(commitDecicion);
   //TODO reposition
   submitDecisionButton.position(200, 900);
 
@@ -153,22 +216,7 @@ function setup() {
 
   setSizesAndPositions();
 
-  fetch("/geo/userdata", { credentials: 'include' })
-    .then(function (res) {
-      if (!res.ok) {
-        alert("getting userdata failed");
-        throw Error("getting userdata failed");
-      }
-      res.json()
-        .then(function (json) {
-          console.log("got userdata:" + JSON.stringify(json));
-          userdata = json;
-          updateBars();
-          drawGeomodelToBuffer(userdata);
-          redrawEnabledForAninterval();
-        });
-
-    });
+  getUserData();
 
   var layerH = 15;
   var r1l1 = [100, 80, 60, 90, 85, 65];
@@ -213,6 +261,25 @@ function setup() {
 
   noLoop();
 }
+
+function getUserData() {
+  fetch("/geo/userdata", { credentials: 'include' })
+    .then(function (res) {
+      if (!res.ok) {
+        alert("getting userdata failed");
+        throw Error("getting userdata failed");
+      }
+      res.json()
+        .then(function (json) {
+          console.log("got userdata:" + JSON.stringify(json));
+          userdata = json;
+          updateBars();
+          drawGeomodelToBuffer(userdata);
+          redrawEnabledForAninterval();
+        });
+    });
+}
+
 
 function setSizesAndPositions() {
   canvasWidth = windowWidth - oneMarginInScript * 2;
@@ -296,7 +363,7 @@ function sliderAngleChange() {
 
 }
 
-function previous() {
+function buttonPreviousClick() {
   if (editNextAngleNo > 0) {
     editNextAngleNo--;
   }
@@ -313,7 +380,7 @@ function continueDecision() {
   //TODO implemetn
 }
 
-function next() {
+function buttonNextClick() {
   if (editNextAngleNo < nextAngles.length - 1) {
     editNextAngleNo++;
   }

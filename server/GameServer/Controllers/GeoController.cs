@@ -59,16 +59,24 @@ namespace GameServer.Controllers
             Response.Cookies.Append(UserId_ID, userId, option);
         }
 
-        [Route("commit")]
-        public void Commit(WellPoint pt)
+        [Route("commitstop")]
+        [HttpPost]
+        public void CommitStop()
+        {
+            //TODO finish
+            throw new NotImplementedException();
+
+        }
+
+
+        [Route("commitpoint")]
+        [HttpPost]
+        public UserData Commit([FromBody] WellPoint pt)
         {
             //TODO perform testing
             var userId = GetUserId();
             var res = _state.UpdateUser(userId, pt);
-            if (!res)
-            {
-                throw new Exception("We cannot update using this point on this user");
-            }
+            return res;
         }
 
         [Route("evaluate")]

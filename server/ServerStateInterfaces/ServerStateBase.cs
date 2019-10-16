@@ -22,6 +22,10 @@ namespace ServerStateInterfaces
         protected abstract ObjectiveEvaluationDelegate<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
             Evaluator { get; }
 
+        public ServerStateBase()
+        {
+            InitializeNewSyntheticTruth(0);
+        }
 
         public bool AddUser(string userId)
         {
@@ -49,7 +53,7 @@ namespace ServerStateInterfaces
 
         public void DumpUserStateToFile(string userId, TUserDataModel data)
         {
-            var dirId = "userLod_" + userId;
+            var dirId = "userLog/" + userId;
             if (!Directory.Exists(dirId))
             {
                 Directory.CreateDirectory(dirId);
@@ -60,7 +64,7 @@ namespace ServerStateInterfaces
 
         public void DumpSectetStateToFile(int data)
         {
-            var dirId = "secret";
+            var dirId = "serverstatelog/secret";
             if (!Directory.Exists(dirId))
             {
                 Directory.CreateDirectory(dirId);
@@ -106,18 +110,24 @@ namespace ServerStateInterfaces
             InitializeNewSyntheticTruth(seed);
         }
 
-        public bool UpdateUser(string userId, TWellPoint load = default)
+        public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
         {
             if (!UserExists(userId))
             {
-                return false;
+                throw new Exception("Incorrect user name " + userId);
             }
 
             var user = GetOrAddUser(userId);
-            var res = user.UpdateUser(load, _secret);
-            DumpUserStateToFile(userId, user.UserData);
-            return res;
+            var ok = user.UpdateUser(load, _secret);
+            if (ok)
+            {
+                var newUserData = user.UserData;
+                DumpUserStateToFile(userId, user.UserData);
+                return newUserData;
+            }
+            throw new Exception("User point was not accepted ");
         }
+    
 
         public bool UserExists(string userId)
         {
