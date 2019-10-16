@@ -14,7 +14,7 @@ function setup() {
 	nextButton.mousePressed(next);
 
 	angleSlider = createSlider(0, 10, 0, 0);
-	angleSlider.input(angleChange);
+	angleSlider.input(sliderAngleChange);
 	angleSlider.style('width', '280px');
 	angleSlider.style('height', '180px');
 
@@ -80,7 +80,7 @@ function next() {
 	redrawEnabledForAninterval();
 }
 
-function angleChange() {
+function sliderAngleChange() {
 
 }
 

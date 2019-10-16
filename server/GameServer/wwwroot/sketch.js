@@ -52,28 +52,32 @@ var submitDecisionButton;
 //variable for selected index
 var selectedIndexP;
 
+//var fullUserTrajectory;
 var userEvaluationOld;
 var userEvaluation;
 
-function buttonSelectSubSet(subsetIndex){
-  if (subsetIndex == -1){
+function buttonSelectSubSet(subsetIndex) {
+  if (subsetIndex == -1) {
     //TODO show all
     return;
   }
 }
 
-function updateBars(){
+function updateBars() {
   //TODO add full trajectory
-  var bodyString = JSON.stringify(userdata.wellPoints);
+  var fullUserTrajectory = getFullUserTrajectory();
+  var bodyString = JSON.stringify(fullUserTrajectory);
   //+"/?"+bodyString
-  fetch("/geo/evaluate", 
-    { credentials: 'include' , 
-      method: 'POST', 
+  fetch("/geo/evaluate",
+    {
+      credentials: 'include',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=UTF-8'
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body : bodyString})
+      body: bodyString
+    })
     .then(function (res) {
       if (!res.ok) {
         alert("getting evaluation for a user failed");
@@ -91,7 +95,7 @@ function updateBars(){
     });
 }
 
-function submitDecicion(){
+function submitDecicion() {
 
 }
 
@@ -104,22 +108,22 @@ function setup() {
   nextButton.mousePressed(next);
 
   //TODO fix the button positions @morten
-  for (var i = 0; i<10; ++i){
-    if (i<9){
-      pButtons[i] = createButton("P"+((i+1)*10));
-    }else{
+  for (var i = 0; i < 10; ++i) {
+    if (i < 9) {
+      pButtons[i] = createButton("P" + ((i + 1) * 10));
+    } else {
       pButtons[i] = createButton("max");
     }
-    pButtons[i].mousePressed(function (){
+    pButtons[i].mousePressed(function () {
       buttonSelectSubSet(i);
     });
-    pButtons[i].position(i*800.0/10, 800);
+    pButtons[i].position(i * 800.0 / 10, 800);
   }
 
   pShowAllButton = createButton("Show all");
   //TODO reposition
   pShowAllButton.position(0, 830);
-  pShowAllButton.mousePressed(function (){
+  pShowAllButton.mousePressed(function () {
     buttonSelectSubSet(-1);
   });
 
@@ -143,7 +147,7 @@ function setup() {
 
 
   angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
-  angleSlider.input(angleChange);
+  angleSlider.input(sliderAngleChange);
   angleSlider.style('width', '280px');
   angleSlider.style('height', '180px');
 
@@ -214,7 +218,7 @@ function setSizesAndPositions() {
   canvasWidth = windowWidth - oneMarginInScript * 2;
   canvasHeigth = windowHeight - oneMarginInScript;
   if (canvasWidth > canvasHeigth) {
-      canvasWidth = canvasHeigth / 4 * 3;
+    canvasWidth = canvasHeigth / 4 * 3;
   }
 
   resizeCanvas(canvasWidth, canvasHeigth);
@@ -255,7 +259,28 @@ function prevAngle(editNextAngleNo) {
   return 0;
 }
 
-function angleChange() {
+function getFullUserTrajectory() {
+  if (userdata != null) {
+    var xTravelDistance = userdata.xdist;
+    var fullUserTrajectory = userdata.wellPoints.slice();
+    var lastDefinedPoint = fullUserTrajectory[fullUserTrajectory.length - 1];
+    var x = lastDefinedPoint.x;
+    var y = lastDefinedPoint.y;
+    for (var i = 0; i < nextAngles.length; ++i) {
+      var angle = nextAngles[i];
+      var x2 = x + xTravelDistance;
+      var y2 = y + tan(angle) * xTravelDistance;
+      fullUserTrajectory.push({ x: x2, y: y2, angle: angle });
+      x = x2;
+      y = y2;
+    }
+    return fullUserTrajectory;
+  }
+  return null;
+}
+
+function sliderAngleChange() {
+
   if (editNextAngleNo < nextAngles.length) {
     var prev = prevAngle(editNextAngleNo);
     nextAngles[editNextAngleNo] = allowedAngle(prev, -angleSlider.value());
@@ -263,6 +288,9 @@ function angleChange() {
       nextAngles[i] = allowedAngle(nextAngles[i - 1], nextAngles[i] - nextAngles[i - 1])
     }
   }
+
+
+
   //console.log(angleSlider.value());
   redrawEnabledForAninterval();
 
@@ -276,12 +304,12 @@ function previous() {
   redrawEnabledForAninterval();
 }
 
-function stopDecision(){
+function stopDecision() {
   //TODO implemetn
 }
 
 
-function continueDecision(){
+function continueDecision() {
   //TODO implemetn
 }
 
@@ -323,7 +351,7 @@ function draw() {
   drawWellToBuffer();
 
   image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.heigth);
-  
+
   if (barBuffer != null) {
     console.log("draw bars");
     image(barBuffer, 0, wellBuffer.height + 170, barBuffer.width, barBuffer.height);
@@ -350,8 +378,8 @@ function drawWellToBuffer() {
   wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
   wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
   wellBuffer.strokeWeight(2 / userdata.height);
-  var committedPoints = userdata.wellPoints;
-  drawUserWell(wellBuffer, committedPoints);
+  var userPoints = userdata.wellPoints.slice();
+  drawUserWell(wellBuffer, userPoints);
 
   //main trajectory
   var x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
@@ -359,12 +387,12 @@ function drawWellToBuffer() {
   var xTravelDistance = userdata.xdist;
 
   for (var i = 0; i < nextAngles.length; i++) {
-	  if (i==0){
+    if (i == 0) {
       wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
       wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
       //wellBuffer.strokeWeight(3 / userdata.height);
     }
-    else{
+    else {
       wellBuffer.stroke('rgba(40%, 70%, 10%, 1.0)');
       wellBuffer.fill('rgba(40%, 70%, 10%, 1.0)');
       wellBuffer.strokeWeight(1 / userdata.height);
@@ -372,6 +400,7 @@ function drawWellToBuffer() {
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
     var y2 = y + tan(angle) * xTravelDistance;
+    //userPoints.push({ x: x2, y: y2, angle: angle });
     wellBuffer.line(
       x,
       y,
