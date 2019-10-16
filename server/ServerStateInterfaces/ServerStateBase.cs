@@ -41,6 +41,7 @@ namespace ServerStateInterfaces
         {
             var newUser = new TUserModel()
             {
+                //TODO here is a bunch of hard-coded things
                 Evaluator = Evaluator
             };
             return newUser;

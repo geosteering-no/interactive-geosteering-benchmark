@@ -15,5 +15,9 @@ namespace ServerDataStructures {
         public IList<RealizationData> realizations  { get; set; }
 
         public IList<WellPoint> wellPoints  { get; set; }
+
+        
+        public double DoiX { get; set; } = 2.25; //TODO 5.25 is the correct size
+        public double DoiY { get; set; } = 2.6; //TODO 9.6 is a correct size
     }
 }

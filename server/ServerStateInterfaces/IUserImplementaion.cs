@@ -10,6 +10,8 @@ namespace ServerStateInterfaces
         
         ObjectiveEvaluationDelegate<TUserData, TWellPoint, TEvaluationResult>.ObjectiveEvaluationFunction 
             Evaluator { get; set; }
+        //double DoiX { get; set; }
+        //double DoiY { get; set; }
         TUserData UserData { get; }
         bool UpdateUser(TWellPoint updatePoint, TSecretState secret);
         TWellPoint GetNextStateDefault();

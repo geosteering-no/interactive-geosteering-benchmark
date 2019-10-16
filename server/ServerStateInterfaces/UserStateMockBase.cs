@@ -86,7 +86,7 @@ namespace ServerStateInterfaces
 
         public bool UpdateUser(WellPoint updatePoint, TSecret secret)
         {
-            return true;
+            throw new NotImplementedException();
         }
 
         public WellPoint GetNextStateDefault()

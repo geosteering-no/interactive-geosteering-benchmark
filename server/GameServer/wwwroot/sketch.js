@@ -460,8 +460,8 @@ function drawWellToBuffer() {
     }
     //TODO fix the scaling here
     wellBuffer.ellipse(x, y,
-      10.01 / (wellBuffer.width / userdata.width),
-      10.01 / (wellBuffer.height / userdata.height));
+      userdata.doiX,
+      userdata.doiY);
   }
 
 
