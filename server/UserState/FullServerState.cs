@@ -36,7 +36,7 @@ namespace UserState
             Console.WriteLine("Initialized synthetic truth with seed: " + seed);
             _secret = new TrueModelState(seed);
             
-            base.InitializeNewSyntheticTruth(seed);
+            DumpSectetStateToFile(seed);
         }
 
 

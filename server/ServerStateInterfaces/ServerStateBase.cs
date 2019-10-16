@@ -69,14 +69,17 @@ namespace ServerStateInterfaces
             System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
         }
 
-
-        protected virtual void InitializeNewSyntheticTruth(int seed = 0)
-        {
-            DumpSectetStateToFile(seed);
-            //TODO fix
-            //Console.WriteLine("Initialized synthetic truth with seed: " + seed);
-            //_syntheticTruth = new TrueModelState(seed);
-        }
+        /// <summary>
+        /// this should call dump secret state to file
+        /// </summary>
+        /// <param name="seed"></param>
+        protected abstract void InitializeNewSyntheticTruth(int seed = 0);
+        //{
+        //    DumpSectetStateToFile(seed);
+        //    //TODO fix
+        //    //Console.WriteLine("Initialized synthetic truth with seed: " + seed);
+        //    //_syntheticTruth = new TrueModelState(seed);
+        //}
 
         protected TUserModel GetOrAddUser(string userId)
         {

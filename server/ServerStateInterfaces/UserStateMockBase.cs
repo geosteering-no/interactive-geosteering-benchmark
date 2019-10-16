@@ -5,9 +5,9 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public class UserStateMockBase<TSecret> : IUserImplementaion<UserData, WellPoint, TSecret, UserEvaluation>
+    public class UserStateMockBase : IUserImplementaion<UserData, WellPoint, RealizationData, UserEvaluation>
     {
-        private readonly UserData _userData;
+        private UserData _userData;
         private ObjectiveEvaluationDelegate<UserData,WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
         const int DISCRETIZATION_POINTS = 10;
         const double X_TOP_LEFT = 10.0;
@@ -84,9 +84,28 @@ namespace ServerStateInterfaces
             get => _userData;
         } 
 
-        public bool UpdateUser(WellPoint updatePoint, TSecret secret)
+        public bool UpdateUser(WellPoint updatePoint, RealizationData secret)
         {
-            throw new NotImplementedException();
+            int prevIndex;
+            for (prevIndex = 0; prevIndex < secret.XList.Count; ++prevIndex)
+            {
+                if (updatePoint.X < secret.XList[prevIndex])
+                {
+                    break;
+                }
+            }
+
+            
+            foreach (var userDataRealization in _userData.realizations)
+            {
+                var minJ = Math.Min(userDataRealization.YLists.Count, secret.YLists.Count);
+                for (var j = 0; j < minJ; ++j)
+                {
+                    userDataRealization.YLists[j][prevIndex] = secret.YLists[j][prevIndex];
+                }
+            }
+
+            return true;
         }
 
         public WellPoint GetNextStateDefault()
