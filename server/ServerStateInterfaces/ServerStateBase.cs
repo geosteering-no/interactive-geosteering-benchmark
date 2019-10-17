@@ -8,7 +8,7 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public abstract class ServerStateBase<TWellPoint, TUserDataModel, TUserModel, TSecretState, TUserResult> : 
+    public abstract class ServerStateBase<TWellPoint, TUserDataModel, TUserModel, TSecretState, TUserResult, TRealizationData> : 
         IFullServerState<
             TWellPoint, TUserDataModel, TUserResult, PopulationScoreData>
         where TUserModel : IUserImplementaion<
@@ -16,7 +16,7 @@ namespace ServerStateInterfaces
        
     {
 
-        private ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
+        protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
         protected TSecretState _secret = default;
 
         protected abstract ObjectiveEvaluationDelegate<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
@@ -25,6 +25,7 @@ namespace ServerStateInterfaces
         private Random rnd = new Random();
         private int[] seeds = {0, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8};
         private int seedInd = 0;
+
 
         private int NextSeed()
         {
@@ -182,9 +183,8 @@ namespace ServerStateInterfaces
             return result;
         }
 
-        public PopulationScoreData GetScoreboard()
-        {
-            throw new NotImplementedException();
-        }
+        //protected abstract TRealizationData GetSecretUserState(TSecretState secret);
+
+        public abstract PopulationScoreData GetScoreboard();
     }
 }
