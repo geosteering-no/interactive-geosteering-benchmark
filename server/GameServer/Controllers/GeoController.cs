@@ -61,10 +61,11 @@ namespace GameServer.Controllers
 
         [Route("commitstop")]
         [HttpPost]
-        public void CommitStop()
+        public UserData CommitStop()
         {
             var userId = GetUserId();
-            _state.UpdateUser(userId);
+            var res = _state.StopUser(userId);
+            return res;
         }
 
 

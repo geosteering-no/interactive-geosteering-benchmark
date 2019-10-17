@@ -16,6 +16,8 @@ var nextAngles = [
   beginAngle - maxAngleChange * 1.7,
   beginAngle - maxAngleChange * 1.8];
 var editNextAngleNo = 0;
+//TODO consider init form data
+var maxTortalAngles = 10;
 
 var updateTimerEnabled = false;
 var updateTimerLeft = 0;
@@ -126,20 +128,21 @@ function commitNextPoint(wellPoint) {
       alert("updating userdata failed");
       //throw Error("updating userdata failed");
     }
-
-    res.json()
-      .then(function (json) {
-        console.log("got updated userdata:" + JSON.stringify(json));
-        userdata = json;
-        //need to remove the first angle now that it is accepted
-        nextAngles.shift();
-        if (editNextAngleNo > 0) {
-          editNextAngleNo--;
-        }
-        updateBars();
-        drawGeomodelToBuffer(userdata);
-        redrawEnabledForAninterval();
-      });
+    else {
+      res.json()
+        .then(function (json) {
+          console.log("got updated userdata:" + JSON.stringify(json));
+          userdata = json;
+          //need to remove the first angle now that it is accepted
+          nextAngles.shift();
+          if (editNextAngleNo > 0) {
+            editNextAngleNo--;
+          }
+          updateBars();
+          drawGeomodelToBuffer(userdata);
+          redrawEnabledForAninterval();
+        });
+    }
   });
 }
 
@@ -158,6 +161,20 @@ function commitStop() {
         console.log("stopping went normally let's wait for others");
         //TODO consider making it impossible to add new points
         //TODO consider sending a message to user
+        res.json()
+          .then(function (json) {
+            console.log("got updated userdata:" + JSON.stringify(json));
+            userdata = json;
+            //need to remove the first angle now that it is accepted
+            nextAngles.shift();
+            if (editNextAngleNo > 0) {
+              editNextAngleNo--;
+            }
+            updateBars();
+            drawGeomodelToBuffer(userdata);
+            redrawEnabledForAninterval();
+          });
+
       }
     });
 }
@@ -396,12 +413,24 @@ function buttonPreviousClick() {
 }
 
 function stopDecision() {
-  //TODO implemetn
+  nextAngles.length = editNextAngleNo;
+  redrawEnabledForAninterval();
 }
 
 
 function continueDecision() {
-  //TODO implemetn
+  if (userdata != null) {
+    var submittedLen = userdata.wellPoints.length;
+    var newAnglesLen = nextAngles.length;
+    if (submittedLen + newAnglesLen <= maxTortalAngles) {
+      if (newAnglesLen === 0) {
+        nextAngles.push(userdata.wellPoints[submittedLen - 1].angle);
+      } else {
+        nextAngles.push(nextAngles[newAnglesLen - 1]);
+      }
+    }
+    redrawEnabledForAninterval();
+  }
 }
 
 function buttonNextClick() {

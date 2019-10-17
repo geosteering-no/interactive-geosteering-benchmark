@@ -128,10 +128,11 @@ namespace ServerStateInterfaces
             throw new Exception("User point was not accepted ");
         }
 
-        public void StopUser(string userId)
+        public TUserDataModel StopUser(string userId)
         {
             var user = GetOrAddUser(userId);
             user.StopDrilling();
+            return user.UserData;
         }
 
 
