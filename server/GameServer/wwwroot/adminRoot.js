@@ -65,6 +65,10 @@ function buttonNextClick() {
 	redrawEnabledForAninterval();
 }
 
+function getPopulationData(){
+	
+}
+
 function restartClick() {
 	fetch("geo/restart/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
 		{

@@ -17,7 +17,7 @@ var nextAngles = [
   beginAngle - maxAngleChange * 1.8];
 var editNextAngleNo = 0;
 //TODO consider init form data
-var maxTortalAngles = 10;
+
 
 var updateTimerEnabled = false;
 var updateTimerLeft = 0;

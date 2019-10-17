@@ -12,7 +12,7 @@ using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 namespace UserState
 {
     public class FullServerState : 
-        ServerStateBase<IContinousState, UserData, UserState, TrueModelState, UserEvaluation>
+        ServerStateBase<IContinousState, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>
     {
        
 
@@ -38,6 +38,12 @@ namespace UserState
             
             DumpSectetStateToFile(seed);
         }
+
+        public override PopulationScoreData GetScoreboard()
+        {
+            throw new NotImplementedException();
+        }
+
 
 
 

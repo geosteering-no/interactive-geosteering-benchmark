@@ -27,7 +27,7 @@ namespace ServerStateInterfaces
 
         //TODO implemnt adding points
 
-        private UserData CreateUserData()
+        public static UserData CreateUserData()
         {
             Random r = new Random();
             var userData = new UserData()
@@ -35,7 +35,7 @@ namespace ServerStateInterfaces
                 Width = X_WIDTH,
                 Xdist = X_WIDTH / 10.0,
                 Height = 10.0,
-                wellPoints = new List<WellPoint>() { GetNextStateDefault() , GetNextStateDefault2()},
+                wellPoints = new List<WellPoint>() { GetNextStateDefault()},
                 Xtopleft = X_TOP_LEFT,
                 Ytopleft = Y_TOP_LEFT,
                 stopped = false
@@ -118,7 +118,12 @@ namespace ServerStateInterfaces
             _userData.stopped = true;
         }
 
-        public WellPoint GetNextStateDefault()
+        WellPoint IUserImplementaion<UserData, WellPoint, RealizationData, UserEvaluation>.GetNextStateDefault()
+        {
+            return GetNextStateDefault();
+        }
+
+        public static WellPoint GetNextStateDefault()
         {
             //TODO consider a better implementation, but this is not needed functionality once client is good
             var point = new WellPoint()
