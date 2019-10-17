@@ -8,34 +8,51 @@ var barBuffer;
 var realizationScores;
 var percentileBins = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
+function getIncluciveIndexEndForPercentile(percentile, len){
+    return Math.floor(percentileBins[percentile] * (len - 1) / 100.0);
+}
 
 //bins is an array of percentiles (part * 100)
-function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shiftFirst) {
-    var shift = buffer.width / 10 / 5;
+function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shiftFirst, drawSubLines = false) {
+    var binsLen = percentileBins.length;
+    var shift = buffer.width / binsLen / 5;
     var start = 0;
     var end = 0;
     var scores = aUserEvaluation.realizationScores;
     var sortedInds = aUserEvaluation.sortedIndexes;
 
     //TODO do negative
-    for (var i = 0; i < percentileBins.length; i++) {
+    for (var i = 0; i < binsLen; i++) {
         //we subtract 1 so that for P10 for 100 it is based n index 9
-        end = Math.floor(percentileBins[i] * (scores.length - 1) / 100.0);
-        console.log("start: " + start);
-        console.log("end: " + end);
-
-        var scoreInd = sortedInds[end];
-        var score = Math.max(scores[scoreInd], 0.0);
-        console.log("score: " + score);
-
-        buffer.rect(
-            i / 10 * buffer.width + shift + shiftFirst,
-            (max - score) / max * buffer.height,
-            0.1 * buffer.width - shift * 2,
-            buffer.height);
-        start = end;
+        end = getIncluciveIndexEndForPercentile(i, scores.length);
+        //console.log("start: " + start);
+        //console.log("end: " + end);
+        if (!drawSubLines) {
+            var scoreInd = sortedInds[end];
+            var score = Math.max(scores[scoreInd], 0.0);
+            //console.log("score: " + score);
+            buffer.rect(
+                i / binsLen * buffer.width + shift + shiftFirst,
+                (max - score) / max * buffer.height,
+                1.0 / binsLen * buffer.width - shift * 2,
+                buffer.height);
+        }
+        else {
+            var singleWidth = (1.0 / binsLen * buffer.width - shift * 2) / (end + 1 - start);
+            for (var k = start; k <= end; ++k) {
+                var scoreInd = sortedInds[k];
+                var score = Math.max(scores[scoreInd], 0.0);
+                buffer.rect(
+                    i / binsLen * buffer.width + shift + shiftFirst
+                    + (k-start) * singleWidth,
+                    (max - score) / max * buffer.height,
+                    singleWidth,
+                    buffer.height);
+            }
+        }
+        start = end + 1;
     }
-    console.log("done");
+    //console.log("done");
 
 }
 
@@ -47,10 +64,10 @@ function drawBarCharts() {
 
     barBuffer.fill(255, 0, 0);
     var max = 1.0;
-    if (userEvaluationOld != null){
+    if (userEvaluationOld != null) {
         max = Math.max.apply(null, userEvaluationOld.realizationScores);
     }
-    if (userEvaluation != null){
+    if (userEvaluation != null) {
         var newMax = Math.max.apply(null, userEvaluation.realizationScores);
         max = Math.max(max, newMax);
     }
@@ -63,11 +80,15 @@ function drawBarCharts() {
         //TODO plot old values instead
         drawBarChartsToBufferWithShift(userEvaluationOld, barBuffer, 0, max, -offset);
     }
-    if (userEvaluation != null){
+    if (userEvaluation != null) {
         barBuffer.fill(20, 50, 255);
         barBuffer.strokeWeight(1);
         barBuffer.stroke(255, 255, 255);
         drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0);
+
+        barBuffer.fill(200, 50, 255);
+        barBuffer.noStroke();
+        drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0, true);
     }
 }
 
@@ -134,11 +155,13 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
                 drawRealizationToBuffer(geoModelBuffer, xlist, reals[reali]);
             }
         } else {
-            for (var reali in specificIndices) {
+            for (var realj = 0; realj < specificIndices.length; realj++) {
+                var reali = specificIndices[realj];
                 drawRealizationToBuffer(geoModelBuffer, xlist, reals[reali]);
             }
+
         }
-        
+
         //updateBars();
 
         // var layerBuffer = createGraphics(geoModelBuffer.width, geoModelBuffer.height);

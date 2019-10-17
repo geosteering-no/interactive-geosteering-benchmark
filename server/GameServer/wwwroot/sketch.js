@@ -49,18 +49,34 @@ var submitDecisionButton;
 //end of controls
 //===============================
 
-//variable for selected index
-var selectedIndexP;
+//variable for selected index of claster
+var selectedIndexCluster = -1;
 
 //var fullUserTrajectory;
 var userEvaluationOld;
 var userEvaluation;
 
 function buttonSelectSubSet(subsetIndex) {
-  if (subsetIndex == -1) {
-    //TODO show all
+  if (userEvaluation == null) {
     return;
   }
+  selectedIndexCluster = subsetIndex;
+  if (subsetIndex < 0) {
+    //draw all
+    drawGeomodelToBuffer(userdata);
+  }
+  else {
+    var len = userEvaluation.sortedIndexes.length;
+    var start = 0;
+    if (subsetIndex > 0) {
+      start = getIncluciveIndexEndForPercentile(subsetIndex - 1, len) + 1;
+    }
+    var end = getIncluciveIndexEndForPercentile(subsetIndex, len) + 1;
+    var indexes = userEvaluation.sortedIndexes.slice(start, end);
+    drawGeomodelToBuffer(userdata, indexes);
+  }
+  drawBarCharts();
+  redrawEnabledForAninterval();
 }
 
 function updateBars() {
@@ -106,25 +122,25 @@ function commitNextPoint(wellPoint) {
     },
     body: bodyString
   }).then(function (res) {
-      if (!res.ok) {
-        alert("updating userdata failed");
-        //throw Error("updating userdata failed");
-      }
-      
-      res.json()
-        .then(function (json) {
-          console.log("got updated userdata:" + JSON.stringify(json));
-          userdata = json;
-          //need to remove the first angle now that it is accepted
-          nextAngles.shift();
-          if (editNextAngleNo > 0){
-            editNextAngleNo--;
-          }
-          updateBars();
-          drawGeomodelToBuffer(userdata);
-          redrawEnabledForAninterval();
-        });
-    });
+    if (!res.ok) {
+      alert("updating userdata failed");
+      //throw Error("updating userdata failed");
+    }
+
+    res.json()
+      .then(function (json) {
+        console.log("got updated userdata:" + JSON.stringify(json));
+        userdata = json;
+        //need to remove the first angle now that it is accepted
+        nextAngles.shift();
+        if (editNextAngleNo > 0) {
+          editNextAngleNo--;
+        }
+        updateBars();
+        drawGeomodelToBuffer(userdata);
+        redrawEnabledForAninterval();
+      });
+  });
 }
 
 function commitStop() {
@@ -177,9 +193,15 @@ function setup() {
     } else {
       pButtons[i] = createButton("max");
     }
+
+
     pButtons[i].mousePressed(function () {
-      buttonSelectSubSet(i);
-    });
+      var j = i;
+      return function () {
+        return buttonSelectSubSet(j);
+      };
+    }());
+
     pButtons[i].position(i * 800.0 / 10, 800);
   }
 
@@ -291,6 +313,7 @@ function setSizesAndPositions() {
   resizeCanvas(canvasWidth, canvasHeigth);
 
   drawGeomodelToBuffer(userdata);
+  drawBarCharts();
 
   prevButton.size(canvasWidth / 2 - 15, 100);
   prevButton.position(10, geoModelBuffer.height + 5);
@@ -300,6 +323,7 @@ function setSizesAndPositions() {
 
   angleSlider.position(80, geoModelBuffer.height + prevButton.height + 10);
   angleSlider.size(canvasWidth - 80 * 2, 50);
+  redrawEnabledForAninterval();
 }
 
 
