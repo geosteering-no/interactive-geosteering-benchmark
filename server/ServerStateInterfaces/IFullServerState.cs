@@ -9,7 +9,7 @@ namespace ServerStateInterfaces
         TScoreData>
     {
         bool AddUser(string userId);
-        void RestartServer(int seed = 0);
+        void RestartServer(int seed = -1);
         TUserData UpdateUser(string userId, TWellPoint load = default);
         TUserData StopUser(string userId);
         bool UserExists(string userId);

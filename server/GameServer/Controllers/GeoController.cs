@@ -6,6 +6,7 @@ using ServerStateInterfaces;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipelines;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace GameServer.Controllers
 {
@@ -13,6 +14,9 @@ namespace GameServer.Controllers
     [Route("[controller]")]
     public class GeoController : ControllerBase
     {
+        private const string ADMIN_SECRET_USER_NAME =
+            "REmarIdYWorYpiETerdReMnAriDaYEpOsViABLEbACRoNCeNERbAlTIveIDECoMErTiOcHonypoLosenTioClATeRIGENEGMAty";
+
         private const string UserId_ID = "geobanana-user-id";
         private readonly ILogger<GeoController> _logger;
         private readonly IFullServerState<WellPoint, UserData, UserEvaluation, PopulationScoreData> _state;
@@ -25,20 +29,36 @@ namespace GameServer.Controllers
             _state = state;
         }
 
-        //TODO add a secret token here or as an argument
-        [Route("admin/restart/secret_token")]
-        public void Restart(int seed = 0)
+        [Route("restart")]
+        [HttpPost]
+        public void Restart()
         {
-            _state.RestartServer(seed);
+            var userId = GetUserId();
+            if (userId == ADMIN_SECRET_USER_NAME)
+            {
+                _state.RestartServer();
+            }
+            else
+            {
+                throw new Exception("You are not the admin");
+            }
         }
 
         [Route("init")]
         [HttpPost]
         public void InitNewUser([FromForm] string userName)
         {
-            WriteUserId(userName);
-            _state.GetOrAddUserState(userName);
-            Response.Redirect("/index.html");
+            if (userName == ADMIN_SECRET_USER_NAME)
+            {
+                WriteUserIdToCookie(userName);
+                Response.Redirect("/admin.html");
+            }
+            else
+            {
+                WriteUserIdToCookie(userName);
+                _state.GetOrAddUserState(userName);
+                Response.Redirect("/index.html");
+            }
         }
 
         [Route("checkUser")]
@@ -48,7 +68,7 @@ namespace GameServer.Controllers
             return userId == userName;
         }
 
-        private void WriteUserId(string userId)
+        private void WriteUserIdToCookie(string userId)
         {
             CookieOptions option = new CookieOptions()
             {

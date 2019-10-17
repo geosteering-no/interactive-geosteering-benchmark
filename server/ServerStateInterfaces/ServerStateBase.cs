@@ -22,6 +22,21 @@ namespace ServerStateInterfaces
         protected abstract ObjectiveEvaluationDelegate<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
             Evaluator { get; }
 
+        private Random rnd = new Random();
+        private int[] seeds = {0, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8};
+        private int seedInd = 0;
+
+        private int NextSeed()
+        {
+            var res = rnd.Next();
+            if (seedInd < seeds.Length)
+            {
+                res = seeds[seedInd];
+            }
+
+            seedInd++;
+            return res;
+        }
         public ServerStateBase()
         {
             InitializeNewSyntheticTruth(0);
@@ -91,12 +106,18 @@ namespace ServerStateInterfaces
             return _users.GetOrAdd(userId, GetDefaultNewUser());
         }
 
-        public void RestartServer(int seed = 0)
+
+
+        public void RestartServer(int seed = -1)
         {
+            if (seed == -1)
+            {
+                seed = NextSeed();
+            }
             var newDict = new ConcurrentDictionary<string, TUserModel>();
             foreach (var user in _users)
             {
-                var newUserState = new TUserModel();
+                var newUserState = GetDefaultNewUser();
                 while (!newDict.TryAdd(user.Key, newUserState))
                 {
                     //will add everything eventually

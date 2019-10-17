@@ -2,6 +2,7 @@ var timerCountdown = 1;
 var prevButton;
 var nextButton;
 var angleSlider;
+var restartButton;
 var revealIndex = 0;
 var maxIndex = 10;
 
@@ -18,31 +19,11 @@ function setup() {
 	angleSlider.style('width', '280px');
 	angleSlider.style('height', '180px');
 
+	restartButton = createButton("New game");
+	restartButton.position(0,450);
+	restartButton.mousePressed(restartClick);
+
 	setSizesAndPositions();
-
-	fetch("/geo/init?userName=morten", { credentials: 'include' })
-		.then(function (res) {
-			// if (!res.ok) {
-			//   alert("init failed");
-			//   throw Error("init failed");
-			// }
-			console.log("init success");
-			fetch("/geo/userdata", { credentials: 'include' })
-				.then(function (res2) {
-					if (!res2.ok) {
-						alert("getting userdata failed");
-						throw Error("getting userdata failed");
-					}
-					res2.json()
-						.then(function (json) {
-							console.log("got userdata:" + JSON.stringify(json));
-							userdata = json;
-							drawGeomodelToBuffer();
-							redrawEnabledForAninterval();
-						});
-
-				});
-		});
 
 
 	//drawGeomodelToBuffer();
@@ -67,17 +48,37 @@ function draw() {
 }
 
 function buttonPreviousClick() {
-	if (revealIndex > 0){
+	if (revealIndex > 0) {
 		revealIndex--;
 	}
 	redrawEnabledForAninterval();
 }
 
 function buttonNextClick() {
-	if (revealIndex < maxIndex){
+	if (revealIndex < maxIndex) {
 		revealIndex++;
-	} 
+	}
 	redrawEnabledForAninterval();
+}
+
+function restartClick() {
+	fetch("geo/restart",
+		{
+			credentials: 'include',
+			method: 'POST'
+		})
+		.then(function (res) {
+			if (!res.ok) {
+				alert("restarting was not accepted?!");
+				//throw Error("getting userdata failed");
+			}
+			else {
+				console.log("restart complete");
+				//TODO consider making it impossible to add new points
+				//TODO consider sending a message to user
+			}
+		});
+
 }
 
 function sliderAngleChange() {
