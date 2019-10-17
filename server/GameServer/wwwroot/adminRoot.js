@@ -47,6 +47,10 @@ function draw() {
 	}
 }
 
+function drawProgressToWellBuffer(){
+	var buffer = wellBuffer;
+}
+
 function buttonPreviousClick() {
 	if (revealIndex > 0) {
 		revealIndex--;
@@ -62,7 +66,7 @@ function buttonNextClick() {
 }
 
 function restartClick() {
-	fetch("geo/restart",
+	fetch("geo/restart/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
 		{
 			credentials: 'include',
 			method: 'POST'

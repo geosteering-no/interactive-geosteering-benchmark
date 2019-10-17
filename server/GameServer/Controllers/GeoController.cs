@@ -29,7 +29,7 @@ namespace GameServer.Controllers
             _state = state;
         }
 
-        [Route("restart")]
+        [Route("restart/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]
         public void Restart()
         {

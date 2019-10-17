@@ -103,7 +103,14 @@ namespace ServerStateInterfaces
         protected TUserModel GetOrAddUser(string userId)
         {
             //TODO check if default works
-            return _users.GetOrAdd(userId, GetDefaultNewUser());
+            var doLog = !UserExists(userId);
+            var user = _users.GetOrAdd(userId, GetDefaultNewUser());
+            if (doLog)
+            {
+                DumpUserStateToFile(userId, user.UserData);
+            }
+
+            return user;
         }
 
 
@@ -153,6 +160,7 @@ namespace ServerStateInterfaces
         {
             var user = GetOrAddUser(userId);
             user.StopDrilling();
+            DumpUserStateToFile(userId, user.UserData);
             return user.UserData;
         }
 
