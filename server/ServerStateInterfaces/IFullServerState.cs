@@ -11,6 +11,7 @@ namespace ServerStateInterfaces
         bool AddUser(string userId);
         void RestartServer(int seed = 0);
         TUserData UpdateUser(string userId, TWellPoint load = default);
+        void StopUser(string userId);
         bool UserExists(string userId);
         TUserData GetOrAddUserState(string userId);
         TUserEvaluationData GetUserEvaluationData(string userId, IList<TWellPoint> trajectory);

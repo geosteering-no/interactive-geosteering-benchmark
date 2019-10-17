@@ -38,6 +38,7 @@ namespace ServerStateInterfaces
                 wellPoints = new List<WellPoint>() { GetNextStateDefault() , GetNextStateDefault2()},
                 Xtopleft = X_TOP_LEFT,
                 Ytopleft = Y_TOP_LEFT,
+                stopped = false
             };
             var xs = new List<double>();
 
@@ -108,6 +109,13 @@ namespace ServerStateInterfaces
             UserData.wellPoints.Add(updatePoint);
 
             return true;
+        }
+
+        
+
+        public void StopDrilling()
+        {
+            _userData.stopped = true;
         }
 
         public WellPoint GetNextStateDefault()

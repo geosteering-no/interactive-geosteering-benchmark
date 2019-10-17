@@ -63,9 +63,8 @@ namespace GameServer.Controllers
         [HttpPost]
         public void CommitStop()
         {
-            //TODO finish
-            throw new NotImplementedException();
-
+            var userId = GetUserId();
+            _state.UpdateUser(userId);
         }
 
 

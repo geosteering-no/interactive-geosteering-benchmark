@@ -24,6 +24,7 @@ namespace UserState
             _dataProvider;
 
         private IList<IContinousState> _trajectory;
+        private bool _stopped = false;
 
         private const int NumRealiztions = 100;
         private const int NumPointsInLayer = 40;
@@ -72,6 +73,11 @@ namespace UserState
             }
 
             return false;
+        }
+
+        public void StopDrilling()
+        {
+            _stopped = true;
         }
 
         public IContinousState GetNextStateDefault()
@@ -229,6 +235,7 @@ namespace UserState
                     wellPoints = wellPoints,
                     xList = _earthManipulator.XPositions,
                     Xdist = DefaultDecisionStep,
+                    stopped = _stopped
                 };
                 return data;
             }

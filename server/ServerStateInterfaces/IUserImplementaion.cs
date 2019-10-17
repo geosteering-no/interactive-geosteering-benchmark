@@ -14,6 +14,7 @@ namespace ServerStateInterfaces
         //double DoiY { get; set; }
         TUserData UserData { get; }
         bool UpdateUser(TWellPoint updatePoint, TSecretState secret);
+        void StopDrilling();
         TWellPoint GetNextStateDefault();
         TEvaluationResult GetEvaluation(IList<TWellPoint> trajectory);
     }
