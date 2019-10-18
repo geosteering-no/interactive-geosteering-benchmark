@@ -5,7 +5,7 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public interface IUserImplementaion<TUserData, TWellPoint, TSecretState, TEvaluationResult>
+    public interface IUserImplementaion<TUserData, TWellPoint, TSecretState, TEvaluationResult, TRealizationData>
     {
         
         ObjectiveEvaluationDelegateUser<TUserData, TWellPoint, TEvaluationResult>.ObjectiveEvaluationFunction 
@@ -18,9 +18,9 @@ namespace ServerStateInterfaces
         TWellPoint GetNextStateDefault();
         TEvaluationResult GetEvaluation(IList<TWellPoint> trajectory);
         IList<WellPointWithScore<TWellPoint>> GetEvaluationForTruth(
-            ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
+            ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction
                 evaluator,
-            RealizationData secretData);
+            TRealizationData secretData);
 
     }
 }

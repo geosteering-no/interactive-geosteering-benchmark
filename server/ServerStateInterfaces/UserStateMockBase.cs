@@ -5,7 +5,7 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public class UserStateMockBase : IUserImplementaion<UserData, WellPoint, RealizationData, UserEvaluation>
+    public class UserStateMockBase : IUserImplementaion<UserData, WellPoint, RealizationData, UserEvaluation, RealizationData>
     {
         private UserData _userData;
         private ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
@@ -13,6 +13,7 @@ namespace ServerStateInterfaces
         const double X_TOP_LEFT = 10.0;
         const double Y_TOP_LEFT = 10.0;
         private const double X_WIDTH = 100;
+        private readonly object updateLock = new object();
 
 
 
@@ -25,8 +26,6 @@ namespace ServerStateInterfaces
             }
             set { _evaluator = value; }
         }
-
-        //TODO implemnt adding points
 
         public static UserData CreateUserData()
         {
@@ -49,7 +48,6 @@ namespace ServerStateInterfaces
             }
 
             userData.xList = xs;
-            //TODO add more realizations
             List<RealizationData> rs = Enumerable.Range(0, 100).Select(i =>
             {
                 var realization = new RealizationData()
@@ -83,43 +81,54 @@ namespace ServerStateInterfaces
 
         public UserData UserData
         {
-            get => _userData;
+            get
+            {
+                return _userData;
+            }
         }
 
         public bool UpdateUser(WellPoint updatePoint, RealizationData secret)
         {
-            int prevIndex;
-            for (prevIndex = 0; prevIndex < secret.XList.Count - 1; ++prevIndex)
+            lock (updateLock)
             {
-                if (updatePoint.X < secret.XList[prevIndex])
+                int prevIndex;
+                for (prevIndex = 0; prevIndex < secret.XList.Count - 1; ++prevIndex)
                 {
-                    break;
+                    if (updatePoint.X < secret.XList[prevIndex])
+                    {
+                        break;
+                    }
                 }
+
+
+                foreach (var userDataRealization in _userData.realizations)
+                {
+                    var minJ = Math.Min(userDataRealization.YLists.Count, secret.YLists.Count);
+                    for (var j = 0; j < minJ; ++j)
+                    {
+                        userDataRealization.YLists[j][prevIndex] = secret.YLists[j][prevIndex];
+                    }
+                }
+
+                UserData.wellPoints.Add(updatePoint);
+                return true;
+
             }
 
 
-            foreach (var userDataRealization in _userData.realizations)
-            {
-                var minJ = Math.Min(userDataRealization.YLists.Count, secret.YLists.Count);
-                for (var j = 0; j < minJ; ++j)
-                {
-                    userDataRealization.YLists[j][prevIndex] = secret.YLists[j][prevIndex];
-                }
-            }
-
-            UserData.wellPoints.Add(updatePoint);
-
-            return true;
         }
 
 
 
         public void StopDrilling()
         {
-            _userData.stopped = true;
+            lock (updateLock)
+            {
+                _userData.stopped = true;
+            }
         }
 
-        WellPoint IUserImplementaion<UserData, WellPoint, RealizationData, UserEvaluation>.GetNextStateDefault()
+        WellPoint IUserImplementaion<UserData, WellPoint, RealizationData, UserEvaluation, RealizationData>.GetNextStateDefault()
         {
             return GetNextStateDefault();
         }
@@ -138,12 +147,15 @@ namespace ServerStateInterfaces
 
         public UserEvaluation GetEvaluation(IList<WellPoint> trajectory)
         {
-            //convert to avoid erroers
-            var userData = UserData;
+            lock (updateLock)
+            {
+                //convert to avoid erroers
+                var userData = UserData;
 
-            var result = Evaluator(userData, trajectory);
+                var result = Evaluator(userData, trajectory);
 
-            return result;
+                return result;
+            }
         }
 
         public IList<WellPointWithScore<WellPoint>> GetEvaluationForTruth(
@@ -151,40 +163,42 @@ namespace ServerStateInterfaces
             evaluator,
             RealizationData secretData)
         {
-            var trajectory = UserData.wellPoints;
-            var resultList = new List<WellPointWithScore<WellPoint>>(trajectory.Count);
-            var sum = 0.0;
-
-            for (var i = 0; i < trajectory.Count; i++)
+            lock (updateLock)
             {
-                var pt = trajectory[i];
-                if (i == 0)
-                {
-                    resultList.Add(new WellPointWithScore<WellPoint>()
-                    {
-                        wellPoint = pt,
-                        Score = sum
-                    });
-                }
-                else
-                {
-                    var twoPoints = new List<WellPoint>() { trajectory[i - 1], pt };
-                    sum += evaluator(secretData, twoPoints);
-                    resultList.Add(new WellPointWithScore<WellPoint>()
-                    {
-                        wellPoint = pt,
-                        Score = sum
-                    });
+                var trajectory = UserData.wellPoints;
+                var resultList = new List<WellPointWithScore<WellPoint>>(trajectory.Count);
+                var sum = 0.0;
 
+                for (var i = 0; i < trajectory.Count; i++)
+                {
+                    var pt = trajectory[i];
+                    if (i == 0)
+                    {
+                        resultList.Add(new WellPointWithScore<WellPoint>()
+                        {
+                            wellPoint = pt,
+                            Score = sum
+                        });
+                    }
+                    else
+                    {
+                        var twoPoints = new List<WellPoint>() {trajectory[i - 1], pt};
+                        sum += evaluator(secretData, twoPoints);
+                        resultList.Add(new WellPointWithScore<WellPoint>()
+                        {
+                            wellPoint = pt,
+                            Score = sum
+                        });
+
+                    }
                 }
+
+                return resultList;
             }
-
-            return resultList;
         }
 
-        public WellPoint GetNextStateDefault2()
+        private WellPoint GetNextStateDefault2()
         {
-            //TODO consider a better implementation, but this is not needed functionality once client is good
             var point = new WellPoint()
             {
                 X = X_TOP_LEFT + X_WIDTH / 10.0,

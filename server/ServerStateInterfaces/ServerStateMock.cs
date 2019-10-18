@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ServerDataStructures;
 
@@ -9,18 +10,28 @@ namespace ServerStateInterfaces
     {
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
 
-        protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction 
+        protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction
             EvaluatorUser => _evaluatorClass.EvaluateDefault;
 
         protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
             EvaluatorTruth => _evaluatorClass.EvaluateOneRealizationDefault;
 
+        PopulationScoreData _scoreData;
 
         private UserData _dummyUserData;
 
         public ServerStateMock() : base()
         {
             _dummyUserData = UserStateMockBase.CreateUserData();
+            _scoreData = new PopulationScoreData()
+            {
+                Height = _dummyUserData.Height,
+                Width = _dummyUserData.Width,
+                Xtopleft = _dummyUserData.Xtopleft,
+                Ytopleft = _dummyUserData.Ytopleft,
+                xList = _dummyUserData.xList,
+                secretRealization = _secret
+            };
         }
 
         protected override void InitializeNewSyntheticTruth(int seed = 0)
@@ -32,26 +43,15 @@ namespace ServerStateInterfaces
 
         protected override RealizationData GetTruthForEvaluation()
         {
-            throw new NotImplementedException();
+            return _secret;
         }
 
         public override PopulationScoreData GetScoreboard()
         {
-            PopulationScoreData scoreData = new PopulationScoreData()
-            {
-                Height = _dummyUserData.Height,
-                Width = _dummyUserData.Width,
-                Xtopleft = _dummyUserData.Xtopleft,
-                Ytopleft = _dummyUserData.Ytopleft,
-                xList = _dummyUserData.xList,
-                secretRealization = _secret
-            };
-            var scores = new List<UserResultFinal>();
-            foreach (var user in _users)
-            {
-                
-            }
-            throw new NotImplementedException();
+            //TODO check if can be moved to base class
+            var scores = _userResults.Values.ToList();
+            _scoreData.UserResults = scores;
+            return _scoreData;
         }
 
     }

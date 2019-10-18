@@ -13,7 +13,7 @@ using TrajectoryOptimization;
 namespace UserState
 {
     [DataContract]
-    public class UserState : IUserImplementaion<UserData, IContinousState, TrueModelState, UserEvaluation>
+    public class UserState : IUserImplementaion<UserData, IContinousState, TrueModelState, UserEvaluation, RealizationData>
     {
         [DataMember]
         private EarthModelManipulator _earthManipulator;
@@ -22,6 +22,8 @@ namespace UserState
         private NewEMSimulator _emSim;
         private GenericDataProvider<IResistivityModel, IContinousState, ResistivityData2DFull>
             _dataProvider;
+
+        private readonly object updateLock = new Object();
 
         private IList<IContinousState> _trajectory;
         private bool _stopped = false;
@@ -77,7 +79,10 @@ namespace UserState
 
         public void StopDrilling()
         {
-            _stopped = true;
+            lock (updateLock)
+            {
+                _stopped = true;
+            }
         }
 
         public IContinousState GetNextStateDefault()
@@ -97,16 +102,29 @@ namespace UserState
 
         public UserEvaluation GetEvaluation(IList<IContinousState> trajectory)
         {
+            lock (updateLock)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IList<WellPointWithScore<IContinousState>> GetEvaluationForTruth(ObjectiveEvaluatorDelegateTruth<RealizationData, IContinousState>.ObjectiveEvaluationFunction evaluator, RealizationData secretData)
+        {
+            lock (updateLock) ;
             throw new NotImplementedException();
         }
 
         public IList<WellPointWithScore<IContinousState>> GetEvaluationForTruth(ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluator, RealizationData secretData)
         {
+            lock (updateLock) ;
+
+
             throw new NotImplementedException();
         }
 
         public IList<WellPointWithScore<WellPoint>> GetEvaluationForTruth()
         {
+            lock (updateLock) ;
             throw new NotImplementedException();
         }
 
@@ -253,14 +271,17 @@ namespace UserState
 
         public bool UpdateUser(IContinousState updatePoint, TrueModelState secret)
         {
-            var res = OfferUpdatePoint(updatePoint, secret.GetData);
-            if (res)
+            lock (updateLock)
             {
-                _trajectory.Add(updatePoint);
-                return true;
-            }
+                var res = OfferUpdatePoint(updatePoint, secret.GetData);
+                if (res)
+                {
+                    _trajectory.Add(updatePoint);
+                    return true;
+                }
 
-            return false;
+                return false;
+            }
         }
     }
 }

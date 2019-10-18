@@ -14,6 +14,6 @@ namespace ServerDataStructures
         public IList<double> xList { get; set; }
 
         public RealizationData secretRealization { get; set; }
-        public IList<UserResultFinal> UserResults { get; set; }
+        public IList<UserResultFinal<WellPoint>> UserResults { get; set; }
     }
 }

@@ -9,16 +9,18 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public abstract class ServerStateBase<TWellPoint, TUserDataModel, TUserModel, TSecretState, TUserResult, TRealizationData> :
-        IFullServerState<
+    public abstract class ServerStateBase<
+        TWellPoint, TUserDataModel, TUserModel, 
+        TSecretState, TUserResult, TRealizationData> :
+        IFullServerStateGeocontroller<
             TWellPoint, TUserDataModel, TUserResult, PopulationScoreData>
         where TUserModel : IUserImplementaion<
-            TUserDataModel, TWellPoint, TSecretState, TUserResult>, new()
+            TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
 
     {
 
         protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
-        protected ConcurrentDictionary<string, UserResultFinal> _userResults = new ConcurrentDictionary<string, UserResultFinal>();
+        protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
         protected TSecretState _secret = default;
 
         protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
@@ -76,16 +78,16 @@ namespace ServerStateInterfaces
             return newUser;
         }
 
-        public UserResultFinal GetDefaultUserResult()
+        public UserResultFinal<TWellPoint> GetDefaultUserResult()
         {
-            var result = new UserResultFinal()
+            var result = new UserResultFinal<TWellPoint>()
             {
                 AccumulatedScoreFromPreviousGames = 0,
                 Stopped = false,
-                TrajectoryWithScore = new List<WellPointWithScore<WellPoint>>()
+                TrajectoryWithScore = new List<WellPointWithScore<TWellPoint>>()
             };
-            //return newUser;
-            throw new NotImplementedException();
+            return result;
+            //throw new NotImplementedException();
         }
 
 
@@ -112,13 +114,12 @@ namespace ServerStateInterfaces
         }
 
         /// <summary>
-        /// this should call dump secret state to file
+        /// this should call dump secret stateGeocontroller to file
         /// </summary>
         /// <param name="seed"></param>
         protected abstract void InitializeNewSyntheticTruth(int seed = 0);
         //{
         //    DumpSectetStateToFile(seed);
-        //    //TODO fix
         //    //Console.WriteLine("Initialized synthetic truth with seed: " + seed);
         //    //_syntheticTruth = new TrueModelState(seed);
         //}
@@ -138,6 +139,16 @@ namespace ServerStateInterfaces
 
         protected abstract TRealizationData GetTruthForEvaluation();
 
+        protected UserResultFinal<TWellPoint> GetDefaultUserResult(TUserModel user)
+        {
+            var newUserResult = GetDefaultUserResult();
+            var trueRealization = GetTruthForEvaluation();
+            newUserResult.TrajectoryWithScore = user.GetEvaluationForTruth(
+                EvaluatorTruth,
+                trueRealization);
+            return newUserResult;
+        }
+
         protected TUserModel GetOrAddUser(string userId)
         {
             //TODO check if default works
@@ -145,12 +156,10 @@ namespace ServerStateInterfaces
             var user = _users.GetOrAdd(userId, GetDefaultNewUser());
             if (doLog)
             {
-                var userData = user.UserData;
-                var newUserResult = GetDefaultUserResult();
-                //newUserResult.TrajectoryWithScore.Add();
-                //for (var i = 0; i<)
-                throw new NotImplementedException();
-                _userResults.GetOrAdd(userId, newUserResult);
+                //var userData = user.UserData;
+                var newUserResult = GetDefaultUserResult(user);
+                _userResults.TryAdd(userId, newUserResult);
+                //log
                 DumpUserStateToFile(userId, user.UserData);
             }
 
@@ -173,10 +182,12 @@ namespace ServerStateInterfaces
                 {
                     //will add everything eventually
                 }
+                //TODO add user score to sum
+                //TODO create new user score
                 DumpUserStateToFile(user.Key, newUserState.UserData);
             }
 
-            //put a clean user state
+            //put a clean user stateGeocontroller
             _users = newDict;
             //put a new truth
             InitializeNewSyntheticTruth(seed);
@@ -194,6 +205,8 @@ namespace ServerStateInterfaces
             if (ok)
             {
                 var newUserData = user.UserData;
+                //TODO update user score
+                //var userResult = _userResults.
                 DumpUserStateToFile(userId, user.UserData);
                 return newUserData;
             }
@@ -204,6 +217,7 @@ namespace ServerStateInterfaces
         {
             var user = GetOrAddUser(userId);
             user.StopDrilling();
+            //TODO update score buy marking stop
             DumpUserStateToFile(userId, user.UserData);
             return user.UserData;
         }

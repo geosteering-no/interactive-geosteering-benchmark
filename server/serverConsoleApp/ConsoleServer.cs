@@ -12,7 +12,7 @@ namespace serverConsoleApp
     class ConsoleServer
     {
         private const string Value = "Command not recognised";
-        static IFullServerState<IContinousState, UserData, UserEvaluation, PopulationScoreData> serverState = new FullServerState();
+        static IFullSerrverExtended<IContinousState, UserData, UserEvaluation, PopulationScoreData> _serverStateGeocontroller = new FullServerState();
 
         static void Main(string[] args)
         {
@@ -63,19 +63,19 @@ namespace serverConsoleApp
                 Random rnd = new Random();
                 int seed = rnd.Next();
                 int.TryParse(command, out seed);
-                serverState.RestartServer();
+                _serverStateGeocontroller.RestartServer();
                 return;
             }
 
 
 
-            if (serverState.UserExists(str))
+            if (_serverStateGeocontroller.UserExists(str))
             {
                 Console.WriteLine("We have a user: " + str);
                 //var curUser = _users[str];
                 if (command == "update")
                 {
-                    var result = serverState.UpdateUser(str);
+                    var result = _serverStateGeocontroller.UpdateUser(str);
                     //var result = curUser.OfferUpdatePoint(updatePoint, _syntheticTruth.GetData);
                     Console.WriteLine("Update successful: " + result);
                 }
@@ -87,7 +87,8 @@ namespace serverConsoleApp
             }
             else
             {
-                var res = serverState.AddUser(str);
+                //TODO change add user
+                var res = _serverStateGeocontroller.AddUser(str);
                 if (res)
                 {
                     Console.WriteLine("Added new user: " + str);
