@@ -2,28 +2,37 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq.Expressions;
 using System.Text;
 using Newtonsoft.Json;
 using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public abstract class ServerStateBase<TWellPoint, TUserDataModel, TUserModel, TSecretState, TUserResult, TRealizationData> : 
+    public abstract class ServerStateBase<TWellPoint, TUserDataModel, TUserModel, TSecretState, TUserResult, TRealizationData> :
         IFullServerState<
             TWellPoint, TUserDataModel, TUserResult, PopulationScoreData>
         where TUserModel : IUserImplementaion<
             TUserDataModel, TWellPoint, TSecretState, TUserResult>, new()
-       
+
     {
 
         protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
+        protected ConcurrentDictionary<string, UserResultFinal> _userResults = new ConcurrentDictionary<string, UserResultFinal>();
         protected TSecretState _secret = default;
 
-        protected abstract ObjectiveEvaluationDelegate<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
-            Evaluator { get; }
+        protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
+            EvaluatorUser
+        { get; }
+
+        protected abstract ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction
+            EvaluatorTruth
+        { get; }
+
+
 
         private Random rnd = new Random();
-        private int[] seeds = {0, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8};
+        private int[] seeds = { 0, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8 };
         private int seedInd = 0;
 
 
@@ -62,10 +71,23 @@ namespace ServerStateInterfaces
             var newUser = new TUserModel()
             {
                 //TODO here is a bunch of hard-coded things
-                Evaluator = Evaluator
+                Evaluator = EvaluatorUser
             };
             return newUser;
         }
+
+        public UserResultFinal GetDefaultUserResult()
+        {
+            var result = new UserResultFinal()
+            {
+                AccumulatedScoreFromPreviousGames = 0,
+                Stopped = false,
+                TrajectoryWithScore = new List<WellPointWithScore<WellPoint>>()
+            };
+            //return newUser;
+            throw new NotImplementedException();
+        }
+
 
         public void DumpUserStateToFile(string userId, TUserDataModel data)
         {
@@ -101,6 +123,21 @@ namespace ServerStateInterfaces
         //    //_syntheticTruth = new TrueModelState(seed);
         //}
 
+        protected WellPointWithScore<TWellPoint> EvalueateSegmentAgainstTruth(TWellPoint p1, TWellPoint p2)
+        {
+            var pointWithScore = new WellPointWithScore<TWellPoint>()
+            {
+                wellPoint = p2,
+            };
+
+            var twoPoints = new List<TWellPoint>() { p1, p2 };
+            var localScore = EvaluatorTruth(GetTruthForEvaluation(), twoPoints);
+            pointWithScore.Score = localScore;
+            return pointWithScore;
+        }
+
+        protected abstract TRealizationData GetTruthForEvaluation();
+
         protected TUserModel GetOrAddUser(string userId)
         {
             //TODO check if default works
@@ -108,6 +145,12 @@ namespace ServerStateInterfaces
             var user = _users.GetOrAdd(userId, GetDefaultNewUser());
             if (doLog)
             {
+                var userData = user.UserData;
+                var newUserResult = GetDefaultUserResult();
+                //newUserResult.TrajectoryWithScore.Add();
+                //for (var i = 0; i<)
+                throw new NotImplementedException();
+                _userResults.GetOrAdd(userId, newUserResult);
                 DumpUserStateToFile(userId, user.UserData);
             }
 

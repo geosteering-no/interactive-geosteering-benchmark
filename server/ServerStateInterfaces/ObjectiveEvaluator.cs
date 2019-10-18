@@ -10,7 +10,7 @@ namespace ServerStateInterfaces
         private TheServerObjective localEvaluator = new TheServerObjective();
         
 
-        public double EvaluateDefault(RealizationData realizationData, IList<WellPoint> trajectory)
+        public double EvaluateOneRealizationDefault(RealizationData realizationData, IList<WellPoint> trajectory)
         {
             var sum = 0.0;
             for (int i = 1; i < trajectory.Count; ++i)
@@ -28,7 +28,7 @@ namespace ServerStateInterfaces
             var values = new List<double>(userData.realizations.Count);
             foreach (var realizationData in userData.realizations)
             {
-                var res = EvaluateDefault(realizationData, trajectory);
+                var res = EvaluateOneRealizationDefault(realizationData, trajectory);
                 values.Add(res);
             }
             var inds = new List<int>(userData.realizations.Count);

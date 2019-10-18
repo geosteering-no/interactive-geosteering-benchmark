@@ -9,8 +9,12 @@ namespace ServerStateInterfaces
     {
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
 
-        protected override ObjectiveEvaluationDelegate<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction 
-            Evaluator => _evaluatorClass.EvaluateDefault;
+        protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction 
+            EvaluatorUser => _evaluatorClass.EvaluateDefault;
+
+        protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
+            EvaluatorTruth => _evaluatorClass.EvaluateOneRealizationDefault;
+
 
         private UserData _dummyUserData;
 
@@ -24,6 +28,11 @@ namespace ServerStateInterfaces
             var defaultUser = GetDefaultNewUser();
             _secret = defaultUser.UserData.realizations[seed % defaultUser.UserData.realizations.Count];
             DumpSectetStateToFile(seed);
+        }
+
+        protected override RealizationData GetTruthForEvaluation()
+        {
+            throw new NotImplementedException();
         }
 
         public override PopulationScoreData GetScoreboard()

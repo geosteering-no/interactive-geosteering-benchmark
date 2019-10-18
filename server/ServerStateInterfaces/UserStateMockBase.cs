@@ -8,16 +8,17 @@ namespace ServerStateInterfaces
     public class UserStateMockBase : IUserImplementaion<UserData, WellPoint, RealizationData, UserEvaluation>
     {
         private UserData _userData;
-        private ObjectiveEvaluationDelegate<UserData,WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
+        private ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
         const int DISCRETIZATION_POINTS = 10;
         const double X_TOP_LEFT = 10.0;
         const double Y_TOP_LEFT = 10.0;
         private const double X_WIDTH = 100;
 
-        
 
-        public ObjectiveEvaluationDelegate<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction 
-            Evaluator {
+
+        public ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction
+            Evaluator
+        {
             get
             {
                 return _evaluator;
@@ -35,14 +36,14 @@ namespace ServerStateInterfaces
                 Width = X_WIDTH,
                 Xdist = X_WIDTH / 10.0,
                 Height = 10.0,
-                wellPoints = new List<WellPoint>() { GetNextStateDefault()},
+                wellPoints = new List<WellPoint>() { GetNextStateDefault() },
                 Xtopleft = X_TOP_LEFT,
                 Ytopleft = Y_TOP_LEFT,
                 stopped = false
             };
             var xs = new List<double>();
 
-            for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width/DISCRETIZATION_POINTS)
+            for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width / DISCRETIZATION_POINTS)
             {
                 xs.Add(x);
             }
@@ -59,10 +60,10 @@ namespace ServerStateInterfaces
                 var y1 = new List<double>();
                 var y2 = new List<double>();
 
-                for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width/DISCRETIZATION_POINTS)
+                for (double x = userData.Xtopleft; x <= userData.Xtopleft + userData.Width; x += userData.Width / DISCRETIZATION_POINTS)
                 {
-                    y1.Add(userData.Ytopleft + userData.Height * 0.2 - (r.NextDouble()*userData.Height/2.0) / 2);
-                    y2.Add(userData.Ytopleft + userData.Height * 0.5 + (r.NextDouble()*userData.Height/2.0) / 2);
+                    y1.Add(userData.Ytopleft + userData.Height * 0.2 - (r.NextDouble() * userData.Height / 2.0) / 2);
+                    y2.Add(userData.Ytopleft + userData.Height * 0.5 + (r.NextDouble() * userData.Height / 2.0) / 2);
                 }
 
                 realization.YLists.Add(y1);
@@ -83,20 +84,20 @@ namespace ServerStateInterfaces
         public UserData UserData
         {
             get => _userData;
-        } 
+        }
 
         public bool UpdateUser(WellPoint updatePoint, RealizationData secret)
         {
             int prevIndex;
-            for (prevIndex = 0; prevIndex < secret.XList.Count-1; ++prevIndex)
+            for (prevIndex = 0; prevIndex < secret.XList.Count - 1; ++prevIndex)
             {
                 if (updatePoint.X < secret.XList[prevIndex])
                 {
                     break;
                 }
             }
-            
-            
+
+
             foreach (var userDataRealization in _userData.realizations)
             {
                 var minJ = Math.Min(userDataRealization.YLists.Count, secret.YLists.Count);
@@ -111,7 +112,7 @@ namespace ServerStateInterfaces
             return true;
         }
 
-        
+
 
         public void StopDrilling()
         {
@@ -130,7 +131,7 @@ namespace ServerStateInterfaces
             {
                 X = X_TOP_LEFT,
                 Y = Y_TOP_LEFT,
-                Angle = 10.0/180*3.1415,
+                Angle = 10.0 / 180 * 3.1415,
             };
             return point;
         }
@@ -139,10 +140,46 @@ namespace ServerStateInterfaces
         {
             //convert to avoid erroers
             var userData = UserData;
-            
+
             var result = Evaluator(userData, trajectory);
 
             return result;
+        }
+
+        public IList<WellPointWithScore<WellPoint>> GetEvaluationForTruth(
+            ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
+            evaluator,
+            RealizationData secretData)
+        {
+            var trajectory = UserData.wellPoints;
+            var resultList = new List<WellPointWithScore<WellPoint>>(trajectory.Count);
+            var sum = 0.0;
+
+            for (var i = 0; i < trajectory.Count; i++)
+            {
+                var pt = trajectory[i];
+                if (i == 0)
+                {
+                    resultList.Add(new WellPointWithScore<WellPoint>()
+                    {
+                        wellPoint = pt,
+                        Score = sum
+                    });
+                }
+                else
+                {
+                    var twoPoints = new List<WellPoint>() { trajectory[i - 1], pt };
+                    sum += evaluator(secretData, twoPoints);
+                    resultList.Add(new WellPointWithScore<WellPoint>()
+                    {
+                        wellPoint = pt,
+                        Score = sum
+                    });
+
+                }
+            }
+
+            return resultList;
         }
 
         public WellPoint GetNextStateDefault2()

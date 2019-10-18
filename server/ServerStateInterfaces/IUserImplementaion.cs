@@ -8,7 +8,7 @@ namespace ServerStateInterfaces
     public interface IUserImplementaion<TUserData, TWellPoint, TSecretState, TEvaluationResult>
     {
         
-        ObjectiveEvaluationDelegate<TUserData, TWellPoint, TEvaluationResult>.ObjectiveEvaluationFunction 
+        ObjectiveEvaluationDelegateUser<TUserData, TWellPoint, TEvaluationResult>.ObjectiveEvaluationFunction 
             Evaluator { get; set; }
         //double DoiX { get; set; }
         //double DoiY { get; set; }
@@ -17,5 +17,10 @@ namespace ServerStateInterfaces
         void StopDrilling();
         TWellPoint GetNextStateDefault();
         TEvaluationResult GetEvaluation(IList<TWellPoint> trajectory);
+        IList<WellPointWithScore<TWellPoint>> GetEvaluationForTruth(
+            ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
+                evaluator,
+            RealizationData secretData);
+
     }
 }

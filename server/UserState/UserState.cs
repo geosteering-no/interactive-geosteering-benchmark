@@ -100,6 +100,16 @@ namespace UserState
             throw new NotImplementedException();
         }
 
+        public IList<WellPointWithScore<IContinousState>> GetEvaluationForTruth(ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluator, RealizationData secretData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<WellPointWithScore<WellPoint>> GetEvaluationForTruth()
+        {
+            throw new NotImplementedException();
+        }
+
         public double GetNextDecisionX()
         {
             return _trajectory[_trajectory.Count - 1].X + DefaultDecisionStep;
@@ -198,7 +208,7 @@ namespace UserState
             return wp;
         }
 
-        public ObjectiveEvaluationDelegate<UserData, IContinousState, UserEvaluation>.ObjectiveEvaluationFunction Evaluator
+        public ObjectiveEvaluationDelegateUser<UserData, IContinousState, UserEvaluation>.ObjectiveEvaluationFunction Evaluator
         {
             get
             {

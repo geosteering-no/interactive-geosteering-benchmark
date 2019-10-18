@@ -21,13 +21,18 @@ namespace UserState
             InitializeNewSyntheticTruth(0);
         }
 
-        protected override ObjectiveEvaluationDelegate<UserData, IContinousState, UserEvaluation>.ObjectiveEvaluationFunction Evaluator
+        protected override ObjectiveEvaluationDelegateUser<UserData, IContinousState, UserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser
         {
             get
             {
                 throw new NotImplementedException();
                 //TODO look up in mock implementation
             }
+        }
+
+        protected override ObjectiveEvaluatorDelegateTruth<RealizationData, IContinousState>.ObjectiveEvaluationFunction EvaluatorTruth
+        {
+            get;
         }
 
         protected sealed override void InitializeNewSyntheticTruth(int seed = 0)
@@ -37,6 +42,11 @@ namespace UserState
             _secret = new TrueModelState(seed);
             
             DumpSectetStateToFile(seed);
+        }
+
+        protected override RealizationData GetTruthForEvaluation()
+        {
+            throw new NotImplementedException();
         }
 
         public override PopulationScoreData GetScoreboard()

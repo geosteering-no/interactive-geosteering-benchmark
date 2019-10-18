@@ -4,8 +4,9 @@ using System.Text;
 
 namespace ServerDataStructures
 {
-    public class WellPointWithScore : WellPoint
+    public class WellPointWithScore<TWellPoint>
     {
+        public TWellPoint wellPoint { get; set; }
         public double Score { get; set; }
     }
 }
