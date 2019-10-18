@@ -158,7 +158,10 @@ namespace ServerStateInterfaces
             {
                 //var userData = user.UserData;
                 var newUserResult = GetDefaultUserResult(user);
-                _userResults.TryAdd(userId, newUserResult);
+                while (!_userResults.TryAdd(userId, newUserResult))
+                {
+
+                }
                 //log
                 DumpUserStateToFile(userId, user.UserData);
             }
@@ -178,12 +181,19 @@ namespace ServerStateInterfaces
             foreach (var user in _users)
             {
                 var newUserState = GetDefaultNewUser();
+                var newUserResult = GetDefaultUserResult(newUserState);
+                var oldUserResult = _userResults.GetOrAdd(user.Key, GetDefaultUserResult());
+                lock (oldUserResult)
+                {
+                    var prevGameScore = oldUserResult.TrajectoryWithScore[oldUserResult.TrajectoryWithScore.Count - 1]
+                                       .Score;
+                    oldUserResult.AccumulatedScoreFromPreviousGames += prevGameScore;
+                    oldUserResult.TrajectoryWithScore = newUserResult.TrajectoryWithScore;
+                }
                 while (!newDict.TryAdd(user.Key, newUserState))
                 {
                     //will add everything eventually
                 }
-                //TODO add user score to sum
-                //TODO create new user score
                 DumpUserStateToFile(user.Key, newUserState.UserData);
             }
 
@@ -204,8 +214,13 @@ namespace ServerStateInterfaces
             var ok = user.UpdateUser(load, _secret);
             if (ok)
             {
+                var newScore = GetDefaultUserResult(user);
+                var userScore = _userResults.GetOrAdd(userId, newScore);
+                lock (userScore)
+                {
+                    userScore.TrajectoryWithScore = newScore.TrajectoryWithScore;
+                }
                 var newUserData = user.UserData;
-                //TODO update user score
                 //var userResult = _userResults.
                 DumpUserStateToFile(userId, user.UserData);
                 return newUserData;
@@ -217,7 +232,13 @@ namespace ServerStateInterfaces
         {
             var user = GetOrAddUser(userId);
             user.StopDrilling();
-            //TODO update score buy marking stop
+            var newScore = GetDefaultUserResult();
+            var userScore = _userResults.GetOrAdd(userId, newScore);
+            lock (userScore)
+            {
+                userScore.Stopped = true;
+            }
+
             DumpUserStateToFile(userId, user.UserData);
             return user.UserData;
         }
