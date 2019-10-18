@@ -5,3 +5,6 @@ html, body {
 canvas {
   display: block;
 }
+body {
+    touch-action: manipulation;
+}
