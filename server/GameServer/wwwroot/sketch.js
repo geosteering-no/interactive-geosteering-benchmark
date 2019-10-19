@@ -1,5 +1,7 @@
 var userdata = null;
 
+var wellBuffer;
+
 //var xTravelDistance = 50;
 var maxAngleChange = 3.14 / 180.0 * 2;
 var minAngle = 0;

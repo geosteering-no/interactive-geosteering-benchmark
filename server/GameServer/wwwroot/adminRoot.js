@@ -29,9 +29,10 @@ function setup() {
 
 function draw() {
 	clear();
-	image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
-	drawAllWells();
-	image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.heigth);
+	//image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
+	//drawAllWells();
+	drawAllProgress();
+	image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
 
 	//drawWellToBuffer();
 
@@ -53,6 +54,7 @@ function drawProgressToWellBuffer() {
 
 function drawAllWells() {
 	if (scoreData != null) {
+		wellBuffer.background(51);
 		wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
 		wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
 		wellBuffer.strokeWeight(2 / scoreData.height);
@@ -70,13 +72,16 @@ function drawAllProgress() {
 	if (scoreData != null) {
 		wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
 		wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
-		wellBuffer.strokeWeight(2 / scoreData.height);
-		for (var i = 0; i < scoreData.userResults.length; ++i) {
-			var userPoints = scoreData.userResults[i].trajectoryWithScore.slice()
-				.map(function (withScore) {
-					return withScore.wellPoint;
-				});
-			drawUserWellToBuffer(wellBuffer, userPoints);
+		//wellBuffer.strokeWeight(2 / scoreData.height);
+		var totalUsers = scoreData.userResults.length;
+		var oneHeight = wellBuffer.height / totalUsers;
+		var shift = oneHeight / 6;
+		
+		for (var i = 0; i<totalUsers; i++){
+			var userProgressInd = scoreData.userResults[i].trajectoryWithScore.length;
+			var progresFraction = userProgressInd / maxIndex;
+			wellBuffer.rect(0, i*oneHeight + shift, progresFraction * wellBuffer.width, oneHeight-shift*2);
+			wellBuffer.rect(50,40,800,800);
 		}
 	}
 }
@@ -113,7 +118,7 @@ function fetchScoreData() {
 					console.log("got score:" + JSON.stringify(json));
 					scoreData = json;
 					drawGeomodelToBuffer(scoreData);
-					drawAllWells();
+					//drawAllWells();
 				});
 		});
 }
@@ -153,6 +158,7 @@ function drawGeomodelToBuffer(scoredata = null) {
 
 	geoModelBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
 	wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
+
 	barBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 2);
 
 
