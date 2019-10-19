@@ -26,6 +26,7 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
     var barMaxHeight = buffer.height * 0.8;
     //TODO do negative
     for (var i = 0; i < binsLen; i++) {
+
         //we subtract 1 so that for P10 for 100 it is based n index 9
         end = getIncluciveIndexEndForPercentile(i, scores.length);
         //console.log("start: " + start);
@@ -38,6 +39,16 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
             var currentHeigth = barMaxHeight - currentYtop;
             //console.log("score: " + score);
             var xLeft = i / binsLen * buffer.width + shift + shiftFirst;
+
+            if (barTouched == i) {
+                console.log("draw background bar: " + i);
+                buffer.fill(255, 137, 10);
+                buffer.rect(
+                    xLeft-shift, 0, 1.0 / binsLen * buffer.width, barMaxHeight
+                );
+                barBuffer.fill(90, 90, 90);
+            }
+
             buffer.rect(
                 xLeft,
                 currentYtop,
@@ -163,8 +174,22 @@ function drawFrame() {
     rect(0, 0, width, height);
 }
 
+var barTouched = -1;
+
+function mousePressed() {
+    if (mouseY > barBufferY 
+        && mouseY < barBufferY + barBuffer.height) {
 
 
+        console.log("mouse press");
+        barTouched = Math.round(mouseX/barBuffer.width * 9);
+        console.log("touched: " + barTouched);
+
+    }
+    drawBarCharts();
+    redrawEnabledForAninterval();
+    return false;
+}
 
 function drawRealizationToBuffer(buffer, xlist, real) {
     var polyCount = real.yLists.length / 2;
