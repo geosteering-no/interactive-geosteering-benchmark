@@ -23,21 +23,21 @@ function setup() {
 	setSizesAndPositions();
 
 
-	//drawGeomodelToBuffer();
+	drawGeomodelToBuffer();
 	//noLoop();
 }
 
 function draw() {
 	//clear();
 	if (revealIndex >= 0) {
+		
 		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
+		drawAllWells();
+		image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
 	} else {
 		fill(255);
 		rect(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
-
-		//drawAllWells();
 		drawAllProgress();
-		//image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
 		image(progressBuffer, 0, 0, progressBuffer.width, progressBuffer.height);
 	}
 
@@ -120,7 +120,6 @@ function buttonPreviousClick() {
 	if (revealIndex > -1) {
 		revealIndex--;
 	}
-	//redrawEnabledForAninterval();
 	drawAllWells();
 }
 
@@ -130,7 +129,6 @@ function buttonNextClick() {
 			revealIndex++;
 		}
 	}
-	//redrawEnabledForAninterval();
 	drawAllWells();
 }
 
@@ -181,7 +179,6 @@ function sliderAngleChange() {
 
 function windowResized() {
 	setSizesAndPositions();
-	redrawEnabledForAninterval();
 }
 
 
