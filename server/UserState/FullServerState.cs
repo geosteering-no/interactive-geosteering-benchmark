@@ -13,7 +13,7 @@ namespace UserState
 {
     public class FullServerState : 
         ServerStateBase<IContinousState, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>,
-        IFullSerrverExtended<IContinousState, UserData, UserEvaluation, PopulationScoreData>
+        IFullSerrverExtended<IContinousState, UserData, UserEvaluation, PopulationScoreData<IContinousState>>
     {
        
 
@@ -50,10 +50,6 @@ namespace UserState
             throw new NotImplementedException();
         }
 
-        public override PopulationScoreData GetScoreboard()
-        {
-            throw new NotImplementedException();
-        }
 
 
 

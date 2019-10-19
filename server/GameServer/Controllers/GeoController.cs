@@ -13,16 +13,17 @@ namespace GameServer.Controllers
     [ApiController]
     [Route("[controller]")]
     public class GeoController : ControllerBase
+    //TODO consider changing to Geocontroller<TWellPoint>
     {
         private const string ADMIN_SECRET_USER_NAME =
             "REmarIdYWorYpiETerdReMnAriDaYEpOsViABLEbACRoNCeNERbAlTIveIDECoMErTiOcHonypoLosenTioClATeRIGENEGMAty";
 
         private const string UserId_ID = "geobanana-user-id";
         private readonly ILogger<GeoController> _logger;
-        private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData> _stateGeocontroller;
+        private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> _stateGeocontroller;
 
         public GeoController(ILogger<GeoController> logger,
-            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData> stateGeocontroller)
+            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> stateGeocontroller)
         {
             //Note! this is magic
             _logger = logger;
@@ -45,7 +46,7 @@ namespace GameServer.Controllers
         }
 
         [Route("admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
-        public PopulationScoreData GetScores()
+        public PopulationScoreData<WellPoint> GetScores()
         {
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)

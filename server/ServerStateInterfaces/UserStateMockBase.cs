@@ -13,7 +13,7 @@ namespace ServerStateInterfaces
         const double X_TOP_LEFT = 10.0;
         const double Y_TOP_LEFT = 10.0;
         private const double X_WIDTH = 100;
-        private readonly object updateLock = new object();
+        
 
 
 
@@ -89,7 +89,7 @@ namespace ServerStateInterfaces
 
         public bool UpdateUser(WellPoint updatePoint, RealizationData secret)
         {
-            lock (updateLock)
+            
             {
                 int prevIndex;
                 for (prevIndex = 0; prevIndex < secret.XList.Count - 1; ++prevIndex)
@@ -122,7 +122,7 @@ namespace ServerStateInterfaces
 
         public void StopDrilling()
         {
-            lock (updateLock)
+
             {
                 _userData.stopped = true;
             }
@@ -147,7 +147,7 @@ namespace ServerStateInterfaces
 
         public UserEvaluation GetEvaluation(IList<WellPoint> trajectory)
         {
-            lock (updateLock)
+
             {
                 //convert to avoid erroers
                 var userData = UserData;
@@ -163,7 +163,7 @@ namespace ServerStateInterfaces
             evaluator,
             RealizationData secretData)
         {
-            lock (updateLock)
+
             {
                 var trajectory = UserData.wellPoints;
                 var resultList = new List<WellPointWithScore<WellPoint>>(trajectory.Count);

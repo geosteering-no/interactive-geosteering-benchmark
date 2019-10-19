@@ -2,7 +2,7 @@
 
 namespace ServerDataStructures
 {
-    public class PopulationScoreData
+    public class PopulationScoreData<TWellPoint>
     {
         public double Xtopleft { get; set; }
         public double Ytopleft { get; set; }
@@ -14,6 +14,6 @@ namespace ServerDataStructures
         public IList<double> xList { get; set; }
 
         public RealizationData secretRealization { get; set; }
-        public IList<UserResultFinal<WellPoint>> UserResults { get; set; }
+        public IList<UserResultFinal<TWellPoint>> UserResults { get; set; }
     }
 }

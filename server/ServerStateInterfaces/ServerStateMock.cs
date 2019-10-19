@@ -16,14 +16,14 @@ namespace ServerStateInterfaces
         protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
             EvaluatorTruth => _evaluatorClass.EvaluateOneRealizationDefault;
 
-        PopulationScoreData _scoreData;
+
 
         private UserData _dummyUserData;
 
         public ServerStateMock() : base()
         {
             _dummyUserData = UserStateMockBase.CreateUserData();
-            _scoreData = new PopulationScoreData()
+            _scoreData = new PopulationScoreData<WellPoint>()
             {
                 Height = _dummyUserData.Height,
                 Width = _dummyUserData.Width,
@@ -46,13 +46,7 @@ namespace ServerStateInterfaces
             return _secret;
         }
 
-        public override PopulationScoreData GetScoreboard()
-        {
-            //TODO check if can be moved to base class
-            var scores = _userResults.Values.ToList();
-            _scoreData.UserResults = scores;
-            return _scoreData;
-        }
+
 
     }
 }

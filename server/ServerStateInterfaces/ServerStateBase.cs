@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using Newtonsoft.Json;
@@ -13,7 +14,7 @@ namespace ServerStateInterfaces
         TWellPoint, TUserDataModel, TUserModel, 
         TSecretState, TUserResult, TRealizationData> :
         IFullServerStateGeocontroller<
-            TWellPoint, TUserDataModel, TUserResult, PopulationScoreData>
+            TWellPoint, TUserDataModel, TUserResult, PopulationScoreData<TWellPoint>>
         where TUserModel : IUserImplementaion<
             TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
 
@@ -22,6 +23,8 @@ namespace ServerStateInterfaces
         protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
         protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
         protected TSecretState _secret = default;
+
+        protected PopulationScoreData<TWellPoint> _scoreData;
 
         protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
             EvaluatorUser
@@ -64,7 +67,11 @@ namespace ServerStateInterfaces
             }
 
             var user = GetOrAddUser(userId);
-            DumpUserStateToFile(userId, user.UserData);
+            lock (user)
+            {
+                DumpUserStateToFile(userId, user.UserData);
+            }
+
             return res;
         }
 
@@ -154,21 +161,28 @@ namespace ServerStateInterfaces
             //TODO check if default works
             var doLog = !UserExists(userId);
             var user = _users.GetOrAdd(userId, GetDefaultNewUser());
-            if (doLog)
+            lock (user)
             {
-                //var userData = user.UserData;
-                var newUserResult = GetDefaultUserResult(user);
-                while (!_userResults.TryAdd(userId, newUserResult))
+                if (doLog)
                 {
+                    //var userData = user.UserData;
+                    var newUserResult = GetDefaultUserResult(user);
+                    for (var i = 0; i < 100; ++i)
+                    {
+                        var res = _userResults.TryAdd(userId, newUserResult);
+                        if (res)
+                        {
+                            break;
+                        }
+                    }
 
+                    //log
+                    DumpUserStateToFile(userId, user.UserData);
                 }
-                //log
-                DumpUserStateToFile(userId, user.UserData);
             }
 
             return user;
         }
-
 
 
         public void RestartServer(int seed = -1)
@@ -178,23 +192,34 @@ namespace ServerStateInterfaces
                 seed = NextSeed();
             }
             var newDict = new ConcurrentDictionary<string, TUserModel>();
-            foreach (var user in _users)
+            foreach (var userId in _users.Keys)
             {
                 var newUserState = GetDefaultNewUser();
                 var newUserResult = GetDefaultUserResult(newUserState);
-                var oldUserResult = _userResults.GetOrAdd(user.Key, GetDefaultUserResult());
-                lock (oldUserResult)
+                _userResults.AddOrUpdate(userId, GetDefaultUserResult(), (key, oldUserResult) =>
                 {
-                    var prevGameScore = oldUserResult.TrajectoryWithScore[oldUserResult.TrajectoryWithScore.Count - 1]
-                                       .Score;
+                    double prevGameScore = 0;
+                    if (oldUserResult.TrajectoryWithScore.Count > 0)
+                    {
+                        prevGameScore = oldUserResult.TrajectoryWithScore[oldUserResult.TrajectoryWithScore.Count - 1]
+                            .Score;
+                    }
+
                     oldUserResult.AccumulatedScoreFromPreviousGames += prevGameScore;
                     oldUserResult.TrajectoryWithScore = newUserResult.TrajectoryWithScore;
-                }
-                while (!newDict.TryAdd(user.Key, newUserState))
+                    return oldUserResult;
+                });
+                for (var i = 0; i< 100; ++i)
                 {
                     //will add everything eventually
+                    var res = newDict.TryAdd(userId, newUserState);
+                    //TODO throw something
+                    if (res)
+                    {
+                        break;
+                    }
                 }
-                DumpUserStateToFile(user.Key, newUserState.UserData);
+                DumpUserStateToFile(userId, newUserState.UserData);
             }
 
             //put a clean user stateGeocontroller
@@ -211,36 +236,44 @@ namespace ServerStateInterfaces
             }
 
             var user = GetOrAddUser(userId);
-            var ok = user.UpdateUser(load, _secret);
-            if (ok)
+            lock (user)
             {
-                var newScore = GetDefaultUserResult(user);
-                var userScore = _userResults.GetOrAdd(userId, newScore);
-                lock (userScore)
+                var ok = user.UpdateUser(load, _secret);
+                if (ok)
                 {
-                    userScore.TrajectoryWithScore = newScore.TrajectoryWithScore;
+                    var newScore = GetDefaultUserResult(user);
+                    var userScore = _userResults.GetOrAdd(userId, newScore);
+                    lock (userScore)
+                    {
+                        userScore.TrajectoryWithScore = newScore.TrajectoryWithScore;
+                    }
+
+                    var newUserData = user.UserData;
+                    //var userResult = _userResults.
+                    DumpUserStateToFile(userId, user.UserData);
+                    return newUserData;
                 }
-                var newUserData = user.UserData;
-                //var userResult = _userResults.
-                DumpUserStateToFile(userId, user.UserData);
-                return newUserData;
             }
+
             throw new Exception("User point was not accepted ");
         }
 
         public TUserDataModel StopUser(string userId)
         {
             var user = GetOrAddUser(userId);
-            user.StopDrilling();
-            var newScore = GetDefaultUserResult();
-            var userScore = _userResults.GetOrAdd(userId, newScore);
-            lock (userScore)
+            lock (user)
             {
-                userScore.Stopped = true;
-            }
+                user.StopDrilling();
+                var newScore = GetDefaultUserResult();
+                var userScore = _userResults.GetOrAdd(userId, newScore);
+                lock (userScore)
+                {
+                    userScore.Stopped = true;
+                }
 
-            DumpUserStateToFile(userId, user.UserData);
-            return user.UserData;
+                DumpUserStateToFile(userId, user.UserData);
+                return user.UserData;
+            }
         }
 
 
@@ -257,12 +290,26 @@ namespace ServerStateInterfaces
         public TUserResult GetUserEvaluationData(string userId, IList<TWellPoint> trajectory)
         {
             var user = GetOrAddUser(userId);
-            var result = user.GetEvaluation(trajectory);
-            return result;
+            lock (user)
+            {
+                var result = user.GetEvaluation(trajectory);
+                return result;
+            }
         }
 
         //protected abstract TRealizationData GetSecretUserState(TSecretState secret);
 
-        public abstract PopulationScoreData GetScoreboard();
+        //public abstract PopulationScoreData GetScoreboard();
+        public PopulationScoreData<TWellPoint> GetScoreboard()
+        {
+            //TODO check if can be moved to base class
+            if (_userResults != null)
+            {
+                var scores = _userResults.Values.ToList();
+                _scoreData.UserResults = scores;
+            }
+
+            return _scoreData;
+        }
     }
 }
