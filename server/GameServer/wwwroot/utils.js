@@ -1,6 +1,6 @@
 var canvasWidth;
 var canvasHeigth;
-var oneMarginInScript = 16;
+var oneMarginInScript = 2;
 
 var geoModelBuffer;
 var wellBuffer;

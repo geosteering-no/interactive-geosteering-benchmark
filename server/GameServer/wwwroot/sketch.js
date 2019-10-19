@@ -104,7 +104,9 @@ function updateBars() {
       res.json()
         .then(function (json) {
           console.log("got user evaluation data:" + JSON.stringify(json));
-          userEvaluationOld = userEvaluation;
+          if (userEvaluation != null){
+            userEvaluationOld = userEvaluation;
+          }
           userEvaluation = json;
           drawBarCharts();
           redrawEnabledForAninterval();
@@ -394,6 +396,11 @@ function sliderAngleChange() {
     nextAngles[editNextAngleNo] = allowedAngle(prev, -angleSlider.value());
     for (var i = editNextAngleNo + 1; i < nextAngles.length; ++i) {
       nextAngles[i] = allowedAngle(nextAngles[i - 1], nextAngles[i] - nextAngles[i - 1])
+    }
+    if (userEvaluation != null) {
+      userEvaluationOld = userEvaluation;
+      userEvaluation = null;
+      drawBarCharts();
     }
   }
 
