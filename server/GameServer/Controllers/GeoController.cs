@@ -20,14 +20,14 @@ namespace GameServer.Controllers
 
         private const string UserId_ID = "geobanana-user-id";
         private readonly ILogger<GeoController> _logger;
-        private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> _stateGeocontroller;
+        private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> _stateServer;
 
         public GeoController(ILogger<GeoController> logger,
-            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> stateGeocontroller)
+            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> stateServer)
         {
             //Note! this is magic
             _logger = logger;
-            _stateGeocontroller = stateGeocontroller;
+            _stateServer = stateServer;
         }
 
         [Route("restart/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
@@ -37,7 +37,7 @@ namespace GameServer.Controllers
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
-                _stateGeocontroller.RestartServer();
+                _stateServer.RestartServer();
             }
             else
             {
@@ -51,7 +51,7 @@ namespace GameServer.Controllers
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
-                return _stateGeocontroller.GetScoreboard();
+                return _stateServer.GetScoreboard();
                 //TODO finsh implementation
             }
             else
@@ -73,7 +73,7 @@ namespace GameServer.Controllers
             else
             {
                 WriteUserIdToCookie(userName);
-                _stateGeocontroller.GetOrAddUserState(userName);
+                _stateServer.GetOrAddUserState(userName);
                 Response.Redirect("/index.html");
             }
         }
@@ -101,7 +101,7 @@ namespace GameServer.Controllers
         public UserData CommitStop()
         {
             var userId = GetUserId();
-            var res = _stateGeocontroller.StopUser(userId);
+            var res = _stateServer.StopUser(userId);
             return res;
         }
 
@@ -112,7 +112,7 @@ namespace GameServer.Controllers
         {
             //TODO perform testing
             var userId = GetUserId();
-            var res = _stateGeocontroller.UpdateUser(userId, pt);
+            var res = _stateServer.UpdateUser(userId, pt);
             return res;
         }
 
@@ -122,7 +122,7 @@ namespace GameServer.Controllers
         {
             //TODO perform testing
             var userId = GetUserId();
-            var res = _stateGeocontroller.GetUserEvaluationData(userId, trajectory);
+            var res = _stateServer.GetUserEvaluationData(userId, trajectory);
             return res;
         }
 
@@ -138,7 +138,7 @@ namespace GameServer.Controllers
         public UserData GetUserState()
         {
             var userId = GetUserId();
-            return _stateGeocontroller.GetOrAddUserState(userId);
+            return _stateServer.GetOrAddUserState(userId);
         }
     }
 

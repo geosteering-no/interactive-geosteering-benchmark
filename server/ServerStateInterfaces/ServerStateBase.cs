@@ -69,7 +69,7 @@ namespace ServerStateInterfaces
             var user = GetOrAddUser(userId);
             lock (user)
             {
-                DumpUserStateToFile(userId, user.UserData);
+                DumpUserStateToFile(userId, user.UserData, "NewUser");
             }
 
             return res;
@@ -97,8 +97,19 @@ namespace ServerStateInterfaces
             //throw new NotImplementedException();
         }
 
+        public void DumpScoreBoardToFile(PopulationScoreData<TWellPoint> scoreBoard)
+        {
+            var dirId = "scoreLog/";
+            if (!Directory.Exists(dirId))
+            {
+                Directory.CreateDirectory(dirId);
+            }
+            var jsonStr = JsonConvert.SerializeObject(scoreBoard);
+            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
+        }
 
-        public void DumpUserStateToFile(string userId, TUserDataModel data)
+
+        public void DumpUserStateToFile(string userId, TUserDataModel data, string suffix = "")
         {
             var dirId = "userLog/" + userId;
             if (!Directory.Exists(dirId))
@@ -106,7 +117,7 @@ namespace ServerStateInterfaces
                 Directory.CreateDirectory(dirId);
             }
             var jsonStr = JsonConvert.SerializeObject(data);
-            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
+            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks + "_"+ suffix, jsonStr);
         }
 
         public void DumpSectetStateToFile(int data)
@@ -177,7 +188,7 @@ namespace ServerStateInterfaces
                     }
 
                     //log
-                    DumpUserStateToFile(userId, user.UserData);
+                    DumpUserStateToFile(userId, user.UserData, "NewUser");
                 }
             }
 
@@ -219,7 +230,7 @@ namespace ServerStateInterfaces
                         break;
                     }
                 }
-                DumpUserStateToFile(userId, newUserState.UserData);
+                DumpUserStateToFile(userId, newUserState.UserData, "Restart");
             }
 
             //put a clean user stateGeocontroller
@@ -250,7 +261,7 @@ namespace ServerStateInterfaces
 
                     var newUserData = user.UserData;
                     //var userResult = _userResults.
-                    DumpUserStateToFile(userId, user.UserData);
+                    DumpUserStateToFile(userId, user.UserData, "Update");
                     return newUserData;
                 }
             }
@@ -271,7 +282,7 @@ namespace ServerStateInterfaces
                     userScore.Stopped = true;
                 }
 
-                DumpUserStateToFile(userId, user.UserData);
+                DumpUserStateToFile(userId, user.UserData, "Stop");
                 return user.UserData;
             }
         }
