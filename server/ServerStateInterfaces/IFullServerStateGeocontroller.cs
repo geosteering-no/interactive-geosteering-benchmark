@@ -16,5 +16,7 @@ namespace ServerStateInterfaces
         TUserEvaluationData GetUserEvaluationData(string userId, IList<TWellPoint> trajectory);
         TScoreData GetScoreboard();
 
+        bool UserExists(string str);
+
     }
 }

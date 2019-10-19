@@ -14,7 +14,7 @@ namespace ServerStateInterfaces
         TUserEvaluationData,
         TScoreData>
     {
-        bool UserExists(string str);
+        
         bool AddUser(string str);
     }
 }

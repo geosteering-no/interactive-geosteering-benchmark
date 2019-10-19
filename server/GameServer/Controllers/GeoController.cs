@@ -72,9 +72,16 @@ namespace GameServer.Controllers
             }
             else
             {
-                WriteUserIdToCookie(userName);
-                _stateServer.GetOrAddUserState(userName);
-                Response.Redirect("/index.html");
+                if (_stateServer.UserExists(userName))
+                {
+                    Response.Redirect("/login2.html");
+                }
+                else
+                {
+                    WriteUserIdToCookie(userName);
+                    _stateServer.GetOrAddUserState(userName);
+                    Response.Redirect("/index.html");
+                }
             }
         }
 
