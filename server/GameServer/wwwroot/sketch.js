@@ -272,6 +272,10 @@ function setup() {
   noLoop();
 }
 
+function touchStarted() {
+  return false;
+}
+
 function getUserData() {
   fetch("/geo/userdata", { credentials: 'include' })
     .then(function (res) {
