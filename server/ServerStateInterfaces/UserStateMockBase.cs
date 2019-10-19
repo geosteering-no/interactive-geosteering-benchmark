@@ -87,6 +87,12 @@ namespace ServerStateInterfaces
             }
         }
 
+        public bool Stopped
+        {
+            get { return UserData.stopped; }
+
+        }
+
         public bool UpdateUser(WellPoint updatePoint, RealizationData secret)
         {
             

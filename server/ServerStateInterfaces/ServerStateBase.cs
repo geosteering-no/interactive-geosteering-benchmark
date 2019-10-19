@@ -157,10 +157,11 @@ namespace ServerStateInterfaces
 
         protected abstract TRealizationData GetTruthForEvaluation();
 
-        protected UserResultFinal<TWellPoint> GetDefaultUserResult(TUserModel user)
+        protected UserResultFinal<TWellPoint> GetDefaultUserResult(string userId, TUserModel user)
         {
             var newUserResult = GetDefaultUserResult();
             var trueRealization = GetTruthForEvaluation();
+            newUserResult.UserName = userId;
             newUserResult.TrajectoryWithScore = user.GetEvaluationForTruth(
                 EvaluatorTruth,
                 trueRealization);
@@ -177,7 +178,7 @@ namespace ServerStateInterfaces
                 if (doLog)
                 {
                     //var userData = user.UserData;
-                    var newUserResult = GetDefaultUserResult(user);
+                    var newUserResult = GetDefaultUserResult(userId, user);
                     for (var i = 0; i < 100; ++i)
                     {
                         var res = _userResults.TryAdd(userId, newUserResult);
@@ -206,7 +207,7 @@ namespace ServerStateInterfaces
             foreach (var userId in _users.Keys)
             {
                 var newUserState = GetDefaultNewUser();
-                var newUserResult = GetDefaultUserResult(newUserState);
+                var newUserResult = GetDefaultUserResult(userId, newUserState);
                 _userResults.AddOrUpdate(userId, GetDefaultUserResult(), (key, oldUserResult) =>
                 {
                     double prevGameScore = 0;
@@ -249,10 +250,15 @@ namespace ServerStateInterfaces
             var user = GetOrAddUser(userId);
             lock (user)
             {
+                if (user.Stopped)
+                {
+                    return user.UserData;
+                }
+
                 var ok = user.UpdateUser(load, _secret);
                 if (ok)
                 {
-                    var newScore = GetDefaultUserResult(user);
+                    var newScore = GetDefaultUserResult(userId, user);
                     var userScore = _userResults.GetOrAdd(userId, newScore);
                     lock (userScore)
                     {
@@ -264,6 +270,7 @@ namespace ServerStateInterfaces
                     DumpUserStateToFile(userId, user.UserData, "Update");
                     return newUserData;
                 }
+
             }
 
             throw new Exception("User point was not accepted ");
@@ -319,7 +326,7 @@ namespace ServerStateInterfaces
                 var scores = _userResults.Values.ToList();
                 _scoreData.UserResults = scores;
             }
-
+            DumpScoreBoardToFile(_scoreData);
             return _scoreData;
         }
     }

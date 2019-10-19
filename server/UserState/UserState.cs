@@ -269,6 +269,14 @@ namespace UserState
             }
         }
 
+        public bool Stopped
+        {
+            get
+            {
+                throw new NotFiniteNumberException();
+            }
+        }
+
         public bool UpdateUser(IContinousState updatePoint, TrueModelState secret)
         {
             lock (updateLock)

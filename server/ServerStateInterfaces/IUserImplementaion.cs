@@ -13,6 +13,8 @@ namespace ServerStateInterfaces
         //double DoiX { get; set; }
         //double DoiY { get; set; }
         TUserData UserData { get; }
+        bool Stopped { get; }
+
         bool UpdateUser(TWellPoint updatePoint, TSecretState secret);
         void StopDrilling();
         TWellPoint GetNextStateDefault();
