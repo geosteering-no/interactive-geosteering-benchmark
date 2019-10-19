@@ -199,10 +199,10 @@ function commitDecicion() {
 function setup() {
   createCanvas(100, 100);
   prevButton = createButton("<- Previous");
-  prevButton.mousePressed(buttonPreviousClick);
+  prevButton.mousePressed(previousButtonClick);
 
   nextButton = createButton("Next ->");
-  nextButton.mousePressed(buttonNextClick);
+  nextButton.mousePressed(nextButtonClick);
 
 
   updateBarsButton = createButton("Reevaluate the objective");
@@ -216,7 +216,7 @@ function setup() {
   submitDecisionButton.position(200, 900);
 
   stopButton = createButton("Stop");
-  stopButton.mousePressed(stopDecision);
+  stopButton.mousePressed(stopButtonClick);
   stopButton.position(0, 450);
 
   angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
@@ -306,8 +306,8 @@ function setSizesAndPositions() {
   }
   
   var submitHeight = canvasHeigth * 0.05;
-  submitDecisionButton.position(canvasWidth * 0.7, yPos);
-  submitDecisionButton.size(canvasWidth * 0.3, submitHeight);
+  submitDecisionButton.position(10, yPos);
+  submitDecisionButton.size(canvasWidth -20, submitHeight);
 
   goDown(submitHeight);
 
@@ -412,7 +412,7 @@ function sliderAngleChange() {
 
 }
 
-function buttonPreviousClick() {
+function previousButtonClick() {
   if (editNextAngleNo > 0) {
     editNextAngleNo--;
   }
@@ -420,13 +420,24 @@ function buttonPreviousClick() {
   redrawEnabledForAninterval();
 }
 
-function stopDecision() {
+function stopButtonClick() {
   nextAngles.length = editNextAngleNo;
   redrawEnabledForAninterval();
 }
 
+function nextButtonClick() {
+  if (editNextAngleNo >= nextAngles.length - 1){
+    continueClick();
+  }
+  if (editNextAngleNo < nextAngles.length - 1) {
+    editNextAngleNo++;
+  }
+  angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
+  redrawEnabledForAninterval();
+}
 
-function continueDecision() {
+
+function continueClick() {
   if (userdata != null) {
     var submittedLen = userdata.wellPoints.length;
     var newAnglesLen = nextAngles.length;
@@ -441,13 +452,7 @@ function continueDecision() {
   }
 }
 
-function buttonNextClick() {
-  if (editNextAngleNo < nextAngles.length - 1) {
-    editNextAngleNo++;
-  }
-  angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
-  redrawEnabledForAninterval();
-}
+
 
 function buttonSubmitPressed() {
 

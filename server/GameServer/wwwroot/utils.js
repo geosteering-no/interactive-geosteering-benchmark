@@ -18,7 +18,7 @@ function getIncluciveIndexEndForPercentile(percentile, len){
 }
 
 //bins is an array of percentiles (part * 100)
-function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shiftFirst, drawSubLines = false) {
+function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shiftFirst, drawSubLines = false, drawLabels = false) {
     var binsLen = percentileBins.length;
     var shift = buffer.width / binsLen / 5;
     var start = 0;
@@ -35,7 +35,7 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
         if (!drawSubLines) {
             var scoreInd = sortedInds[end];
             var score = Math.max(scores[scoreInd], 0.0);
-            var textHeight = buffer.height - barMaxHeight;
+            var totalWidth = 1.0 / binsLen * buffer.width - shift * 2;
             var currentYtop = (max - score) / max * barMaxHeight;
             var currentHeigth = barMaxHeight - currentYtop;
             //console.log("score: " + score);
@@ -43,21 +43,29 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
             buffer.rect(
                 xLeft,
                 currentYtop,
-                1.0 / binsLen * buffer.width - shift * 2,
-                currentHeigth);
-                
-            var score = Math.max(scores[scoreInd], 0.0);
-            var scoretext = "P" + 0 + ": " + Math.round(score);
-            buffer.textAlign(CENTER, TOP);
-            buffer.strokeWeight(0);
-            buffer.text(
-                scoretext, 
-                xLeft,
-                barMaxHeight,
                 totalWidth,
-                buffer.height - barMaxHeight);
+                currentHeigth);
+            
+            if (drawLabels){
+                var textHeight = buffer.height - barMaxHeight;
+                var score = Math.max(scores[scoreInd], 0.0);
+                var pInd = end+1;
+                var scoretext = "P" + pInd + "\n" + Math.round(score);
+                if (pInd >= sortedInds.length){
+                    scoretext = "max\n" + Math.round(score);
+                }
 
-            buffer.strokeWeight(1);
+                buffer.textAlign(CENTER, TOP);
+                buffer.strokeWeight(0);
+                buffer.text(
+                    scoretext, 
+                    xLeft,
+                    barMaxHeight+4,
+                    totalWidth,
+                    textHeight*2);
+
+                buffer.strokeWeight(1);
+            }
                 
         
         }
@@ -89,9 +97,9 @@ function drawBarCharts() {
     //var userEvaluationOld; //from another file
     //var userEvaluation; //from another file
     barBuffer.clear();
-    barBuffer.background(0, 0, 0);
+    barBuffer.background(255);
 
-    barBuffer.fill(255, 0, 0);
+    //barBuffer.fill(255, 0, 0);
     var max = 1.0;
     if (userEvaluationOld != null) {
         max = Math.max.apply(null, userEvaluationOld.realizationScores);
@@ -107,13 +115,18 @@ function drawBarCharts() {
 
         var offset = barBuffer.width / 10 / 7;
         //TODO plot old values instead
-        drawBarChartsToBufferWithShift(userEvaluationOld, barBuffer, 0, max, -offset);
+        if (userEvaluation != null){
+            drawBarChartsToBufferWithShift(userEvaluationOld, barBuffer, 0, max, -offset);
+        }
+        else{
+            drawBarChartsToBufferWithShift(userEvaluationOld, barBuffer, 0, max, -offset, false, true);
+        }
     }
     if (userEvaluation != null) {
         barBuffer.fill(20, 50, 255);
         barBuffer.strokeWeight(1);
-        barBuffer.stroke(255, 255, 255);
-        drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0);
+        barBuffer.stroke(0);
+        drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0, false, true);
 
         barBuffer.fill(200, 50, 255);
         barBuffer.noStroke();
