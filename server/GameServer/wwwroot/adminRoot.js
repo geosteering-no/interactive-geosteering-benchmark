@@ -30,6 +30,7 @@ function setup() {
 function draw() {
 	clear();
 	image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
+	drawAllWells();
 	image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.heigth);
 
 	//drawWellToBuffer();
@@ -84,7 +85,7 @@ function buttonPreviousClick() {
 	if (revealIndex > 0) {
 		revealIndex--;
 	}
-	redrawEnabledForAninterval();
+	//redrawEnabledForAninterval();
 	drawAllWells();
 }
 
@@ -92,7 +93,7 @@ function buttonNextClick() {
 	if (revealIndex < maxIndex) {
 		revealIndex++;
 	}
-	redrawEnabledForAninterval();
+	//redrawEnabledForAninterval();
 	drawAllWells();
 }
 
@@ -170,6 +171,7 @@ function drawGeomodelToBuffer(scoredata = null) {
 		//if (false){
 		scaleBufferForView(geoModelBuffer, scoredata);
 		console.log("drawing userdat");
+		console.log("this is slow?");
 
 
 		var alpha = 0.3;
