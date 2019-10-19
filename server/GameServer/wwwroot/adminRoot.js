@@ -2,9 +2,9 @@ var timerCountdown = 1;
 var prevButton;
 var nextButton;
 var wellBuffer;
+var progresBuffer;
 var restartButton;
 var revealIndex = -1;
-var maxIndex = 10;
 var scoreData = null;
 
 function setup() {
@@ -28,11 +28,12 @@ function setup() {
 }
 
 function draw() {
-	clear();
-	//image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
+	//clear();
+	image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
 	//drawAllWells();
 	drawAllProgress();
-	image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
+	//image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
+	image(progressBuffer, 0, 0, progressBuffer.width, progressBuffer.height);
 
 	//drawWellToBuffer();
 
@@ -70,18 +71,42 @@ function drawAllWells() {
 
 function drawAllProgress() {
 	if (scoreData != null) {
-		wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
-		wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
+		//progressBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
+		progressBuffer.noStroke();
+		progressBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
 		//wellBuffer.strokeWeight(2 / scoreData.height);
-		var totalUsers = scoreData.userResults.length;
-		var oneHeight = wellBuffer.height / totalUsers;
+		var sortedResults = scoreData.userResults.slice().sort(function(a, b)
+		{
+			if (a.stopped != b.stopped){
+				if (a.stopped){
+					return -1;
+				}
+				if (b.stopped){
+					return 1;
+				}
+			}
+			var aLen = a.trajectoryWithScore.length;
+			var bLen = b.trajectoryWithScore.length;
+			return bLen - aLen;
+		});
+		var totalUsers = sortedResults.length;
+		var oneHeight = progressBuffer.height / totalUsers;
 		var shift = oneHeight / 6;
 		
 		for (var i = 0; i<totalUsers; i++){
-			var userProgressInd = scoreData.userResults[i].trajectoryWithScore.length;
-			var progresFraction = userProgressInd / maxIndex;
-			wellBuffer.rect(0, i*oneHeight + shift, progresFraction * wellBuffer.width, oneHeight-shift*2);
-			wellBuffer.rect(50,40,800,800);
+			var userProgressInd = sortedResults[i].trajectoryWithScore.length;
+			var progresFraction = userProgressInd / scoreData.totalSteps;
+			progressBuffer.rect(0, i*oneHeight + shift, 
+				progresFraction * progressBuffer.width, 
+				oneHeight-shift*2);
+			if (sortedResults[i].stopped){
+				progressBuffer.text("stopped", 
+					progresFraction * progressBuffer.width+shift, 
+					i*oneHeight + shift*2, 
+					progresFraction * progressBuffer.width, 
+					oneHeight-shift*2);
+			}
+			//wellBuffer.rect(50,40,800,800);
 		}
 	}
 }
@@ -158,6 +183,7 @@ function drawGeomodelToBuffer(scoredata = null) {
 
 	geoModelBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
 	wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
+	progressBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
 
 	barBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 2);
 

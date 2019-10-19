@@ -1,6 +1,8 @@
 var userdata = null;
 
 var wellBuffer;
+var barBuffer;
+var realizationScores;
 
 //var xTravelDistance = 50;
 var maxAngleChange = 3.14 / 180.0 * 2;

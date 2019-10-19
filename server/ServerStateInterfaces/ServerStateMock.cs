@@ -30,7 +30,8 @@ namespace ServerStateInterfaces
                 Xtopleft = _dummyUserData.Xtopleft,
                 Ytopleft = _dummyUserData.Ytopleft,
                 xList = _dummyUserData.xList,
-                secretRealization = _secret
+                secretRealization = _secret,
+                TotalSteps = 10
             };
         }
 
