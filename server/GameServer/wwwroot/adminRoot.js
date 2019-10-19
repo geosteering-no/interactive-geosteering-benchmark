@@ -29,11 +29,17 @@ function setup() {
 
 function draw() {
 	//clear();
-	image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
-	//drawAllWells();
-	drawAllProgress();
-	//image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
-	image(progressBuffer, 0, 0, progressBuffer.width, progressBuffer.height);
+	if (revealIndex >= 0) {
+		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
+	} else {
+		fill(255);
+		rect(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
+
+		//drawAllWells();
+		drawAllProgress();
+		//image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
+		image(progressBuffer, 0, 0, progressBuffer.width, progressBuffer.height);
+	}
 
 	//drawWellToBuffer();
 
@@ -75,13 +81,12 @@ function drawAllProgress() {
 		progressBuffer.noStroke();
 		progressBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
 		//wellBuffer.strokeWeight(2 / scoreData.height);
-		var sortedResults = scoreData.userResults.slice().sort(function(a, b)
-		{
-			if (a.stopped != b.stopped){
-				if (a.stopped){
+		var sortedResults = scoreData.userResults.slice().sort(function (a, b) {
+			if (a.stopped != b.stopped) {
+				if (a.stopped) {
 					return -1;
 				}
-				if (b.stopped){
+				if (b.stopped) {
 					return 1;
 				}
 			}
@@ -92,19 +97,19 @@ function drawAllProgress() {
 		var totalUsers = sortedResults.length;
 		var oneHeight = progressBuffer.height / totalUsers;
 		var shift = oneHeight / 6;
-		
-		for (var i = 0; i<totalUsers; i++){
+
+		for (var i = 0; i < totalUsers; i++) {
 			var userProgressInd = sortedResults[i].trajectoryWithScore.length;
 			var progresFraction = userProgressInd / scoreData.totalSteps;
-			progressBuffer.rect(0, i*oneHeight + shift, 
-				progresFraction * progressBuffer.width, 
-				oneHeight-shift*2);
-			if (sortedResults[i].stopped){
-				progressBuffer.text("stopped", 
-					progresFraction * progressBuffer.width+shift, 
-					i*oneHeight + shift*2, 
-					progresFraction * progressBuffer.width, 
-					oneHeight-shift*2);
+			progressBuffer.rect(0, i * oneHeight + shift,
+				progresFraction * progressBuffer.width,
+				oneHeight - shift * 2);
+			if (sortedResults[i].stopped) {
+				progressBuffer.text("stopped",
+					progresFraction * progressBuffer.width + shift,
+					i * oneHeight + shift * 2,
+					progresFraction * progressBuffer.width,
+					oneHeight - shift * 2);
 			}
 			//wellBuffer.rect(50,40,800,800);
 		}
@@ -112,7 +117,7 @@ function drawAllProgress() {
 }
 
 function buttonPreviousClick() {
-	if (revealIndex > 0) {
+	if (revealIndex > -1) {
 		revealIndex--;
 	}
 	//redrawEnabledForAninterval();
@@ -120,8 +125,10 @@ function buttonPreviousClick() {
 }
 
 function buttonNextClick() {
-	if (revealIndex < maxIndex) {
-		revealIndex++;
+	if (scoreData != null) {		
+		if (revealIndex < scoreData.totalSteps) {
+			revealIndex++;
+		}
 	}
 	//redrawEnabledForAninterval();
 	drawAllWells();
