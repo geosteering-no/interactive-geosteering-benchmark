@@ -35,7 +35,6 @@ var angleSlider;
 
 //stop/continue
 var stopButton;
-var continueButton;
 
 //selction buttons
 var pButtons = [];
@@ -205,31 +204,6 @@ function setup() {
   nextButton = createButton("Next ->");
   nextButton.mousePressed(buttonNextClick);
 
-  //TODO fix the button positions @morten
-  for (var i = 0; i < 10; ++i) {
-    if (i < 9) {
-      pButtons[i] = createButton("P" + ((i + 1) * 10));
-    } else {
-      pButtons[i] = createButton("max");
-    }
-
-
-    pButtons[i].mousePressed(function () {
-      var j = i;
-      return function () {
-        return buttonSelectSubSet(j);
-      };
-    }());
-
-    pButtons[i].position(i * 800.0 / 10, 800);
-  }
-
-  pShowAllButton = createButton("Show all");
-  //TODO reposition
-  pShowAllButton.position(0, 830);
-  pShowAllButton.mousePressed(function () {
-    buttonSelectSubSet(-1);
-  });
 
   updateBarsButton = createButton("Reevaluate the objective");
   updateBarsButton.mousePressed(updateBars);
@@ -244,11 +218,6 @@ function setup() {
   stopButton = createButton("Stop");
   stopButton.mousePressed(stopDecision);
   stopButton.position(0, 450);
-
-  continueButton = createButton("Continue");
-  continueButton.mousePressed(continueDecision);
-  continueButton.position(0, 480);
-
 
   angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
   angleSlider.input(sliderAngleChange);
@@ -329,19 +298,51 @@ function setSizesAndPositions() {
     canvasWidth = canvasHeigth / 4 * 3;
   }
 
+  var yPos = 0;
+  var yMargin = 5;
+
+  function goDown(heigth) {
+    yPos = yPos + heigth + yMargin;
+  }
+  
+  var submitHeight = canvasHeigth * 0.05;
+  submitDecisionButton.position(canvasWidth * 0.7, yPos);
+  submitDecisionButton.size(canvasWidth * 0.3, submitHeight);
+
+  goDown(submitHeight);
+
   resizeCanvas(canvasWidth, canvasHeigth);
 
+  wellBufferY = yPos;
   drawGeomodelToBuffer(userdata);
-  drawBarCharts();
 
-  prevButton.size(canvasWidth / 2 - 15, 100);
-  prevButton.position(10, geoModelBuffer.height + 5);
+  goDown(geoModelBuffer.height);
 
-  nextButton.position(canvasWidth / 2 + 5, geoModelBuffer.height + 5);
-  nextButton.size(canvasWidth / 2 - 15, 100);
+  var buttonHeigth = geoModelBuffer.height / 5;
+  prevButton.position(10, yPos);
+  prevButton.size(canvasWidth / 3 - 15, buttonHeigth);
 
-  angleSlider.position(80, geoModelBuffer.height + prevButton.height + 10);
+  stopButton.position(canvasWidth / 3 + 5, yPos);
+  stopButton.size(canvasWidth / 3 - 10, buttonHeigth);
+
+  nextButton.position(canvasWidth - canvasWidth / 3  + 5, yPos);
+  nextButton.size(canvasWidth / 3 - 15, buttonHeigth);
+
+  goDown(buttonHeigth);
+
+  var sliderHeigth = 50;
+  angleSlider.position(80, yPos);
   angleSlider.size(canvasWidth - 80 * 2, 50);
+
+  goDown(sliderHeigth);
+
+  barBufferY = yPos;
+  drawBarCharts();
+  goDown(barBuffer.height);
+
+  updateBarsButton.position(5, yPos);
+  updateBarsButton.size(canvasWidth -10, canvasHeigth * 0.07);
+
   redrawEnabledForAninterval();
 }
 
@@ -473,15 +474,15 @@ function drawLayerToBuffer() {
 
 function draw() {
   clear();
-  image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
+  image(geoModelBuffer, 0, wellBufferY, geoModelBuffer.width, geoModelBuffer.heigth);
 
   drawWellToBuffer();
 
-  image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.heigth);
+  image(wellBuffer, 0, wellBufferY, wellBuffer.width, wellBuffer.heigth);
 
   if (barBuffer != null) {
     console.log("draw bars");
-    image(barBuffer, 0, wellBuffer.height + 170, barBuffer.width, barBuffer.height);
+    image(barBuffer, 0, barBufferY, barBuffer.width, barBuffer.height);
     //image(barBuffer, 0, 10, 100, 100);
   }
 

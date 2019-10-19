@@ -1,5 +1,9 @@
 var canvasWidth;
 var canvasHeigth;
+var wellBufferX;
+var wellBufferY;
+var barBufferX;
+var barBufferY;
 var oneMarginInScript = 2;
 
 var geoModelBuffer;
@@ -21,7 +25,7 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
     var end = 0;
     var scores = aUserEvaluation.realizationScores;
     var sortedInds = aUserEvaluation.sortedIndexes;
-
+    var barMaxHeight = buffer.height * 0.8;
     //TODO do negative
     for (var i = 0; i < binsLen; i++) {
         //we subtract 1 so that for P10 for 100 it is based n index 9
@@ -31,24 +35,48 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
         if (!drawSubLines) {
             var scoreInd = sortedInds[end];
             var score = Math.max(scores[scoreInd], 0.0);
+            var textHeight = buffer.height - barMaxHeight;
+            var currentYtop = (max - score) / max * barMaxHeight;
+            var currentHeigth = barMaxHeight - currentYtop;
             //console.log("score: " + score);
+            var xLeft = i / binsLen * buffer.width + shift + shiftFirst;
             buffer.rect(
-                i / binsLen * buffer.width + shift + shiftFirst,
-                (max - score) / max * buffer.height,
+                xLeft,
+                currentYtop,
                 1.0 / binsLen * buffer.width - shift * 2,
-                buffer.height);
+                currentHeigth);
+                
+            var score = Math.max(scores[scoreInd], 0.0);
+            var scoretext = "P" + 0 + ": " + Math.round(score);
+            buffer.textAlign(CENTER, TOP);
+            buffer.strokeWeight(0);
+            buffer.text(
+                scoretext, 
+                xLeft,
+                barMaxHeight,
+                totalWidth,
+                buffer.height - barMaxHeight);
+
+            buffer.strokeWeight(1);
+                
+        
         }
         else {
             var singleWidth = (1.0 / binsLen * buffer.width - shift * 2) / (end + 1 - start);
+            var totalWidth = (1.0 / binsLen * buffer.width - shift * 2);
             for (var k = start; k <= end; ++k) {
                 var scoreInd = sortedInds[k];
                 var score = Math.max(scores[scoreInd], 0.0);
+                var currentYtop = (max - score) / max * barMaxHeight;
+                var currentHeigth = barMaxHeight - currentYtop;
                 buffer.rect(
-                    i / binsLen * buffer.width + shift + shiftFirst
-                    + (k-start) * singleWidth,
-                    (max - score) / max * buffer.height,
+                    i / binsLen * buffer.width + shift + shiftFirst + (k-start) * singleWidth,
+                    currentYtop,
                     singleWidth,
-                    buffer.height);
+                    currentHeigth
+                    );
+
+
             }
         }
         start = end + 1;
