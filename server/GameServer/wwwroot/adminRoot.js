@@ -30,11 +30,12 @@ function setup() {
 function draw() {
 	//clear();
 	if (revealIndex >= 0) {
-		
+		clear();
 		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.height);
-		drawAllWells();
+		//drawAllWells();
 		image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
 	} else {
+		clear();
 		fill(255);
 		geoModelBuffer.rect( 0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		drawAllProgress();
