@@ -112,7 +112,7 @@ function updateBars() {
           }
           userEvaluation = json;
           drawBarCharts();
-          redrawEnabledForAninterval();
+          //redrawEnabledForAninterval();
         });
 
     });
@@ -201,7 +201,16 @@ function commitDecicion() {
 }
 
 function setup() {
-  canvas = createCanvas(100, 100);
+
+  calculateCanvasSize();
+
+  canvas = createCanvas(canvasWidth, canvasHeigth);
+
+  geoModelBuffer = createGraphics(windowWidth, Math.round(canvasHeigth / 8 * 3));
+  wellBuffer = createGraphics(canvasWidth, Math.round(canvasHeigth / 8 * 3));
+  barBuffer = createGraphics(canvasWidth, Math.round(canvasHeigth / 8 * 2));
+
+
   canvas.mousePressed(cmousePressed);
   canvas.mouseReleased(cmouseReleased);
   canvas.touchStarted(ctouchStarted);
@@ -235,9 +244,8 @@ function setup() {
   angleSlider.style('height', '180px');
   angleSlider.style('transform', 'scale(3)');
 
-  setSizesAndPositions();
 
-  getUserData();
+  setSizesAndPositions();
 
   var layerH = 15;
   var r1l1 = [100, 80, 60, 90, 85, 65];
@@ -280,7 +288,10 @@ function setup() {
     ]
   };
 
-  noLoop();
+  //noLoop();
+
+  getUserData();
+  console.log("setup done");
 }
 
 
@@ -296,19 +307,32 @@ function getUserData() {
           console.log("got userdata:" + JSON.stringify(json));
           userdata = json;
           updateBars();
+          drawWellToBuffer();
           drawGeomodelToBuffer(userdata);
-          redrawEnabledForAninterval();
+          //redrawEnabledForAninterval();
         });
     });
 }
 
+function calculateCanvasSize() {
+  canvasWidth = Math.round(windowWidth - oneMarginInScript * 2);
+  canvasHeigth = Math.round(windowHeight - oneMarginInScript);
+  if (canvasWidth > canvasHeigth) {
+    canvasWidth = Math.round(canvasHeigth / 4 * 3);
+  }
+}
 
 function setSizesAndPositions() {
-  canvasWidth = windowWidth - oneMarginInScript * 2;
-  canvasHeigth = windowHeight - oneMarginInScript;
-  if (canvasWidth > canvasHeigth) {
-    canvasWidth = canvasHeigth / 4 * 3;
-  }
+  calculateCanvasSize();
+
+
+  resizeCanvas(Math.round(canvasWidth), Math.round(canvasHeigth));
+
+  // if (geoModelBuffer) {
+  //   geoModelBuffer.size(Math.round(canvasWidth), Math.round(canvasHeigth / 8 * 3));
+  //   wellBuffer.size(Math.round(canvasWidth), Math.round(canvasHeigth / 8 * 3));
+  //   barBuffer.size(Math.round(canvasWidth), Math.round(canvasHeigth / 8 * 2));
+  // }
 
   var yPos = 0;
   var yMargin = 5;
@@ -323,7 +347,6 @@ function setSizesAndPositions() {
 
   goDown(submitHeight);
 
-  resizeCanvas(canvasWidth, canvasHeigth);
 
   wellBufferY = yPos;
   drawGeomodelToBuffer(userdata);
@@ -356,7 +379,7 @@ function setSizesAndPositions() {
   updateBarsButton.position(5, yPos);
   updateBarsButton.size(canvasWidth -10, canvasHeigth * 0.07);
 
-  redrawEnabledForAninterval();
+  //redrawEnabledForAninterval();
 }
 
 
@@ -473,13 +496,10 @@ function buttonSubmitPressed() {
 
 
 function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
-
-  geoModelBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
-  wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
-  barBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 2);
-
+  if (geoModelBuffer == undefined) return;
   //barBuffer.mousePressed(press);
-
+  geoModelBuffer.resetMatrix();
+  geoModelBuffer.clear();
 
   if (userdata != null) {
       scaleBufferForView(wellBuffer, userdata);
@@ -494,7 +514,6 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
   if (userdata != null) {
       //if (false){
       scaleBufferForView(geoModelBuffer, userdata);
-      console.log("drawing userdat");
       var reals = userdata.realizations;
       var realcount = reals.length;
       if (specificIndices != null) realcount = specificIndices.length;
@@ -547,7 +566,7 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
 
       //tint(255, 255);
   } else {
-      console.log("drawing triangles");
+      //console.log("drawing triangles");
       // draw triangles for debug
       //TODO check colors again
       var points = 3;
@@ -588,15 +607,19 @@ function drawLayerToBuffer() {
 
 
 function draw() {
-  clear();
-  image(geoModelBuffer, 0, wellBufferY, geoModelBuffer.width, geoModelBuffer.heigth);
 
-  drawWellToBuffer();
+  if (geoModelBuffer == null) return;
+
+  //console.log("draw, wellY: " + wellBufferY);
+  clear();
+  image(geoModelBuffer, 0, Math.round(wellBufferY));
+
+  //drawWellToBuffer();
 
   image(wellBuffer, 0, wellBufferY, wellBuffer.width, wellBuffer.heigth);
 
   if (barBuffer != null) {
-    console.log("draw bars");
+    //console.log("draw bars");
     image(barBuffer, 0, barBufferY, barBuffer.width, barBuffer.height);
     //image(barBuffer, 0, 10, 100, 100);
   }
@@ -606,10 +629,10 @@ function draw() {
   //for debugging
   drawFrame();
 
-  timerCountdown--;
-  if (timerCountdown <= 0) {
-    noLoop();
-  }
+  // timerCountdown--;
+  // if (timerCountdown <= 0) {
+  //   noLoop();
+  // }
 }
 
 function drawWellToBuffer() {
@@ -617,6 +640,9 @@ function drawWellToBuffer() {
   if (userdata == null) return;
   //var t0 = performance.now();
   wellBuffer.clear();
+  wellBuffer.resetMatrix();
+  wellBuffer.background(0,0,0,0);
+  scaleBufferForView(wellBuffer, userdata);
 
   wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
   wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');

@@ -6,7 +6,7 @@ var barBufferX;
 var barBufferY;
 
 
-var geoModelBuffer;
+var geoModelBuffer = null;
 
 var percentileBins = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 var maxTortalAngles = 10;
@@ -146,8 +146,9 @@ function drawBarCharts() {
 
 
 function redrawEnabledForAninterval() {
-    loop();
-    timerCountdown = 30;
+    drawWellToBuffer();
+    //loop();
+    //timerCountdown = 30;
 }
 
 
@@ -176,7 +177,7 @@ function cmousePressed() {
 
 function cmouseReleased() {
     console.log("mouse release");
-    ctouchEnded();
+    return ctouchEnded();
 }
 
 function ctouchStarted() {
@@ -187,6 +188,7 @@ function cmouseMoved() {
     if (mouseIsPressed) {
         ctouchMoved();
     }
+    return false;
 }
 
 function ctouchMoved() {

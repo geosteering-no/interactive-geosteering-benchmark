@@ -49,6 +49,9 @@ function drawRealizationToBuffer(buffer, xlist, real) {
 }
 
 function drawUserWellToBuffer(wellBuffer, committedPoints, maxNum) {
+
+    //wellBuffer.resetMatrix();
+    //scaleBufferForView(wellBuffer);
     var len = committedPoints.length;
     if (maxNum != undefined){
         len = Math.min(maxNum, len);
