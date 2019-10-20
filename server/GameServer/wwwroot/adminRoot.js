@@ -120,7 +120,7 @@ function buttonPreviousClick() {
 	if (revealIndex > -1) {
 		revealIndex--;
 	}
-	drawAllWells();
+	updateAll();
 }
 
 function buttonNextClick() {
@@ -129,6 +129,14 @@ function buttonNextClick() {
 			revealIndex++;
 		}
 	}
+	updateAll();
+}
+
+function updateAll() {
+	if (scoreData != null)
+		drawGeomodelToBuffer(scoreData);
+	else
+		drawGeomodelToBuffer(null);
 	drawAllWells();
 }
 
