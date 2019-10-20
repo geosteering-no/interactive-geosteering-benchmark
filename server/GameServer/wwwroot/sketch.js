@@ -386,7 +386,7 @@ function prevAngle(editNextAngleNo) {
 function getFullUserTrajectory() {
   if (userdata != null) {
     var xTravelDistance = userdata.xdist;
-    var fullUserTrajectory = userdata.wellPoints.slice();
+    var fullUserTrajectory = userdata.wellPoints.slice(0);
     var lastDefinedPoint = fullUserTrajectory[fullUserTrajectory.length - 1];
     var x = lastDefinedPoint.x;
     var y = lastDefinedPoint.y;
@@ -621,7 +621,7 @@ function drawWellToBuffer() {
   wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
   wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
   wellBuffer.strokeWeight(2 / userdata.height);
-  var userPoints = userdata.wellPoints.slice();
+  var userPoints = userdata.wellPoints.slice(0);
   drawUserWellToBuffer(wellBuffer, userPoints);
 
   //main trajectory

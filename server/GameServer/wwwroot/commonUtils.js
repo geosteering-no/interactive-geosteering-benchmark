@@ -4,9 +4,9 @@ function drawCircle(buffer, x, y, radius, npoints) {
 
     var angle = TWO_PI / npoints;
     buffer.beginShape();
-    for (let a = 0; a < TWO_PI; a += angle) {
-        let sx = x + cos(a) * radius;
-        let sy = y + sin(a) * radius;
+    for (var a = 0; a < TWO_PI; a += angle) {
+        var sx = x + cos(a) * radius;
+        var sy = y + sin(a) * radius;
         buffer.vertex(sx, sy);
     }
     buffer.endShape(CLOSE);

@@ -31,12 +31,12 @@ function draw() {
 	//clear();
 	if (revealIndex >= 0) {
 		
-		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
+		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		drawAllWells();
 		image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
 	} else {
 		fill(255);
-		rect(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.heigth);
+		geoModelBuffer.rect( 0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		drawAllProgress();
 		image(progressBuffer, 0, 0, progressBuffer.width, progressBuffer.height);
 	}
@@ -66,7 +66,7 @@ function drawAllWells() {
 		wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
 		wellBuffer.strokeWeight(2 / scoreData.height);
 		for (var i = 0; i < scoreData.userResults.length; ++i) {
-			var userPoints = scoreData.userResults[i].trajectoryWithScore.slice()
+			var userPoints = scoreData.userResults[i].trajectoryWithScore.slice(0)
 				.map(function (withScore) {
 					return withScore.wellPoint;
 				});
@@ -81,7 +81,7 @@ function drawAllProgress() {
 		progressBuffer.noStroke();
 		progressBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
 		//wellBuffer.strokeWeight(2 / scoreData.height);
-		var sortedResults = scoreData.userResults.slice().sort(function (a, b) {
+		var sortedResults = scoreData.userResults.slice(0).sort(function (a, b) {
 			if (a.stopped != b.stopped) {
 				if (a.stopped) {
 					return -1;
