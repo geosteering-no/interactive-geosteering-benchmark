@@ -61,7 +61,7 @@ function drawProgressToWellBuffer() {
 
 function drawAllWells() {
 	if (scoreData != null) {
-		wellBuffer.background(51);
+		wellBuffer.background(51, 51, 51, 0);
 		wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
 		wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
 		wellBuffer.strokeWeight(2 / scoreData.height);
@@ -183,7 +183,7 @@ function windowResized() {
 
 
 
-function drawGeomodelToBuffer(scoredata = null) {
+function drawGeomodelToBuffer(scoredata) {
 
 	geoModelBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
 	wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
