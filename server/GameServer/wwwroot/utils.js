@@ -159,11 +159,11 @@ var barTouched = -1;
 function cmousePressed() {
     var oldBar = barTouched;
     if (mouseY > barBufferY 
-        && mouseY < barBufferY + barBuffer.height) {
+        && mouseY < barBufferY + barHeigth) {
 
 
         console.log("mouse press");
-        barTouched = Math.floor(mouseX/barBuffer.width * 10);
+        barTouched = Math.floor(mouseX/canvasWidth * 10);
         console.log("touched: " + barTouched);
         if (oldBar != barTouched) {
             buttonSelectSubSet(barTouched);
@@ -171,7 +171,7 @@ function cmousePressed() {
 
     }
     drawBarCharts();
-    redrawEnabledForAninterval();
+    drawWellToBuffer();
     return false;
 }
 
@@ -201,7 +201,7 @@ function ctouchEnded() {
 
     buttonSelectSubSet(barTouched);
     drawBarCharts();
-    redrawEnabledForAninterval();
+    drawWellToBuffer();
     return false;
 }
 

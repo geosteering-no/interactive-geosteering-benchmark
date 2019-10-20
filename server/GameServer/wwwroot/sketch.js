@@ -61,6 +61,9 @@ var selectedIndexCluster = -1;
 var userEvaluationOld;
 var userEvaluation;
 
+var wellHeigth;
+var barHeigth;
+
 function buttonSelectSubSet(subsetIndex) {
   if (userEvaluation == null) {
     return;
@@ -204,6 +207,9 @@ function setup() {
 
   calculateCanvasSize();
 
+  wellHeigth = canvasWidth * 0.5;
+  barHeigth = canvasWidth * 0.3;
+
   canvas = createCanvas(canvasWidth, canvasHeigth);
 
   geoModelBuffer = createGraphics(windowWidth, Math.round(canvasHeigth / 8 * 3));
@@ -240,9 +246,9 @@ function setup() {
 
   angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
   angleSlider.input(sliderAngleChange);
-  angleSlider.style('width', '280px');
-  angleSlider.style('height', '180px');
-  angleSlider.style('transform', 'scale(3)');
+  // angleSlider.style('width', '280px');
+  // angleSlider.style('height', '180px');
+  // angleSlider.style('transform', 'scale(3)');
 
 
   setSizesAndPositions();
@@ -309,17 +315,23 @@ function getUserData() {
           updateBars();
           drawWellToBuffer();
           drawGeomodelToBuffer(userdata);
+          setSizesAndPositions();
           //redrawEnabledForAninterval();
         });
     });
 }
 
 function calculateCanvasSize() {
-  canvasWidth = Math.round(windowWidth - oneMarginInScript * 2);
-  canvasHeigth = Math.round(windowHeight - oneMarginInScript);
-  if (canvasWidth > canvasHeigth) {
-    canvasWidth = Math.round(canvasHeigth / 4 * 3);
+  if (windowWidth > windowHeight) {
+    canvasHeigth = Math.round(windowHeight);
+    canvasWidth = Math.round(windowHeight * 0.5);
+  } else {
+    canvasHeigth = Math.round(windowWidth * 2);
+    canvasWidth = Math.round(windowWidth);
   }
+  // if (canvasWidth > canvasHeigth) {
+  //   canvasWidth = Math.round(canvasHeigth / 4 * 3);
+  // }
 }
 
 function setSizesAndPositions() {
@@ -327,21 +339,30 @@ function setSizesAndPositions() {
 
 
   resizeCanvas(Math.round(canvasWidth), Math.round(canvasHeigth));
+  wellHeigth = canvasWidth * 0.5;
+  barHeigth = canvasWidth * 0.3;
 
-  // if (geoModelBuffer) {
-  //   geoModelBuffer.size(Math.round(canvasWidth), Math.round(canvasHeigth / 8 * 3));
-  //   wellBuffer.size(Math.round(canvasWidth), Math.round(canvasHeigth / 8 * 3));
-  //   barBuffer.size(Math.round(canvasWidth), Math.round(canvasHeigth / 8 * 2));
-  // }
+  if (geoModelBuffer) {
+    // geoModelBuffer.width = Math.round(canvasWidth);
+    // geoModelBuffer.height = Math.round(canvasWidth * 0.6);
+
+    // wellBuffer.width = Math.round(canvasWidth);
+    // wellBuffer.height = Math.round(canvasWidth * 0.6);
+
+    // barBuffer.width = Math.round(canvasWidth);
+    // barBuffer.height = Math.round(canvasWidth * 0.3);
+    // wellBuffer.size(Math.round(canvasWidth), Math.round(canvasHeigth / 8 * 3));
+    // barBuffer.size(Math.round(canvasWidth), Math.round(canvasHeigth / 8 * 2));
+  }
 
   var yPos = 0;
-  var yMargin = 5;
+  var yMargin = canvasWidth*0.01;
 
   function goDown(heigth) {
     yPos = yPos + heigth + yMargin;
   }
   
-  var submitHeight = canvasHeigth * 0.05;
+  var submitHeight = wellHeigth/5;
   submitDecisionButton.position(10, yPos);
   submitDecisionButton.size(canvasWidth -20, submitHeight);
 
@@ -349,11 +370,11 @@ function setSizesAndPositions() {
 
 
   wellBufferY = yPos;
-  drawGeomodelToBuffer(userdata);
+  //drawGeomodelToBuffer(userdata);
 
-  goDown(geoModelBuffer.height);
+  goDown(wellHeigth);
 
-  var buttonHeigth = geoModelBuffer.height / 5;
+  var buttonHeigth = wellHeigth / 5;
   prevButton.position(10, yPos);
   prevButton.size(canvasWidth / 3 - 15, buttonHeigth);
 
@@ -363,21 +384,20 @@ function setSizesAndPositions() {
   nextButton.position(canvasWidth - canvasWidth / 3  + 5, yPos);
   nextButton.size(canvasWidth / 3 - 15, buttonHeigth);
 
-  goDown(buttonHeigth+50);
+  goDown(buttonHeigth);
 
-  var sliderHeigth = 100;
-  var offsetSlider = 40;
-  angleSlider.position(canvasWidth/3 + offsetSlider, yPos);
-  angleSlider.size(canvasWidth/3 - offsetSlider*2, 50);
+  var sliderHeigth = canvasHeigth * 0.05;
+  angleSlider.position(canvasWidth * 0.1, yPos);
+  angleSlider.size(canvasWidth * 0.8, sliderHeigth);
 
   goDown(sliderHeigth);
 
   barBufferY = yPos;
-  drawBarCharts();
-  goDown(barBuffer.height);
+  //drawBarCharts();
+  goDown(barHeigth);
 
   updateBarsButton.position(5, yPos);
-  updateBarsButton.size(canvasWidth -10, canvasHeigth * 0.07);
+  updateBarsButton.size(canvasWidth -10, wellHeigth/5);
 
   //redrawEnabledForAninterval();
 }
@@ -612,15 +632,15 @@ function draw() {
 
   //console.log("draw, wellY: " + wellBufferY);
   clear();
-  image(geoModelBuffer, 0, Math.round(wellBufferY));
+  image(geoModelBuffer, 0, wellBufferY, canvasWidth, canvasWidth*0.5);
 
   //drawWellToBuffer();
 
-  image(wellBuffer, 0, wellBufferY, wellBuffer.width, wellBuffer.heigth);
+  image(wellBuffer, 0, wellBufferY, canvasWidth, canvasWidth*0.5);
 
   if (barBuffer != null) {
     //console.log("draw bars");
-    image(barBuffer, 0, barBufferY, barBuffer.width, barBuffer.height);
+    image(barBuffer, 0, barBufferY, canvasWidth, canvasWidth*0.3);
     //image(barBuffer, 0, 10, 100, 100);
   }
 
