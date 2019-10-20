@@ -16,10 +16,11 @@ namespace GameServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-
+                    var hostUrl = "http://0.0.0.0:5000";
                     String dir = Directory.GetCurrentDirectory();
                     String www = dir + "/wwwroot";
                     webBuilder.UseStartup<Startup>()
+                    .UseUrls(hostUrl)
                     .UseContentRoot(dir)
                     .UseWebRoot(www)
                     .UseStaticWebAssets();

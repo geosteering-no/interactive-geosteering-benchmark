@@ -233,6 +233,7 @@ function setup() {
   angleSlider.input(sliderAngleChange);
   angleSlider.style('width', '280px');
   angleSlider.style('height', '180px');
+  angleSlider.style('transform', 'scale(3)');
 
   setSizesAndPositions();
 
@@ -339,11 +340,12 @@ function setSizesAndPositions() {
   nextButton.position(canvasWidth - canvasWidth / 3  + 5, yPos);
   nextButton.size(canvasWidth / 3 - 15, buttonHeigth);
 
-  goDown(buttonHeigth);
+  goDown(buttonHeigth+50);
 
-  var sliderHeigth = 50;
-  angleSlider.position(80, yPos);
-  angleSlider.size(canvasWidth - 80 * 2, 50);
+  var sliderHeigth = 100;
+  var offsetSlider = 40;
+  angleSlider.position(canvasWidth/3 + offsetSlider, yPos);
+  angleSlider.size(canvasWidth/3 - offsetSlider*2, 50);
 
   goDown(sliderHeigth);
 
