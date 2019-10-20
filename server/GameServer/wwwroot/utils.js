@@ -40,13 +40,13 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
             //console.log("score: " + score);
             var xLeft = i / binsLen * buffer.width + shift + shiftFirst;
 
-            if (barTouched == i) {
+            if (drawLabels && barTouched == i) {
                 console.log("draw background bar: " + i);
                 buffer.fill(255, 137, 10);
                 buffer.rect(
                     xLeft-shift, 0, 1.0 / binsLen * buffer.width, barMaxHeight
                 );
-                barBuffer.fill(90, 90, 90);
+                barBuffer.fill(20, 50, 255);
             }
 
             buffer.rect(
@@ -155,14 +155,18 @@ function redrawEnabledForAninterval() {
 
 var barTouched = -1;
 
-function mousePressed() {
+function cmousePressed() {
+    var oldBar = barTouched;
     if (mouseY > barBufferY 
         && mouseY < barBufferY + barBuffer.height) {
 
 
         console.log("mouse press");
-        barTouched = Math.round(mouseX/barBuffer.width * 9);
+        barTouched = Math.floor(mouseX/barBuffer.width * 10);
         console.log("touched: " + barTouched);
+        if (oldBar != barTouched) {
+            buttonSelectSubSet(barTouched);
+        }
 
     }
     drawBarCharts();
@@ -170,6 +174,34 @@ function mousePressed() {
     return false;
 }
 
+function cmouseReleased() {
+    console.log("mouse release");
+    ctouchEnded();
+}
+
+function ctouchStarted() {
+    return cmousePressed();
+}
+
+function cmouseMoved() {
+    if (mouseIsPressed) {
+        ctouchMoved();
+    }
+}
+
+function ctouchMoved() {
+    return cmousePressed();
+}
+
+function ctouchEnded() {
+    barTouched = -1;
+    console.log("touch end");
+
+    buttonSelectSubSet(barTouched);
+    drawBarCharts();
+    redrawEnabledForAninterval();
+    return false;
+}
 
 function drawWellToBuffer(buffer, wellPoints){
 

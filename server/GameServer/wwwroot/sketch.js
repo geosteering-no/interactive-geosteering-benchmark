@@ -1,8 +1,8 @@
 var userdata = null;
-
 var wellBuffer;
 var barBuffer;
 var realizationScores;
+var canvas = null;
 
 //var xTravelDistance = 50;
 var maxAngleChange = 3.14 / 180.0 * 2;
@@ -201,7 +201,13 @@ function commitDecicion() {
 }
 
 function setup() {
-  createCanvas(100, 100);
+  canvas = createCanvas(100, 100);
+  canvas.mousePressed(cmousePressed);
+  canvas.mouseReleased(cmouseReleased);
+  canvas.touchStarted(ctouchStarted);
+  canvas.touchMoved(ctouchMoved);
+  canvas.touchEnded(ctouchEnded);
+  canvas.mouseMoved(cmouseMoved);
   prevButton = createButton("<- Previous");
   prevButton.mousePressed(previousButtonClick);
 
@@ -276,9 +282,6 @@ function setup() {
   noLoop();
 }
 
-function touchStarted() {
-  return false;
-}
 
 function getUserData() {
   fetch("/geo/userdata", { credentials: 'include' })
@@ -466,12 +469,14 @@ function buttonSubmitPressed() {
 
 }
 
+
 function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
 
   geoModelBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
   wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
   barBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 2);
 
+  //barBuffer.mousePressed(press);
 
 
   if (userdata != null) {
