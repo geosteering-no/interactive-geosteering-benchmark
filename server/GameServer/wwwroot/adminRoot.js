@@ -109,6 +109,10 @@ function drawAllWells() {
 			})
 		for (var i = 0; i < curResultsAscending.length; ++i) {
 			var fromTop = curResultsAscending.length - 1 - i;
+			var userPoints = curResultsAscending[i].trajectoryWithScore.slice(0)
+			.map(function (withScore) {
+				return withScore.wellPoint;
+			});
 			if (fromTop < colors.length) {
 				wellBuffer.stroke(colors[fromTop]);
 				wellBuffer.fill(colors[fromTop]);
@@ -132,10 +136,7 @@ function drawAllWells() {
 				wellBuffer.stroke(220);
 				wellBuffer.strokeWeight(2 / scoreData.height);
 			}
-			var userPoints = curResultsAscending[i].trajectoryWithScore.slice(0)
-				.map(function (withScore) {
-					return withScore.wellPoint;
-				});
+
 			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
 			//var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 			//var score = curResults[i].trajectoryWithScore[lastInd].score;
