@@ -21,6 +21,7 @@ function drawFrame() {
 }
 
 
+
 function scaleBufferForView(b, userdata) {
     b.scale(b.width / userdata.width, b.height / userdata.height);
     b.translate(-userdata.xtopleft, -userdata.ytopleft);
