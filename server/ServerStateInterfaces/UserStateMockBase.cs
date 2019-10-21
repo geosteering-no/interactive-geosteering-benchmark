@@ -10,6 +10,7 @@ namespace ServerStateInterfaces
         private UserData _userData;
         private ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
         const int DISCRETIZATION_POINTS = 10;
+        private const int TOTAL_DECISION_POINTS = 9;
         const double X_TOP_LEFT = 10.0;
         const double Y_TOP_LEFT = 10.0;
         private const double X_WIDTH = 100;
@@ -38,7 +39,8 @@ namespace ServerStateInterfaces
                 wellPoints = new List<WellPoint>() { GetNextStateDefault() },
                 Xtopleft = X_TOP_LEFT,
                 Ytopleft = Y_TOP_LEFT,
-                stopped = false
+                stopped = false,
+                TotalDecisionPoints = TOTAL_DECISION_POINTS
             };
             var xs = new List<double>();
 

@@ -34,6 +34,7 @@ namespace UserState
         private const double MinX = 0;
         private const double MaxX = 350;
         private const double EPS = 1e-7;
+        private const int DecisionPoints = 10;
 
         private double DefaultDecisionStep { get; }
 
@@ -263,7 +264,8 @@ namespace UserState
                     wellPoints = wellPoints,
                     xList = _earthManipulator.XPositions,
                     Xdist = DefaultDecisionStep,
-                    stopped = _stopped
+                    stopped = _stopped,
+                    TotalDecisionPoints = DecisionPoints
                 };
                 return data;
             }

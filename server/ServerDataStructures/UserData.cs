@@ -3,6 +3,10 @@ using System.Collections.Generic;
 namespace ServerDataStructures {
     public class UserData  {
 
+        public UserData()
+        {
+
+        }
         public double Xtopleft { get; set; }
         public double Ytopleft { get; set; }
         public double Width { get; set; }
@@ -11,6 +15,8 @@ namespace ServerDataStructures {
         public double Xdist {get; set;}
 
         public IList<double> xList { get; set; }
+
+        public int TotalDecisionPoints { get; set; }
 
         public IList<RealizationData> realizations  { get; set; }
 

@@ -9,7 +9,7 @@ namespace ServerDataStructures
         public double Width { get; set; }
         public double Height { get; set; }
 
-        public int TotalSteps { get; set; }
+        public int TotalDecisionPoints { get; set; }
 
         public double Xdist { get; set; }
 

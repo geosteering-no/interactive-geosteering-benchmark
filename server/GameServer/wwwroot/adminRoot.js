@@ -1,23 +1,35 @@
 var timerCountdown = 1;
 var prevButton;
 var nextButton;
-var wellBuffer;
-var progresBuffer;
+
+var colors = ['#66c2a5', '#fc8d62', '#8da0cb'];
+var oldBest = [];
+
 var restartButton;
 var revealIndex = -1;
 var scoreData = null;
 
+var progressBuffer = null;
+var wellBuffer = null;
+var geoModelBuffer = null;
+var legendBuffer = null;
+var oldLegendBuffer = null;
+
+var curResultsAscending = null;
+var prevBest = [];
+
 function setup() {
+	oneMarginInScript = 10;
 	createCanvas(100, 100);
-	prevButton = createButton("<- Previous");
+	prevButton = createButton("Hide");
 	prevButton.mousePressed(buttonPreviousClick);
 
-	nextButton = createButton("Next ->");
+	nextButton = createButton("Reveal");
 	nextButton.mousePressed(buttonNextClick);
 
 
 	restartButton = createButton("New game");
-	restartButton.position(0, 450);
+	restartButton.position(0, 1400);
 	restartButton.mousePressed(restartClick);
 
 	setSizesAndPositions();
@@ -29,15 +41,25 @@ function setup() {
 
 function draw() {
 	//clear();
+	noStroke();
 	if (revealIndex >= 0) {
 		clear();
 		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		//drawAllWells();
 		image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
+		if (legendBuffer != null) {
+			image(legendBuffer, canvasWidth - legendBuffer.width, 0, legendBuffer.width, legendBuffer.height);
+		}
+		if (oldLegendBuffer != null) {
+			fill(200);
+			//rect(canvasWidth - legendBuffer.width, legendBuffer.height, legendBuffer.width, legendBuffer.height);
+			//oldLegendBuffer.image(legendBuffer, 0, 0, legendBuffer.width, legendBuffer.height);
+			image(oldLegendBuffer, canvasWidth - legendBuffer.width, legendBuffer.height, legendBuffer.width, legendBuffer.height);
+		}
 	} else {
 		clear();
-		fill(255);
-		geoModelBuffer.rect( 0, 0, geoModelBuffer.width, geoModelBuffer.height);
+		fill(0);
+		rect(0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		drawAllProgress();
 		image(progressBuffer, 0, 0, progressBuffer.width, progressBuffer.height);
 	}
@@ -52,26 +74,72 @@ function draw() {
 	timerCountdown--;
 	if (timerCountdown <= 0) {
 		timerCountdown = 60 * 10;
-		fetchScoreData();
+		if (revealIndex < 0) {
+			fetchScoreData();
+		}
 	}
-}
-
-function drawProgressToWellBuffer() {
-	var buffer = wellBuffer;
 }
 
 function drawAllWells() {
 	if (scoreData != null) {
-		wellBuffer.background(51, 51, 51, 0);
-		wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
-		wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
-		wellBuffer.strokeWeight(2 / scoreData.height);
-		for (var i = 0; i < scoreData.userResults.length; ++i) {
-			var userPoints = scoreData.userResults[i].trajectoryWithScore.slice(0)
+		//oldLegendBuffer.resizeCanvas(legendBuffer.width, legendBuffer.height);
+		//oldLegendBuffer.clear();
+		//oldLegendBuffer.tint(255);
+		//oldLegendBuffer.tint(100, 0.3);
+		//oldLegendBuffer.image(legendBuffer, 0, 0, legendBuffer.width, legendBuffer.height);
+		wellBuffer.clear();
+		legendBuffer.clear();
+		legendBuffer.noStroke();
+		var textShift = 10;
+		legendBuffer.textSize(textShift * 3);
+
+		//var best = [];
+		//wellBuffer.textSize(1);
+		//wellBuffer.background(51, 51, 51, 0);
+		//wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
+		//wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
+		//wellBuffer.strokeWeight(2 / scoreData.height);
+		curResultsAscending = scoreData.userResults.slice(0)
+			.sort(function (a, b) {
+				var aLastInd = Math.min(a.trajectoryWithScore.length, revealIndex + 1) - 1;
+				var bLastInd = Math.min(b.trajectoryWithScore.length, revealIndex + 1) - 1;
+				var valueA = a.trajectoryWithScore[aLastInd].score;
+				var valueB = b.trajectoryWithScore[bLastInd].score;
+				return valueA - valueB;
+			})
+		for (var i = 0; i < curResultsAscending.length; ++i) {
+			var fromTop = curResultsAscending.length - 1 - i;
+			if (fromTop < colors.length) {
+				wellBuffer.stroke(colors[fromTop]);
+				wellBuffer.fill(colors[fromTop]);
+				wellBuffer.strokeWeight(5 / scoreData.height);
+				var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
+				var score = curResultsAscending[i].trajectoryWithScore[lastInd].score;
+				var userName = curResultsAscending[i].userName;
+				legendBuffer.fill(colors[fromTop]);
+				legendBuffer.textAlign(LEFT);
+				legendBuffer.text(userName + " : ", 0, textShift + (fromTop) * legendBuffer.height / colors.length,
+					legendBuffer.width, legendBuffer.windowHeight / colors.length);
+				legendBuffer.textAlign(RIGHT);
+				legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / colors.length,
+					legendBuffer.width, legendBuffer.windowHeight / colors.length);
+				//best[userName] = null;
+				// if (userName in prevBest){
+				// 	prevBest
+				// }
+			} else {
+				wellBuffer.stroke(220);
+				wellBuffer.stroke(220);
+				wellBuffer.strokeWeight(2 / scoreData.height);
+			}
+			var userPoints = curResultsAscending[i].trajectoryWithScore.slice(0)
 				.map(function (withScore) {
 					return withScore.wellPoint;
 				});
-			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex);
+			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
+			//var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
+			//var score = curResults[i].trajectoryWithScore[lastInd].score;
+			//wellBuffer.text(score, userPoints[lastInd].x, userPoints[lastInd].y, 100, 30);
 		}
 	}
 }
@@ -80,7 +148,7 @@ function drawAllProgress() {
 	if (scoreData != null) {
 		//progressBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
 		progressBuffer.noStroke();
-		progressBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
+		//progressBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
 		//wellBuffer.strokeWeight(2 / scoreData.height);
 		var sortedResults = scoreData.userResults.slice(0).sort(function (a, b) {
 			if (a.stopped != b.stopped) {
@@ -101,18 +169,40 @@ function drawAllProgress() {
 
 		for (var i = 0; i < totalUsers; i++) {
 			var userProgressInd = sortedResults[i].trajectoryWithScore.length;
-			var progresFraction = userProgressInd / scoreData.totalSteps;
+			var progresFraction = userProgressInd / scoreData.totalDecisionPoints;
+			if (sortedResults[i].stopped) {
+				progressBuffer.fill(colors[0]);
+				// progressBuffer.text("stopped",
+				// 	progresFraction * progressBuffer.width + shift,
+				// 	i * oneHeight + shift * 2,
+				// 	progresFraction * progressBuffer.width,
+				// 	oneHeight - shift * 2);
+			} else {
+				progressBuffer.fill(colors[1]);
+			}
 			progressBuffer.rect(0, i * oneHeight + shift,
 				progresFraction * progressBuffer.width,
 				oneHeight - shift * 2);
-			if (sortedResults[i].stopped) {
-				progressBuffer.text("stopped",
-					progresFraction * progressBuffer.width + shift,
-					i * oneHeight + shift * 2,
-					progresFraction * progressBuffer.width,
-					oneHeight - shift * 2);
-			}
+
 			//wellBuffer.rect(50,40,800,800);
+		}
+	}
+}
+
+function updateButtonLabels() {
+	if (scoreData != null) {
+		if (revealIndex - 1 >= 0) {
+			prevButton.html('<== ' + ((revealIndex - 1) / scoreData.totalDecisionPoints * 100) + '%');
+		}
+		else {
+			prevButton.html('Hide');
+			nextButton.html('Reveal');
+		}
+		if (revealIndex + 1 <= scoreData.totalDecisionPoints) {
+			nextButton.html(((revealIndex + 1) / scoreData.totalDecisionPoints * 100) + '%' + ' ==>');
+		}
+		else {
+			nextButton.html('Final step');
 		}
 	}
 }
@@ -120,16 +210,19 @@ function drawAllProgress() {
 function buttonPreviousClick() {
 	if (revealIndex > -1) {
 		revealIndex--;
+
 	}
+	updateButtonLabels()
 	updateAll();
 }
 
 function buttonNextClick() {
-	if (scoreData != null) {		
-		if (revealIndex < scoreData.totalSteps) {
+	if (scoreData != null) {
+		if (revealIndex < scoreData.totalDecisionPoints) {
 			revealIndex++;
 		}
 	}
+	updateButtonLabels()
 	updateAll();
 }
 
@@ -194,11 +287,24 @@ function windowResized() {
 
 function drawGeomodelToBuffer(scoredata) {
 
-	geoModelBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
-	wellBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
-	progressBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 3);
-
-	barBuffer = createGraphics(canvasWidth, canvasHeigth / 8 * 2);
+	var bufferHeight = Math.round(canvasHeigth / 8 * 7);
+	var legendWidth = Math.round(canvasWidth / 3);
+	var legendHeight = Math.round(canvasHeigth / 8);
+	if (geoModelBuffer == null) {
+		geoModelBuffer = createGraphics(canvasWidth, bufferHeight);
+		wellBuffer = createGraphics(canvasWidth, bufferHeight);
+		progressBuffer = createGraphics(canvasWidth, bufferHeight);
+		legendBuffer = createGraphics(legendWidth, legendHeight);
+		oldLegendBuffer = createGraphics(legendWidth, legendHeight);
+	} else {
+		geoModelBuffer.resizeCanvas(canvasWidth, bufferHeight);
+		wellBuffer.resizeCanvas(canvasWidth, bufferHeight);
+		progressBuffer.resizeCanvas(canvasWidth, bufferHeight);
+		oldLegendBuffer.resizeCanvas(legendWidth, legendHeight);
+		oldLegendBuffer.tint(100);
+		oldLegendBuffer.image(legendBuffer, 0, 0, legendBuffer.width, legendBuffer.height);
+		legendBuffer.resizeCanvas(legendWidth, legendHeight);
+	}
 
 
 
@@ -285,11 +391,30 @@ function drawGeomodelToBuffer(scoredata) {
 
 
 function setSizesAndPositions() {
-	canvasWidth = windowWidth - oneMarginInScript * 2;
-	canvasHeigth = windowHeight - oneMarginInScript;
+	canvasWidth = Math.round(windowWidth - oneMarginInScript * 2);
+	canvasHeigth = Math.round(windowHeight - oneMarginInScript);
 
 
 	resizeCanvas(canvasWidth, canvasHeigth);
+
+	// var bufferHeight = Math.round(canvasHeigth / 8 * 7);
+	// var legendWidth = Math.round(canvasWidth / 3);
+	// var legendHeight = Math.round(canvasHeigth / 8);
+
+	// if (geoModelBuffer == null) {
+	// 	geoModelBuffer = createGraphics(canvasWidth, bufferHeight);
+	// 	wellBuffer = createGraphics(canvasWidth, bufferHeight);
+	// 	progressBuffer = createGraphics(canvasWidth, bufferHeight);
+	// 	legendBuffer = createGraphics(legendWidth, legendHeight);
+	// 	oldLegendBuffer = createGraphics(legendWidth, legendHeight);
+	// } else {
+	// 	geoModelBuffer.resizeCanvas(canvasWidth, bufferHeight);
+	// 	wellBuffer.resizeCanvas(canvasWidth, bufferHeight);
+	// 	progressBuffer.resizeCanvas(canvasWidth, bufferHeight);
+	// 	legendBuffer.resizeCanvas(legendWidth, legendHeight);
+	// 	oldLegendBuffer.resizeCanvas(legendWidth, legendHeight);
+	// }
+
 
 	drawGeomodelToBuffer();
 

@@ -1,4 +1,4 @@
-var oneMarginInScript = 2;
+var oneMarginInScript = 10;
 
 function drawCircle(buffer, x, y, radius, npoints) {
 

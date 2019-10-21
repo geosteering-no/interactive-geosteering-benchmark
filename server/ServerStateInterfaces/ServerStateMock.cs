@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using ServerDataStructures;
 
@@ -17,6 +18,8 @@ namespace ServerStateInterfaces
             EvaluatorTruth => _evaluatorClass.EvaluateOneRealizationDefault;
 
 
+        private const int TOTAL_DECISION_STEPS = 10;
+
 
         private UserData _dummyUserData;
 
@@ -31,7 +34,7 @@ namespace ServerStateInterfaces
                 Ytopleft = _dummyUserData.Ytopleft,
                 xList = _dummyUserData.xList,
                 secretRealization = _secret,
-                TotalSteps = 10
+                TotalDecisionPoints = TOTAL_DECISION_STEPS
             };
         }
 
