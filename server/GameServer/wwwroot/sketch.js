@@ -237,6 +237,8 @@ function setup() {
 
   submitDecisionButton = createButton("Submit current decision");
   submitDecisionButton.mousePressed(commitDecicion);
+  submitDecisionButton.style('background-color', '#f44336');
+  submitDecisionButton.style('color', 'white'); //font color
   //TODO reposition
   submitDecisionButton.position(200, 900);
 
@@ -362,9 +364,10 @@ function setSizesAndPositions() {
     yPos = yPos + heigth + yMargin;
   }
   
+  goDown(0);
   var submitHeight = wellHeigth/5;
-  submitDecisionButton.position(10, yPos);
-  submitDecisionButton.size(canvasWidth -20, submitHeight);
+  submitDecisionButton.position(canvasWidth / 4, yPos);
+  submitDecisionButton.size(canvasWidth / 2, submitHeight);
 
   goDown(submitHeight);
 
