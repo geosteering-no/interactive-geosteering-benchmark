@@ -22,6 +22,7 @@ This may require building in release first?
 1. Navigate to folder which contains GameServer.csproj
 2. Run the command `dotnet publish -c Release -r <target-os> --self-contained true`
    * For windows: <target-os> = win10-x64
+3. The self-contained folder should now be located at GameServer/bin/Release/netcoreapp3.0/<target-os>
 
 ## Client
 Written in javascript using the [p5](https://p5js.org/) client-side library
