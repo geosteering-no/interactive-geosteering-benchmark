@@ -163,6 +163,7 @@ function commitNextPoint(wellPoint) {
             editNextAngleNo--;
           }
           correctAnglesIfNeeded();
+          updateSliderPosition();
           updateBars();
           drawGeomodelToBuffer(userdata);
           redrawEnabledForAninterval();
@@ -196,6 +197,7 @@ function commitStop() {
               editNextAngleNo--;
             }
             correctAnglesIfNeeded();
+            updateSliderPosition();
             updateBars();
             drawGeomodelToBuffer(userdata);
             redrawEnabledForAninterval();
@@ -333,6 +335,7 @@ function getUserData() {
           console.log("got userdata:" + JSON.stringify(json));
           userdata = json;
           correctAnglesIfNeeded();
+          updateSliderPosition();
           updateBars();
           drawWellToBuffer();
           drawGeomodelToBuffer(userdata);
@@ -563,11 +566,18 @@ function sliderAngleChange() {
 
 }
 
+function updateSliderPosition(){
+  if (editNextAngleNo < nextAngles.length){
+    angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
+  }
+  
+}
+
 function previousButtonClick() {
   if (editNextAngleNo > 0) {
     editNextAngleNo--;
   }
-  angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
+  updateSliderPosition();
   redrawEnabledForAninterval();
 }
 
@@ -583,7 +593,7 @@ function nextButtonClick() {
   if (editNextAngleNo < nextAngles.length - 1) {
     editNextAngleNo++;
   }
-  angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
+  updateSliderPosition();
   redrawEnabledForAninterval();
 }
 
