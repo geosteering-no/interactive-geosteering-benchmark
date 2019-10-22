@@ -160,7 +160,7 @@ function commitNextPoint(wellPoint) {
             editNextAngleNo--;
           }
           correctAnglesIfNeeded();
-
+          detectGameStateAndUpdateStuffAcordingly();
           sessionStorage.setItem("angles", JSON.stringify(nextAngles));
           updateSliderPosition();
           updateBars();
@@ -366,8 +366,16 @@ function detectGameStateAndUpdateStuffAcordingly() {
       beginAngle - maxAngleChange * 1.7,
       beginAngle - maxAngleChange * 1.8];
   }
-  if (userdata.stopped) {
+  else if (userdata.stopped) {
       stopGame();
+  }
+  else if (nextAngles.length == 0) {
+
+    submitDecisionButton.elt.textContent = "Stop drilling and end game";
+  }
+  else {
+    submitDecisionButton.elt.textContent = "Submit current decision";
+    submitDecisionButton.mousePressed(commitDecicion);
   }
 }
 
@@ -640,6 +648,7 @@ function continueClick() {
         nextAngles.push(nextAngles[newAnglesLen - 1]);
       }
     }
+    detectGameStateAndUpdateStuffAcordingly();
     redrawEnabledForAninterval();
   }
 }
