@@ -129,6 +129,14 @@ function updateBars() {
     });
 }
 
+function correctAnglesIfNeeded(){
+  if (userdata != null){
+    if (userdata.wellPoints.length + nextAngles.length > userdata.totalDecisionPoints){
+      nextAngles.length = Math.max(0, userdata.totalDecisionPoints - userdata.wellPoints.length);
+    }
+  }
+}
+
 function commitNextPoint(wellPoint) {
   var bodyString = JSON.stringify(wellPoint);
   fetch("/geo/commitpoint", {
@@ -154,6 +162,7 @@ function commitNextPoint(wellPoint) {
           if (editNextAngleNo > 0) {
             editNextAngleNo--;
           }
+          correctAnglesIfNeeded();
           updateBars();
           drawGeomodelToBuffer(userdata);
           redrawEnabledForAninterval();
@@ -186,6 +195,7 @@ function commitStop() {
             if (editNextAngleNo > 0) {
               editNextAngleNo--;
             }
+            correctAnglesIfNeeded();
             updateBars();
             drawGeomodelToBuffer(userdata);
             redrawEnabledForAninterval();
@@ -322,6 +332,7 @@ function getUserData() {
         .then(function (json) {
           console.log("got userdata:" + JSON.stringify(json));
           userdata = json;
+          correctAnglesIfNeeded();
           updateBars();
           drawWellToBuffer();
           drawGeomodelToBuffer(userdata);
