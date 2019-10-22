@@ -171,6 +171,15 @@ namespace ServerStateInterfaces
         protected TUserModel GetOrAddUser(string userId)
         {
             //TODO check if default works
+            if (userId == null)
+            {
+                throw new Exception("Empty user ID");
+            }
+
+            if (userId.Length < 2)
+            {
+                throw new Exception("User ID too short");
+            }
             var doLog = !UserExists(userId);
             var user = _users.GetOrAdd(userId, GetDefaultNewUser());
             lock (user)
