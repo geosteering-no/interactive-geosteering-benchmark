@@ -157,6 +157,13 @@ namespace ServerStateInterfaces
 
         protected abstract TRealizationData GetTruthForEvaluation();
 
+
+        /// <summary>
+        /// Requires a user lock
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         protected UserResultFinal<TWellPoint> GetDefaultUserResult(string userId, TUserModel user)
         {
             var newUserResult = GetDefaultUserResult();
@@ -213,24 +220,31 @@ namespace ServerStateInterfaces
                 seed = NextSeed();
             }
             var newDict = new ConcurrentDictionary<string, TUserModel>();
-            foreach (var userId in _users.Keys)
+            foreach (var userId in _users.Keys.ToList())
             {
+                //var user = _users.GetOrAdd()
                 var newUserState = GetDefaultNewUser();
-                var newUserResult = GetDefaultUserResult(userId, newUserState);
-                _userResults.AddOrUpdate(userId, GetDefaultUserResult(), (key, oldUserResult) =>
+                var user = _users.GetOrAdd(userId, newUserState);
+                lock (user)
                 {
-                    double prevGameScore = 0;
-                    if (oldUserResult.TrajectoryWithScore.Count > 0)
+                    var newUserResult = GetDefaultUserResult(userId, newUserState);
+                    _userResults.AddOrUpdate(userId, GetDefaultUserResult(), (key, oldUserResult) =>
                     {
-                        prevGameScore = oldUserResult.TrajectoryWithScore[oldUserResult.TrajectoryWithScore.Count - 1]
-                            .Score;
-                    }
+                        double prevGameScore = 0;
+                        if (oldUserResult.TrajectoryWithScore.Count > 0)
+                        {
+                            prevGameScore = oldUserResult
+                                .TrajectoryWithScore[oldUserResult.TrajectoryWithScore.Count - 1]
+                                .Score;
+                        }
 
-                    oldUserResult.AccumulatedScoreFromPreviousGames += prevGameScore;
-                    oldUserResult.TrajectoryWithScore = newUserResult.TrajectoryWithScore;
-                    oldUserResult.Stopped = false;
-                    return oldUserResult;
-                });
+                        oldUserResult.AccumulatedScoreFromPreviousGames += prevGameScore;
+                        oldUserResult.TrajectoryWithScore = newUserResult.TrajectoryWithScore;
+                        oldUserResult.Stopped = false;
+                        return oldUserResult;
+                    });
+                }
+
                 for (var i = 0; i< 100; ++i)
                 {
                     //will add everything eventually
@@ -257,6 +271,25 @@ namespace ServerStateInterfaces
             {
                 StopUser(userId);
             }
+        }
+
+        public void ResetAllScores()
+        {
+            var newUsers = new ConcurrentDictionary<string, TUserModel>();
+            var newUserResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
+
+            foreach (var userId in _users.Keys.ToList())
+            {
+                var newUserState = GetDefaultNewUser();
+                var newUserResult = GetDefaultUserResult();
+                newUserResult.UserName = userId;
+                newUsers.TryAdd(userId, newUserState);
+                newUserResults.TryAdd(userId, newUserResult);
+            }
+
+            _users = newUsers;
+            _userResults = newUserResults;
+ 
         }
 
         public TUserDataModel UpdateUser(string userId, TWellPoint load = default)

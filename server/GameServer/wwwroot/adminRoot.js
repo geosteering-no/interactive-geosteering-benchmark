@@ -11,6 +11,7 @@ var scoreData = null;
 
 var updateTotalScoreButton = null;
 var stopUsersButton = null;
+var resetUserScoresButton = null;
 var scoreBoardDiv = null;
 
 var progressBuffer = null;
@@ -40,6 +41,10 @@ function setup() {
 	stopUsersButton.position(200, 1400);
 	stopUsersButton.mousePressed(stopUsersClick);
 
+	resetUserScoresButton = createButton("Reset user scores");
+	resetUserScoresButton.position(300, 1400);
+	resetUserScoresButton.mousePressed(resetScoresClick);
+
 	updateTotalScoreButton = createButton("Update total scores");
 	updateTotalScoreButton.position(0, 1250);
 	updateTotalScoreButton.mousePressed(updateScores);
@@ -52,6 +57,7 @@ function setup() {
 
 
 	drawGeomodelToBuffer();
+	frameRate(4);
 	//noLoop();
 }
 
@@ -89,7 +95,7 @@ function draw() {
 
 	timerCountdown--;
 	if (timerCountdown <= 0) {
-		timerCountdown = 60 * 10;
+		timerCountdown = frameRate() * 10;
 		if (revealIndex < 0) {
 			fetchScoreData();
 		}
@@ -254,7 +260,7 @@ function buttonPreviousClick() {
 		revealIndex--;
 
 	}
-	updateButtonLabels()
+	updateButtonLabels();
 	updateAll();
 }
 
@@ -264,7 +270,7 @@ function buttonNextClick() {
 			revealIndex++;
 		}
 	}
-	updateButtonLabels()
+	updateButtonLabels();
 	updateAll();
 }
 
@@ -315,7 +321,27 @@ function stopUsersClick(){
 				//TODO consider sending a message to user
 			}
 		});
+}
 
+function resetScoresClick(){
+	fetch("geo/resetallscores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
+	{
+		credentials: 'include',
+		method: 'POST'
+	})
+	.then(function (res) {
+		if (!res.ok) {
+			alert("resetting all user scores was not accepted?!");
+			//throw Error("getting userdata failed");
+		}
+		else {
+			console.log("reseting complete");
+			fetchScoreData();
+			restartClick();
+			//TODO consider making it impossible to add new points
+			//TODO consider sending a message to user
+		}
+	});
 }
 
 function restartClick() {
@@ -331,6 +357,8 @@ function restartClick() {
 			}
 			else {
 				console.log("restart complete");
+				revealIndex = -1;
+				updateButtonLabels();
 				//TODO consider making it impossible to add new points
 				//TODO consider sending a message to user
 			}

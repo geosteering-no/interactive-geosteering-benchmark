@@ -11,6 +11,7 @@ namespace ServerStateInterfaces
 
         void RestartServer(int seed = -1);
         void StopAllUsers();
+        void ResetAllScores();
         TUserData UpdateUser(string userId, TWellPoint load = default);
         TUserData StopUser(string userId);
         TUserData GetOrAddUserState(string userId);

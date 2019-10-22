@@ -60,6 +60,21 @@ namespace GameServer.Controllers
             }
         }
 
+        [Route("resetallscores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
+        [HttpPost]
+        public void ResetAllScores()
+        {
+            var userId = GetUserId();
+            if (userId == ADMIN_SECRET_USER_NAME)
+            {
+                _stateServer.ResetAllScores();
+            }
+            else
+            {
+                throw new Exception("You are not the admin");
+            }
+        }
+
         [Route("admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         public PopulationScoreData<WellPoint> GetScores()
         {
