@@ -30,6 +30,21 @@ namespace GameServer.Controllers
             _stateServer = stateServer;
         }
 
+        [Route("stopall/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
+        [HttpPost]
+        public void StopAll()
+        {
+            var userId = GetUserId();
+            if (userId == ADMIN_SECRET_USER_NAME)
+            {
+                _stateServer.StopAllUsers();
+            }
+            else
+            {
+                throw new Exception("You are not the admin");
+            }
+        }
+
         [Route("restart/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]
         public void Restart()

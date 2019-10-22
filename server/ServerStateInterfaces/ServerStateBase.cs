@@ -250,6 +250,15 @@ namespace ServerStateInterfaces
             InitializeNewSyntheticTruth(seed);
         }
 
+        public void StopAllUsers()
+        {
+            var userList = _users.Keys.ToList();
+            foreach (var userId in userList)
+            {
+                StopUser(userId);
+            }
+        }
+
         public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
         {
             if (!UserExists(userId))

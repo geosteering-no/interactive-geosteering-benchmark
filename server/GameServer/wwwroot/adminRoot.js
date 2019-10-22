@@ -10,6 +10,7 @@ var revealIndex = -1;
 var scoreData = null;
 
 var updateTotalScoreButton = null;
+var stopUsersButton = null;
 var scoreBoardDiv = null;
 
 var progressBuffer = null;
@@ -34,6 +35,10 @@ function setup() {
 	restartButton = createButton("New game");
 	restartButton.position(100, 1400);
 	restartButton.mousePressed(restartClick);
+
+	stopUsersButton = createButton("Stop all users");
+	stopUsersButton.position(200, 1400);
+	stopUsersButton.mousePressed(stopUsersClick);
 
 	updateTotalScoreButton = createButton("Update total scores");
 	updateTotalScoreButton.position(0, 1250);
@@ -290,6 +295,27 @@ function fetchScoreData() {
 					//drawAllWells();
 				});
 		});
+}
+
+function stopUsersClick(){
+	fetch("geo/stopall/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
+		{
+			credentials: 'include',
+			method: 'POST'
+		})
+		.then(function (res) {
+			if (!res.ok) {
+				alert("stopping all users was not accepted?!");
+				//throw Error("getting userdata failed");
+			}
+			else {
+				console.log("stopping complete");
+				fetchScoreData();
+				//TODO consider making it impossible to add new points
+				//TODO consider sending a message to user
+			}
+		});
+
 }
 
 function restartClick() {
