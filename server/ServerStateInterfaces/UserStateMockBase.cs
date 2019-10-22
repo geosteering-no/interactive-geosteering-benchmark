@@ -97,7 +97,11 @@ namespace ServerStateInterfaces
 
         public bool UpdateUser(WellPoint updatePoint, RealizationData secret)
         {
-            
+            if (updatePoint.X - 1e-7 <= UserData.wellPoints[UserData.wellPoints.Count - 1].X)
+            {
+                return false;
+            }
+                
             {
                 int prevIndex;
                 for (prevIndex = 0; prevIndex < secret.XList.Count - 1; ++prevIndex)

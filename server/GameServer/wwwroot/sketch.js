@@ -112,7 +112,7 @@ function updateBars() {
     })
     .then(function (res) {
       if (!res.ok) {
-        alert("getting evaluation for a user failed");
+        alert("Getting evaluation failed. Try refreshing the webpage.");
         //throw Error("getting userdata failed");
       }
       res.json()
@@ -141,7 +141,7 @@ function commitNextPoint(wellPoint) {
     body: bodyString
   }).then(function (res) {
     if (!res.ok) {
-      alert("updating userdata failed");
+      alert("Updating failed. Try refreshing the page.");
       //throw Error("updating userdata failed");
     }
     else {
@@ -170,7 +170,7 @@ function commitStop() {
     })
     .then(function (res) {
       if (!res.ok) {
-        alert("stopping was not accepted?!");
+        alert("Stopping was not accepted?!");
         //throw Error("getting userdata failed");
       }
       else {
@@ -315,8 +315,8 @@ function getUserData() {
   fetch("/geo/userdata", { credentials: 'include' })
     .then(function (res) {
       if (!res.ok) {
-        alert("getting userdata failed");
-        throw Error("getting userdata failed");
+        alert("Getting userdata failed. Try going to login page.");
+        //throw Error("getting userdata failed");
       }
       res.json()
         .then(function (json) {
