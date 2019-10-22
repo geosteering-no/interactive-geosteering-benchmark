@@ -5,7 +5,7 @@ Server/Client for November Geosteering Demo
 ## Server
 Dotnet Core 3.0 Kestrel Server
 
-#### Requires:
+### Requires:
 * Asp.NetCore 3.0
   * Which requires Visual Studio 2019 or MSBuild 16(??)
 
@@ -17,6 +17,11 @@ Dotnet Core 3.0 Kestrel Server
 5.	AJAX request solves everything
 6.	Logging all on backend 
 
+### Publishing server
+This may require building in release first?
+1. Navigate to folder which contains GameServer.csproj
+2. Run the command `dotnet publish -c Release -r <target-os> --self-contained true`
+   * For windows: <target-os> = win10-x64
 
 ## Client
 Written in javascript using the [p5](https://p5js.org/) client-side library
