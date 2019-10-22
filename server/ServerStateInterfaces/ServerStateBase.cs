@@ -228,6 +228,7 @@ namespace ServerStateInterfaces
 
                     oldUserResult.AccumulatedScoreFromPreviousGames += prevGameScore;
                     oldUserResult.TrajectoryWithScore = newUserResult.TrajectoryWithScore;
+                    oldUserResult.Stopped = false;
                     return oldUserResult;
                 });
                 for (var i = 0; i< 100; ++i)

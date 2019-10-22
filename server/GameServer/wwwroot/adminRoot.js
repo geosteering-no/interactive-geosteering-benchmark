@@ -9,6 +9,9 @@ var restartButton;
 var revealIndex = -1;
 var scoreData = null;
 
+var updateTotalScoreButton = null;
+var scoreBoardDiv = null;
+
 var progressBuffer = null;
 var wellBuffer = null;
 var geoModelBuffer = null;
@@ -29,8 +32,16 @@ function setup() {
 
 
 	restartButton = createButton("New game");
-	restartButton.position(0, 1400);
+	restartButton.position(100, 1400);
 	restartButton.mousePressed(restartClick);
+
+	updateTotalScoreButton = createButton("Update total scores");
+	updateTotalScoreButton.position(0, 1250);
+	updateTotalScoreButton.mousePressed(updateScores);
+
+	scoreBoardDiv = createDiv('Scores');
+	scoreBoardDiv.position(0, 1300);
+
 
 	setSizesAndPositions();
 
@@ -80,6 +91,27 @@ function draw() {
 	}
 }
 
+
+function updateScores() {
+	if (scoreBoardDiv != null && scoreData != null) {
+		var topScores = scoreData.userResults.slice(0)
+			.sort(function (a, b) {
+				var valueA = a.accumulatedScoreFromPreviousGames;
+				var valueB = b.accumulatedScoreFromPreviousGames;
+				return valueB - valueA;
+			});
+		var s = "Scores<br>";
+		for (var i = 0; i < Math.min(5, topScores.length); ++i) {
+			var shortUserName = topScores[i].userName;
+			if (shortUserName.length > 30) {
+				shortUserName = shortUserName.substr(0, 30);
+			}
+			s += topScores[i].userName + " : " + Math.round(topScores[i].accumulatedScoreFromPreviousGames) + "<br>";
+		}
+		scoreBoardDiv.html(s);
+	}
+}
+
 function drawAllWells() {
 	if (scoreData != null) {
 		//oldLegendBuffer.resizeCanvas(legendBuffer.width, legendBuffer.height);
@@ -106,23 +138,27 @@ function drawAllWells() {
 				var valueA = a.trajectoryWithScore[aLastInd].score;
 				var valueB = b.trajectoryWithScore[bLastInd].score;
 				return valueA - valueB;
-			})
+			});
 		for (var i = 0; i < curResultsAscending.length; ++i) {
 			var fromTop = curResultsAscending.length - 1 - i;
 			var userPoints = curResultsAscending[i].trajectoryWithScore.slice(0)
-			.map(function (withScore) {
-				return withScore.wellPoint;
-			});
+				.map(function (withScore) {
+					return withScore.wellPoint;
+				});
 			if (fromTop < colors.length) {
 				wellBuffer.stroke(colors[fromTop]);
 				wellBuffer.fill(colors[fromTop]);
 				wellBuffer.strokeWeight(5 / scoreData.height);
 				var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 				var score = curResultsAscending[i].trajectoryWithScore[lastInd].score;
-				var userName = curResultsAscending[i].userName;
+				var shortUserName = curResultsAscending[i].userName;
+				if (shortUserName.length > 30) {
+					shortUserName = shortUserName.substr(0, 30);
+				}
+
 				legendBuffer.fill(colors[fromTop]);
 				legendBuffer.textAlign(LEFT);
-				legendBuffer.text(userName + " : ", 0, textShift + (fromTop) * legendBuffer.height / colors.length,
+				legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / colors.length,
 					legendBuffer.width, legendBuffer.windowHeight / colors.length);
 				legendBuffer.textAlign(RIGHT);
 				legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / colors.length,
@@ -170,7 +206,7 @@ function drawAllProgress() {
 
 		for (var i = 0; i < totalUsers; i++) {
 			var userProgressInd = sortedResults[i].trajectoryWithScore.length;
-			var progresFraction = userProgressInd / scoreData.totalDecisionPoints;
+			var progresFraction = (userProgressInd - 0.5) / scoreData.totalDecisionPoints;
 			if (sortedResults[i].stopped) {
 				progressBuffer.fill(colors[0]);
 				// progressBuffer.text("stopped",
