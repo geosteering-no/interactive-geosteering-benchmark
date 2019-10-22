@@ -10,16 +10,12 @@ var maxAngleChange = 3.14 / 180.0 * 2;
 var minAngle = 0;
 var maxAngle = 1.4;
 var beginAngle = 3.14 / 180 * 10;
-var nextAngles = [
-  beginAngle,
-  beginAngle - maxAngleChange,
-  beginAngle - maxAngleChange * 1.2,
-  beginAngle - maxAngleChange * 1.3,
-  beginAngle - maxAngleChange * 1.4,
-  beginAngle - maxAngleChange * 1.5,
-  beginAngle - maxAngleChange * 1.6,
-  beginAngle - maxAngleChange * 1.7,
-  beginAngle - maxAngleChange * 1.8];
+var nextAngles = [];
+
+if (sessionStorage.getItem("angles")) {
+  nextAngles = JSON.parse(sessionStorage.getItem("angles"));
+}
+
 var editNextAngleNo = 0;
 //TODO consider init form data
 
@@ -138,6 +134,7 @@ function correctAnglesIfNeeded(){
 }
 
 function commitNextPoint(wellPoint) {
+
   var bodyString = JSON.stringify(wellPoint);
   fetch("/geo/commitpoint", {
     credentials: 'include',
@@ -163,6 +160,8 @@ function commitNextPoint(wellPoint) {
             editNextAngleNo--;
           }
           correctAnglesIfNeeded();
+
+          sessionStorage.setItem("angles", JSON.stringify(nextAngles));
           updateSliderPosition();
           updateBars();
           drawGeomodelToBuffer(userdata);
@@ -173,6 +172,7 @@ function commitNextPoint(wellPoint) {
 }
 
 function commitStop() {
+
   fetch("/geo/commitstop",
     {
       credentials: 'include',
@@ -196,6 +196,7 @@ function commitStop() {
             if (editNextAngleNo > 0) {
               editNextAngleNo--;
             }
+            stopGame();
             correctAnglesIfNeeded();
             updateSliderPosition();
             updateBars();
@@ -255,8 +256,8 @@ function setup() {
   //TODO reposition
   updateBarsButton.position(200, 850);
 
-  submitDecisionButton = createButton("Submit current decision");
-  submitDecisionButton.mousePressed(commitDecicion);
+  submitDecisionButton = createButton("Check for new game.");
+  submitDecisionButton.mousePressed(getUserData);
   submitDecisionButton.style('background-color', '#f44336');
   submitDecisionButton.style('color', 'white'); //font color
   //TODO reposition
@@ -334,6 +335,8 @@ function getUserData() {
         .then(function (json) {
           console.log("got userdata:" + JSON.stringify(json));
           userdata = json;
+
+          detectGameStateAndUpdateStuffAcordingly();
           correctAnglesIfNeeded();
           updateSliderPosition();
           updateBars();
@@ -343,6 +346,34 @@ function getUserData() {
           //redrawEnabledForAninterval();
         });
     });
+}
+
+function detectGameStateAndUpdateStuffAcordingly() {
+  if (!userdata.stopped && userdata.wellPoints.length == 1) {
+    // should be a new game
+
+    submitDecisionButton.elt.textContent = "Submit current decision";
+    submitDecisionButton.mousePressed(commitDecicion);
+    sessionStorage.clear();
+    nextAngles = [
+      beginAngle,
+      beginAngle - maxAngleChange,
+      beginAngle - maxAngleChange * 1.2,
+      beginAngle - maxAngleChange * 1.3,
+      beginAngle - maxAngleChange * 1.4,
+      beginAngle - maxAngleChange * 1.5,
+      beginAngle - maxAngleChange * 1.6,
+      beginAngle - maxAngleChange * 1.7,
+      beginAngle - maxAngleChange * 1.8];
+  }
+  if (userdata.stopped) {
+      stopGame();
+  }
+}
+
+function stopGame() {
+  submitDecisionButton.elt.textContent =  "Stopped.. Click to check for new game.";
+  submitDecisionButton.mousePressed(getUserData);
 }
 
 function calculateCanvasSize() {
