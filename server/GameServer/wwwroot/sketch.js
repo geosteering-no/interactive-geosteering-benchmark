@@ -216,12 +216,22 @@ function commitDecicion() {
     if (nextIndex < fullUserTrajectory.length) {
       var nextPoint = fullUserTrajectory[nextIndex];
       commitNextPoint(nextPoint);
+      disableSubmitForShortTime();
       //this function should also do the new evaluation
     }
     else {
       commitStop();
     }
   }
+}
+
+function disableSubmitForShortTime() {
+  submitDecisionButton.elt.disabled = true;
+  setTimeout(
+    function() {
+      submitDecisionButton.elt.disabled = false;
+    },
+    500);
 }
 
 function setup() {
