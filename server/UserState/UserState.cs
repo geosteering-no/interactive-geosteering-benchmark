@@ -13,7 +13,7 @@ using TrajectoryOptimization;
 namespace UserState
 {
     [DataContract]
-    public class UserState : UserStateBase, IUserImplementaion<UserData, WellPoint, TrueModelState, UserEvaluation, RealizationData>
+    public class UserState : UserStateBase<TrueModelState>
     {
         [DataMember]
         private EarthModelManipulator _earthManipulator;
@@ -78,10 +78,7 @@ namespace UserState
             return false;
         }
 
-        public override bool UpdateUser(WellPoint updatePoint, RealizationData secret)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public override void StopDrilling()
         {
@@ -102,7 +99,7 @@ namespace UserState
             return wellPoint;
         }
 
-        public WellPoint GetNextStateDefault()
+        public override WellPoint GetNextStateDefault()
         {
             var dX = DefaultDecisionStep;
             var angle = _trajectory[_trajectory.Count - 1].Alpha;
@@ -266,7 +263,7 @@ namespace UserState
             }
         }
 
-        public bool UpdateUser(WellPoint updatePoint, TrueModelState secret)
+        public override bool UpdateUser(WellPoint updatePoint, TrueModelState secret)
         {
             lock (updateLock)
             {

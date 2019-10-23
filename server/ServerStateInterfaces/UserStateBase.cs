@@ -5,7 +5,7 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public abstract class UserStateBase : IUserImplementaion<UserData, WellPoint, RealizationData, UserEvaluation, RealizationData>
+    public abstract class UserStateBase<TSecretState>: IUserImplementaion<UserData, WellPoint, TSecretState, UserEvaluation, RealizationData>
     {
         protected ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
         public ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction
@@ -26,14 +26,9 @@ namespace ServerStateInterfaces
 
         }
 
-        public abstract bool UpdateUser(WellPoint updatePoint, RealizationData secret);
+        public abstract bool UpdateUser(WellPoint updatePoint, TSecretState secret);
         public abstract void StopDrilling();
-
-
-        WellPoint IUserImplementaion<UserData, WellPoint, RealizationData, UserEvaluation, RealizationData>.GetNextStateDefault()
-        {
-            return UserStateMockBase.GetNextStateDefault();
-        }
+        public abstract WellPoint GetNextStateDefault();
 
         public UserEvaluation GetEvaluation(IList<WellPoint> trajectory)
         {

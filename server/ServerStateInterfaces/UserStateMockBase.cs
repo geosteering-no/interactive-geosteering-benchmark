@@ -5,7 +5,7 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public class UserStateMockBase : UserStateBase
+    public class UserStateMockBase : UserStateBase<RealizationData>
     {
         private UserData _userData;
         private ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
@@ -27,6 +27,11 @@ namespace ServerStateInterfaces
             {
                 _userData.stopped = true;
             }
+        }
+
+        public override WellPoint GetNextStateDefault()
+        {
+            return GetNextStateDefaultStatic();
         }
 
 
@@ -73,7 +78,7 @@ namespace ServerStateInterfaces
                 Width = UserStateMockBase.X_WIDTH,
                 Xdist = UserStateMockBase.X_WIDTH / 10.0,
                 Height = 10.0,
-                wellPoints = new List<WellPoint>() { UserStateMockBase.GetNextStateDefault() },
+                wellPoints = new List<WellPoint>() { GetNextStateDefaultStatic() },
                 Xtopleft = UserStateMockBase.X_TOP_LEFT,
                 Ytopleft = UserStateMockBase.Y_TOP_LEFT,
                 stopped = false,
@@ -122,7 +127,9 @@ namespace ServerStateInterfaces
             }
         }
 
-        public static WellPoint GetNextStateDefault()
+        //public static Get
+
+        public static WellPoint GetNextStateDefaultStatic()
         {
             //TODO consider a better implementation, but this is not needed functionality once client is good
             var point = new WellPoint()
