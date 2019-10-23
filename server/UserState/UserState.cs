@@ -29,12 +29,15 @@ namespace UserState
         private bool _stopped = false;
 
         private const int NumRealiztions = 100;
-        private const int NumPointsInLayer = 40;
+        private const int NumPointsInLayer = 80;
         private const double Offset = -15.0;
+        private const double bottomOfLayer1 = -20.1 + Offset;
         private const double MinX = 0;
         private const double MaxX = 350;
-        private const double EPS = 1e-7;
-        private const int DecisionPoints = 10;
+        private const double EPS = 1e-5;
+        private const int DecisionPoints = 13;
+        private const double DoiX = 5.25;
+        private const double DoiY = 2.6;
 
         private double DefaultDecisionStep { get; }
 
@@ -62,7 +65,7 @@ namespace UserState
         public UserState()
         {
             _earthManipulator = InitializeManipulator();
-            _trajectory = new List<IContinousState> {GetDefaultFirstState()};
+            _trajectory = new List<IContinousState> { GetDefaultFirstState() };
             DefaultDecisionStep = GetDefaultDecisionStep();
             _InitializeEnkf(_earthManipulator);
         }
@@ -70,7 +73,7 @@ namespace UserState
 
         private bool PointOnNextStep(WellPoint newState)
         {
-            if (Math.Abs(newState.X - GetDefaultDecisionStep()) < EPS)
+            if (Math.Abs(newState.X - GetDefaultDecisionStep() - _trajectory[_trajectory.Count-1].X) < EPS)
             {
                 return true;
             }
@@ -109,7 +112,7 @@ namespace UserState
             {
                 X = GetNextDecisionX(),
                 Y = curY + dY,
-                Alpha = angle,
+                Alpha = angle
             };
             return ToWellPoint(state);
         }
@@ -145,7 +148,7 @@ namespace UserState
         {
             var measurement = measuringFunction(newState);
             //_dataProvider is already refered in the _enkf
-            _dataProvider.DataList = new List<IData<IContinousState, ResistivityData2DFull>>{measurement};
+            _dataProvider.DataList = new List<IData<IContinousState, ResistivityData2DFull>> { measurement };
             //load up data
             //update enkf
             _enkf.Update();
@@ -158,16 +161,16 @@ namespace UserState
             //TODO check the layer positions with negative sign
 
             var topOfLayer2 = 0.0 + Offset;
-            var bottomOfLayer2 = - 5.3 + Offset;
-            var topOfLayer1 = - 13.3 + Offset;
-            var bottomOfLayer1 = - 20.1 + Offset;
+            var bottomOfLayer2 = -5.3 + Offset;
+            var topOfLayer1 = -13.3 + Offset;
+
             var deviation = 2.5;
             var depthOfReservoirDeviation = 0.0;
-            double resistivityLayerBottom = 250;
+            double resistivityLayerBottom = 150;
             double resistivityLayerTop = 150;
             double resistivityOutsideLayer = 10;
             //TODO make the correct layer sorting
-            earthManipulator.GenerateRealizationsTwoLayerFromVariogramWithKrigging(NumPointsInLayer, 
+            earthManipulator.GenerateRealizationsTwoLayerFromVariogramWithKrigging(NumPointsInLayer,
                 MinX, MaxX,
                 bottomOfLayer1, topOfLayer1, bottomOfLayer2, topOfLayer2, deviation,
                 resistivityLayerBottom, resistivityLayerTop, resistivityOutsideLayer, false, depthOfReservoirDeviation,
@@ -206,8 +209,8 @@ namespace UserState
             var wp = new WellPoint()
             {
                 X = pt.X,
-                Y = pt.Y,
-                Angle = pt.Alpha
+                Y = -pt.Y,
+                Angle = -pt.Alpha
             };
             return wp;
         }
@@ -217,8 +220,8 @@ namespace UserState
             var cState = new ContinousState()
             {
                 X = pt.X,
-                Y = pt.Y,
-                Alpha = pt.Angle
+                Y = -pt.Y,
+                Alpha = -pt.Angle
             };
             return cState;
         }
@@ -239,18 +242,20 @@ namespace UserState
                 }
 
                 var data = new UserData()
-                {
-                    Ytopleft = -Offset,
-                    Xtopleft = MinX,
-                    Width = MaxX-MinX,
-                    Height = 50,
+                { 
                     realizations = realizations,
                     wellPoints = wellPoints,
                     xList = _earthManipulator.XPositions,
                     Xdist = DefaultDecisionStep,
                     stopped = _stopped,
-                    TotalDecisionPoints = DecisionPoints
+                    TotalDecisionPoints = DecisionPoints,
+                    DoiX = DoiX,
+                    DoiY = DoiY
                 };
+                data.Ytopleft = 0.0;
+                data.Xtopleft = MinX;
+                data.Width = MaxX - MinX;
+                data.Height = - bottomOfLayer1 + DoiY * 2;
                 return data;
             }
         }

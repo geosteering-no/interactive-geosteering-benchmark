@@ -21,7 +21,9 @@ namespace ServerStateInterfaces
         private const int TOTAL_DECISION_STEPS = 10;
 
 
-        private UserData _dummyUserData;
+
+
+        protected UserData _dummyUserData;
 
         public ServerStateMock() : base()
         {

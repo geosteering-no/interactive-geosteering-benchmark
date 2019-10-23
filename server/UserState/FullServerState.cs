@@ -24,10 +24,23 @@ namespace UserState
 
         protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
             EvaluatorTruth => _evaluatorClass.EvaluateOneRealizationDefault;
+        
+        protected UserData _dummyUserData;
 
         public FullServerState()
         {
+            _dummyUserData = GetDefaultNewUser().UserData;
             InitializeNewSyntheticTruth(0);
+            _scoreData = new PopulationScoreData<WellPoint>()
+            {
+                Height = _dummyUserData.Height,
+                Width = _dummyUserData.Width,
+                Xtopleft = _dummyUserData.Xtopleft,
+                Ytopleft = _dummyUserData.Ytopleft,
+                xList = _dummyUserData.xList,
+                secretRealization = UserState.convertToRealizationData(_secret.TrueSubsurfaseModel1),
+                TotalDecisionPoints = _dummyUserData.TotalDecisionPoints
+            };
         }
 
         protected sealed override void InitializeNewSyntheticTruth(int seed = 0)
