@@ -12,6 +12,9 @@ var maxAngle = 1.4;
 var beginAngle = 3.14 / 180 * 10;
 var nextAngles = [];
 
+
+
+
 if (sessionStorage.getItem("angles")) {
   nextAngles = JSON.parse(sessionStorage.getItem("angles"));
 }
@@ -125,9 +128,9 @@ function updateBars() {
     });
 }
 
-function correctAnglesIfNeeded(){
-  if (userdata != null){
-    if (userdata.wellPoints.length + nextAngles.length > userdata.totalDecisionPoints){
+function correctAnglesIfNeeded() {
+  if (userdata != null) {
+    if (userdata.wellPoints.length + nextAngles.length > userdata.totalDecisionPoints) {
       nextAngles.length = Math.max(0, userdata.totalDecisionPoints - userdata.wellPoints.length);
     }
   }
@@ -146,7 +149,8 @@ function commitNextPoint(wellPoint) {
     body: bodyString
   }).then(function (res) {
     if (!res.ok) {
-      alert("Updating failed. Try refreshing the page.");
+      alert("Updating failed. Update?");
+      getUserData();
       //throw Error("updating userdata failed");
     }
     else {
@@ -160,7 +164,7 @@ function commitNextPoint(wellPoint) {
             editNextAngleNo--;
           }
           correctAnglesIfNeeded();
-          detectGameStateAndUpdateStuffAcordingly();
+          detectGameStateAndUpdateButton();
           sessionStorage.setItem("angles", JSON.stringify(nextAngles));
           updateSliderPosition();
           updateBars();
@@ -180,7 +184,8 @@ function commitStop() {
     })
     .then(function (res) {
       if (!res.ok) {
-        alert("Stopping was not accepted?!");
+        alert("Stopping was not accepted! Update?");
+        getUserData();
         //throw Error("getting userdata failed");
       }
       else {
@@ -228,7 +233,7 @@ function commitDecicion() {
 function disableSubmitForShortTime() {
   submitDecisionButton.elt.disabled = true;
   setTimeout(
-    function() {
+    function () {
       submitDecisionButton.elt.disabled = false;
     },
     500);
@@ -333,38 +338,14 @@ function setup() {
   console.log("setup done");
 }
 
-
-function getUserData() {
-  fetch("/geo/userdata", { credentials: 'include' })
-    .then(function (res) {
-      if (!res.ok) {
-        alert("Getting userdata failed. Try going to login page.");
-        //throw Error("getting userdata failed");
-      }
-      res.json()
-        .then(function (json) {
-          console.log("got userdata:" + JSON.stringify(json));
-          userdata = json;
-
-          detectGameStateAndUpdateStuffAcordingly();
-          correctAnglesIfNeeded();
-          updateSliderPosition();
-          updateBars();
-          drawWellToBuffer();
-          drawGeomodelToBuffer(userdata);
-          setSizesAndPositions();
-          //redrawEnabledForAninterval();
-        });
-    });
-}
-
-function detectGameStateAndUpdateStuffAcordingly() {
+function tryStartNewGame() {
   if (!userdata.stopped && userdata.wellPoints.length == 1) {
     // should be a new game
 
     submitDecisionButton.elt.textContent = "Submit current decision";
     submitDecisionButton.mousePressed(commitDecicion);
     sessionStorage.clear();
+
     nextAngles = [
       beginAngle,
       beginAngle - maxAngleChange,
@@ -376,12 +357,41 @@ function detectGameStateAndUpdateStuffAcordingly() {
       beginAngle - maxAngleChange * 1.7,
       beginAngle - maxAngleChange * 1.8];
   }
-  else if (userdata.stopped) {
-      stopGame();
+}
+
+function getUserData() {
+  fetch("/geo/userdata", { credentials: 'include' })
+    .then(function (res) {
+      if (!res.ok) {
+        alert("Getting userdata failed. Try going to login page.");
+        window.location.href = "/login.html";
+        //throw Error("getting userdata failed");
+      }
+      res.json()
+        .then(function (json) {
+          console.log("got userdata:" + JSON.stringify(json));
+          userdata = json;
+
+          tryStartNewGame();
+          detectGameStateAndUpdateButton();
+          correctAnglesIfNeeded();
+          updateSliderPosition();
+          updateBars();
+          drawWellToBuffer();
+          drawGeomodelToBuffer(userdata);
+          setSizesAndPositions();
+          //redrawEnabledForAninterval();
+        });
+    });
+}
+
+function detectGameStateAndUpdateButton() {
+  if (userdata.stopped) {
+    stopGame();
   }
   else if (nextAngles.length == 0) {
-
     submitDecisionButton.elt.textContent = "Stop drilling and end game";
+    submitDecisionButton.mousePressed(commitDecicion);
   }
   else {
     submitDecisionButton.elt.textContent = "Submit current decision";
@@ -389,8 +399,8 @@ function detectGameStateAndUpdateStuffAcordingly() {
   }
 }
 
-function stopGame() {
-  submitDecisionButton.elt.textContent =  "Stopped.. Click to check for new game.";
+function stopGame(){
+  submitDecisionButton.elt.textContent = "Stopped. Click to check for new game.";
   submitDecisionButton.mousePressed(getUserData);
 }
 
@@ -424,7 +434,7 @@ function setSizesAndPositions() {
       drawWellToBuffer();
     }
   }
-  if (barBuffer != null){
+  if (barBuffer != null) {
     barBuffer.resizeCanvas(Math.round(canvasWidth), Math.round(barHeigth));
     drawBarCharts();
   }
@@ -512,7 +522,7 @@ function drawBarCharts() {
   if (userEvaluationOld != null) {
     barBuffer.noStroke();
     var offset = barBuffer.width / 10 / 7;
-    if (barTouched >= 0 && userEvaluation == null){
+    if (barTouched >= 0 && userEvaluation == null) {
       barBuffer.fill(255, 137, 10);
       drawBarChartsToBufferWithShift(userEvaluationOld, barBuffer, 0, max, -offset, false, true, barTouched);
     }
@@ -531,7 +541,7 @@ function drawBarCharts() {
     }
   }
   if (userEvaluation != null) {
-    if (barTouched >= 0){
+    if (barTouched >= 0) {
       barBuffer.fill(255, 137, 10);
       drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0, false, true, barTouched);
     }
@@ -544,7 +554,7 @@ function drawBarCharts() {
     barBuffer.noStroke();
     drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0, true);
   }
-  
+
 
   barBuffer.noFill();
   barBuffer.strokeWeight(4);
@@ -615,11 +625,11 @@ function sliderAngleChange() {
 
 }
 
-function updateSliderPosition(){
-  if (editNextAngleNo < nextAngles.length){
+function updateSliderPosition() {
+  if (editNextAngleNo < nextAngles.length) {
     angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
   }
-  
+
 }
 
 function previousButtonClick() {
@@ -632,6 +642,7 @@ function previousButtonClick() {
 
 function stopButtonClick() {
   nextAngles.length = editNextAngleNo;
+  detectGameStateAndUpdateButton();
   redrawEnabledForAninterval();
 }
 
@@ -658,7 +669,7 @@ function continueClick() {
         nextAngles.push(nextAngles[newAnglesLen - 1]);
       }
     }
-    detectGameStateAndUpdateStuffAcordingly();
+    detectGameStateAndUpdateButton();
     redrawEnabledForAninterval();
   }
 }
