@@ -12,8 +12,8 @@ using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 namespace UserState
 {
     public class FullServerState : 
-        ServerStateBase<IContinousState, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>,
-        IFullSerrverExtended<IContinousState, UserData, UserEvaluation, PopulationScoreData<IContinousState>>
+        ServerStateBase<WellPoint, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>,
+        IFullSerrverExtended<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>>
     {
        
 
@@ -22,7 +22,7 @@ namespace UserState
             InitializeNewSyntheticTruth(0);
         }
 
-        protected override ObjectiveEvaluationDelegateUser<UserData, IContinousState, UserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser
+        protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser
         {
             get
             {
@@ -31,7 +31,7 @@ namespace UserState
             }
         }
 
-        protected override ObjectiveEvaluatorDelegateTruth<RealizationData, IContinousState>.ObjectiveEvaluationFunction EvaluatorTruth
+        protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction EvaluatorTruth
         {
             get;
         }

@@ -13,7 +13,7 @@ using TrajectoryOptimization;
 namespace UserState
 {
     [DataContract]
-    public class UserState : IUserImplementaion<UserData, IContinousState, TrueModelState, UserEvaluation, RealizationData>
+    public class UserState : IUserImplementaion<UserData, WellPoint, TrueModelState, UserEvaluation, RealizationData>
     {
         [DataMember]
         private EarthModelManipulator _earthManipulator;
@@ -68,7 +68,7 @@ namespace UserState
         }
 
 
-        private bool PointOnNextStep(IContinousState newState)
+        private bool PointOnNextStep(WellPoint newState)
         {
             if (Math.Abs(newState.X - GetDefaultDecisionStep()) < EPS)
             {
@@ -86,7 +86,18 @@ namespace UserState
             }
         }
 
-        public IContinousState GetNextStateDefault()
+        private static WellPoint ToWellPoint(IContinousState state)
+        {
+            var wellPoint = new WellPoint()
+            {
+                X = state.X,
+                Y = state.Y,
+                Angle = state.Alpha
+            };
+            return wellPoint;
+        }
+
+        public WellPoint GetNextStateDefault()
         {
             var dX = DefaultDecisionStep;
             var angle = _trajectory[_trajectory.Count - 1].Alpha;
@@ -98,7 +109,12 @@ namespace UserState
                 Y = curY + dY,
                 Alpha = angle,
             };
-            return state;
+            return ToWellPoint(state);
+        }
+
+        public UserEvaluation GetEvaluation(IList<WellPoint> trajectory)
+        {
+            throw new NotImplementedException();
         }
 
         public UserEvaluation GetEvaluation(IList<IContinousState> trajectory)
@@ -115,7 +131,7 @@ namespace UserState
             throw new NotImplementedException();
         }
 
-        public IList<WellPointWithScore<IContinousState>> GetEvaluationForTruth(ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluator, RealizationData secretData)
+        public IList<WellPointWithScore<WellPoint>> GetEvaluationForTruth(ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluator, RealizationData secretData)
         {
             lock (updateLock) ;
 
@@ -136,7 +152,7 @@ namespace UserState
 
         public delegate ResistivityMeasurement GetMeasurementForPoint(IContinousState state);
 
-        public bool OfferUpdatePoint(IContinousState newState, GetMeasurementForPoint measuringFunction)
+        public bool OfferUpdatePoint(WellPoint newState, GetMeasurementForPoint measuringFunction)
         {
             if (newState == null)
             {
@@ -151,7 +167,7 @@ namespace UserState
 
             //correcting for EPS error
             newState.X = GetNextDecisionX();
-            _Update(newState, measuringFunction);
+            _Update(convertToIContinousState(newState), measuringFunction);
 
             return true;
         }
@@ -216,7 +232,7 @@ namespace UserState
             //realizationData.YLists.Add();
         }
 
-        private WellPoint convertToWellPoint(IContinousState pt)
+        private static WellPoint convertToWellPoint(IContinousState pt)
         {
             var wp = new WellPoint()
             {
@@ -227,7 +243,18 @@ namespace UserState
             return wp;
         }
 
-        public ObjectiveEvaluationDelegateUser<UserData, IContinousState, UserEvaluation>.ObjectiveEvaluationFunction Evaluator
+        private static IContinousState convertToIContinousState(WellPoint pt)
+        {
+            var cState = new ContinousState()
+            {
+                X = pt.X,
+                Y = pt.Y,
+                Alpha = pt.Angle
+            };
+            return cState;
+        }
+
+        public ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction Evaluator
         {
             get
             {
@@ -279,14 +306,14 @@ namespace UserState
             }
         }
 
-        public bool UpdateUser(IContinousState updatePoint, TrueModelState secret)
+        public bool UpdateUser(WellPoint updatePoint, TrueModelState secret)
         {
             lock (updateLock)
             {
                 var res = OfferUpdatePoint(updatePoint, secret.GetData);
                 if (res)
                 {
-                    _trajectory.Add(updatePoint);
+                    _trajectory.Add(convertToIContinousState(updatePoint));
                     return true;
                 }
 
