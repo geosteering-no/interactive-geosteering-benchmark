@@ -16,7 +16,7 @@ namespace GameServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    var hostUrl = "http://0.0.0.0:443";
+                    var hostUrl = "http://0.0.0.0:80";
                     String dir = Directory.GetCurrentDirectory();
                     String www = dir + "/wwwroot";
                     webBuilder.UseStartup<Startup>()
