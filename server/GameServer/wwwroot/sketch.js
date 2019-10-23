@@ -238,6 +238,23 @@ function disableSubmitForShortTime() {
     },
     500);
 }
+function centerCanvas(){
+  var canvas = $("#defaultCanvas0");
+  var bod = $("body")[0];
+
+  // Check to make sure these elements exist
+  if(canvas.length && bod){
+    var canv_width = canvas.width();
+    var margin = (bod.offsetWidth - canv_width)/2;
+
+    bod.style.marginLeft = margin+"px";
+    bod.style.marginRight = margin+"px";
+    console.log("centered");
+  }
+  else{
+    console.log("could not center");
+  }
+}
 
 function setup() {
 
@@ -498,6 +515,7 @@ function setSizesAndPositions() {
   updateBarsButton.position(5, yPos);
   updateBarsButton.size(canvasWidth - 10, wellHeigth / 5);
 
+  centerCanvas();
   //redrawEnabledForAninterval();
 }
 
