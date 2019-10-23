@@ -15,25 +15,19 @@ namespace UserState
         ServerStateBase<WellPoint, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>,
         IFullSerrverExtended<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>>
     {
-       
+
+
+        private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
+
+        protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction
+            EvaluatorUser => _evaluatorClass.EvaluateDefault;
+
+        protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
+            EvaluatorTruth => _evaluatorClass.EvaluateOneRealizationDefault;
 
         public FullServerState()
         {
             InitializeNewSyntheticTruth(0);
-        }
-
-        protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser
-        {
-            get
-            {
-                throw new NotImplementedException();
-                //TODO look up in mock implementation
-            }
-        }
-
-        protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction EvaluatorTruth
-        {
-            get;
         }
 
         protected sealed override void InitializeNewSyntheticTruth(int seed = 0)
@@ -47,7 +41,9 @@ namespace UserState
 
         protected override RealizationData GetTruthForEvaluation()
         {
-            throw new NotImplementedException();
+            var secretModel = _secret.TrueSubsurfaseModel1;
+            var result = UserState.convertToRealizationData(secretModel);
+            return result;
         }
 
 
@@ -77,3 +73,4 @@ namespace UserState
 
     }
 }
+

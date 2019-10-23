@@ -13,22 +13,22 @@ namespace UserState
     {
         public const double InstrumentSize = 3.0;
         private MultiDataGenerator _trueModel;
-        private IResistivityModel _trueSubsurfaseModel1;
+        public IEarthModelRealization TrueSubsurfaseModel1 { get; }
 
 
         public TrueModelState(int seed)
         {
-            _trueSubsurfaseModel1 = _GenerateSyntheticTruthFromSeed(seed);
-            _InitializeDataGenrator(_trueSubsurfaseModel1);
+            TrueSubsurfaseModel1 = _GenerateSyntheticTruthFromSeed(seed);
+            _InitializeDataGenrator(TrueSubsurfaseModel1);
         }
 
-        public TrueModelState(IResistivityModel syntheticTruth)
+        public TrueModelState(IEarthModelRealization syntheticTruth)
         {
-            _trueSubsurfaseModel1 = syntheticTruth;
-            _InitializeDataGenrator(_trueSubsurfaseModel1);
+            TrueSubsurfaseModel1 = syntheticTruth;
+            _InitializeDataGenrator(TrueSubsurfaseModel1);
         }
 
-        private IResistivityModel _GenerateSyntheticTruthFromSeed(int randomSeed)
+        private IEarthModelRealization _GenerateSyntheticTruthFromSeed(int randomSeed)
         {
             var eManip = UserState.InitializeManipulator();
             var model = eManip.Realizations[0];

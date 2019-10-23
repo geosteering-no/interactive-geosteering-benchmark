@@ -377,7 +377,7 @@ namespace ServerStateInterfaces
             {
                 var scores = _userResults.Values.ToList();
 
-                throw new NotImplementedException("Not implemented in the full server");
+                //TODO check that it does not crash here
                 _scoreData.UserResults = scores;
             }
             DumpScoreBoardToFile(_scoreData);

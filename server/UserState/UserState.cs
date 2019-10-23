@@ -13,7 +13,7 @@ using TrajectoryOptimization;
 namespace UserState
 {
     [DataContract]
-    public class UserState : IUserImplementaion<UserData, WellPoint, TrueModelState, UserEvaluation, RealizationData>
+    public class UserState : UserStateBase, IUserImplementaion<UserData, WellPoint, TrueModelState, UserEvaluation, RealizationData>
     {
         [DataMember]
         private EarthModelManipulator _earthManipulator;
@@ -78,7 +78,12 @@ namespace UserState
             return false;
         }
 
-        public void StopDrilling()
+        public override bool UpdateUser(WellPoint updatePoint, RealizationData secret)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void StopDrilling()
         {
             lock (updateLock)
             {
@@ -110,39 +115,6 @@ namespace UserState
                 Alpha = angle,
             };
             return ToWellPoint(state);
-        }
-
-        public UserEvaluation GetEvaluation(IList<WellPoint> trajectory)
-        {
-            throw new NotImplementedException();
-        }
-
-        public UserEvaluation GetEvaluation(IList<IContinousState> trajectory)
-        {
-            lock (updateLock)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public IList<WellPointWithScore<IContinousState>> GetEvaluationForTruth(ObjectiveEvaluatorDelegateTruth<RealizationData, IContinousState>.ObjectiveEvaluationFunction evaluator, RealizationData secretData)
-        {
-            lock (updateLock) ;
-            throw new NotImplementedException();
-        }
-
-        public IList<WellPointWithScore<WellPoint>> GetEvaluationForTruth(ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluator, RealizationData secretData)
-        {
-            lock (updateLock) ;
-
-
-            throw new NotImplementedException();
-        }
-
-        public IList<WellPointWithScore<WellPoint>> GetEvaluationForTruth()
-        {
-            lock (updateLock) ;
-            throw new NotImplementedException();
         }
 
         public double GetNextDecisionX()
@@ -222,7 +194,7 @@ namespace UserState
             _enkf.SetRealizations(eManip.Realizations);
         }
 
-        private RealizationData convertToRealizationData(IEarthModelRealization realization)
+        internal static RealizationData convertToRealizationData(IEarthModelRealization realization)
         {
             var realizationData = new RealizationData();
 
@@ -254,19 +226,7 @@ namespace UserState
             return cState;
         }
 
-        public ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction Evaluator
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public UserData UserData
+        public override UserData UserData
         {
             get
             {
