@@ -159,7 +159,7 @@ function drawAllWells() {
 			if (fromTop < colors.length) {
 				wellBuffer.stroke(colors[fromTop]);
 				wellBuffer.fill(colors[fromTop]);
-				wellBuffer.strokeWeight(5 / scoreData.height);
+				wellBuffer.strokeWeight(10 / scoreData.height);
 				var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 				var score = curResultsAscending[i].trajectoryWithScore[lastInd].score;
 				var shortUserName = curResultsAscending[i].userName;
@@ -181,7 +181,7 @@ function drawAllWells() {
 			} else {
 				wellBuffer.stroke(220);
 				wellBuffer.stroke(220);
-				wellBuffer.strokeWeight(2 / scoreData.height);
+				wellBuffer.strokeWeight(5 / scoreData.height);
 			}
 
 			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
@@ -406,7 +406,8 @@ function drawGeomodelToBuffer(scoredata) {
 
 	geoModelBuffer.background(0, 0, 0);
 	geoModelBuffer.blendMode(ADD);
-	geoModelBuffer.strokeWeight(1);
+	//geoModelBuffer.strokeWeight(1);
+	geoModelBuffer.noStroke();
 
 
 	if (scoredata != null) {

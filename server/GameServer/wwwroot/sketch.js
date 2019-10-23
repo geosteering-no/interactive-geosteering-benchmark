@@ -339,6 +339,9 @@ function setup() {
 }
 
 function tryStartNewGame() {
+  if (userdata == null) {
+    return;
+  }
   if (!userdata.stopped && userdata.wellPoints.length == 1) {
     // should be a new game
 
@@ -346,16 +349,19 @@ function tryStartNewGame() {
     submitDecisionButton.mousePressed(commitDecicion);
     sessionStorage.clear();
 
-    nextAngles = [
-      beginAngle,
-      beginAngle - maxAngleChange,
-      beginAngle - maxAngleChange * 1.2,
-      beginAngle - maxAngleChange * 1.3,
-      beginAngle - maxAngleChange * 1.4,
-      beginAngle - maxAngleChange * 1.5,
-      beginAngle - maxAngleChange * 1.6,
-      beginAngle - maxAngleChange * 1.7,
-      beginAngle - maxAngleChange * 1.8];
+    nextAngles = [];
+    for (var i = 0; i<userdata.totalDecisionPoints; ++i){
+      nextAngles.push(beginAngle - maxAngleChange*i/userdata.totalDecisionPoints);
+    }
+    // beginAngle,
+    // beginAngle - maxAngleChange,
+    // beginAngle - maxAngleChange * 1.2,
+    // beginAngle - maxAngleChange * 1.3,
+    // beginAngle - maxAngleChange * 1.4,
+    // beginAngle - maxAngleChange * 1.5,
+    // beginAngle - maxAngleChange * 1.6,
+    // beginAngle - maxAngleChange * 1.7,
+    // beginAngle - maxAngleChange * 1.8];
   }
 }
 
@@ -399,7 +405,7 @@ function detectGameStateAndUpdateButton() {
   }
 }
 
-function stopGame(){
+function stopGame() {
   submitDecisionButton.elt.textContent = "Stopped. Click to check for new game.";
   submitDecisionButton.mousePressed(getUserData);
 }
@@ -694,7 +700,8 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
 
   geoModelBuffer.background(0, 0, 0);
   geoModelBuffer.blendMode(ADD);
-  geoModelBuffer.strokeWeight(1);
+  //geoModelBuffer.strokeWeight(1);
+  geoModelBuffer.noStroke();
 
 
   if (userdata != null) {
@@ -830,10 +837,11 @@ function drawWellToBuffer() {
   wellBuffer.resetMatrix();
   wellBuffer.background(0, 0, 0, 0);
   scaleBufferForView(wellBuffer, userdata);
+  var thicknessMultLine = 0.2;
 
   wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
   wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
-  wellBuffer.strokeWeight(2 / userdata.height);
+  wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 2);
   var userPoints = userdata.wellPoints.slice(0);
   drawUserWellToBuffer(wellBuffer, userPoints);
 
@@ -846,12 +854,12 @@ function drawWellToBuffer() {
     if (i == 0) {
       wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
       wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
-      //wellBuffer.strokeWeight(3 / userdata.height);
+      //wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 2);
     }
     else {
       wellBuffer.stroke('rgba(40%, 70%, 10%, 1.0)');
       wellBuffer.fill('rgba(40%, 70%, 10%, 1.0)');
-      wellBuffer.strokeWeight(1 / userdata.height);
+      wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine);
     }
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
@@ -873,7 +881,7 @@ function drawWellToBuffer() {
 
   wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
   wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
-  wellBuffer.strokeWeight(0.5 / userdata.height)
+  wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 0.5)
 
   //possible trajectory up
   if (nextAngles.length > 0) {
