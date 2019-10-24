@@ -4,7 +4,7 @@ var wellBufferX;
 var wellBufferY;
 var barBufferX;
 var barBufferY;
-
+var logDisabled = true;
 
 
 
@@ -14,7 +14,7 @@ function getIncluciveIndexEndForPercentile(percentile, len) {
     return Math.floor(percentileBins[percentile] * (len - 1) / 100.0);
 }
 
-function getBarMaxHeight(buffer){
+function getBarMaxHeight(buffer) {
     return buffer.height - buffer.textSize() * 3;
 }
 
@@ -47,7 +47,9 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
 
             if (highlightIndex != undefined) {
                 if (drawLabels && highlightIndex == i) {
-                    console.log("draw background bar: " + i);
+                    if (logDisabled === undefined) {
+                        console.log("draw background bar: " + i);
+                    }
                     buffer.rect(
                         xLeft - shift, 0, 1.0 / binsLen * buffer.width, barMaxHeight
                     );
@@ -131,10 +133,13 @@ function cmousePressed() {
     if (mouseY > barBufferY
         && mouseY < barBufferY + barHeigth) {
 
-
-        console.log("mouse press");
+        if (logDisabled === undefined) {
+            console.log("mouse press");
+        }
         barTouched = Math.floor(mouseX / canvasWidth * 10);
-        console.log("touched: " + barTouched);
+        if (logDisabled === undefined) {
+            console.log("touched: " + barTouched);
+        }
         if (oldBar != barTouched) {
             buttonSelectSubSet(barTouched);
         }
@@ -146,7 +151,9 @@ function cmousePressed() {
 }
 
 function cmouseReleased() {
-    console.log("mouse release");
+    if (logDisabled === undefined) {
+        console.log("mouse release");
+    }
     return ctouchEnded();
 }
 
@@ -167,7 +174,9 @@ function ctouchMoved() {
 
 function ctouchEnded() {
     barTouched = -1;
-    console.log("touch end");
+    if (logDisabled === undefined) {
+        console.log("touch end");
+    }
 
     buttonSelectSubSet(barTouched);
     drawBarCharts();

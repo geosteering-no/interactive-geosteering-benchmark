@@ -167,7 +167,9 @@ function updateBars() {
       }
       res.json()
         .then(function (json) {
-          console.log("got user evaluation data:" + JSON.stringify(json));
+          if (logDisabled === undefined) {
+            console.log("got user evaluation data:" + JSON.stringify(json));
+          }
           if (userEvaluation != null) {
             userEvaluationOld = userEvaluation;
           }
@@ -208,7 +210,10 @@ function commitNextPoint(wellPoint) {
     else {
       res.json()
         .then(function (json) {
-          console.log("got updated userdata:" + JSON.stringify(json));
+          console.log("got updated userdata");
+          if (logDisabled === undefined) {
+            console.log("data : " + JSON.stringify(json));
+          }
           userdata = json;
           //need to remove the first angle now that it is accepted
           nextAngles.shift();
@@ -246,7 +251,10 @@ function commitStop() {
         //TODO consider sending a message to user
         res.json()
           .then(function (json) {
-            console.log("got updated userdata:" + JSON.stringify(json));
+            console.log("got updated userdata");
+            if (logDisabled === undefined) {
+              console.log("useradata : " + JSON.stringify(json));
+            }
             userdata = json;
             //need to remove the first angle now that it is accepted
             nextAngles.shift();
@@ -301,10 +309,14 @@ function centerCanvas() {
 
     bod.style.marginLeft = margin + "px";
     bod.style.marginRight = margin + "px";
-    console.log("centered");
+    if (logDisabled === undefined) {
+      console.log("centered");
+    }
   }
   else {
-    console.log("could not center");
+    if (logDisabled === undefined) {
+      console.log("could not center");
+    }
   }
 }
 
@@ -451,7 +463,10 @@ function getUserData() {
       }
       res.json()
         .then(function (json) {
-          console.log("got userdata:" + JSON.stringify(json));
+          console.log("got userdata");
+          if (logDisabled === undefined) {
+            console.log("userdata : " + JSON.stringify(json));
+          }
           userdata = json;
 
           tryStartNewGame();
@@ -487,9 +502,9 @@ function stopGame() {
 }
 
 function calculateCanvasSize() {
-  if (windowWidth > windowHeight / 3 *2) {
+  if (windowWidth > windowHeight / 3 * 2) {
     canvasHeigth = Math.round(windowHeight);
-    canvasWidth = Math.round(windowHeight / 3*2);
+    canvasWidth = Math.round(windowHeight / 3 * 2);
   } else {
     canvasHeigth = Math.round(windowHeight);
     canvasWidth = Math.round(windowWidth);
@@ -534,7 +549,7 @@ function setSizesAndPositions() {
   //all ints
   var buttonHeight = 44;
   var marginHeight = 5;
-  var totalButtonHeight = buttonHeight*5 + marginHeight*7;
+  var totalButtonHeight = buttonHeight * 5 + marginHeight * 7;
   var totalContentHeight = Math.round(canvasHeigth) - totalButtonHeight;
 
   wellHeigth = Math.round(totalContentHeight * 0.6);
@@ -611,11 +626,11 @@ function setSizesAndPositions() {
   goDown(buttonHeight);
 
   //var sliderHeigth = canvasHeigth * 0.05;
-  angleSlider.position(canvasWidth * 0.1, yPos + buttonHeight/2);
+  angleSlider.position(canvasWidth * 0.1, yPos + buttonHeight / 2);
   angleSlider.size(canvasWidth * 0.8, buttonHeight);
 
   //bars
-  goDown(buttonHeight*2);
+  goDown(buttonHeight * 2);
 
   barBufferY = yPos;
 
@@ -820,7 +835,7 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
 
   if (userdata != null) {
     scaleBufferForView(wellBuffer, userdata);
-    console.log("scaled");
+    //console.log("scaled");
   }
 
   geoModelBuffer.background(0, 0, 0);
@@ -974,7 +989,7 @@ function drawWellToBuffer() {
   //wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
   wellBuffer.stroke(colorOldWell);
   wellBuffer.fill(colorOldWell);
-  wellBuffer.strokeWeight( thicknessMultLine *  userdata.height /wellBuffer.height  * 2);
+  wellBuffer.strokeWeight(thicknessMultLine * userdata.height / wellBuffer.height * 2);
   //wellBuffer.strokeWeight(2);
   var userPoints = userdata.wellPoints.slice(0);
   drawUserWellToBuffer(wellBuffer, userPoints);
@@ -990,7 +1005,7 @@ function drawWellToBuffer() {
       //wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
       wellBuffer.stroke(colorDecision);
       wellBuffer.fill(colorDecision);
-      wellBuffer.strokeWeight( thicknessMultLine *  userdata.height /wellBuffer.height  * 2);
+      wellBuffer.strokeWeight(thicknessMultLine * userdata.height / wellBuffer.height * 2);
       //wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 2);
     }
     else {
@@ -998,7 +1013,7 @@ function drawWellToBuffer() {
       //wellBuffer.fill('rgba(40%, 70%, 10%, 1.0)');
       wellBuffer.stroke(colorFutureOptions);
       wellBuffer.fill(colorFutureOptions);
-      wellBuffer.strokeWeight(thicknessMultLine *  userdata.height /wellBuffer.height);
+      wellBuffer.strokeWeight(thicknessMultLine * userdata.height / wellBuffer.height);
     }
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
@@ -1022,7 +1037,7 @@ function drawWellToBuffer() {
   //wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
   wellBuffer.stroke(colorFutureOptions);
   wellBuffer.fill(colorFutureOptions);
-  wellBuffer.strokeWeight(thicknessMultLine *  userdata.height /wellBuffer.height * 0.5)
+  wellBuffer.strokeWeight(thicknessMultLine * userdata.height / wellBuffer.height * 0.5)
 
   //possible trajectory up
   if (nextAngles.length > 0) {
@@ -1092,7 +1107,7 @@ function drawWellToBuffer() {
       //wellBuffer.fill('rgba(100%, 100%, 0%, 1.0)');
       wellBuffer.fill(colorSelection);
     }
-    else if (i === 0){
+    else if (i === 0) {
       wellBuffer.fill(colorDecision);
     }
     //TODO fix the scaling here
