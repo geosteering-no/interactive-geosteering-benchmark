@@ -79,6 +79,10 @@
       <Project>{3543B534-EC3B-4BB5-80E7-CA0208E3A488}</Project>
       <Name>ServerDataStructures</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServerObjectives\ServerObjectives.csproj">
+      <Project>{debbd503-c2c0-437c-840e-7df682efaf91}</Project>
+      <Name>ServerObjectives</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ServerStateInterfaces\ServerStateInterfaces.csproj">
       <Project>{11867f26-51ba-44c3-9fd4-f071145d9299}</Project>
       <Name>ServerStateInterfaces</Name>
