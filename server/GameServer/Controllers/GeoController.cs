@@ -34,10 +34,13 @@ namespace GameServer.Controllers
         [HttpPost]
         public void StopAll()
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Stopping all users");
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
                 _stateServer.StopAllUsers();
+                _logger.LogInformation("Stopping finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
             }
             else
             {
@@ -49,10 +52,13 @@ namespace GameServer.Controllers
         [HttpPost]
         public void Restart()
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Starting new game");
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
                 _stateServer.RestartServer();
+                _logger.LogInformation("Game restart finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
             }
             else
             {
@@ -64,10 +70,13 @@ namespace GameServer.Controllers
         [HttpPost]
         public void ResetAllScores()
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Resetting scores");
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
                 _stateServer.ResetAllScores();
+                _logger.LogInformation("Resetting scores finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
             }
             else
             {
@@ -78,11 +87,14 @@ namespace GameServer.Controllers
         [Route("admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         public PopulationScoreData<WellPoint> GetScores()
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
-                return _stateServer.GetScoreboard();
-                //TODO finsh implementation
+                var res = _stateServer.GetScoreboard();
+                _logger.LogInformation("Score preparation finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
+                return res;
             }
             else
             {
@@ -95,6 +107,8 @@ namespace GameServer.Controllers
         [HttpPost]
         public void InitNewUser([FromForm] string userName)
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Requested adding of a user : " + userName);
             if (userName == ADMIN_SECRET_USER_NAME)
             {
                 WriteUserIdToCookie(userName);
@@ -118,6 +132,8 @@ namespace GameServer.Controllers
         [Route("checkUser")]
         public bool CheckUser(string userName)
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Requested checking a user : " + userName);
             var userId = GetUserId();
             return userId == userName;
         }
@@ -138,7 +154,10 @@ namespace GameServer.Controllers
         public UserData CommitStop()
         {
             var userId = GetUserId();
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " is stopping.");
             var res = _stateServer.StopUser(userId);
+            _logger.LogInformation("User {1} stopped in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
             return res;
         }
 
@@ -147,9 +166,11 @@ namespace GameServer.Controllers
         [HttpPost]
         public UserData Commit([FromBody] WellPoint pt)
         {
-            //TODO perform testing
             var userId = GetUserId();
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " is submitting " + pt.X + ", " + pt.Y);
             var res = _stateServer.UpdateUser(userId, pt);
+            _logger.LogInformation("User {1} updated in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
             return res;
         }
 
@@ -157,9 +178,11 @@ namespace GameServer.Controllers
         [HttpPost]
         public UserEvaluation GetEvaluationForTrajectory([FromBody] IList<WellPoint> trajectory)
         {
-            //TODO perform testing
             var userId = GetUserId();
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " requested evaluation.");
             var res = _stateServer.GetUserEvaluationData(userId, trajectory);
+            _logger.LogInformation("User {1}, sending evaluation in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
             return res;
         }
 
@@ -175,7 +198,11 @@ namespace GameServer.Controllers
         public UserData GetUserState()
         {
             var userId = GetUserId();
-            return _stateServer.GetOrAddUserState(userId);
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " requested userdata.");
+            var res = _stateServer.GetOrAddUserState(userId);
+            _logger.LogInformation("User {1}, sending userdata in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
+            return res;
         }
     }
 
