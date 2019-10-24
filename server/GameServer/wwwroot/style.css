@@ -17,7 +17,7 @@ input[type=range] {
     margin-top: 15px;
     height: 10px !important;
     border-radius: 5px;
-    background: #000000b0;
+    background: #606060;
     outline: none;
     opacity: 0.7;
     -webkit-transition: .2s;
