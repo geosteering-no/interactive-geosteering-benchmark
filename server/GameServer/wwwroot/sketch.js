@@ -793,7 +793,7 @@ function continueClick() {
   if (userdata != null) {
     var submittedLen = userdata.wellPoints.length;
     var newAnglesLen = nextAngles.length;
-    if (submittedLen + newAnglesLen <= maxTortalAngles) {
+    if (submittedLen + newAnglesLen < userdata.totalDecisionPoints) {
       if (newAnglesLen === 0) {
         nextAngles.push(userdata.wellPoints[submittedLen - 1].angle);
       } else {

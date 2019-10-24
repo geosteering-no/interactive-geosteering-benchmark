@@ -9,7 +9,6 @@ var barBufferY;
 
 
 var percentileBins = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-var maxTortalAngles = 10;
 
 function getIncluciveIndexEndForPercentile(percentile, len) {
     return Math.floor(percentileBins[percentile] * (len - 1) / 100.0);
