@@ -28,7 +28,7 @@ namespace UserState
             _oneRealizationOptimizer.MaxX = TotalOptSteps;
 
             //TODO add the correct objective
-            _oneRealizationOptimizer.AddObjectiveFucntion(_theObjective.TheObjective);
+            //_oneRealizationOptimizer.AddObjectiveFucntion(_theObjective.TheObjective);
         }
 
         private TrajectoryOptimizationDPResult<T> UpdateSingleOptimizer<T>(TrajectoryOptimizerDP<T> optimizer, T model, WellPoint wp)
