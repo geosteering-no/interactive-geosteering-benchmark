@@ -73,7 +73,7 @@ namespace UserState
 
         private bool PointOnNextStep(WellPoint newState)
         {
-            if (Math.Abs(newState.X - GetDefaultDecisionStep() - _trajectory[_trajectory.Count-1].X) < EPS)
+            if (Math.Abs(newState.X - GetDefaultDecisionStep() - _trajectory[_trajectory.Count - 1].X) < EPS)
             {
                 return true;
             }
@@ -85,10 +85,8 @@ namespace UserState
 
         public override void StopDrilling()
         {
-            lock (updateLock)
-            {
-                _stopped = true;
-            }
+
+            _stopped = true;
         }
 
         public override WellPoint GetNextStateDefault()
@@ -231,7 +229,7 @@ namespace UserState
                 }
 
                 var data = new UserData()
-                { 
+                {
                     realizations = realizations,
                     wellPoints = wellPoints,
                     xList = _earthManipulator.XPositions,
@@ -244,7 +242,7 @@ namespace UserState
                 data.Ytopleft = 0.0;
                 data.Xtopleft = MinX;
                 data.Width = MaxX - MinX;
-                data.Height = - bottomOfLayer1 + DoiY;
+                data.Height = -bottomOfLayer1 + DoiY;
                 return data;
             }
         }
@@ -259,17 +257,15 @@ namespace UserState
 
         public override bool UpdateUser(WellPoint updatePoint, TrueModelState secret)
         {
-            lock (updateLock)
-            {
-                var res = OfferUpdatePoint(updatePoint, secret.GetData);
-                if (res)
-                {
-                    _trajectory.Add(convertToIContinousState(updatePoint));
-                    return true;
-                }
 
-                return false;
+            var res = OfferUpdatePoint(updatePoint, secret.GetData);
+            if (res)
+            {
+                _trajectory.Add(convertToIContinousState(updatePoint));
+                return true;
             }
+
+            return false;
         }
     }
 }
