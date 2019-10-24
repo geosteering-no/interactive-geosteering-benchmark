@@ -184,6 +184,11 @@ function updateBars() {
 
 function correctAnglesIfNeeded() {
   if (userdata != null) {
+    if (userdata.stopped){
+      nextAngles.length = 0;
+      return;
+    }
+
     if (userdata.wellPoints.length + nextAngles.length > userdata.totalDecisionPoints) {
       nextAngles.length = Math.max(0, userdata.totalDecisionPoints - userdata.wellPoints.length);
     }
@@ -806,6 +811,9 @@ function nextButtonClick() {
 
 function continueClick() {
   if (userdata != null) {
+    if (userdata.stopped){
+      return;
+    }
     var submittedLen = userdata.wellPoints.length;
     var newAnglesLen = nextAngles.length;
     if (submittedLen + newAnglesLen < userdata.totalDecisionPoints) {
