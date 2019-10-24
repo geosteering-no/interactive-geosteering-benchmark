@@ -196,7 +196,7 @@ function correctAnglesIfNeeded() {
 }
 
 function commitNextPoint(wellPoint) {
-
+  preventUpdatingAndUpdateButton();
   var bodyString = JSON.stringify(wellPoint);
   fetch("/geo/commitpoint", {
     credentials: 'include',
@@ -238,7 +238,7 @@ function commitNextPoint(wellPoint) {
 }
 
 function commitStop() {
-
+  preventUpdatingStopAndUpdateButton();
   fetch("/geo/commitstop",
     {
       credentials: 'include',
@@ -268,6 +268,7 @@ function commitStop() {
             }
             stopGame();
             correctAnglesIfNeeded();
+            detectGameStateAndUpdateButton();
             updateSliderPosition();
             updateBars();
             drawGeomodelToBuffer(userdata);
@@ -351,7 +352,7 @@ function setup() {
   prevButton = createButton("<- Previous");
   prevButton.mousePressed(previousButtonClick);
 
-  nextButton = createButton("Next ->");
+  nextButton = createButton("Plan ahead ->");
   nextButton.mousePressed(nextButtonClick);
 
 
@@ -487,16 +488,31 @@ function getUserData() {
     });
 }
 
+function doNothing(){
+  alert("Drilling in progress... wait...");
+}
+
+function preventUpdatingAndUpdateButton() {
+  submitDecisionButton.elt.textContent = "Drilling and updating...";
+  submitDecisionButton.mousePressed(doNothing);
+}
+
+function preventUpdatingStopAndUpdateButton() {
+  submitDecisionButton.elt.textContent = "Stopping and pulling out...";
+  submitDecisionButton.mousePressed(doNothing);
+}
+
+
 function detectGameStateAndUpdateButton() {
   if (userdata.stopped) {
     stopGame();
   }
   else if (nextAngles.length == 0) {
-    submitDecisionButton.elt.textContent = "Stop drilling and end game";
+    submitDecisionButton.elt.textContent = "Stop drilling! (end game)";
     submitDecisionButton.mousePressed(commitDecicion);
   }
   else {
-    submitDecisionButton.elt.textContent = "Submit current decision";
+    submitDecisionButton.elt.textContent = "Drill ahead!";
     submitDecisionButton.mousePressed(commitDecicion);
   }
 }
