@@ -1,9 +1,19 @@
 var userdata = null;
+var realizationScores = null;
+
+//===============================
+//buffers
+//===============================
 var geoModelBuffer = null;
-var wellBuffer;
-var barBuffer;
-var realizationScores;
-var canvas = null;
+var wellBuffer = null;
+var barBuffer = null;
+var scaleBuffer = null;
+//===============================
+//buffers
+//===============================
+
+
+
 
 //var xTravelDistance = 50;
 var maxAngleChange = 3.14 / 180.0 * 2;
@@ -49,6 +59,9 @@ var updateBarsButton;
 
 //submission
 var submitDecisionButton;
+
+//canvas is where you touch
+var canvas = null;
 
 //===============================
 //end of controls
@@ -239,20 +252,20 @@ function disableSubmitForShortTime() {
     },
     500);
 }
-function centerCanvas(){
+function centerCanvas() {
   var canvas = $("#defaultCanvas0");
   var bod = $("body")[0];
 
   // Check to make sure these elements exist
-  if(canvas.length && bod){
+  if (canvas.length && bod) {
     var canv_width = canvas.width();
-    var margin = (bod.offsetWidth - canv_width)/2;
+    var margin = (bod.offsetWidth - canv_width) / 2;
 
-    bod.style.marginLeft = margin+"px";
-    bod.style.marginRight = margin+"px";
+    bod.style.marginLeft = margin + "px";
+    bod.style.marginRight = margin + "px";
     console.log("centered");
   }
-  else{
+  else {
     console.log("could not center");
   }
 }
@@ -268,7 +281,10 @@ function setup() {
 
   geoModelBuffer = createGraphics(windowWidth, Math.round(canvasHeigth / 8 * 3));
   wellBuffer = createGraphics(canvasWidth, Math.round(canvasHeigth / 8 * 3));
+  scaleBuffer = createGraphics(canvasWidth, Math.round(canvasHeigth / 8 * 3));
+
   barBuffer = createGraphics(canvasWidth, Math.round(canvasHeigth / 8 * 2));
+
 
 
   canvas.mousePressed(cmousePressed);
@@ -368,8 +384,8 @@ function tryStartNewGame() {
     sessionStorage.clear();
 
     nextAngles = [];
-    for (var i = 0; i<userdata.totalDecisionPoints; ++i){
-      nextAngles.push(beginAngle - maxAngleChange*i/userdata.totalDecisionPoints);
+    for (var i = 0; i < userdata.totalDecisionPoints; ++i) {
+      nextAngles.push(beginAngle - maxAngleChange * i / userdata.totalDecisionPoints);
     }
     // beginAngle,
     // beginAngle - maxAngleChange,
@@ -441,6 +457,29 @@ function calculateCanvasSize() {
   // }
 }
 
+function drawScale() {
+  if (userdata != null) {
+    scaleBuffer.textSize(16);
+    scaleBuffer.textAlign(CENTER, CENTER);
+    scaleBuffer.fill(150, 40, 120);
+    scaleBuffer.noStroke();
+    scaleBuffer.rectMode(CENTER);
+    var hStep = 20;
+    for (var i = hStep; i < userdata.width-25; i += hStep) {
+      var coord = i * scaleBuffer.width / userdata.width;
+      scaleBuffer.rect(coord, 0, 2, 10);
+      scaleBuffer.text(i, coord, 25);
+    }
+    var vStep = 2;
+    for (var i = vStep; i < userdata.height-25; i += vStep) {
+      var coord = i * scaleBuffer.height / userdata.height;
+      scaleBuffer.rect(0, coord, 10, 2);
+      scaleBuffer.text(i, 15, coord);
+    }
+
+  }
+}
+
 function setSizesAndPositions() {
   calculateCanvasSize();
 
@@ -465,6 +504,11 @@ function setSizesAndPositions() {
       drawWellToBuffer();
     }
   }
+  if (scaleBuffer != null && userdata != null) {
+    scaleBuffer.resizeCanvas(Math.round(canvasWidth), Math.round(wellHeigth));
+    drawScale();
+  }
+
   if (barBuffer != null) {
     barBuffer.resizeCanvas(Math.round(canvasWidth), Math.round(barHeigth));
     drawBarCharts();
@@ -599,7 +643,8 @@ function drawBarCharts() {
   barBuffer.noFill();
   barBuffer.strokeWeight(4);
   barBuffer.stroke(51, 255, 10);
-  barBuffer.rect(0, 0, barBuffer.width, barBuffer.height);
+  var barMaHeight = getBarMaxHeight(barBuffer);
+  barBuffer.rect(0, 0, barBuffer.width, barMaHeight);
 }
 
 
@@ -845,6 +890,10 @@ function draw() {
   //drawWellToBuffer();
 
   image(wellBuffer, 0, wellBufferY, canvasWidth, geoModelHeight);
+
+  if (scaleBuffer != null) {
+    image(scaleBuffer, 0, wellBufferY, canvasWidth, geoModelHeight);
+  }
 
   if (barBuffer != null) {
     //console.log("draw bars");
