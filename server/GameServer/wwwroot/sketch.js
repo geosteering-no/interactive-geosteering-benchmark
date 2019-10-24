@@ -121,6 +121,7 @@ function updateBars() {
             userEvaluationOld = userEvaluation;
           }
           userEvaluation = json;
+          setSizesAndPositions();
           drawBarCharts();
           //redrawEnabledForAninterval();
         });
@@ -428,11 +429,11 @@ function stopGame() {
 }
 
 function calculateCanvasSize() {
-  if (windowWidth > windowHeight) {
+  if (windowWidth > windowHeight / 3 *2) {
     canvasHeigth = Math.round(windowHeight);
-    canvasWidth = Math.round(windowHeight * 0.5);
+    canvasWidth = Math.round(windowHeight / 3*2);
   } else {
-    canvasHeigth = Math.round(windowWidth * 2);
+    canvasHeigth = Math.round(windowHeight);
     canvasWidth = Math.round(windowWidth);
   }
   // if (canvasWidth > canvasHeigth) {
@@ -445,8 +446,15 @@ function setSizesAndPositions() {
 
 
   resizeCanvas(Math.round(canvasWidth), Math.round(canvasHeigth));
-  wellHeigth = canvasWidth * 0.5;
-  barHeigth = canvasWidth * 0.3;
+
+  //all ints
+  var buttonHeight = 44;
+  var marginHeight = 5;
+  var totalButtonHeight = buttonHeight*5 + marginHeight*7;
+  var totalContentHeight = Math.round(canvasHeigth) - totalButtonHeight;
+
+  wellHeigth = Math.round(totalContentHeight * 0.6);
+  barHeigth = Math.round(totalContentHeight * 0.4);
 
   //TODO if problems with safari, check here
   if (geoModelBuffer != null && wellBuffer != null) {
@@ -477,49 +485,57 @@ function setSizesAndPositions() {
   }
 
   var yPos = 0;
-  var yMargin = canvasWidth * 0.01;
+  var yMargin = marginHeight;
 
   function goDown(heigth) {
     yPos = yPos + heigth + yMargin;
   }
 
+  //submit button
   goDown(0);
-  var submitHeight = wellHeigth / 5;
+
+  //var submitHeight = wellHeigth / 5;
+
   submitDecisionButton.position(canvasWidth / 4, yPos);
-  submitDecisionButton.size(canvasWidth / 2, submitHeight);
+  submitDecisionButton.size(canvasWidth / 2, buttonHeight);
 
-  goDown(submitHeight);
-
+  //main display
+  goDown(buttonHeight);
 
   wellBufferY = yPos;
   //drawGeomodelToBuffer(userdata);
 
+  //prev stop next buttons
   goDown(wellHeigth);
 
-  var buttonHeigth = wellHeigth / 5;
+  //var buttonHeight = wellHeigth / 5;
   prevButton.position(10, yPos);
-  prevButton.size(canvasWidth / 3 - 15, buttonHeigth);
+  prevButton.size(canvasWidth / 3 - 15, buttonHeight);
 
   stopButton.position(canvasWidth / 3 + 5, yPos);
-  stopButton.size(canvasWidth / 3 - 10, buttonHeigth);
+  stopButton.size(canvasWidth / 3 - 10, buttonHeight);
 
   nextButton.position(canvasWidth - canvasWidth / 3 + 5, yPos);
-  nextButton.size(canvasWidth / 3 - 15, buttonHeigth);
+  nextButton.size(canvasWidth / 3 - 15, buttonHeight);
 
-  goDown(buttonHeigth);
+  //slider
+  goDown(buttonHeight);
 
-  var sliderHeigth = canvasHeigth * 0.05;
-  angleSlider.position(canvasWidth * 0.1, yPos);
-  angleSlider.size(canvasWidth * 0.8, sliderHeigth);
+  //var sliderHeigth = canvasHeigth * 0.05;
+  angleSlider.position(canvasWidth * 0.1, yPos + buttonHeight/2);
+  angleSlider.size(canvasWidth * 0.8, buttonHeight);
 
-  goDown(sliderHeigth);
+  //bars
+  goDown(buttonHeight*2);
 
   barBufferY = yPos;
+
+  //recompute button
   //drawBarCharts();
   goDown(barHeigth);
 
   updateBarsButton.position(5, yPos);
-  updateBarsButton.size(canvasWidth - 10, wellHeigth / 5);
+  updateBarsButton.size(canvasWidth - 10, buttonHeight);
 
   centerCanvas();
   //redrawEnabledForAninterval();
@@ -822,7 +838,7 @@ function draw() {
   if (geoModelBuffer == null) return;
 
   //console.log("draw, wellY: " + wellBufferY);
-  var geoModelHeight = canvasWidth * 0.5;
+  var geoModelHeight = wellHeigth;
   clear();
   image(geoModelBuffer, 0, wellBufferY, canvasWidth, geoModelHeight);
 
@@ -839,7 +855,7 @@ function draw() {
 
 
   //for debugging
-  drawFrame();
+  //drawFrame();
 
   // timerCountdown--;
   // if (timerCountdown <= 0) {

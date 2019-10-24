@@ -538,3 +538,4 @@ server/GameServer/secret/
 server/GameServer/serverstatelog/
 server/GameServer/userLog/
 server/GameServer/scoreLog/
+server/GameServer/.idea/
