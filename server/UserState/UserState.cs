@@ -36,8 +36,8 @@ namespace UserState
         private const double MaxX = 350;
         private const double EPS = 1e-5;
         private const int DecisionPoints = 13;
-        private const double DoiX = 5.25;
-        private const double DoiY = 2.6;
+        public double DoiX { get; set; } = 5.25; //TODO 5.25 is the correct size
+        public double DoiY { get; set; } = 9.6; //TODO 9.6 is a correct size
 
         private double DefaultDecisionStep { get; }
 

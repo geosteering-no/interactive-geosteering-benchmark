@@ -967,14 +967,15 @@ function drawWellToBuffer() {
   wellBuffer.resetMatrix();
   wellBuffer.background(0, 0, 0, 0);
   scaleBufferForView(wellBuffer, userdata);
-  var thicknessMultLine = 0.2;
+  var thicknessMultLine = 4;
 
   //setup for main trajectory
   //wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
   //wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
   wellBuffer.stroke(colorOldWell);
   wellBuffer.fill(colorOldWell);
-  wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 2);
+  wellBuffer.strokeWeight( thicknessMultLine *  userdata.height /wellBuffer.height  * 2);
+  //wellBuffer.strokeWeight(2);
   var userPoints = userdata.wellPoints.slice(0);
   drawUserWellToBuffer(wellBuffer, userPoints);
 
@@ -989,6 +990,7 @@ function drawWellToBuffer() {
       //wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
       wellBuffer.stroke(colorDecision);
       wellBuffer.fill(colorDecision);
+      wellBuffer.strokeWeight( thicknessMultLine *  userdata.height /wellBuffer.height  * 2);
       //wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 2);
     }
     else {
@@ -996,7 +998,7 @@ function drawWellToBuffer() {
       //wellBuffer.fill('rgba(40%, 70%, 10%, 1.0)');
       wellBuffer.stroke(colorFutureOptions);
       wellBuffer.fill(colorFutureOptions);
-      wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine);
+      wellBuffer.strokeWeight(thicknessMultLine *  userdata.height /wellBuffer.height);
     }
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
@@ -1020,7 +1022,7 @@ function drawWellToBuffer() {
   //wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
   wellBuffer.stroke(colorFutureOptions);
   wellBuffer.fill(colorFutureOptions);
-  wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 0.5)
+  wellBuffer.strokeWeight(thicknessMultLine *  userdata.height /wellBuffer.height * 0.5)
 
   //possible trajectory up
   if (nextAngles.length > 0) {
@@ -1089,6 +1091,9 @@ function drawWellToBuffer() {
       //wellBuffer.stroke('rgba(100%, 100%, 0%, 1.0)');
       //wellBuffer.fill('rgba(100%, 100%, 0%, 1.0)');
       wellBuffer.fill(colorSelection);
+    }
+    else if (i === 0){
+      wellBuffer.fill(colorDecision);
     }
     //TODO fix the scaling here
     //SALY should be OK
