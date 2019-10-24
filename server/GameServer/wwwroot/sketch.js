@@ -837,6 +837,8 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
     scaleBufferForView(wellBuffer, userdata);
     //console.log("scaled");
   }
+  var maxAlpha = 255;
+  geoModelBuffer.colorMode(RGB, maxAlpha);
 
   geoModelBuffer.background(0, 0, 0);
   geoModelBuffer.blendMode(ADD);
@@ -849,13 +851,18 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
     scaleBufferForView(geoModelBuffer, userdata);
     var reals = userdata.realizations;
     var realcount = reals.length;
-    if (specificIndices != null) realcount = specificIndices.length;
-    var alpha = 1.0 / realcount;
+    var alpha = Math.floor(maxAlpha / realcount);
+    if (specificIndices != null){ 
+      var mult = Math.round(realcount / specificIndices.length);
+      realcount = specificIndices.length;
+      alpha *= mult;
+    }
     //TODO this formula needs improvement
     //var alpha = 2 * (1.0 - Math.pow(0.5, 2 / reals.length));
     geoModelBuffer.noStroke();
-    //TODO grey here
-    geoModelBuffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
+    
+    //geoModelBuffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
+    geoModelBuffer.fill(maxAlpha, maxAlpha, maxAlpha, alpha);
     var xlist = userdata.xList;
     if (specificIndices == null) {
       for (var reali = 0; reali < reals.length; reali++) {

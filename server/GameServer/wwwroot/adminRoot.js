@@ -401,7 +401,7 @@ function drawGeomodelToBuffer(scoredata) {
 
 	if (scoredata != null) {
 		scaleBufferForView(wellBuffer, scoredata);
-		console.log("scaled");
+		//console.log("scaled");
 	}
 
 	geoModelBuffer.background(0, 0, 0);
@@ -413,8 +413,8 @@ function drawGeomodelToBuffer(scoredata) {
 	if (scoredata != null) {
 		//if (false){
 		scaleBufferForView(geoModelBuffer, scoredata);
-		console.log("drawing userdat");
-		console.log("this is slow?");
+		//console.log("drawing userdat");
+		//console.log("this is slow?");
 
 
 		var alpha = 0.3;

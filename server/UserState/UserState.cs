@@ -28,7 +28,7 @@ namespace UserState
         private IList<IContinousState> _trajectory;
         private bool _stopped = false;
 
-        private const int NumRealiztions = 100;
+        private const int NumRealiztions = 120;
         private const int NumPointsInLayer = 80;
         private const double Offset = -15.0;
         private const double bottomOfLayer1 = -20.1 + Offset;
@@ -255,7 +255,7 @@ namespace UserState
                 data.Ytopleft = 0.0;
                 data.Xtopleft = MinX;
                 data.Width = MaxX - MinX;
-                data.Height = - bottomOfLayer1 + DoiY * 2;
+                data.Height = - bottomOfLayer1 + DoiY;
                 return data;
             }
         }
