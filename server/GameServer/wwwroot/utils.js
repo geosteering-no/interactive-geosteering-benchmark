@@ -65,9 +65,11 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
 
                 if (drawLabels) {
                     var textHeight = buffer.height - barMaxHeight;
-                    var score = Math.max(scores[scoreInd], 0.0);
+                    var score = scores[scoreInd];
                     var pInd = end + 1;
                     var scoretext = "P" + pInd + "\n" + Math.round(score);
+                    //remove negative for visualization
+                    score = Math.max(scores[scoreInd], 0.0);
                     if (pInd >= sortedInds.length) {
                         scoretext = "max\n" + Math.round(score);
                     }
