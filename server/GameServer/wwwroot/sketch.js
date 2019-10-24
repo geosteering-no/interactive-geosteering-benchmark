@@ -627,7 +627,8 @@ function drawBarCharts() {
   barBuffer.noFill();
   barBuffer.strokeWeight(4);
   barBuffer.stroke(51, 255, 10);
-  barBuffer.rect(0, 0, barBuffer.width, barBuffer.height);
+  var barMaHeight = getBarMaxHeight(barBuffer);
+  barBuffer.rect(0, 0, barBuffer.width, barMaHeight);
 }
 
 

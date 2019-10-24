@@ -15,6 +15,10 @@ function getIncluciveIndexEndForPercentile(percentile, len) {
     return Math.floor(percentileBins[percentile] * (len - 1) / 100.0);
 }
 
+function getBarMaxHeight(buffer){
+    return buffer.height - buffer.textSize() * 3;
+}
+
 //bins is an array of percentiles (part * 100)
 function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shiftFirst, drawSubLines = false, drawLabels = false, highlightIndex) {
     var binsLen = percentileBins.length;
@@ -23,7 +27,7 @@ function drawBarChartsToBufferWithShift(aUserEvaluation, buffer, min, max, shift
     var end = 0;
     var scores = aUserEvaluation.realizationScores;
     var sortedInds = aUserEvaluation.sortedIndexes;
-    var barMaxHeight = buffer.height * 0.8;
+    var barMaxHeight = getBarMaxHeight(buffer);
     //TODO do negative
     for (var i = 0; i < binsLen; i++) {
 
