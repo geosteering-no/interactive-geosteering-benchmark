@@ -91,7 +91,7 @@ function draw() {
 	//image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.heigth);
 
 	//for debugging
-	drawFrame();
+	//drawFrame();
 
 	timerCountdown--;
 	if (timerCountdown <= 0) {
