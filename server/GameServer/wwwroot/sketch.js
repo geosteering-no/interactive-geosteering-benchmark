@@ -184,7 +184,7 @@ function updateBars() {
 
 function correctAnglesIfNeeded() {
   if (userdata != null) {
-    if (userdata.stopped){
+    if (userdata.stopped) {
       nextAngles.length = 0;
       return;
     }
@@ -488,7 +488,7 @@ function getUserData() {
     });
 }
 
-function doNothing(){
+function doNothing() {
   alert("Drilling in progress... wait...");
 }
 
@@ -827,7 +827,7 @@ function nextButtonClick() {
 
 function continueClick() {
   if (userdata != null) {
-    if (userdata.stopped){
+    if (userdata.stopped) {
       return;
     }
     var submittedLen = userdata.wellPoints.length;
@@ -876,7 +876,7 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
     var reals = userdata.realizations;
     var realcount = reals.length;
     var alpha = Math.floor(maxAlpha / realcount);
-    if (specificIndices != null){ 
+    if (specificIndices != null) {
       var mult = Math.round(realcount / specificIndices.length);
       realcount = specificIndices.length;
       alpha *= mult;
@@ -884,7 +884,7 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
     //TODO this formula needs improvement
     //var alpha = 2 * (1.0 - Math.pow(0.5, 2 / reals.length));
     geoModelBuffer.noStroke();
-    
+
     //geoModelBuffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
     geoModelBuffer.fill(maxAlpha, maxAlpha, maxAlpha, alpha);
     var xlist = userdata.xList;
@@ -1070,6 +1070,7 @@ function drawWellToBuffer() {
   wellBuffer.fill(colorFutureOptions);
   wellBuffer.strokeWeight(thicknessMultLine * userdata.height / wellBuffer.height * 0.5)
 
+
   //possible trajectory up
   if (nextAngles.length > 0) {
     x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
@@ -1081,11 +1082,12 @@ function drawWellToBuffer() {
       myAngle = myAngle + maxAngleChange;
       var x2 = x + xTravelDistance;
       var y2 = y + tan(myAngle) * xTravelDistance;
-      wellBuffer.line(
-        x,
-        y,
-        x2,
-        y2);
+      // wellBuffer.line(
+      //   x,
+      //   y,
+      //   x2,
+      //   y2);
+      dashedLine(wellBuffer, x, y, x2, y2, 0.1, 0.1);
       // wellBuffer.line(
       //   x,
       //   y,
@@ -1103,11 +1105,12 @@ function drawWellToBuffer() {
       myAngle = Math.max(0, myAngle - maxAngleChange);
       var x2 = x + xTravelDistance;
       var y2 = y + tan(myAngle) * xTravelDistance;
-      wellBuffer.line(
-        x,
-        y,
-        x2,
-        y2);
+      // wellBuffer.line(
+      //   x,
+      //   y,
+      //   x2,
+      //   y2);
+      dashedLine(wellBuffer, x, y, x2, y2, 0.1, 0.1);
       // wellBuffer.line(
       //   x,
       //   y,
@@ -1153,25 +1156,26 @@ function drawWellToBuffer() {
   //console.log("draw well to buffer " + (t1 - t0) + " milliseconds.");
 }
 
-function dashedLine(x1, y1, x2, y2, l, g) {
-  var pc = dist(x1, y1, x2, y2) / 100;
-  var pcCount = 1;
-  var lPercent = gPercent = 0;
+function dashedLine(buffer, x1, y1, x2, y2, lPercent, gPercent) {
+  //var pc = dist(x1, y1, x2, y2) / 100;
+  //var pcCount = 1;
+
+  //var lPercent = gPercent = 0;
   var currentPos = 0;
   var xx1 = yy1 = xx2 = yy2 = 0;
 
-  while (int(pcCount * pc) < l) {
-    pcCount++
-  }
-  lPercent = pcCount;
-  pcCount = 1;
-  while (int(pcCount * pc) < g) {
-    pcCount++
-  }
-  gPercent = pcCount;
+  // while (int(pcCount * pc) < l) {
+  //   pcCount++
+  // }
+  // lPercent = pcCount;
+  // pcCount = 1;
+  // while (int(pcCount * pc) < g) {
+  //   pcCount++
+  // }
+  // gPercent = pcCount;
 
-  lPercent = lPercent / 100;
-  gPercent = gPercent / 100;
+  // lPercent = lPercent / 100;
+  // gPercent = gPercent / 100;
   while (currentPos < 1) {
     xx1 = lerp(x1, x2, currentPos);
     yy1 = lerp(y1, y2, currentPos);
@@ -1198,7 +1202,7 @@ function dashedLine(x1, y1, x2, y2, l, g) {
       }
     }
 
-    wellBuffer.line(xx1, yy1, xx2, yy2);
+    buffer.line(xx1, yy1, xx2, yy2);
     currentPos = currentPos + lPercent + gPercent;
   }
 
