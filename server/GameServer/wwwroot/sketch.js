@@ -368,7 +368,7 @@ function setup() {
   //TODO reposition
   submitDecisionButton.position(200, 900);
 
-  stopButton = createButton("Stop");
+  stopButton = createButton("Plan stopping");
   stopButton.mousePressed(stopButtonClick);
   stopButton.position(0, 450);
 
