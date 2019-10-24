@@ -91,30 +91,19 @@ namespace UserState
             }
         }
 
-        private static WellPoint ToWellPoint(IContinousState state)
-        {
-            var wellPoint = new WellPoint()
-            {
-                X = state.X,
-                Y = state.Y,
-                Angle = state.Alpha
-            };
-            return wellPoint;
-        }
-
         public override WellPoint GetNextStateDefault()
         {
             var dX = DefaultDecisionStep;
             var angle = _trajectory[_trajectory.Count - 1].Alpha;
             var dY = dX * Math.Tan(angle);
             var curY = _trajectory[_trajectory.Count - 1].Y;
-            var state = new ContinousState()
+            var state = new WellPoint()
             {
                 X = GetNextDecisionX(),
                 Y = curY + dY,
-                Alpha = angle
+                Angle = angle
             };
-            return ToWellPoint(state);
+            return state;
         }
 
         public double GetNextDecisionX()
@@ -204,7 +193,7 @@ namespace UserState
             //realizationData.YLists.Add();
         }
 
-        private static WellPoint convertToWellPoint(IContinousState pt)
+        internal static WellPoint convertToWellPoint(IContinousState pt)
         {
             var wp = new WellPoint()
             {
@@ -215,7 +204,7 @@ namespace UserState
             return wp;
         }
 
-        private static IContinousState convertToIContinousState(WellPoint pt)
+        internal static IContinousState convertToIContinousState(WellPoint pt)
         {
             var cState = new ContinousState()
             {
