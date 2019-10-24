@@ -464,14 +464,14 @@ function drawScale() {
     scaleBuffer.fill(150, 40, 120);
     scaleBuffer.noStroke();
     scaleBuffer.rectMode(CENTER);
-    var hStep = 20;
-    for (var i = hStep; i < userdata.width-25; i += hStep) {
+    var hStep = 50;
+    for (var i = hStep; i < userdata.width; i += hStep) {
       var coord = i * scaleBuffer.width / userdata.width;
       scaleBuffer.rect(coord, 0, 2, 10);
-      scaleBuffer.text(i, coord, 25);
+      scaleBuffer.text(i, coord, 15);
     }
-    var vStep = 2;
-    for (var i = vStep; i < userdata.height-25; i += vStep) {
+    var vStep = 5;
+    for (var i = vStep; i < userdata.height; i += vStep) {
       var coord = i * scaleBuffer.height / userdata.height;
       scaleBuffer.rect(0, coord, 10, 2);
       scaleBuffer.text(i, 15, coord);
