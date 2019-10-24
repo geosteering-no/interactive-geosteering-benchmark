@@ -12,8 +12,43 @@ var scaleBuffer = null;
 //buffers
 //===============================
 
+//===============================
+// colors
+//===============================
+//ascending ged to dark blue
+//http://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=6
+// var colorDecision = '#d73027';
+// var colorOldWell = '#fc8d59';
+
+// var colorSelection = '#fee090';
+
+// //light yellow skipped
+// //light blue skipped
+
+// var colorFutureOptions = '#4575b4';
+// var colorDarkFuture = '#4575b4';
+
+// //light blue here
+// var colorInformation = '#91bfdb';
+
+http://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=8
+var colorDecision = '#d73027';
+var colorOldWell = '#f46d43';
+
+var colorSelection = '#fdae61';
+
+//light yellow skipped
+//light blue skipped
+
+var colorFutureOptions = '#4575b4';
+var colorDarkFuture = '#4575b4';
+
+//light blue here
+var colorInformation = '#74add1';
 
 
+var colorBarsBack = colorFutureOptions;
+var colorBarsFront = colorInformation;
 
 //var xTravelDistance = 50;
 var maxAngleChange = 3.14 / 180.0 * 2;
@@ -62,6 +97,9 @@ var submitDecisionButton;
 
 //canvas is where you touch
 var canvas = null;
+
+//resizeButton
+resizeButton = null;
 
 //===============================
 //end of controls
@@ -316,6 +354,10 @@ function setup() {
   stopButton.mousePressed(stopButtonClick);
   stopButton.position(0, 450);
 
+  // resizeButton = createButton("Resize");
+  // resizeButton.mousePressed(setSizesAndPositions);
+  // resizeButton.position(300, 0);
+
   angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
   angleSlider.input(sliderAngleChange);
   // angleSlider.style('width', '280px');
@@ -459,10 +501,13 @@ function calculateCanvasSize() {
 
 function drawScale() {
   if (userdata != null) {
-    scaleBuffer.textSize(16);
+    scaleBuffer.textSize(14);
     scaleBuffer.textAlign(CENTER, CENTER);
-    scaleBuffer.fill(150, 40, 120);
-    scaleBuffer.noStroke();
+    //scaleBuffer.fill(150, 40, 120);
+    scaleBuffer.fill(colorInformation);
+    scaleBuffer.strokeWeight(0.5);
+    scaleBuffer.stroke(0);
+    //scaleBuffer.noStroke();
     scaleBuffer.rectMode(CENTER);
     var hStep = 50;
     for (var i = hStep; i < userdata.width; i += hStep) {
@@ -607,7 +652,7 @@ function drawBarCharts() {
     barBuffer.noStroke();
     var offset = barBuffer.width / 10 / 7;
     if (barTouched >= 0 && userEvaluation == null) {
-      barBuffer.fill(255, 137, 10);
+      barBuffer.fill(colorSelection);
       drawBarChartsToBufferWithShift(userEvaluationOld, barBuffer, 0, max, -offset, false, true, barTouched);
     }
     //barBuffer.scale(barBuffer.height/max, 1.0/barBuffer.width);
@@ -626,23 +671,24 @@ function drawBarCharts() {
   }
   if (userEvaluation != null) {
     if (barTouched >= 0) {
-      barBuffer.fill(255, 137, 10);
+      barBuffer.noStroke();
+      barBuffer.fill(colorSelection);
       drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0, false, true, barTouched);
     }
-    barBuffer.fill(20, 50, 255);
+    barBuffer.fill(colorBarsBack);
     barBuffer.strokeWeight(1);
     barBuffer.stroke(0);
     drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0, false, true);
 
-    barBuffer.fill(200, 50, 255);
+    barBuffer.fill(colorBarsFront);
     barBuffer.noStroke();
     drawBarChartsToBufferWithShift(userEvaluation, barBuffer, 0, max, 0.0, true);
   }
 
 
   barBuffer.noFill();
-  barBuffer.strokeWeight(4);
-  barBuffer.stroke(51, 255, 10);
+  barBuffer.strokeWeight(1.5);
+  barBuffer.stroke(51);
   var barMaHeight = getBarMaxHeight(barBuffer);
   barBuffer.rect(0, 0, barBuffer.width, barMaHeight);
 }
@@ -793,6 +839,7 @@ function drawGeomodelToBuffer(userdata = null, specificIndices = null) {
     //TODO this formula needs improvement
     //var alpha = 2 * (1.0 - Math.pow(0.5, 2 / reals.length));
     geoModelBuffer.noStroke();
+    //TODO grey here
     geoModelBuffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
     var xlist = userdata.xList;
     if (specificIndices == null) {
@@ -922,8 +969,11 @@ function drawWellToBuffer() {
   scaleBufferForView(wellBuffer, userdata);
   var thicknessMultLine = 0.2;
 
-  wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
-  wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
+  //setup for main trajectory
+  //wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
+  //wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
+  wellBuffer.stroke(colorOldWell);
+  wellBuffer.fill(colorOldWell);
   wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 2);
   var userPoints = userdata.wellPoints.slice(0);
   drawUserWellToBuffer(wellBuffer, userPoints);
@@ -935,13 +985,17 @@ function drawWellToBuffer() {
 
   for (var i = 0; i < nextAngles.length; i++) {
     if (i == 0) {
-      wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
-      wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
+      //wellBuffer.stroke('rgba(100%, 0%, 0%, 1.0)');
+      //wellBuffer.fill('rgba(100%, 0%, 0%, 1.0)');
+      wellBuffer.stroke(colorDecision);
+      wellBuffer.fill(colorDecision);
       //wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 2);
     }
     else {
-      wellBuffer.stroke('rgba(40%, 70%, 10%, 1.0)');
-      wellBuffer.fill('rgba(40%, 70%, 10%, 1.0)');
+      //wellBuffer.stroke('rgba(40%, 70%, 10%, 1.0)');
+      //wellBuffer.fill('rgba(40%, 70%, 10%, 1.0)');
+      wellBuffer.stroke(colorFutureOptions);
+      wellBuffer.fill(colorFutureOptions);
       wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine);
     }
     var angle = nextAngles[i];
@@ -962,8 +1016,10 @@ function drawWellToBuffer() {
     y = y2;
   }
 
-  wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
-  wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
+  //wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
+  //wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
+  wellBuffer.stroke(colorFutureOptions);
+  wellBuffer.fill(colorFutureOptions);
   wellBuffer.strokeWeight(userdata.doiY * thicknessMultLine * 0.5)
 
   //possible trajectory up
@@ -973,8 +1029,6 @@ function drawWellToBuffer() {
     var myAngle = nextAngles[0];
     x = x + xTravelDistance;
     y = y + tan(myAngle) * xTravelDistance;
-    wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
-    wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
     for (var i = 1; i < nextAngles.length; i++) {
       myAngle = myAngle + maxAngleChange;
       var x2 = x + xTravelDistance;
@@ -997,8 +1051,6 @@ function drawWellToBuffer() {
     myAngle = nextAngles[0];
     x = x + xTravelDistance;
     y = y + tan(myAngle) * xTravelDistance;
-    wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
-    wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
     for (var i = 1; i < nextAngles.length; i++) {
       myAngle = Math.max(0, myAngle - maxAngleChange);
       var x2 = x + xTravelDistance;
@@ -1028,13 +1080,18 @@ function drawWellToBuffer() {
     var y2 = y + tan(angle) * xTravelDistance;
     x = x2;
     y = y2;
-    wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
-    wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
+    // wellBuffer.stroke('rgba(40%, 30%, 80%, 1.0)');
+    // wellBuffer.fill('rgba(40%, 30%, 80%, 1.0)');
+    //wellBuffer.stroke(colorFutureOptions);
+    wellBuffer.noStroke();
+    wellBuffer.fill(colorFutureOptions);
     if (editNextAngleNo === i) {
-      wellBuffer.stroke('rgba(100%, 100%, 0%, 1.0)');
-      wellBuffer.fill('rgba(100%, 100%, 0%, 1.0)');
+      //wellBuffer.stroke('rgba(100%, 100%, 0%, 1.0)');
+      //wellBuffer.fill('rgba(100%, 100%, 0%, 1.0)');
+      wellBuffer.fill(colorSelection);
     }
     //TODO fix the scaling here
+    //SALY should be OK
     wellBuffer.ellipse(x, y,
       userdata.doiX,
       userdata.doiY);
