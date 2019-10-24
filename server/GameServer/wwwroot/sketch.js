@@ -17,25 +17,10 @@ var scaleBuffer = null;
 //===============================
 //ascending ged to dark blue
 //http://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=6
-// var colorDecision = '#d73027';
-// var colorOldWell = '#fc8d59';
-
-// var colorSelection = '#fee090';
-
-// //light yellow skipped
-// //light blue skipped
-
-// var colorFutureOptions = '#4575b4';
-// var colorDarkFuture = '#4575b4';
-
-// //light blue here
-// var colorInformation = '#91bfdb';
-
-http://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=8
 var colorDecision = '#d73027';
-var colorOldWell = '#f46d43';
+var colorOldWell = '#fc8d59';
 
-var colorSelection = '#fdae61';
+var colorSelection = '#fee090';
 
 //light yellow skipped
 //light blue skipped
@@ -44,7 +29,22 @@ var colorFutureOptions = '#4575b4';
 var colorDarkFuture = '#4575b4';
 
 //light blue here
-var colorInformation = '#74add1';
+var colorInformation = '#91bfdb';
+
+// http://colorbrewer2.org/#type=diverging&scheme=RdYlBu&n=8
+// var colorDecision = '#d73027';
+// var colorOldWell = '#f46d43';
+
+// var colorSelection = '#fdae61';
+
+// //light yellow skipped
+// //light blue skipped
+
+// var colorFutureOptions = '#4575b4';
+// var colorDarkFuture = '#4575b4';
+
+// //light blue here
+// var colorInformation = '#74add1';
 
 
 var colorBarsBack = colorFutureOptions;

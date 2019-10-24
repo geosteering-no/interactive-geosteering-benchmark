@@ -17,7 +17,7 @@ input[type=range] {
     margin-top: 15px;
     height: 10px !important;
     border-radius: 5px;
-    background: #d3d3d3;
+    background: #000000b0;
     outline: none;
     opacity: 0.7;
     -webkit-transition: .2s;
@@ -37,7 +37,7 @@ input[type=range]:hover {
         height: 25px;
         border-radius: 50%;
         /*background: #ff5722;*/
-        background: #fdae61;
+        background: #fee090;
         /*background: rgb(46, 46, 46);*/
         cursor: pointer;
     }
@@ -47,7 +47,7 @@ input[type=range]:hover {
         height: 25px;
         border-radius: 50%;
         /*background: #ff5722;*/
-        background: #fdae61;
+        background: #fee090;
         /*background: rgb(46, 46, 46);*/
         cursor: pointer;
     }
