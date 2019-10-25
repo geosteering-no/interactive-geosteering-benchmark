@@ -13,15 +13,15 @@ namespace ServerStateInterfaces
 {
     public abstract class ServerStateBase<
         TWellPoint, TUserDataModel, TUserModel,
-        TSecretState, TRealizationData> :
+        TSecretState, TUserResult, TRealizationData> :
         IFullServerStateGeocontroller<
-            TWellPoint, TUserDataModel, UserResultFinal<TWellPoint>, PopulationScoreData<TWellPoint>>
+            TWellPoint, TUserDataModel, TUserResult, PopulationScoreData<TWellPoint>>
         where TUserModel : IUserImplementaion<
-            TUserDataModel, TWellPoint, TSecretState, UserResultFinal<TWellPoint>, TRealizationData>, new()
+            TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
 
     {
-        private ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TRealizationData>> _users =
-            new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TRealizationData>>();
+        private ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>> _users =
+            new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
         //protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
         //protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
 
@@ -33,7 +33,7 @@ namespace ServerStateInterfaces
 
         protected PopulationScoreData<TWellPoint> _scoreData;
 
-        protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, UserResultFinal<TWellPoint>>.ObjectiveEvaluationFunction
+        protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
             EvaluatorUser
         { get; }
 
@@ -113,23 +113,11 @@ namespace ServerStateInterfaces
 
         protected abstract TRealizationData GetTruthForEvaluation();
 
-
-
-        /// <summary>
-        /// Gets or ad
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        private TUserModel GetOrAddUser(string userId)
-        { 
-            throw new NotImplementedException();
-        }
-
-        private UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
-            TRealizationData> DefaultNewUserPair(string userKey)
+        protected UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
+            TUserResult, TRealizationData> GetNewDefaultUserPair(string userKey)
         {
             return new UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
-                TRealizationData>(
+                TUserResult, TRealizationData>(
                 userKey,
                 EvaluatorUser);
         }
@@ -138,19 +126,17 @@ namespace ServerStateInterfaces
         {
             lock (_restartLock)
             {
-                
-            
-            if (seed == -1)
-            {
-                seed = NextSeed();
-            }
-
-            InitializeNewSyntheticTruth(seed);
-            Parallel.ForEach(_users.Keys, userKey =>
+                if (seed == -1)
                 {
-                    _users.GetOrAdd(userKey, DefaultNewUserPair)
-                        .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation());
-                });
+                    seed = NextSeed();
+                }
+
+                InitializeNewSyntheticTruth(seed);
+                Parallel.ForEach(_users.Keys, userKey =>
+                    {
+                        _users.GetOrAdd(userKey, GetNewDefaultUserPair)
+                            .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation());
+                    });
 
             }
 
@@ -167,110 +153,47 @@ namespace ServerStateInterfaces
 
         public void ResetServer()
         {
-            _users = new ConcurrentDictionary<string, IUserScorePair<TUserDataModel, UserResultFinal<TWellPoint>>>();
+            _users = new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
         }
 
         public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
         {
-            if (!UserExists(userId))
-            {
-                throw new Exception("Incorrect user name " + userId);
-            }
-
-            var user = GetOrAddUser(userId);
-            UserResultFinal<TWellPoint> newScore;
-            TUserDataModel newUserData;
-
-            //TODO unlock
-            lock (user)
-            {
-                if (user.Stopped)
-                {
-                    return user.UserData;
-                }
-
-                var ok = user.UpdateUser(load, _secret);
-                if (ok)
-                {
-                    newScore = GetDefaultUserResult(userId, user);
-                    newUserData = user.UserData;
-                    //var userResult = _userResults.
-                    DumpUserStateToFile(userId, user.UserData, "Update");
-                    return newUserData;
-                }
-            }
-            //TODO unlock
-            var userScore = _userResults.GetOrAdd(userId, newScore);
-            lock (userScore)
-            {
-                userScore.TrajectoryWithScore = newScore.TrajectoryWithScore;
-            }
-
-            throw new Exception("User point was not accepted ");
+            return _users.GetOrAdd(userId, GetNewDefaultUserPair)
+                .UpdateUser(load, _secret, EvaluatorTruth, GetTruthForEvaluation());
         }
 
         public TUserDataModel StopUser(string userId)
         {
-            var user = GetOrAddUser(userId);
-            //TODO unlock
-            lock (user)
-            {
-                user.StopDrilling();
-                // TODO unlock
-                var newScore = GetDefaultUserResult();
-                var userScore = _userResults.GetOrAdd(userId, newScore);
-                lock (userScore)
-                {
-                    userScore.Stopped = true;
-                }
-
-                DumpUserStateToFile(userId, user.UserData, "Stop");
-                return user.UserData;
-            }
+            return _users.GetOrAdd(userId, GetNewDefaultUserPair)
+                .StopUser(EvaluatorTruth, GetTruthForEvaluation());
         }
-
 
         public bool UserExists(string userId)
         {
             return _users.ContainsKey(userId);
         }
 
-        public TUserDataModel GetOrAddUserState(string userId)
+        public TUserDataModel GetUserData(string userId)
         {
-            var user =  GetOrAddUser(userId);
-            //TODO locking user when accessing the data
-            lock (user)
-            {
-                var userData = user.UserData;
-                DumpUserStateToFile(userId, userData);
-                return userData;
-            }
-            
+            return _users.GetOrAdd(userId, GetNewDefaultUserPair)
+                .UserData;
         }
 
         public TUserResult GetUserEvaluationData(string userId, IList<TWellPoint> trajectory)
         {
-            var user = GetOrAddUser(userId);
-            // TODO unlock
-            lock (user)
-            {
-                var result = user.GetEvaluation(trajectory);
-                return result;
-            }
+            return _users.GetOrAdd(userId, GetNewDefaultUserPair)
+                .GetEvalaution(trajectory);
         }
 
-        //protected abstract TRealizationData GetSecretUserState(TSecretState secret);
-
-        //public abstract PopulationScoreData GetScoreboard();
         public PopulationScoreData<TWellPoint> GetScoreboard()
         {
             //TODO check if can be moved to base class
-            if (_userResults != null)
+            if (_users != null)
             {
-                var scores = _userResults.Values.ToList();
-
-                //TODO check that it does not crash here
-                _scoreData.UserResults = scores;
+                var results = _users.AsParallel()
+                    .Select(pair => pair.Value.Score)
+                    .ToList();
+                _scoreData.UserResults = results;
             }
             DumpScoreBoardToFile(_scoreData);
             return _scoreData;

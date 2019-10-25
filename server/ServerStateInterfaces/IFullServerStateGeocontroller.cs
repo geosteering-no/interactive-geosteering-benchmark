@@ -11,10 +11,10 @@ namespace ServerStateInterfaces
 
         void RestartServer(int seed = -1);
         void StopAllUsers();
-        void ResetAllScores();
+        void ResetServer();
         TUserData UpdateUser(string userId, TWellPoint load = default);
         TUserData StopUser(string userId);
-        TUserData GetOrAddUserState(string userId);
+        TUserData GetUserData(string userId);
         TUserEvaluationData GetUserEvaluationData(string userId, IList<TWellPoint> trajectory);
         TScoreData GetScoreboard();
 

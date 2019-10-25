@@ -75,7 +75,7 @@ namespace GameServer.Controllers
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
-                _stateServer.ResetAllScores();
+                _stateServer.ResetServer();
                 _logger.LogInformation("Resetting scores finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
             }
             else
@@ -127,7 +127,7 @@ namespace GameServer.Controllers
                 else
                 {
                     WriteUserIdToCookie(userName);
-                    _stateServer.GetOrAddUserState(userName);
+                    _stateServer.GetUserData(userName);
                     Response.Redirect("/index.html");
                 }
             }
@@ -204,7 +204,7 @@ namespace GameServer.Controllers
             var userId = GetUserId();
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " requested userdata.");
-            var res = _stateServer.GetOrAddUserState(userId);
+            var res = _stateServer.GetUserData(userId);
             _logger.LogInformation("User {1}, sending userdata in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
             return res;
         }

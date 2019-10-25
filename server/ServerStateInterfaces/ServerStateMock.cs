@@ -42,8 +42,8 @@ namespace ServerStateInterfaces
 
         protected override void InitializeNewSyntheticTruth(int seed = 0)
         {
-            var defaultUser = GetDefaultNewUser();
-            _secret = defaultUser.UserData.realizations[seed % defaultUser.UserData.realizations.Count];
+            var defaultUserData = GetNewDefaultUserPair("").UserData;
+            _secret = defaultUserData.realizations[seed % defaultUserData.realizations.Count];
             DumpSectetStateToFile(seed);
         }
 

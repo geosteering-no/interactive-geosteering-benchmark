@@ -18,7 +18,8 @@ namespace UserState
 
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
 
-        protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction
+        protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>
+            .ObjectiveEvaluationFunction
             EvaluatorUser => _evaluatorClass.EvaluateDefault;
 
         protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
@@ -28,7 +29,7 @@ namespace UserState
 
         public FullServerState()
         {
-            _dummyUserData = GetDefaultNewUser().UserData;
+            _dummyUserData = GetNewDefaultUserPair("").UserData;
             InitializeNewSyntheticTruth(0);
             _scoreData = new PopulationScoreData<WellPoint>()
             {

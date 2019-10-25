@@ -88,7 +88,7 @@ namespace serverConsoleApp
             else
             {
                 //TODO change add user
-                var res = _serverStateGeocontroller.GetOrAddUserState(str);
+                var res = _serverStateGeocontroller.GetUserData(str);
                 if (res != null)
                 {
                     Console.WriteLine("Added new user: " + str);

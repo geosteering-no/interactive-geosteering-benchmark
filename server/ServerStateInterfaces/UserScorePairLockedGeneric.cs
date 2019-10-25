@@ -6,13 +6,16 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public class UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TRealizationData> 
+    public class UserScorePairLockedGeneric<TUserModel, TUserDataModel, 
+            TSecretState, TWellPoint, 
+            TUserEvaluation, TRealizationData> 
         where TUserModel : IUserImplementaion<
-        TUserDataModel, TWellPoint, TSecretState, UserResultFinal<TWellPoint>, TRealizationData>, new()
+            TUserDataModel, TWellPoint, TSecretState, 
+            TUserEvaluation, TRealizationData>, new()
     {
 
         public UserScorePairLockedGeneric(string userName,
-            ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, UserResultFinal<TWellPoint>>.ObjectiveEvaluationFunction EvaluatorUser)
+            ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser)
         {
             _user = GetUserDefault(userName, EvaluatorUser);
             _score = GetResultDefault(userName);
@@ -109,7 +112,6 @@ namespace ServerStateInterfaces
                 var newTrajWithScore = GetUserTrajectoryWithScore(_user,evaluatorTruth, trueRealization);
                 _score.TrajectoryWithScore = newTrajWithScore;
                 var newUserData = _user.UserData;
-                //var userResult = _userResults.
                 DumpUserStateToFile(_UserIdPrivate, newUserData, "Stop");
                 return newUserData;
             }
@@ -140,6 +142,21 @@ namespace ServerStateInterfaces
             }
         }
 
+        /// <summary>
+        /// locked
+        /// gets evaluation for the user given user trajectory
+        /// </summary>
+        /// <param name="evaluatorTruth"></param>
+        /// <param name="newTrueRealization"></param>
+        public TUserEvaluation GetEvalaution(IList<TWellPoint> trajectory)
+        {
+            lock (this)
+            {
+                var evaluation = _user.GetEvaluation(trajectory);
+                return evaluation;
+            }
+        }
+
 
 
         #region staticMembers
@@ -155,7 +172,7 @@ namespace ServerStateInterfaces
             System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks + "_" + suffix, jsonStr);
         }
         private static TUserModel GetUserDefault(string userName,
-            ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, UserResultFinal<TWellPoint>>.ObjectiveEvaluationFunction evaluatorUser)
+            ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction evaluatorUser)
         {
             var newUser = new TUserModel()
             {
@@ -212,7 +229,7 @@ namespace ServerStateInterfaces
             }
         } 
 
-        private ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, UserResultFinal<TWellPoint>>.
+        private ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.
             ObjectiveEvaluationFunction _EvaluatorUser => _user.Evaluator;
 
         /// <summary>
