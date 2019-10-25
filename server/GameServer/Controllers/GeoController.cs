@@ -107,6 +107,10 @@ namespace GameServer.Controllers
         [HttpPost]
         public void InitNewUser([FromForm] string userName)
         {
+            if (userName.Length < 2)
+            {
+                throw new Exception("User ID too short");
+            }
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Requested adding of a user : " + userName);
             if (userName == ADMIN_SECRET_USER_NAME)

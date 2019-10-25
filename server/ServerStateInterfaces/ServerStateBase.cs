@@ -11,7 +11,7 @@ using ServerDataStructures;
 namespace ServerStateInterfaces
 {
     public abstract class ServerStateBase<
-        TWellPoint, TUserDataModel, TUserModel, 
+        TWellPoint, TUserDataModel, TUserModel,
         TSecretState, TUserResult, TRealizationData> :
         IFullServerStateGeocontroller<
             TWellPoint, TUserDataModel, TUserResult, PopulationScoreData<TWellPoint>>
@@ -22,7 +22,10 @@ namespace ServerStateInterfaces
 
         protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
         protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
+        protected object _addUserLock = new object();
+
         protected TSecretState _secret = default;
+
 
         protected PopulationScoreData<TWellPoint> _scoreData;
 
@@ -55,24 +58,6 @@ namespace ServerStateInterfaces
         public ServerStateBase()
         {
             InitializeNewSyntheticTruth(0);
-        }
-
-        public bool AddUser(string userId)
-        {
-            var newUser = GetDefaultNewUser();
-            var res = _users.TryAdd(userId, newUser);
-            if (!res)
-            {
-                return false;
-            }
-
-            var user = GetOrAddUser(userId);
-            lock (user)
-            {
-                DumpUserStateToFile(userId, user.UserData, "NewUser");
-            }
-
-            return res;
         }
 
         public TUserModel GetDefaultNewUser()
@@ -117,7 +102,7 @@ namespace ServerStateInterfaces
                 Directory.CreateDirectory(dirId);
             }
             var jsonStr = JsonConvert.SerializeObject(data);
-            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks + "_"+ suffix, jsonStr);
+            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks + "_" + suffix, jsonStr);
         }
 
         public void DumpSectetStateToFile(int data)
@@ -175,20 +160,19 @@ namespace ServerStateInterfaces
             return newUserResult;
         }
 
+        /// <summary>
+        /// Does not accept bad usernames
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         protected TUserModel GetOrAddUser(string userId)
-        {
-            //TODO check if default works
+        { 
             if (userId == null)
             {
                 throw new Exception("Empty user ID");
             }
-
-            if (userId.Length < 2)
-            {
-                throw new Exception("User ID too short");
-            }
-            var doLog = !UserExists(userId);
-            var user = _users.GetOrAdd(userId, GetDefaultNewUser());
+            var user = _users.GetOrAdd(userId, x => GetDefaultNewUser());
+            //TODO unlock
             lock (user)
             {
                 if (doLog)
@@ -225,6 +209,7 @@ namespace ServerStateInterfaces
                 //var user = _users.GetOrAdd()
                 var newUserState = GetDefaultNewUser();
                 var user = _users.GetOrAdd(userId, newUserState);
+                //TODO unlock
                 lock (user)
                 {
                     var newUserResult = GetDefaultUserResult(userId, newUserState);
@@ -245,7 +230,7 @@ namespace ServerStateInterfaces
                     });
                 }
 
-                for (var i = 0; i< 100; ++i)
+                for (var i = 0; i < 100; ++i)
                 {
                     //will add everything eventually
                     var res = newDict.TryAdd(userId, newUserState);
@@ -289,7 +274,7 @@ namespace ServerStateInterfaces
 
             _users = newUsers;
             _userResults = newUserResults;
- 
+
         }
 
         public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
@@ -300,6 +285,10 @@ namespace ServerStateInterfaces
             }
 
             var user = GetOrAddUser(userId);
+            UserResultFinal<TWellPoint> newScore;
+            TUserDataModel newUserData;
+
+            //TODO unlock
             lock (user)
             {
                 if (user.Stopped)
@@ -310,19 +299,18 @@ namespace ServerStateInterfaces
                 var ok = user.UpdateUser(load, _secret);
                 if (ok)
                 {
-                    var newScore = GetDefaultUserResult(userId, user);
-                    var userScore = _userResults.GetOrAdd(userId, newScore);
-                    lock (userScore)
-                    {
-                        userScore.TrajectoryWithScore = newScore.TrajectoryWithScore;
-                    }
-
-                    var newUserData = user.UserData;
+                    newScore = GetDefaultUserResult(userId, user);
+                    newUserData = user.UserData;
                     //var userResult = _userResults.
                     DumpUserStateToFile(userId, user.UserData, "Update");
                     return newUserData;
                 }
-
+            }
+            //TODO unlock
+            var userScore = _userResults.GetOrAdd(userId, newScore);
+            lock (userScore)
+            {
+                userScore.TrajectoryWithScore = newScore.TrajectoryWithScore;
             }
 
             throw new Exception("User point was not accepted ");
@@ -331,9 +319,11 @@ namespace ServerStateInterfaces
         public TUserDataModel StopUser(string userId)
         {
             var user = GetOrAddUser(userId);
+            //TODO unlock
             lock (user)
             {
                 user.StopDrilling();
+                // TODO unlock
                 var newScore = GetDefaultUserResult();
                 var userScore = _userResults.GetOrAdd(userId, newScore);
                 lock (userScore)
@@ -354,12 +344,21 @@ namespace ServerStateInterfaces
 
         public TUserDataModel GetOrAddUserState(string userId)
         {
-            return GetOrAddUser(userId).UserData;
+            var user =  GetOrAddUser(userId);
+            //TODO locking user when accessing the data
+            lock (user)
+            {
+                var userData = user.UserData;
+                DumpUserStateToFile(userId, userData);
+                return userData;
+            }
+            
         }
 
         public TUserResult GetUserEvaluationData(string userId, IList<TWellPoint> trajectory)
         {
             var user = GetOrAddUser(userId);
+            // TODO unlock
             lock (user)
             {
                 var result = user.GetEvaluation(trajectory);

@@ -12,7 +12,7 @@ namespace serverConsoleApp
     class ConsoleServer
     {
         private const string Value = "Command not recognised";
-        static IFullSerrverExtended<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> _serverStateGeocontroller = new FullServerState();
+        static IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> _serverStateGeocontroller = new FullServerState();
 
         static void Main(string[] args)
         {
@@ -88,8 +88,8 @@ namespace serverConsoleApp
             else
             {
                 //TODO change add user
-                var res = _serverStateGeocontroller.AddUser(str);
-                if (res)
+                var res = _serverStateGeocontroller.GetOrAddUserState(str);
+                if (res != null)
                 {
                     Console.WriteLine("Added new user: " + str);
                 }

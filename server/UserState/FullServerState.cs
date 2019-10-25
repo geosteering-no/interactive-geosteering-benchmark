@@ -12,8 +12,7 @@ using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 namespace UserState
 {
     public class FullServerState : 
-        ServerStateBase<WellPoint, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>,
-        IFullSerrverExtended<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>>
+        ServerStateBase<WellPoint, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>
     {
 
 
