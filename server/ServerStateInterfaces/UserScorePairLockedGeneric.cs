@@ -6,11 +6,11 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public class UserScorePairLockedGeneric<TUserModel, TUserDataModel, 
-            TSecretState, TWellPoint, 
-            TUserEvaluation, TRealizationData> 
+    public class UserScorePairLockedGeneric<TUserModel, TUserDataModel,
+            TSecretState, TWellPoint,
+            TUserEvaluation, TRealizationData>
         where TUserModel : IUserImplementaion<
-            TUserDataModel, TWellPoint, TSecretState, 
+            TUserDataModel, TWellPoint, TSecretState,
             TUserEvaluation, TRealizationData>, new()
     {
 
@@ -48,7 +48,7 @@ namespace ServerStateInterfaces
             {
                 lock (this)
                 {
-                    return (UserResultFinal<TWellPoint>) _score.Clone();
+                    return (UserResultFinal<TWellPoint>)_score.Clone();
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace ServerStateInterfaces
         /// <param name="evaluatorTruth"></param>
         /// <param name="trueRealization"></param>
         /// <returns></returns>
-        public TUserDataModel UpdateUser(TWellPoint load, 
+        public TUserDataModel UpdateUser(TWellPoint load,
             TSecretState secret,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             TRealizationData trueRealization)
@@ -109,7 +109,7 @@ namespace ServerStateInterfaces
                 _user.StopDrilling();
                 _score.Stopped = true;
 
-                var newTrajWithScore = GetUserTrajectoryWithScore(_user,evaluatorTruth, trueRealization);
+                var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealization);
                 _score.TrajectoryWithScore = newTrajWithScore;
                 var newUserData = _user.UserData;
                 DumpUserStateToFile(_UserIdPrivate, newUserData, "Stop");
@@ -146,8 +146,6 @@ namespace ServerStateInterfaces
         /// locked
         /// gets evaluation for the user given user trajectory
         /// </summary>
-        /// <param name="evaluatorTruth"></param>
-        /// <param name="newTrueRealization"></param>
         public TUserEvaluation GetEvalaution(IList<TWellPoint> trajectory)
         {
             lock (this)
@@ -227,7 +225,7 @@ namespace ServerStateInterfaces
             {
                 return _score.UserName;
             }
-        } 
+        }
 
         private ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.
             ObjectiveEvaluationFunction _EvaluatorUser => _user.Evaluator;
