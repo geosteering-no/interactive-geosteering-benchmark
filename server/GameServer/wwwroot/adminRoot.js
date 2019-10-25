@@ -240,14 +240,14 @@ function drawAllProgress() {
 function updateButtonLabels() {
 	if (scoreData != null) {
 		if (revealIndex - 1 >= 0) {
-			prevButton.html('<== ' + ((revealIndex - 1) / scoreData.totalDecisionPoints * 100) + '%');
+			prevButton.html('<== ' + Math.round((revealIndex - 1) / scoreData.totalDecisionPoints * 100) + '%');
 		}
 		else {
 			prevButton.html('Hide');
 			nextButton.html('Reveal');
 		}
 		if (revealIndex + 1 <= scoreData.totalDecisionPoints) {
-			nextButton.html(((revealIndex + 1) / scoreData.totalDecisionPoints * 100) + '%' + ' ==>');
+			nextButton.html(Math.round((revealIndex + 1) / scoreData.totalDecisionPoints * 100) + '%' + ' ==>');
 		}
 		else {
 			nextButton.html('Final step');
@@ -337,7 +337,6 @@ function resetScoresClick(){
 		else {
 			console.log("reseting complete");
 			fetchScoreData();
-			restartClick();
 			//TODO consider making it impossible to add new points
 			//TODO consider sending a message to user
 		}

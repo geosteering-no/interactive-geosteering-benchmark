@@ -119,7 +119,7 @@ namespace ServerStateInterfaces
             return new UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
                 TUserResult, TRealizationData>(
                 userKey,
-                EvaluatorUser);
+                EvaluatorUser, EvaluatorTruth, GetTruthForEvaluation());
         }
 
         public void StopAllUsers()
@@ -193,8 +193,8 @@ namespace ServerStateInterfaces
         {
             if (_users != null)
             {
-                var results = _users.AsParallel()
-                    .Select(pair => pair.Value.Score)
+                var results = _users.Values.AsParallel()
+                    .Select(userValue => userValue.Score)
                     .ToList();
                 _scoreData.UserResults = results;
             }

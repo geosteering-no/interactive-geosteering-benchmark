@@ -4,15 +4,17 @@ using System.Text;
 
 namespace ServerDataStructures
 {
-    public class UserResultFinal<TWellPoint> : ICloneable
+    public class UserResultFinal<TWellPoint> 
     {
         public string UserName { get; set; }
         public IList<WellPointWithScore<TWellPoint>> TrajectoryWithScore { get; set; }
         public bool Stopped { get; set; }
         public double AccumulatedScoreFromPreviousGames { get; set; }
-        public object Clone()
+
+        public UserResultFinal()
         {
-            return MemberwiseClone();
+
         }
+
     }
 }

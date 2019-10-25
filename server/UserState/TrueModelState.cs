@@ -30,7 +30,7 @@ namespace UserState
 
         private IEarthModelRealization _GenerateSyntheticTruthFromSeed(int randomSeed)
         {
-            var eManip = UserState.InitializeManipulator();
+            var eManip = UserState.InitializeManipulator(randomSeed);
             var model = eManip.Realizations[0];
             return model;
         }

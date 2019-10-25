@@ -15,10 +15,14 @@ namespace ServerStateInterfaces
     {
 
         public UserScorePairLockedGeneric(string userName,
-            ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser)
+            ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction
+                EvaluatorUser,
+            ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
+            TRealizationData trueRealization)
         {
             _user = GetUserDefault(userName, EvaluatorUser);
-            _score = GetResultDefault(userName);
+            _score = GetResultEmpty(userName);
+            _score.TrajectoryWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealization);
         }
 
         /// <summary>
@@ -46,10 +50,15 @@ namespace ServerStateInterfaces
         {
             get
             {
+                var copyOfResult = new UserResultFinal<TWellPoint>();
                 lock (this)
                 {
-                    return (UserResultFinal<TWellPoint>)_score.Clone();
+                    copyOfResult.TrajectoryWithScore = _score.TrajectoryWithScore;
+                    copyOfResult.Stopped = _score.Stopped;
+                    copyOfResult.UserName = _score.UserName;
+                    copyOfResult.AccumulatedScoreFromPreviousGames = _score.AccumulatedScoreFromPreviousGames;
                 }
+                return copyOfResult;
             }
         }
 
@@ -139,6 +148,7 @@ namespace ServerStateInterfaces
                 _score.AccumulatedScoreFromPreviousGames += _score.TrajectoryWithScore[trajLen - 1].Score;
                 _user = newUser;
                 _score.TrajectoryWithScore = newTrajectory;
+                _score.Stopped = false;
             }
         }
 
@@ -180,13 +190,13 @@ namespace ServerStateInterfaces
             return newUser;
         }
 
-        private static UserResultFinal<TWellPoint> GetResultDefault(string userName)
+        private static UserResultFinal<TWellPoint> GetResultEmpty(string userName)
         {
             var result = new UserResultFinal<TWellPoint>()
             {
+                UserName = userName,
                 AccumulatedScoreFromPreviousGames = 0,
                 Stopped = false,
-                TrajectoryWithScore = new List<WellPointWithScore<TWellPoint>>()
             };
             return result;
         }
@@ -240,7 +250,7 @@ namespace ServerStateInterfaces
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             TRealizationData trueRealization)
         {
-            var newUserResult = GetResultDefault(_UserIdPrivate);
+            var newUserResult = GetResultEmpty(_UserIdPrivate);
             newUserResult.TrajectoryWithScore = GetUserTrajectoryWithScore(
                 _user,
                 evaluatorTruth,
