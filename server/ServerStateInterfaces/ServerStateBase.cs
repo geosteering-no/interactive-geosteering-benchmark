@@ -122,6 +122,16 @@ namespace ServerStateInterfaces
                 EvaluatorUser);
         }
 
+        public void StopAllUsers()
+        {
+            var users = _users;
+            Parallel.ForEach(users.Keys, userKey =>
+            {
+                users.GetOrAdd(userKey, GetNewDefaultUserPair)
+                    .StopUser(EvaluatorTruth, GetTruthForEvaluation());
+            });
+        }
+
         public void RestartServer(int seed = -1)
         {
             lock (_restartLock)
@@ -131,10 +141,11 @@ namespace ServerStateInterfaces
                     seed = NextSeed();
                 }
 
+                var users = _users;
                 InitializeNewSyntheticTruth(seed);
-                Parallel.ForEach(_users.Keys, userKey =>
+                Parallel.ForEach(users.Keys, userKey =>
                     {
-                        _users.GetOrAdd(userKey, GetNewDefaultUserPair)
+                        users.GetOrAdd(userKey, GetNewDefaultUserPair)
                             .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation());
                     });
 
@@ -142,14 +153,7 @@ namespace ServerStateInterfaces
 
         }
 
-        public void StopAllUsers()
-        {
-            var userList = _users.Keys.ToList();
-            foreach (var userId in userList)
-            {
-                StopUser(userId);
-            }
-        }
+
 
         public void ResetServer()
         {
@@ -187,7 +191,6 @@ namespace ServerStateInterfaces
 
         public PopulationScoreData<TWellPoint> GetScoreboard()
         {
-            //TODO check if can be moved to base class
             if (_users != null)
             {
                 var results = _users.AsParallel()
