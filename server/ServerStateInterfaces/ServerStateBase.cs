@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ServerDataStructures;
 
@@ -12,24 +13,27 @@ namespace ServerStateInterfaces
 {
     public abstract class ServerStateBase<
         TWellPoint, TUserDataModel, TUserModel,
-        TSecretState, TUserResult, TRealizationData> :
+        TSecretState, TRealizationData> :
         IFullServerStateGeocontroller<
-            TWellPoint, TUserDataModel, TUserResult, PopulationScoreData<TWellPoint>>
+            TWellPoint, TUserDataModel, UserResultFinal<TWellPoint>, PopulationScoreData<TWellPoint>>
         where TUserModel : IUserImplementaion<
-            TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
+            TUserDataModel, TWellPoint, TSecretState, UserResultFinal<TWellPoint>, TRealizationData>, new()
 
     {
+        private ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TRealizationData>> _users =
+            new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TRealizationData>>();
+        //protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
+        //protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
 
-        protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
-        protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
-        protected object _addUserLock = new object();
+        private object _restartLock = new object();
+
 
         protected TSecretState _secret = default;
 
 
         protected PopulationScoreData<TWellPoint> _scoreData;
 
-        protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
+        protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, UserResultFinal<TWellPoint>>.ObjectiveEvaluationFunction
             EvaluatorUser
         { get; }
 
@@ -55,31 +59,10 @@ namespace ServerStateInterfaces
             seedInd++;
             return res;
         }
+
         public ServerStateBase()
         {
             InitializeNewSyntheticTruth(0);
-        }
-
-        public TUserModel GetDefaultNewUser()
-        {
-            var newUser = new TUserModel()
-            {
-                //TODO here is a bunch of hard-coded things
-                Evaluator = EvaluatorUser
-            };
-            return newUser;
-        }
-
-        public UserResultFinal<TWellPoint> GetDefaultUserResult()
-        {
-            var result = new UserResultFinal<TWellPoint>()
-            {
-                AccumulatedScoreFromPreviousGames = 0,
-                Stopped = false,
-                TrajectoryWithScore = new List<WellPointWithScore<TWellPoint>>()
-            };
-            return result;
-            //throw new NotImplementedException();
         }
 
         public void DumpScoreBoardToFile(PopulationScoreData<TWellPoint> scoreBoard)
@@ -91,18 +74,6 @@ namespace ServerStateInterfaces
             }
             var jsonStr = JsonConvert.SerializeObject(scoreBoard);
             System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
-        }
-
-
-        public void DumpUserStateToFile(string userId, TUserDataModel data, string suffix = "")
-        {
-            var dirId = "userLog/" + userId;
-            if (!Directory.Exists(dirId))
-            {
-                Directory.CreateDirectory(dirId);
-            }
-            var jsonStr = JsonConvert.SerializeObject(data);
-            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks + "_" + suffix, jsonStr);
         }
 
         public void DumpSectetStateToFile(int data)
@@ -127,7 +98,7 @@ namespace ServerStateInterfaces
         //    //_syntheticTruth = new TrueModelState(seed);
         //}
 
-        protected WellPointWithScore<TWellPoint> EvalueateSegmentAgainstTruth(TWellPoint p1, TWellPoint p2)
+        private WellPointWithScore<TWellPoint> EvalueateSegmentAgainstTruth(TWellPoint p1, TWellPoint p2)
         {
             var pointWithScore = new WellPointWithScore<TWellPoint>()
             {
@@ -143,110 +114,46 @@ namespace ServerStateInterfaces
         protected abstract TRealizationData GetTruthForEvaluation();
 
 
-        /// <summary>
-        /// Requires a user lock
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        protected UserResultFinal<TWellPoint> GetDefaultUserResult(string userId, TUserModel user)
-        {
-            var newUserResult = GetDefaultUserResult();
-            var trueRealization = GetTruthForEvaluation();
-            newUserResult.UserName = userId;
-            newUserResult.TrajectoryWithScore = user.GetEvaluationForTruth(
-                EvaluatorTruth,
-                trueRealization);
-            return newUserResult;
-        }
 
         /// <summary>
-        /// Does not accept bad usernames
+        /// Gets or ad
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        protected TUserModel GetOrAddUser(string userId)
+        private TUserModel GetOrAddUser(string userId)
         { 
-            if (userId == null)
-            {
-                throw new Exception("Empty user ID");
-            }
-            var user = _users.GetOrAdd(userId, x => GetDefaultNewUser());
-            //TODO unlock
-            lock (user)
-            {
-                if (doLog)
-                {
-                    //var userData = user.UserData;
-                    var newUserResult = GetDefaultUserResult(userId, user);
-                    for (var i = 0; i < 100; ++i)
-                    {
-                        var res = _userResults.TryAdd(userId, newUserResult);
-                        if (res)
-                        {
-                            break;
-                        }
-                    }
-
-                    //log
-                    DumpUserStateToFile(userId, user.UserData, "NewUser");
-                }
-            }
-
-            return user;
+            throw new NotImplementedException();
         }
 
+        private UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
+            TRealizationData> DefaultNewUserPair(string userKey)
+        {
+            return new UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
+                TRealizationData>(
+                userKey,
+                EvaluatorUser);
+        }
 
         public void RestartServer(int seed = -1)
         {
+            lock (_restartLock)
+            {
+                
+            
             if (seed == -1)
             {
                 seed = NextSeed();
             }
-            var newDict = new ConcurrentDictionary<string, TUserModel>();
-            foreach (var userId in _users.Keys.ToList())
-            {
-                //var user = _users.GetOrAdd()
-                var newUserState = GetDefaultNewUser();
-                var user = _users.GetOrAdd(userId, newUserState);
-                //TODO unlock
-                lock (user)
-                {
-                    var newUserResult = GetDefaultUserResult(userId, newUserState);
-                    _userResults.AddOrUpdate(userId, GetDefaultUserResult(), (key, oldUserResult) =>
-                    {
-                        double prevGameScore = 0;
-                        if (oldUserResult.TrajectoryWithScore.Count > 0)
-                        {
-                            prevGameScore = oldUserResult
-                                .TrajectoryWithScore[oldUserResult.TrajectoryWithScore.Count - 1]
-                                .Score;
-                        }
 
-                        oldUserResult.AccumulatedScoreFromPreviousGames += prevGameScore;
-                        oldUserResult.TrajectoryWithScore = newUserResult.TrajectoryWithScore;
-                        oldUserResult.Stopped = false;
-                        return oldUserResult;
-                    });
-                }
-
-                for (var i = 0; i < 100; ++i)
+            InitializeNewSyntheticTruth(seed);
+            Parallel.ForEach(_users.Keys, userKey =>
                 {
-                    //will add everything eventually
-                    var res = newDict.TryAdd(userId, newUserState);
-                    //TODO throw something
-                    if (res)
-                    {
-                        break;
-                    }
-                }
-                DumpUserStateToFile(userId, newUserState.UserData, "Restart");
+                    _users.GetOrAdd(userKey, DefaultNewUserPair)
+                        .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation());
+                });
+
             }
 
-            //put a clean user stateGeocontroller
-            _users = newDict;
-            //put a new truth
-            InitializeNewSyntheticTruth(seed);
         }
 
         public void StopAllUsers()
@@ -258,23 +165,9 @@ namespace ServerStateInterfaces
             }
         }
 
-        public void ResetAllScores()
+        public void ResetServer()
         {
-            var newUsers = new ConcurrentDictionary<string, TUserModel>();
-            var newUserResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
-
-            foreach (var userId in _users.Keys.ToList())
-            {
-                var newUserState = GetDefaultNewUser();
-                var newUserResult = GetDefaultUserResult();
-                newUserResult.UserName = userId;
-                newUsers.TryAdd(userId, newUserState);
-                newUserResults.TryAdd(userId, newUserResult);
-            }
-
-            _users = newUsers;
-            _userResults = newUserResults;
-
+            _users = new ConcurrentDictionary<string, IUserScorePair<TUserDataModel, UserResultFinal<TWellPoint>>>();
         }
 
         public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
