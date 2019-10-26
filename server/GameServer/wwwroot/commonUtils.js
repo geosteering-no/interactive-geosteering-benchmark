@@ -1,4 +1,5 @@
 var oneMarginInScript = 10;
+var colorInformation = '#91bfdb';
 
 function drawCircle(buffer, x, y, radius, npoints) {
 
@@ -20,6 +21,36 @@ function drawFrame() {
     rect(0, 0, width, height);
 }
 
+//TODO make work for shifted geomodel
+function drawScale(scaleBuffer, userdata, textSize, color) {
+    if (userdata != null) {
+        var textOffset = textSize + 1;
+        var barLen = textOffset / 3 * 2;
+        var barWidth = textOffset / 7;
+        var myStroke = textOffset / 30;
+        scaleBuffer.textSize(textSize);
+        scaleBuffer.textAlign(CENTER, CENTER);
+        //scaleBuffer.fill(150, 40, 120);
+        scaleBuffer.fill(color);
+        scaleBuffer.strokeWeight(myStroke);
+        scaleBuffer.stroke(0);
+        //scaleBuffer.noStroke();
+        scaleBuffer.rectMode(CENTER);
+        var hStep = 50;
+        for (var i = hStep; i < userdata.width; i += hStep) {
+            var coord = i * scaleBuffer.width / userdata.width;
+            scaleBuffer.rect(coord, 0, barWidth, barLen);
+            scaleBuffer.text(i, coord, textOffset);
+        }
+        var vStep = 5;
+        for (var i = vStep; i < userdata.height; i += vStep) {
+            var coord = i * scaleBuffer.height / userdata.height;
+            scaleBuffer.rect(0, coord, barLen, barWidth);
+            scaleBuffer.text(i, textOffset, coord);
+        }
+    }
+}
+
 
 
 function scaleBufferForView(b, userdata) {
@@ -30,6 +61,7 @@ function scaleBufferForView(b, userdata) {
 
 function drawRealizationToBuffer(buffer, xlist, real) {
     var polyCount = real.yLists.length / 2;
+    var prevBottom = null;
     for (var polygoni = 0; polygoni < polyCount; polygoni++) {
         //console.log("poly:" + polygoni);
         var polytop = real.yLists[polygoni * 2];
@@ -38,14 +70,18 @@ function drawRealizationToBuffer(buffer, xlist, real) {
         buffer.beginShape();
         for (var vertexi = 0; vertexi < polytop.length; vertexi++) {
             var y = polytop[vertexi];
+            if (prevBottom != null){
+                y = Math.max(y, prevBottom[vertexi]);
+            }
             buffer.vertex(xlist[vertexi], y);
         }
 
         for (var vertexi = polybottom.length - 1; vertexi >= 0; vertexi--) {
-            var y = polybottom[vertexi];
+            var y = Math.max(polybottom[vertexi], polytop[vertexi]);
             buffer.vertex(xlist[vertexi], y);
         }
         buffer.endShape(CLOSE);
+        prevBottom = polybottom;
     }
 }
 
@@ -54,7 +90,7 @@ function drawUserWellToBuffer(wellBuffer, committedPoints, maxNum) {
     //wellBuffer.resetMatrix();
     //scaleBufferForView(wellBuffer);
     var len = committedPoints.length;
-    if (maxNum != undefined){
+    if (maxNum != undefined) {
         len = Math.min(maxNum, len);
     }
     for (var i = 0; i < len; i++) {

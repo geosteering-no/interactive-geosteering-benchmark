@@ -12,7 +12,7 @@ namespace serverConsoleApp
     class ConsoleServer
     {
         private const string Value = "Command not recognised";
-        static IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> _serverStateGeocontroller = new FullServerState();
+        static IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint, RealizationData>> _serverStateGeocontroller = new FullServerState();
 
         static void Main(string[] args)
         {

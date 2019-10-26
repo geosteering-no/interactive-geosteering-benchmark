@@ -28,7 +28,7 @@ namespace ServerStateInterfaces
         public ServerStateMock() : base()
         {
             _dummyUserData = UserStateMockBase.CreateUserData();
-            _scoreData = new PopulationScoreData<WellPoint>()
+            _scoreData = new PopulationScoreData<WellPoint, RealizationData>()
             {
                 Height = _dummyUserData.Height,
                 Width = _dummyUserData.Width,
@@ -36,15 +36,17 @@ namespace ServerStateInterfaces
                 Ytopleft = _dummyUserData.Ytopleft,
                 xList = _dummyUserData.xList,
                 secretRealization = _secret,
-                TotalDecisionPoints = TOTAL_DECISION_STEPS
+                TotalDecisionPoints = TOTAL_DECISION_STEPS,
+                Xdist = _dummyUserData.Xdist
             };
         }
 
-        protected override void InitializeNewSyntheticTruth(int seed = 0)
+        protected override RealizationData InitializeNewSyntheticTruth(int seed = 0)
         {
             var defaultUserData = GetNewDefaultUserPair("").UserData;
             _secret = defaultUserData.realizations[seed % defaultUserData.realizations.Count];
             DumpSectetStateToFile(seed);
+            return _secret;
         }
 
         protected override RealizationData GetTruthForEvaluation()

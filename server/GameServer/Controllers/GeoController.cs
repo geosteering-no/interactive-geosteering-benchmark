@@ -20,10 +20,10 @@ namespace GameServer.Controllers
 
         private const string UserId_ID = "geobanana-user-id";
         private readonly ILogger<GeoController> _logger;
-        private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> _stateServer;
+        private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint, RealizationData>> _stateServer;
 
         public GeoController(ILogger<GeoController> logger,
-            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>> stateServer)
+            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint, RealizationData>> stateServer)
         {
             //Note! this is magic
             _logger = logger;
@@ -85,7 +85,7 @@ namespace GameServer.Controllers
         }
 
         [Route("admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
-        public PopulationScoreData<WellPoint> GetScores()
+        public PopulationScoreData<WellPoint, RealizationData> GetScores()
         {
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");

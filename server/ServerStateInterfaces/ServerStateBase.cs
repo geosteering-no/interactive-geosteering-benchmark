@@ -15,7 +15,7 @@ namespace ServerStateInterfaces
         TWellPoint, TUserDataModel, TUserModel,
         TSecretState, TUserResult, TRealizationData> :
         IFullServerStateGeocontroller<
-            TWellPoint, TUserDataModel, TUserResult, PopulationScoreData<TWellPoint>>
+            TWellPoint, TUserDataModel, TUserResult, PopulationScoreData<TWellPoint, TRealizationData>>
         where TUserModel : IUserImplementaion<
             TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
 
@@ -31,7 +31,7 @@ namespace ServerStateInterfaces
         protected TSecretState _secret = default;
 
 
-        protected PopulationScoreData<TWellPoint> _scoreData;
+        protected PopulationScoreData<TWellPoint, TRealizationData> _scoreData;
 
         protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
             EvaluatorUser
@@ -44,19 +44,20 @@ namespace ServerStateInterfaces
 
 
         private Random rnd = new Random();
-        private int[] seeds = { 0, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8 };
+        private int[] seeds = { 0, 4, 91, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8 };
         private int seedInd = 0;
 
 
         private int NextSeed()
         {
             var res = rnd.Next();
+            seedInd++;
             if (seedInd < seeds.Length)
             {
                 res = seeds[seedInd];
             }
 
-            seedInd++;
+
             return res;
         }
 
@@ -65,7 +66,7 @@ namespace ServerStateInterfaces
             InitializeNewSyntheticTruth(0);
         }
 
-        public void DumpScoreBoardToFile(PopulationScoreData<TWellPoint> scoreBoard)
+        public void DumpScoreBoardToFile(PopulationScoreData<TWellPoint, TRealizationData> scoreBoard)
         {
             var dirId = "scoreLog/";
             if (!Directory.Exists(dirId))
@@ -91,7 +92,7 @@ namespace ServerStateInterfaces
         /// this should call dump secret stateGeocontroller to file
         /// </summary>
         /// <param name="seed"></param>
-        protected abstract void InitializeNewSyntheticTruth(int seed = 0);
+        protected abstract TSecretState InitializeNewSyntheticTruth(int seed = 0);
         //{
         //    DumpSectetStateToFile(seed);
         //    //Console.WriteLine("Initialized synthetic truth with seed: " + seed);
@@ -143,6 +144,7 @@ namespace ServerStateInterfaces
 
                 var users = _users;
                 InitializeNewSyntheticTruth(seed);
+                _scoreData.secretRealization = GetTruthForEvaluation();
                 Parallel.ForEach(users.Keys, userKey =>
                     {
                         users.GetOrAdd(userKey, GetNewDefaultUserPair)
@@ -189,7 +191,7 @@ namespace ServerStateInterfaces
                 .GetEvalaution(trajectory);
         }
 
-        public PopulationScoreData<TWellPoint> GetScoreboard()
+        public PopulationScoreData<TWellPoint, TRealizationData> GetScoreboard()
         {
             if (_users != null)
             {

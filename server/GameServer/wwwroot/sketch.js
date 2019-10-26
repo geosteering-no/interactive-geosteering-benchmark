@@ -535,31 +535,6 @@ function calculateCanvasSize() {
   // }
 }
 
-function drawScale() {
-  if (userdata != null) {
-    scaleBuffer.textSize(14);
-    scaleBuffer.textAlign(CENTER, CENTER);
-    //scaleBuffer.fill(150, 40, 120);
-    scaleBuffer.fill(colorInformation);
-    scaleBuffer.strokeWeight(0.5);
-    scaleBuffer.stroke(0);
-    //scaleBuffer.noStroke();
-    scaleBuffer.rectMode(CENTER);
-    var hStep = 50;
-    for (var i = hStep; i < userdata.width; i += hStep) {
-      var coord = i * scaleBuffer.width / userdata.width;
-      scaleBuffer.rect(coord, 0, 2, 10);
-      scaleBuffer.text(i, coord, 15);
-    }
-    var vStep = 5;
-    for (var i = vStep; i < userdata.height; i += vStep) {
-      var coord = i * scaleBuffer.height / userdata.height;
-      scaleBuffer.rect(0, coord, 10, 2);
-      scaleBuffer.text(i, 15, coord);
-    }
-
-  }
-}
 
 function setSizesAndPositions() {
   calculateCanvasSize();
@@ -587,7 +562,8 @@ function setSizesAndPositions() {
   }
   if (scaleBuffer != null && userdata != null) {
     scaleBuffer.resizeCanvas(Math.round(canvasWidth), Math.round(wellHeigth));
-    drawScale();
+    //drawScale(scaleBuffer);
+    drawScale(scaleBuffer, userdata, 14, colorInformation);
   }
 
   if (barBuffer != null) {

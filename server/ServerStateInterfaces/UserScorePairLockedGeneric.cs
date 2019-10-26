@@ -171,7 +171,21 @@ namespace ServerStateInterfaces
 
         private static void DumpUserStateToFile(string userId, TUserDataModel data, string suffix = "")
         {
-            var dirId = "userLog/" + userId;
+            var hashString = string.Format("{0:X}", userId.GetHashCode());
+            var strMaxLen = 15;
+            var userDirName = userId.Trim();
+            if (userDirName.Length > strMaxLen)
+            {
+                userDirName.Remove(strMaxLen);
+            }
+            foreach (var ch in Path.GetInvalidFileNameChars())
+            {
+                userDirName = userDirName.Replace(ch, '-');
+            }
+
+            userDirName = userDirName + "_" + hashString;
+
+            var dirId = "userLog/" + userDirName;
             if (!Directory.Exists(dirId))
             {
                 Directory.CreateDirectory(dirId);

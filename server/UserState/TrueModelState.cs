@@ -11,6 +11,9 @@ namespace UserState
 {
     public class TrueModelState
     {
+
+        public const double DEVIATION = 2.5; //originally 2.5
+
         public const double InstrumentSize = 3.0;
         private MultiDataGenerator _trueModel;
         public IEarthModelRealization TrueSubsurfaseModel1 { get; }
@@ -30,8 +33,8 @@ namespace UserState
 
         private IEarthModelRealization _GenerateSyntheticTruthFromSeed(int randomSeed)
         {
-            var eManip = UserState.InitializeManipulator(randomSeed);
-            var model = eManip.Realizations[0];
+            var eManip = UserState.InitializeManipulator(randomSeed, DEVIATION);
+            var model = eManip.Realizations[randomSeed % eManip.NumberOfRealizations];
             return model;
         }
 

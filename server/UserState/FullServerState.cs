@@ -31,7 +31,7 @@ namespace UserState
         {
             _dummyUserData = GetNewDefaultUserPair("").UserData;
             InitializeNewSyntheticTruth(0);
-            _scoreData = new PopulationScoreData<WellPoint>()
+            _scoreData = new PopulationScoreData<WellPoint, RealizationData>()
             {
                 Height = _dummyUserData.Height,
                 Width = _dummyUserData.Width,
@@ -39,17 +39,18 @@ namespace UserState
                 Ytopleft = _dummyUserData.Ytopleft,
                 xList = _dummyUserData.xList,
                 secretRealization = UserState.convertToRealizationData(_secret.TrueSubsurfaseModel1),
-                TotalDecisionPoints = _dummyUserData.TotalDecisionPoints
+                TotalDecisionPoints = _dummyUserData.TotalDecisionPoints,
+                Xdist = _dummyUserData.Xdist
             };
         }
 
-        protected sealed override void InitializeNewSyntheticTruth(int seed = 0)
+        protected override TrueModelState InitializeNewSyntheticTruth(int seed = 0)
         {
-            
             Console.WriteLine("Initialized synthetic truth with seed: " + seed);
             _secret = new TrueModelState(seed);
-            
+
             DumpSectetStateToFile(seed);
+            return _secret;
         }
 
         protected override RealizationData GetTruthForEvaluation()

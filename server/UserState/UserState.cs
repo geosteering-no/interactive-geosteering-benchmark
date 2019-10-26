@@ -64,11 +64,13 @@ namespace UserState
         /// </summary>
         public UserState()
         {
-            _earthManipulator = InitializeManipulator();
+            _earthManipulator = InitializeManipulator(0, TrueModelState.DEVIATION);
             _trajectory = new List<IContinousState> { GetDefaultFirstState() };
             DefaultDecisionStep = GetDefaultDecisionStep();
             _InitializeEnkf(_earthManipulator);
         }
+
+
 
 
         private bool PointOnNextStep(WellPoint newState)
@@ -125,23 +127,49 @@ namespace UserState
 
             //correcting for EPS error
             newState.X = GetNextDecisionX();
-            _Update(convertToIContinousState(newState), measuringFunction);
+
+
+            _Update(convertToIContinousState(newState), measuringFunction, 1);
+
+
+            //_Update(convertToIContinousState(newState), measuringFunction);
 
             return true;
         }
 
-        private void _Update(IContinousState newState, GetMeasurementForPoint measuringFunction)
+        private void _Update(IContinousState newState, GetMeasurementForPoint measuringFunction, int numPoints = 1)
         {
-            var measurement = measuringFunction(newState);
+            if (numPoints == 1)
+            {
+                var measurement = measuringFunction(newState);
+                _dataProvider.DataList = new List<IData<IContinousState, ResistivityData2DFull>> { measurement };
+            }
+            else
+            {
+                var measurements = new List<IData<IContinousState, ResistivityData2DFull>>(numPoints);
+                var oldState = _trajectory[_trajectory.Count - 1];
+                for (var i = 0; i < numPoints; ++i)
+                {
+                    var newX = oldState.X * i / numPoints + newState.X * (numPoints - i) / numPoints;
+                    var newY = oldState.Y * i / numPoints + newState.Y * (numPoints - i) / numPoints;
+                    var newA = oldState.Alpha * i / numPoints + newState.Alpha * (numPoints - i) / numPoints;
+                    var intermediateState = new ContinousState(newX, newY, newA);
+                    var measurement = measuringFunction(intermediateState);
+                    measurements.Add(measurement);
+                }
+
+                _dataProvider.DataList = measurements;
+            }
+
             //_dataProvider is already refered in the _enkf
-            _dataProvider.DataList = new List<IData<IContinousState, ResistivityData2DFull>> { measurement };
+
             //load up data
             //update enkf
             _enkf.Update();
             _enkf.AcceptUpdate();
         }
 
-        static internal EarthModelManipulator InitializeManipulator(int seed = 0)
+        static internal EarthModelManipulator InitializeManipulator(int seed = 0, double deviation = 2.5)
         {
             var earthManipulator = new EarthModelManipulator(NumRealiztions, seed);
             //TODO check the layer positions with negative sign
@@ -150,7 +178,7 @@ namespace UserState
             var bottomOfLayer2 = -5.3 + Offset;
             var topOfLayer1 = -13.3 + Offset;
 
-            var deviation = 2.5;
+            //var deviation = 2.5;
             var depthOfReservoirDeviation = 0.0;
             double resistivityLayerBottom = 150;
             double resistivityLayerTop = 150;
