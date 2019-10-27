@@ -443,6 +443,7 @@ function tryStartNewGame() {
     submitDecisionButton.mousePressed(commitDecicion);
     sessionStorage.clear();
 
+    //TODO change to relative here
     nextAngles = [];
     for (var i = 0; i < userdata.totalDecisionPoints; ++i) {
       nextAngles.push(beginAngle - maxAngleChange * i / userdata.totalDecisionPoints);
@@ -716,6 +717,7 @@ function allowedAngle(prev, dA) {
 }
 
 function prevAngle(editNextAngleNo) {
+  //TODO change to relative angle here
   if (editNextAngleNo > 0) {
     return nextAngles[editNextAngleNo - 1];
   } else {
@@ -733,6 +735,7 @@ function getFullUserTrajectory() {
     var lastDefinedPoint = fullUserTrajectory[fullUserTrajectory.length - 1];
     var x = lastDefinedPoint.x;
     var y = lastDefinedPoint.y;
+    //TODO change to relative angle here
     for (var i = 0; i < nextAngles.length; ++i) {
       var angle = nextAngles[i];
       var x2 = x + xTravelDistance;
@@ -747,7 +750,7 @@ function getFullUserTrajectory() {
 }
 
 function sliderAngleChange() {
-
+  //TODO change to relative angle here
   if (editNextAngleNo < nextAngles.length) {
     var prev = prevAngle(editNextAngleNo);
     nextAngles[editNextAngleNo] = allowedAngle(prev, -angleSlider.value());
@@ -769,6 +772,7 @@ function sliderAngleChange() {
 }
 
 function updateSliderPosition() {
+  //TODO change to relative angle here
   if (editNextAngleNo < nextAngles.length) {
     angleSlider.value(-(nextAngles[editNextAngleNo] - prevAngle(editNextAngleNo)));
   }
@@ -809,6 +813,7 @@ function continueClick() {
     var submittedLen = userdata.wellPoints.length;
     var newAnglesLen = nextAngles.length;
     if (submittedLen + newAnglesLen < userdata.totalDecisionPoints) {
+      //TODO change to relative angle here
       if (newAnglesLen === 0) {
         nextAngles.push(userdata.wellPoints[submittedLen - 1].angle);
       } else {
@@ -1022,6 +1027,7 @@ function drawWellToBuffer() {
       wellBuffer.fill(colorFutureOptions);
       wellBuffer.strokeWeight(thicknessMultLine * userdata.height / wellBuffer.height);
     }
+    //TODO change to relative angle here
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
     var y2 = y + tan(angle) * xTravelDistance;
@@ -1051,6 +1057,7 @@ function drawWellToBuffer() {
   if (nextAngles.length > 0) {
     x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
     y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
+    //TODO change to relative angle here
     var myAngle = nextAngles[0];
     x = x + xTravelDistance;
     y = y + tan(myAngle) * xTravelDistance;
@@ -1074,6 +1081,7 @@ function drawWellToBuffer() {
     }
     x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
     y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
+    //TODO change to relative angle here
     myAngle = nextAngles[0];
     x = x + xTravelDistance;
     y = y + tan(myAngle) * xTravelDistance;
@@ -1102,6 +1110,7 @@ function drawWellToBuffer() {
   x = userdata.wellPoints[userdata.wellPoints.length - 1].x;
   y = userdata.wellPoints[userdata.wellPoints.length - 1].y;
   for (var i = 0; i < nextAngles.length; i++) {
+    //TODO change to relative angle here
     var angle = nextAngles[i];
     var x2 = x + xTravelDistance;
     var y2 = y + tan(angle) * xTravelDistance;
