@@ -44,7 +44,8 @@ namespace ServerStateInterfaces
 
 
         private Random rnd = new Random();
-        private int[] seeds = { 0, 4, 91, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8 };
+        //4 is really bad
+        private int[] seeds = { 0, 1, 91, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8 };
         private int seedInd = 0;
 
 

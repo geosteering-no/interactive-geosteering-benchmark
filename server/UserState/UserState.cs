@@ -86,7 +86,7 @@ namespace UserState
 
 
         public override void StopDrilling()
-        { 
+        {
             _stopped = true;
         }
 
