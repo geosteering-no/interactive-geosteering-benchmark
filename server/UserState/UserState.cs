@@ -183,12 +183,15 @@ namespace UserState
             double resistivityLayerBottom = 150;
             double resistivityLayerTop = 150;
             double resistivityOutsideLayer = 10;
+            double modelSize = Math.Abs(MaxX - MinX);
+            double range = modelSize * 2;
             //TODO make the correct layer sorting
             earthManipulator.GenerateRealizationsTwoLayerFromVariogramWithKrigging(NumPointsInLayer,
                 MinX, MaxX,
                 bottomOfLayer1, topOfLayer1, bottomOfLayer2, topOfLayer2, deviation,
                 resistivityLayerBottom, resistivityLayerTop, resistivityOutsideLayer, false, depthOfReservoirDeviation,
-                0.7);
+                0.7,
+                range);
             return earthManipulator;
         }
 
