@@ -28,7 +28,7 @@ var prevBest = [];
 function setup() {
 	oneMarginInScript = 10;
 	createCanvas(100, 100);
-	prevButton = createButton("Hide");
+	prevButton = createButton("Update");
 	prevButton.mousePressed(buttonPreviousClick);
 
 	nextButton = createButton("Reveal");
@@ -79,7 +79,7 @@ function draw() {
 			image(scaleBuffer, 0, 0, scaleBuffer.width, scaleBuffer.height);
 		}
 		if (legendBuffer != null) {
-			image(legendBuffer, canvasWidth - legendBuffer.width, legendOffsetTop, 
+			image(legendBuffer, canvasWidth - legendBuffer.width, legendOffsetTop,
 				legendBuffer.width, legendBuffer.height);
 		}
 		if (oldLegendBuffer != null) {
@@ -88,7 +88,7 @@ function draw() {
 			//oldLegendBuffer.image(legendBuffer, 0, 0, legendBuffer.width, legendBuffer.height);
 			//var halfWidth = legelegendBuffer.width / 2;
 			var mult = 0.7;
-			image(oldLegendBuffer, canvasWidth - legendBuffer.width - legendBuffer.width * mult - legendOffsetTop, legendOffsetTop, 
+			image(oldLegendBuffer, canvasWidth - legendBuffer.width - legendBuffer.width * mult - legendOffsetTop, legendOffsetTop,
 				legendBuffer.width * mult, legendBuffer.height * mult);
 		}
 	} else {
@@ -269,7 +269,7 @@ function updateButtonLabels() {
 			prevButton.html('<== ' + Math.round((revealIndex - 1) / scoreData.totalDecisionPoints * 100) + '%');
 		}
 		else {
-			prevButton.html('Hide');
+			prevButton.html('Update');
 			nextButton.html('Reveal');
 		}
 		if (revealIndex + 1 <= scoreData.totalDecisionPoints) {
@@ -284,7 +284,9 @@ function updateButtonLabels() {
 function buttonPreviousClick() {
 	if (revealIndex > -1) {
 		revealIndex--;
-
+	}
+	else {
+		fetchScoreData();
 	}
 	updateButtonLabels();
 	updateAll();
