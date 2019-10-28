@@ -130,7 +130,7 @@ function updateScores() {
 			if (shortUserName.length > 30) {
 				shortUserName = shortUserName.substr(0, 30);
 			}
-			s += topScores[i].userName + " : " + Math.round(topScores[i].accumulatedScoreFromPreviousGames) + "<br>";
+			s += topScores[i].userName.substring(0, 25); + " : " + Math.round(topScores[i].accumulatedScoreFromPreviousGames) + "<br>";
 		}
 		scoreBoardDiv.html(s);
 	}
