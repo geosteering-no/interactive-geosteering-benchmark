@@ -176,7 +176,7 @@ namespace ServerStateInterfaces
             var userDirName = userId.Trim();
             if (userDirName.Length > strMaxLen)
             {
-                userDirName.Remove(strMaxLen);
+                userDirName = userDirName.Remove(strMaxLen);
             }
             foreach (var ch in Path.GetInvalidFileNameChars())
             {
