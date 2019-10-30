@@ -111,9 +111,17 @@ namespace UserState
         public override void AddBotUserDefault()
         {
             var userId = BotUserName;
-
-            var user = _users.GetOrAdd(userId, GetNewDefaultUserPair);
-
+            
+            var user = _users.GetOrAdd(userId, GetBotUserPair);
+            var botUser = (UserStatePairWithBotFull) user;
+            if (botUser != null)
+            {
+                botUser.StartBot(
+                    _secret,
+                    EvaluatorTruth,
+                    GetTruthForEvaluation()
+                    );
+            }
 
         }
 
