@@ -7,10 +7,6 @@ namespace UserState
         TrueModelState, WellPoint,
         UserEvaluation, RealizationData>
     {
-        public UserStatePairWithBotFull(string userName, ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluatorTruth, RealizationData trueRealization) : base(userName, EvaluatorUser, evaluatorTruth, trueRealization)
-        {
-        }
-
         protected override void RunBot(
             TrueModelState trueState,
             ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluatorTruth, 
@@ -38,6 +34,11 @@ namespace UserState
 
             StopUser(evaluatorTruth, 
                 trueRealization);
+        }
+
+        public UserStatePairWithBotFull(string userName, ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluatorTruth, ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunctionSimple evaluatorSimple, RealizationData trueRealization) 
+            : base(userName, EvaluatorUser, evaluatorTruth, evaluatorSimple, trueRealization)
+        {
         }
     }
 }

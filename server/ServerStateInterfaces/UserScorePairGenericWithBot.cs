@@ -14,7 +14,7 @@ namespace ServerStateInterfaces
     {
 
         protected IDssBotGeneric<TWellPoint, TRealizationData> Bot { get; set; }
-        protected ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunctionSimple Objective { get; set; }
+        protected ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunctionSimple Objective { get; }
 
 
         public void StartBot(
@@ -39,8 +39,16 @@ namespace ServerStateInterfaces
             TRealizationData trueRealization);
 
 
+        public UserScorePairGenericWithBot(string userName, 
+            ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, 
+            ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
+            ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunctionSimple evaluatorSimple,
+            TRealizationData trueRealization) : base(userName, EvaluatorUser, evaluatorTruth, trueRealization)
+        {
+            Objective = evaluatorSimple;
+        }
 
-        public UserScorePairGenericWithBot(string userName, ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth, TRealizationData trueRealization) : base(userName, EvaluatorUser, evaluatorTruth, trueRealization) 
+        private UserScorePairGenericWithBot(string userName, ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth, TRealizationData trueRealization) : base(userName, EvaluatorUser, evaluatorTruth, trueRealization) 
         {
         }
     }
