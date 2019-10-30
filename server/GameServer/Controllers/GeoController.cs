@@ -190,7 +190,7 @@ namespace GameServer.Controllers
             return res;
         }
 
-        [Route("addbot")]
+        [Route("addbot/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]
         public void AddBot()
         {

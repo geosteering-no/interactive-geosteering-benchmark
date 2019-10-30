@@ -16,6 +16,7 @@ var legendOffsetTop = 40;
 var updateTotalScoreButton = null;
 var stopUsersButton = null;
 var resetUserScoresButton = null;
+var addBotButton = null;
 var scoreBoardDiv = null;
 
 var progressBuffer = null;
@@ -49,6 +50,10 @@ function setup() {
 	resetUserScoresButton = createButton("Reset user scores and new game");
 	resetUserScoresButton.position(300, 1400);
 	resetUserScoresButton.mousePressed(resetScoresAndNewGameClick);
+
+	addBotButton = createButton("Add bot");
+	addBotButton.position(500, 1400);
+	addBotButton.mousePressed(addBotClick);
 
 	updateTotalScoreButton = createButton("Update total scores");
 	updateTotalScoreButton.position(0, 1250);
@@ -406,6 +411,23 @@ function resetScoresAndNewGameClick() {
 				newGameClick();
 				//TODO consider making it impossible to add new points
 				//TODO consider sending a message to user
+			}
+		});
+}
+
+function addBotClick() {
+	fetch("geo/addbot/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
+		{
+			credentials: 'include',
+			method: 'POST'
+		})
+		.then(function (res) {
+			if (!res.ok) {
+				alert("starting bot was not accepted?!");
+				//throw Error("getting userdata failed");
+			}
+			else {
+				console.log("bot has started");
 			}
 		});
 }
