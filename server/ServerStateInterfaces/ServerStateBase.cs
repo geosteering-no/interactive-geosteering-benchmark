@@ -20,7 +20,7 @@ namespace ServerStateInterfaces
             TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
 
     {
-        private ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>> _users =
+        protected ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>> _users =
             new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
         //protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
         //protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
@@ -187,6 +187,9 @@ namespace ServerStateInterfaces
             return _users.GetOrAdd(userId, GetNewDefaultUserPair)
                 .StopUser(EvaluatorTruth, GetTruthForEvaluation());
         }
+
+        public abstract void AddBotUserDefault();
+
 
         public bool UserExists(string userId)
         {

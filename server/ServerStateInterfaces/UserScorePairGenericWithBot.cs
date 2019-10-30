@@ -13,7 +13,7 @@ namespace ServerStateInterfaces
         TUserEvaluation, TRealizationData> where TUserModel : IUserImplementaion<TUserDataModel, TWellPoint, TSecretState, TUserEvaluation, TRealizationData>, new()
     {
 
-        protected IDssBotGeneric<TWellPoint, TRealizationData> Bot { get; set; }
+        public IDssBotGeneric<TWellPoint, TRealizationData> Bot { get; set; }
         protected ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunctionSimple Objective { get; }
 
 

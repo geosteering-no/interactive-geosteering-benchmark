@@ -18,6 +18,8 @@ namespace ServerStateInterfaces
         TUserEvaluationData GetUserEvaluationData(string userId, IList<TWellPoint> trajectory);
         TScoreData GetScoreboard();
 
+        void AddBotUserDefault();
+
         bool UserExists(string str);
 
     }

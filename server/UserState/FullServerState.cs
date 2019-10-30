@@ -14,7 +14,7 @@ namespace UserState
     public sealed class FullServerState : 
         ServerStateBase<WellPoint, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>
     {
-
+        private const string BotUserName = "DasBot-90-19-10-30";
 
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
         private readonly DssBotGeneric<RealizationData> _bestSolutionFinder = 
@@ -93,6 +93,28 @@ namespace UserState
                 UserName = "Best deterministic"
             };
             return bestResult;
+        }
+
+        protected UserScorePairLockedGeneric<UserState, UserData, TrueModelState, WellPoint,
+            UserEvaluation, RealizationData> GetBotUserPair(string userKey)
+        {
+            var botPair = new UserStatePairWithBotFull(
+                userKey,
+                EvaluatorUser, 
+                EvaluatorTruth, 
+                _evaluatorClass.EvaluatorDelegate,
+                GetTruthForEvaluation());
+            botPair.Bot = new DssBotGeneric<RealizationData>();
+            return botPair;
+        }
+
+        public override void AddBotUserDefault()
+        {
+            var userId = BotUserName;
+
+            var user = _users.GetOrAdd(userId, GetNewDefaultUserPair);
+
+
         }
 
         protected override RealizationData GetTruthForEvaluation()

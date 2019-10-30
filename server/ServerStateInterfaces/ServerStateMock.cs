@@ -58,5 +58,10 @@ namespace ServerStateInterfaces
         {
             return _dummyUserData.wellPoints[0];
         }
+
+        public override void AddBotUserDefault()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
