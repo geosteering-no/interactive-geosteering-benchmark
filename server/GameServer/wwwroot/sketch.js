@@ -51,10 +51,10 @@ var colorBarsBack = colorFutureOptions;
 var colorBarsFront = colorInformation;
 
 //var xTravelDistance = 50;
-var maxAngleChange = 3.14 / 180.0 * 2;
+var maxAngleChange = 3.14159265 / 180.0 * 2;
 var minAngle = 0;
 var maxAngle = 1.4;
-var beginAngle = 3.14 / 180 * 10;
+//var beginAngle = 3.14159265 / 180 * 10;
 var nextAngles = [];
 
 
