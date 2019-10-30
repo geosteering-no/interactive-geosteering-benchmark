@@ -54,7 +54,9 @@ namespace ServerStateInterfaces
             return _secret;
         }
 
-
-
+        protected override WellPoint GetInitialPoint()
+        {
+            return _dummyUserData.wellPoints[0];
+        }
     }
 }

@@ -17,5 +17,8 @@ namespace ServerDataStructures
 
         public TRealizationData secretRealization { get; set; }
         public IList<UserResultFinal<TWellPoint>> UserResults { get; set; }
+
+        public UserResultFinal<TWellPoint> BestPossible { get; set; }
+
     }
 }

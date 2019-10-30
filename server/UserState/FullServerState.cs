@@ -11,12 +11,13 @@ using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
 namespace UserState
 {
-    public class FullServerState : 
+    public sealed class FullServerState : 
         ServerStateBase<WellPoint, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>
     {
 
 
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
+        private readonly DssBot _bestSolutionFinder = new DssBot();
 
         protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>
             .ObjectiveEvaluationFunction
@@ -24,13 +25,15 @@ namespace UserState
 
         protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
             EvaluatorTruth => _evaluatorClass.EvaluateOneRealizationDefault;
-        
-        protected UserData _dummyUserData;
+
+        private UserData _dummyUserData;
 
         public FullServerState()
         {
             _dummyUserData = GetNewDefaultUserPair("").UserData;
             InitializeNewSyntheticTruth(0);
+
+
             _scoreData = new PopulationScoreData<WellPoint, RealizationData>()
             {
                 Height = _dummyUserData.Height,
@@ -40,17 +43,44 @@ namespace UserState
                 xList = _dummyUserData.xList,
                 secretRealization = UserState.convertToRealizationData(_secret.TrueSubsurfaseModel1),
                 TotalDecisionPoints = _dummyUserData.TotalDecisionPoints,
-                Xdist = _dummyUserData.Xdist
+                Xdist = _dummyUserData.Xdist,
             };
+            var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(),
+                GetInitialPoint(),
+                EvaluatorTruth);
+            _scoreData.BestPossible = bestTrajectoryWithScore;
         }
 
         protected override TrueModelState InitializeNewSyntheticTruth(int seed = 0)
         {
             Console.WriteLine("Initialized synthetic truth with seed: " + seed);
             _secret = new TrueModelState(seed);
-
             DumpSectetStateToFile(seed);
             return _secret;
+        }
+
+        protected override WellPoint GetInitialPoint()
+        {
+            return _dummyUserData.wellPoints[0];
+        }
+
+        protected override UserResultFinal<WellPoint> GetBestTrajectoryWithScore(RealizationData secret,
+            WellPoint start,
+            ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluator)
+        {
+            _bestSolutionFinder.Init(1.0,
+                _scoreData.Xdist,
+                _scoreData.TotalDecisionPoints);
+            var result = _bestSolutionFinder.ComputeBestDeterministicTrajectory(secret, start);
+            
+            var resultWithScore = UserState.GetEvaluationForTrajectoryAgainstTruth(result, evaluator, secret);
+            var bestResult = new UserResultFinal<WellPoint>()
+            {
+                Stopped = true,
+                TrajectoryWithScore = resultWithScore,
+                UserName = "Best deterministic"
+            };
+            return bestResult;
         }
 
         protected override RealizationData GetTruthForEvaluation()

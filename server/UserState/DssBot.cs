@@ -10,13 +10,13 @@ using TrajectoryOptimization;
 
 namespace UserState
 {
-    class DssBot
+    public class DssBot
     {
         private TrajectoryOptimizerDP<RealizationData> _oneRealizationOptimizer;
         private IList<TrajectoryOptimizationDPResult<RealizationData>> _oneRealizationResults;
         private MultiRalizationOptimizer _multiOptimizer = new MultiRalizationOptimizer();
         private TheServerObjective _theObjective = new TheServerObjective();
-        private void Init(double _discountFactorOptimization, double decisionLenX, int TotalOptSteps)
+        public void Init(double _discountFactorOptimization, double decisionLenX, int TotalOptSteps)
         {
             var oneRelaizationOptimizerSpecific = new TrajectoryOptimizerDP<RealizationData>()
             {
@@ -28,7 +28,7 @@ namespace UserState
             _oneRealizationOptimizer.MaxX = TotalOptSteps;
 
             //TODO add the correct objective
-            //_oneRealizationOptimizer.AddObjectiveFucntion(_theObjective.TheObjective);
+            _oneRealizationOptimizer.AddObjectiveFucntion(_theObjective.TheObjective, 1.0);
         }
 
         private TrajectoryOptimizationDPResult<T> UpdateSingleOptimizer<T>(TrajectoryOptimizerDP<T> optimizer, T model, WellPoint wp)
@@ -46,6 +46,27 @@ namespace UserState
             foreach (var realization in realizations)
                 _oneRealizationResults.Add(
                     UpdateSingleOptimizer(_oneRealizationOptimizer, realization, wp));
+        }
+
+        public IList<WellPoint> ComputeBestDeterministicTrajectory(RealizationData realization, WellPoint start)
+        {
+            var oneRealizationResult = new TrajectoryOptimizationDPResult<RealizationData>(realization);
+            var startState = new ContinousState()
+            {
+                X = start.X,
+                Y = start.Y,
+                Alpha = start.Angle
+            };
+            var contStateResult =
+                _oneRealizationOptimizer.ComputeBestTrajectoryContState(startState, oneRealizationResult);
+            var result = contStateResult.Select(x => new WellPoint()
+            {
+                X = x.X,
+                Y = x.Y,
+                Angle = x.Alpha
+            });
+
+            return result.ToList();
         }
 
         public WellPoint ComputeBestChoice(IList<RealizationData> realizations, WellPoint wp)

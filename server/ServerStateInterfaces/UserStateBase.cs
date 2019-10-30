@@ -43,6 +43,42 @@ namespace ServerStateInterfaces
             }
         }
 
+        public static IList<WellPointWithScore<WellPoint>> GetEvaluationForTrajectoryAgainstTruth(
+            IList<WellPoint> trajectory,
+            ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
+                evaluator,
+            RealizationData secretData)
+        {
+            var resultList = new List<WellPointWithScore<WellPoint>>(trajectory.Count);
+            var sum = 0.0;
+
+            for (var i = 0; i < trajectory.Count; i++)
+            {
+                var pt = trajectory[i];
+                if (i == 0)
+                {
+                    resultList.Add(new WellPointWithScore<WellPoint>()
+                    {
+                        wellPoint = pt,
+                        Score = sum
+                    });
+                }
+                else
+                {
+                    var twoPoints = new List<WellPoint>() { trajectory[i - 1], pt };
+                    sum += evaluator(secretData, twoPoints);
+                    resultList.Add(new WellPointWithScore<WellPoint>()
+                    {
+                        wellPoint = pt,
+                        Score = sum
+                    });
+
+                }
+            }
+
+            return resultList;
+        }
+
         public IList<WellPointWithScore<WellPoint>> GetEvaluationForTruth(
             ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
                 evaluator,
@@ -51,33 +87,8 @@ namespace ServerStateInterfaces
 
             {
                 var trajectory = UserData.wellPoints;
-                var resultList = new List<WellPointWithScore<WellPoint>>(trajectory.Count);
-                var sum = 0.0;
-
-                for (var i = 0; i < trajectory.Count; i++)
-                {
-                    var pt = trajectory[i];
-                    if (i == 0)
-                    {
-                        resultList.Add(new WellPointWithScore<WellPoint>()
-                        {
-                            wellPoint = pt,
-                            Score = sum
-                        });
-                    }
-                    else
-                    {
-                        var twoPoints = new List<WellPoint>() {trajectory[i - 1], pt};
-                        sum += evaluator(secretData, twoPoints);
-                        resultList.Add(new WellPointWithScore<WellPoint>()
-                        {
-                            wellPoint = pt,
-                            Score = sum
-                        });
-
-                    }
-                }
-
+                var resultList = GetEvaluationForTrajectoryAgainstTruth(trajectory,
+                    evaluator, secretData);
                 return resultList;
             }
         }

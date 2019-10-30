@@ -134,6 +134,15 @@ namespace ServerStateInterfaces
             });
         }
 
+        protected abstract TWellPoint GetInitialPoint();
+
+        protected virtual UserResultFinal<TWellPoint> GetBestTrajectoryWithScore(TRealizationData secret,
+            TWellPoint start,
+            ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluator)
+        {
+            return null;
+        }
+
         public void RestartServer(int seed = -1)
         {
             lock (_restartLock)
@@ -146,6 +155,10 @@ namespace ServerStateInterfaces
                 var users = _users;
                 InitializeNewSyntheticTruth(seed);
                 _scoreData.secretRealization = GetTruthForEvaluation();
+                var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(), 
+                    GetInitialPoint(), 
+                    EvaluatorTruth);
+                _scoreData.BestPossible = bestTrajectoryWithScore;
                 Parallel.ForEach(users.Keys, userKey =>
                     {
                         users.GetOrAdd(userKey, GetNewDefaultUserPair)

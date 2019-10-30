@@ -2,7 +2,10 @@ var timerCountdown = 1;
 var prevButton;
 var nextButton;
 
-var colors = ['#66c2a5', '#fc8d62', '#8da0cb'];
+//three-color scheme
+//var colors = ['#66c2a5', '#fc8d62', '#8da0cb'];
+var colors = ['#a6cee3', '#1f78b4', '#b2df8a'];
+var colorBest = '#33a02c';
 var oldBest = [];
 
 var newGameButton;
@@ -173,6 +176,7 @@ function drawAllWells() {
 				var valueB = b.trajectoryWithScore[bLastInd].score;
 				return valueA - valueB;
 			});
+		var legendLength = colors.length + 1;
 		for (var i = 0; i < curResultsAscending.length; ++i) {
 			var fromTop = curResultsAscending.length - 1 - i;
 			var userPoints = curResultsAscending[i].trajectoryWithScore.slice(0)
@@ -195,11 +199,11 @@ function drawAllWells() {
 
 				legendBuffer.fill(colors[fromTop]);
 				legendBuffer.textAlign(LEFT);
-				legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / colors.length,
-					legendBuffer.width, legendBuffer.windowHeight / colors.length);
+				legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+					legendBuffer.width, legendBuffer.windowHeight / legendLength);
 				legendBuffer.textAlign(RIGHT);
-				legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / colors.length,
-					legendBuffer.width, legendBuffer.windowHeight / colors.length);
+				legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+					legendBuffer.width, legendBuffer.windowHeight / legendLength);
 				//best[userName] = null;
 				// if (userName in prevBest){
 				// 	prevBest
@@ -214,6 +218,41 @@ function drawAllWells() {
 			//var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 			//var score = curResults[i].trajectoryWithScore[lastInd].score;
 			//wellBuffer.text(score, userPoints[lastInd].x, userPoints[lastInd].y, 100, 30);
+		}
+
+		//best trajectory
+		if (scoreData.bestPossible != null) {
+			wellBuffer.stroke(colorBest);
+			wellBuffer.fill(colorBest);
+			wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
+			var userPoints = scoreData.bestPossible.trajectoryWithScore.slice(0)
+				.map(function (withScore) {
+					return withScore.wellPoint;
+				});
+			var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
+			var score = 0;
+			if (lastInd >= 0) {
+				score =  scoreData.bestPossible.trajectoryWithScore[lastInd].score;
+			}
+			var shortUserName = scoreData.bestPossible.userName;
+			if (shortUserName.length > 30) {
+				shortUserName = shortUserName.substr(0, 30);
+			}
+
+			var fromTop = 3;
+			legendBuffer.fill(colorBest);
+			legendBuffer.textAlign(LEFT);
+			legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+				legendBuffer.width, legendBuffer.windowHeight / legendLength);
+			legendBuffer.textAlign(RIGHT);
+			legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+				legendBuffer.width, legendBuffer.windowHeight / legendLength);
+			//best[userName] = null;
+			// if (userName in prevBest){
+			// 	prevBest
+			// }
+
+			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
 		}
 	}
 }
