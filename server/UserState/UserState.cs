@@ -14,6 +14,7 @@ namespace UserState
 {
     [DataContract]
     public class UserState : UserStateBase<TrueModelState>
+        //IUserImplementaion<UserData, WellPoint, TrueModelState, UserResultFinal<WellPoint>, RealizationData>
     {
         [DataMember]
         private EarthModelManipulator _earthManipulator;

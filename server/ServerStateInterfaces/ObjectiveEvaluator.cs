@@ -23,6 +23,16 @@ namespace ServerStateInterfaces
             return sum;
         }
 
+
+
+        public ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunctionSimple EvaluatorDelegate
+        {
+            get
+            {
+                return localEvaluator.TheObjective;
+            }
+        }
+
         public UserEvaluation EvaluateDefault(UserData userData, IList<WellPoint> trajectory)
         {
             var values = new List<double>(userData.realizations.Count);

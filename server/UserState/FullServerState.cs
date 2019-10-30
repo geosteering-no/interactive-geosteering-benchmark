@@ -17,7 +17,9 @@ namespace UserState
 
 
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
-        private readonly DssBot _bestSolutionFinder = new DssBot();
+        private readonly DssBotGeneric<RealizationData> _bestSolutionFinder = 
+            new DssBotGeneric<RealizationData>();
+        //private readonly DssBotGeneric _dssSolutionFinderDiscounted = new DssBotGeneric();
 
         protected override ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>
             .ObjectiveEvaluationFunction
@@ -71,9 +73,16 @@ namespace UserState
             
             _bestSolutionFinder.Init(1.0,
                 _scoreData.Xdist,
-                _scoreData.TotalDecisionPoints, 
+                _scoreData.TotalDecisionPoints - 1, 
                 _dummyUserData.MaxAngleChange, 
-                _dummyUserData.MinInclination);
+                _dummyUserData.MinInclination,
+                _evaluatorClass.EvaluatorDelegate
+                );
+            //_dssSolutionFinderDiscounted.Init(0.9,
+            //    _scoreData.Xdist,
+            //    _scoreData.TotalDecisionPoints,
+            //    _dummyUserData.MaxAngleChange,
+            //    _dummyUserData.MinInclination);
             var result = _bestSolutionFinder.ComputeBestDeterministicTrajectory(secret, start);
             
             var resultWithScore = UserState.GetEvaluationForTrajectoryAgainstTruth(result, evaluator, secret);

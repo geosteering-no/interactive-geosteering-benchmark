@@ -63,7 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DssBot.cs" />
+    <Compile Include="DssBotGeneric.cs" />
     <Compile Include="FullServerState.cs" />
     <Compile Include="ServerObjectiveEvaluator.cs" />
     <Compile Include="TrueModelState.cs" />
