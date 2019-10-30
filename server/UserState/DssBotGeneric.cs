@@ -78,10 +78,12 @@ namespace UserState
 
         private void UpdateForEach(IList<TRealizationData> realizations, WellPoint wp)
         {
-            _oneRealizationResults = new List<TrajectoryOptimizationDPResult<TRealizationData>>();
-            foreach (var realization in realizations)
-                _oneRealizationResults.Add(
-                    UpdateSingleOptimizer(_oneRealizationOptimizer, realization, wp));
+            _oneRealizationResults = new TrajectoryOptimizationDPResult<TRealizationData>[realizations.Count];
+            Parallel.For(0, realizations.Count, i =>
+            {
+                var realization = realizations[i];
+                _oneRealizationResults[i] = UpdateSingleOptimizer(_oneRealizationOptimizer, realization, wp);
+            });
         }
 
         public IList<WellPoint> ComputeBestDeterministicTrajectory(TRealizationData realization, WellPoint start)

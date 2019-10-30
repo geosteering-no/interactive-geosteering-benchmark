@@ -17,7 +17,7 @@ namespace UserState
                 var userData = UserData;
                 var userPointsCount = userData.wellPoints.Count;
                 var totalLeft = userData.TotalDecisionPoints - userPointsCount;
-                if (totalLeft <= 0)
+                if (totalLeft <= 0 || userData.stopped)
                 {
                     break;
                 }

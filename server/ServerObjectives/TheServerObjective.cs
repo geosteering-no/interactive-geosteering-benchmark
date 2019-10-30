@@ -12,6 +12,7 @@ namespace ServerObjectives
         public TheServerObjective()
         {
             _drillingCostObjective = new DrillingCostObjective();
+            _drillingCostObjective.DrillingCost = 0.086;
             _sweetSpotObjective = new SweetSpotObjective();
         }
         public double TheObjective(
