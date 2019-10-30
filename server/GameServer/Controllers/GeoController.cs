@@ -190,6 +190,16 @@ namespace GameServer.Controllers
             return res;
         }
 
+        [Route("addbot")]
+        [HttpPost]
+        public void AddBot()
+        {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": " + " adding a bot.");
+            _stateServer.AddBotUserDefault();
+            _logger.LogInformation("Bot started in {1}ms", (DateTime.Now - time).TotalMilliseconds);
+        }
+
         private string GetUserId()
         {
             //var userId = HttpContext.Session.GetString("userId");
