@@ -22,6 +22,10 @@ namespace ServerDataStructures {
 
         public IList<WellPoint> wellPoints  { get; set; }
 
+        public double MaxAngleChange { get; set; } = double.MaxValue;
+        public double MaxInclination { get; set; } = double.MaxValue;
+        public double MinInclination { get; set; } = double.MinValue;
+
         public bool stopped { get; set; }
         public double DoiX { get; set; } = 2.25; //TODO 5.25 is the correct size
         public double DoiY { get; set; } = 2.6; //TODO 9.6 is a correct size

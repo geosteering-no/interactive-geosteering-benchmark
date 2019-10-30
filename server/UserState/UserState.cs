@@ -36,6 +36,10 @@ namespace UserState
         private const double MaxX = 350;
         private const double EPS = 1e-5;
         private const int DecisionPoints = 13;
+
+        public readonly double MaxAngleChange = 3.14159265 / 180.0 * 2;
+        public readonly double MinInclination = 0.0;
+
         public double DoiX { get; set; } = 5.25; //TODO 5.25 is the correct size
         public double DoiY { get; set; } = 9.6; //TODO 9.6 is a correct size
 
@@ -112,6 +116,29 @@ namespace UserState
 
         public delegate ResistivityMeasurement GetMeasurementForPoint(IContinousState state);
 
+        private WellPoint ProjectPointToConstraints(WellPoint newState)
+        {
+            WellPoint prevWellPoint = convertToWellPoint(_trajectory[_trajectory.Count - 1]);
+            var projectedState = new WellPoint();
+            projectedState.X = GetNextDecisionX();
+            projectedState.Angle = newState.Angle;
+            if (projectedState.Angle > prevWellPoint.Angle + MaxAngleChange)
+            {
+                projectedState.Angle = prevWellPoint.Angle + MaxAngleChange;
+            }
+
+            if (projectedState.Angle < prevWellPoint.Angle - MaxAngleChange)
+            {
+                projectedState.Angle = prevWellPoint.Angle + MaxAngleChange;
+            }
+            if (projectedState.Angle < MinInclination)
+            {
+                projectedState.Angle = MinInclination;
+            }
+            projectedState.Y = prevWellPoint.Y + Math.Tan(projectedState.Angle) * GetDefaultDecisionStep();
+            return projectedState;
+        }
+
         public bool OfferUpdatePoint(WellPoint newState, GetMeasurementForPoint measuringFunction)
         {
             if (newState == null)
@@ -126,7 +153,7 @@ namespace UserState
 
 
             //correcting for EPS error
-            newState.X = GetNextDecisionX();
+            newState = ProjectPointToConstraints(newState);
 
 
             _Update(convertToIContinousState(newState), measuringFunction, 1);
@@ -267,7 +294,9 @@ namespace UserState
                     stopped = _stopped,
                     TotalDecisionPoints = DecisionPoints,
                     DoiX = DoiX,
-                    DoiY = DoiY
+                    DoiY = DoiY,
+                    MinInclination = MinInclination,
+                    MaxAngleChange = MaxAngleChange
                 };
                 data.Ytopleft = 0.0;
                 data.Xtopleft = MinX;

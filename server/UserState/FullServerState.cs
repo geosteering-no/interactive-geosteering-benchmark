@@ -68,9 +68,12 @@ namespace UserState
             WellPoint start,
             ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluator)
         {
+            
             _bestSolutionFinder.Init(1.0,
                 _scoreData.Xdist,
-                _scoreData.TotalDecisionPoints);
+                _scoreData.TotalDecisionPoints, 
+                _dummyUserData.MaxAngleChange, 
+                _dummyUserData.MinInclination);
             var result = _bestSolutionFinder.ComputeBestDeterministicTrajectory(secret, start);
             
             var resultWithScore = UserState.GetEvaluationForTrajectoryAgainstTruth(result, evaluator, secret);

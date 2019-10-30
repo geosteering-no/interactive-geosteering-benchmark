@@ -16,7 +16,8 @@ namespace UserState
         private IList<TrajectoryOptimizationDPResult<RealizationData>> _oneRealizationResults;
         private MultiRalizationOptimizer _multiOptimizer = new MultiRalizationOptimizer();
         private TheServerObjective _theObjective = new TheServerObjective();
-        public void Init(double _discountFactorOptimization, double decisionLenX, int TotalOptSteps)
+        public void Init(double _discountFactorOptimization, double decisionLenX, int TotalOptSteps,
+            double maxTurnAngle, double minInclination)
         {
             var oneRelaizationOptimizerSpecific = new TrajectoryOptimizerDP<RealizationData>()
             {
@@ -25,7 +26,10 @@ namespace UserState
             _oneRealizationOptimizer = oneRelaizationOptimizerSpecific;
             _oneRealizationOptimizer.DX = decisionLenX;
             //TotalOptSteps = (int)(deltaX / decisionLenX + 0.5) + 1;
-            _oneRealizationOptimizer.MaxX = TotalOptSteps;
+
+            _oneRealizationOptimizer.MaxX = TotalOptSteps - 1;
+            _oneRealizationOptimizer.MaxTurnAngle = maxTurnAngle;
+            _oneRealizationOptimizer.MinInclinationAllowed = minInclination;
 
             //TODO add the correct objective
             _oneRealizationOptimizer.AddObjectiveFucntion(_theObjective.TheObjective, 1.0);
