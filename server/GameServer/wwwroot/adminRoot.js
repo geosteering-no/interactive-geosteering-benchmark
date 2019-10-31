@@ -157,16 +157,13 @@ function drawAllWells() {
 		legendBuffer.rect(0, 0, legendBuffer.width, legendBuffer.height);
 
 		legendBuffer.noStroke();
+
+		var legendLength = colors.length + 1;
 		var textShift = 10;
-		legendBuffer.textSize(textShift * 3);
+		var textHeight = (legendBuffer.height - textShift * 2) / legendLength;
+		legendBuffer.textSize(textHeight);
 		var thicknessMultLine = 6;
 
-		//var best = [];
-		//wellBuffer.textSize(1);
-		//wellBuffer.background(51, 51, 51, 0);
-		//wellBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
-		//wellBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
-		//wellBuffer.strokeWeight(2 / scoreData.height);
 		curResultsAscending = scoreData.userResults.slice(0)
 			.sort(function (a, b) {
 				var aLastInd = Math.min(a.trajectoryWithScore.length, revealIndex + 1) - 1;
@@ -181,7 +178,7 @@ function drawAllWells() {
 				var valueB = b.trajectoryWithScore[bLastInd].score;
 				return valueA - valueB;
 			});
-		var legendLength = colors.length + 1;
+
 		for (var i = 0; i < curResultsAscending.length; ++i) {
 			var fromTop = curResultsAscending.length - 1 - i;
 			var userPoints = curResultsAscending[i].trajectoryWithScore.slice(0)
@@ -205,10 +202,10 @@ function drawAllWells() {
 				legendBuffer.fill(colors[fromTop]);
 				legendBuffer.textAlign(LEFT);
 				legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-					legendBuffer.width, legendBuffer.windowHeight / legendLength);
+					legendBuffer.width*0.75, legendBuffer.height / legendLength);
 				legendBuffer.textAlign(RIGHT);
 				legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-					legendBuffer.width, legendBuffer.windowHeight / legendLength);
+					legendBuffer.width, legendBuffer.height / legendLength);
 				//best[userName] = null;
 				// if (userName in prevBest){
 				// 	prevBest
@@ -248,7 +245,7 @@ function drawAllWells() {
 			legendBuffer.fill(colorBest);
 			legendBuffer.textAlign(LEFT);
 			legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-				legendBuffer.width, legendBuffer.windowHeight / legendLength);
+				legendBuffer.width*0.75, legendBuffer.windowHeight / legendLength);
 			legendBuffer.textAlign(RIGHT);
 			legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / legendLength,
 				legendBuffer.width, legendBuffer.windowHeight / legendLength);
@@ -469,7 +466,7 @@ function drawGeomodelToBuffer(scoredata) {
 
 	var bufferHeight = Math.round(canvasHeigth / 8 * 7);
 	var legendWidth = Math.round(canvasWidth / 3);
-	var legendHeight = Math.round(canvasHeigth / 8);
+	var legendHeight = Math.round(canvasHeigth / 5);
 	if (geoModelBuffer == null) {
 		geoModelBuffer = createGraphics(canvasWidth, bufferHeight);
 		wellBuffer = createGraphics(canvasWidth, bufferHeight);
