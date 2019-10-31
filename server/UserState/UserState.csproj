@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="EnKFLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Debug\EnKFLib.dll</HintPath>
+      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Release\EnKFLib.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MathNet.Numerics.4.7.0\lib\net461\MathNet.Numerics.dll</HintPath>
@@ -43,23 +43,22 @@
     </Reference>
     <Reference Include="ResistivitySimulator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Debug\ResistivitySimulator.dll</HintPath>
+      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Release\ResistivitySimulator.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Xml" />
-    <Reference Include="TrajectoryInterfaces">
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Debug\TrajectoryInterfaces.dll</HintPath>
+    <Reference Include="TrajectoryInterfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Release\TrajectoryInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="TrajectoryOptimization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Debug\TrajectoryOptimization.dll</HintPath>
+      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Release\TrajectoryOptimization.dll</HintPath>
     </Reference>
     <Reference Include="Vectorizable, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Debug\Vectorizable.dll</HintPath>
+      <HintPath>..\..\..\geosteering-sergey\geosteering.net\EnKFDecisionDemo\bin\Release\Vectorizable.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -78,10 +77,6 @@
     <ProjectReference Include="..\ServerDataStructures\ServerDataStructures.csproj">
       <Project>{3543B534-EC3B-4BB5-80E7-CA0208E3A488}</Project>
       <Name>ServerDataStructures</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ServerObjectives\ServerObjectives.csproj">
-      <Project>{debbd503-c2c0-437c-840e-7df682efaf91}</Project>
-      <Name>ServerObjectives</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServerStateInterfaces\ServerStateInterfaces.csproj">
       <Project>{11867f26-51ba-44c3-9fd4-f071145d9299}</Project>
