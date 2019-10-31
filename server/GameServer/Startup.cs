@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ServerDataStructures;
 using ServerStateInterfaces;
+//using TrajectoryInterfaces;
+using UserState;
 
 namespace GameServer
 {
@@ -39,8 +41,9 @@ namespace GameServer
                 options.Cookie.IsEssential = true;
             });
             services.AddSingleton<
-                IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint>>,
-                ServerStateMock
+                IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint, RealizationData>>,
+                FullServerState
+                //ServerStateMock
             >();
 
             services.AddControllers();

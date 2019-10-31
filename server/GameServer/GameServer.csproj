@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ServerStateInterfaces\ServerStateInterfaces.csproj" />
+    <ProjectReference Include="..\UserState\UserState.csproj" />
   </ItemGroup>
 
 
