@@ -37,14 +37,14 @@ function drawScale(scaleBuffer, userdata, textSize, color) {
         //scaleBuffer.noStroke();
         scaleBuffer.rectMode(CENTER);
         var hStep = 50;
-        for (var i = hStep; i < userdata.width; i += hStep) {
-            var coord = i * scaleBuffer.width / userdata.width;
+        for (var i = hStep; i - userdata.xtopleft < userdata.width; i += hStep) {
+            var coord = (i - userdata.xtopleft) * scaleBuffer.width / userdata.width;
             scaleBuffer.rect(coord, 0, barWidth, barLen);
             scaleBuffer.text(i, coord, textOffset);
         }
         var vStep = 5;
-        for (var i = vStep; i < userdata.height; i += vStep) {
-            var coord = i * scaleBuffer.height / userdata.height;
+        for (var i = vStep; i - userdata.ytopleft < userdata.height; i += vStep) {
+            var coord = (i - userdata.ytopleft) * scaleBuffer.height / userdata.height;
             scaleBuffer.rect(0, coord, barLen, barWidth);
             scaleBuffer.text(i, textOffset, coord);
         }
