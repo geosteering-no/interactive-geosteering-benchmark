@@ -230,8 +230,9 @@ namespace UserState
 
             var topOfLayer2 = 0.0 + Offset;
             var bottomOfLayer2 = -5.3 + Offset;
-            //var topOfLayer1 = -13.3 + Offset;
-            var topOfLayer1 = -13 + Offset;
+            //var topOfLayer1 = -13.3 + Offset; //original
+            //var topOfLayer1 = -13 + Offset;
+            var topOfLayer1 = -13.1 + Offset;
             //private const double BottomOfLayer1 = -20.1 + Offset;
 
             //var deviation = 2.5;

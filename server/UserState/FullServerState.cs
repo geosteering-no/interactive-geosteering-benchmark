@@ -57,7 +57,8 @@ namespace UserState
         protected override TrueModelState InitializeNewSyntheticTruth(int seed = 0)
         {
             Console.WriteLine("Initialized synthetic truth with seed: " + seed);
-            _secret = new TrueModelState(seed);
+            Console.WriteLine("\n\n\n Seed: " + seed + "\n\n\n");
+            _secret = new TrueModelState(seed); 
             DumpSectetStateToFile(seed);
             return _secret;
         }
