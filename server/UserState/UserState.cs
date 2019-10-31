@@ -14,7 +14,7 @@ namespace UserState
 {
     [DataContract]
     public class UserState : UserStateBase<TrueModelState>
-        //IUserImplementaion<UserData, WellPoint, TrueModelState, UserResultFinal<WellPoint>, RealizationData>
+    //IUserImplementaion<UserData, WellPoint, TrueModelState, UserResultFinal<WellPoint>, RealizationData>
     {
         [DataMember]
         private EarthModelManipulator _earthManipulator;
@@ -32,7 +32,7 @@ namespace UserState
         private const int NumRealiztions = 120;
         private const int NumPointsInLayer = 80;
         private const double Offset = -15.0;
-        private const double bottomOfLayer1 = -20.1 + Offset;
+        private const double BottomOfLayer1 = -20.1 + Offset;
         private const double MinX = 0;
         private const double MaxX = 350;
         private const double EPS = 1e-5;
@@ -157,25 +157,51 @@ namespace UserState
             newState = ProjectPointToConstraints(newState);
 
 
-            _Update(convertToIContinousState(newState), measuringFunction, 1);
-
+            //_Update(convertToIContinousState(newState), measuringFunction, 1);
+            _Update(convertToIContinousState(newState), measuringFunction);
 
             //_Update(convertToIContinousState(newState), measuringFunction);
 
             return true;
         }
 
-        private void _Update(IContinousState newState, GetMeasurementForPoint measuringFunction, int numPoints = 1)
+        private void _Update(IContinousState newState, GetMeasurementForPoint measuringFunction)
+        {
+            var measurement = measuringFunction(newState);
+            _dataProvider.DataList = new List<IData<IContinousState, ResistivityData2DFull>> { measurement };
+            _enkf.Update();
+            _enkf.AcceptUpdate();
+        }
+
+        private void _UpdateMulti(IContinousState newState, GetMeasurementForPoint measuringFunction, int numPoints)
+        {
+            var oldState = _trajectory[_trajectory.Count - 1];
+            for (var i = 1; i <= numPoints; ++i)
+            {
+                var newX = oldState.X * (numPoints - i) / numPoints + newState.X * i / numPoints;
+                var newY = oldState.Y * (numPoints - i) / numPoints + newState.Y * i / numPoints;
+                var newA = oldState.Alpha * (numPoints - i) / numPoints + newState.Alpha * i / numPoints;
+                var intermediateState = new ContinousState(newX, newY, newA);
+                _Update(intermediateState, measuringFunction);
+                //var measurement = measuringFunction(intermediateState);
+                //measurements.Add(measurement);
+            }
+
+        }
+
+        private void _Update(IContinousState newState, GetMeasurementForPoint measuringFunction, int numPoints)
         {
             if (numPoints == 1)
             {
-                var measurement = measuringFunction(newState);
-                _dataProvider.DataList = new List<IData<IContinousState, ResistivityData2DFull>> { measurement };
+                _Update(newState, measuringFunction);
+                return;
+                //var measurement = measuringFunction(newState);
+                //_dataProvider.DataList = new List<IData<IContinousState, ResistivityData2DFull>> { measurement };
             }
             else
             {
-                var measurements = new List<IData<IContinousState, ResistivityData2DFull>>(numPoints);
                 var oldState = _trajectory[_trajectory.Count - 1];
+                var measurements = new List<IData<IContinousState, ResistivityData2DFull>>(numPoints);
                 for (var i = 0; i < numPoints; ++i)
                 {
                     var newX = oldState.X * i / numPoints + newState.X * (numPoints - i) / numPoints;
@@ -204,7 +230,9 @@ namespace UserState
 
             var topOfLayer2 = 0.0 + Offset;
             var bottomOfLayer2 = -5.3 + Offset;
-            var topOfLayer1 = -13.3 + Offset;
+            //var topOfLayer1 = -13.3 + Offset;
+            var topOfLayer1 = -13 + Offset;
+            //private const double BottomOfLayer1 = -20.1 + Offset;
 
             //var deviation = 2.5;
             var depthOfReservoirDeviation = 0.0;
@@ -216,7 +244,7 @@ namespace UserState
             //TODO make the correct layer sorting
             earthManipulator.GenerateRealizationsTwoLayerFromVariogramWithKrigging(NumPointsInLayer,
                 MinX, MaxX,
-                bottomOfLayer1, topOfLayer1, bottomOfLayer2, topOfLayer2, deviation,
+                BottomOfLayer1, topOfLayer1, bottomOfLayer2, topOfLayer2, deviation,
                 resistivityLayerBottom, resistivityLayerTop, resistivityOutsideLayer, false, depthOfReservoirDeviation,
                 0.7,
                 range);
@@ -302,7 +330,7 @@ namespace UserState
                 data.Ytopleft = 0.0;
                 data.Xtopleft = MinX;
                 data.Width = MaxX - MinX;
-                data.Height = -bottomOfLayer1 + DoiY;
+                data.Height = -BottomOfLayer1 + DoiY;
                 return data;
             }
         }
