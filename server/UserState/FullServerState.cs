@@ -16,6 +16,7 @@ namespace UserState
     {
         private const string BotUserName = "DasBot-90-19-10-30";
 
+        private const double ExtraHeight = 5;
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
         private readonly DssBotGeneric<RealizationData> _bestSolutionFinder = 
             new DssBotGeneric<RealizationData>();
@@ -38,10 +39,10 @@ namespace UserState
 
             _scoreData = new PopulationScoreData<WellPoint, RealizationData>()
             {
-                Height = _dummyUserData.Height,
+                Height = _dummyUserData.Height + ExtraHeight,
                 Width = _dummyUserData.Width,
                 Xtopleft = _dummyUserData.Xtopleft,
-                Ytopleft = _dummyUserData.Ytopleft,
+                Ytopleft = _dummyUserData.Ytopleft - ExtraHeight,
                 xList = _dummyUserData.xList,
                 secretRealization = UserState.convertToRealizationData(_secret.TrueSubsurfaseModel1),
                 TotalDecisionPoints = _dummyUserData.TotalDecisionPoints,
