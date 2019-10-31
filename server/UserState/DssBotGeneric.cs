@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ResistivitySimulator;
 using ServerDataStructures;
-using ServerObjectives;
 using ServerStateInterfaces;
 using TrajectoryOptimization;
 

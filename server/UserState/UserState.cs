@@ -307,14 +307,6 @@ namespace UserState
             }
         }
 
-        public bool Stopped
-        {
-            get
-            {
-                throw new NotFiniteNumberException();
-            }
-        }
-
         public override bool UpdateUser(WellPoint updatePoint, TrueModelState secret)
         {
 
