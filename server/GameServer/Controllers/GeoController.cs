@@ -44,7 +44,7 @@ namespace GameServer.Controllers
             }
             else
             {
-                throw new Exception("You are not the admin");
+                //throw new Exception("You are not the admin");
             }
         }
 
@@ -62,7 +62,7 @@ namespace GameServer.Controllers
             }
             else
             {
-                throw new Exception("You are not the admin");
+                //throw new Exception("You are not the admin");
             }
         }
 
@@ -80,7 +80,7 @@ namespace GameServer.Controllers
             }
             else
             {
-                throw new Exception("You are not the admin");
+                //throw new Exception("You are not the admin");
             }
         }
 
@@ -98,7 +98,8 @@ namespace GameServer.Controllers
             }
             else
             {
-                throw new Exception("You are not the admin");
+                return null;
+                //throw new Exception("You are not the admin");
             }
         }
 
@@ -109,7 +110,9 @@ namespace GameServer.Controllers
         {
             if (userName.Length < 2)
             {
-                throw new Exception("User ID too short");
+                Response.Redirect("/username-taken.html");
+                return;
+                //throw new Exception("User ID too short");
             }
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Requested adding of a user : " + userName);
@@ -122,7 +125,7 @@ namespace GameServer.Controllers
             {
                 if (_stateServer.UserExists(userName))
                 {
-                    Response.Redirect("/login2.html");
+                    Response.Redirect("/username-taken.html");
                 }
                 else
                 {
