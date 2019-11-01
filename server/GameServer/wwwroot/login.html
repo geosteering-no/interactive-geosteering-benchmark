@@ -17,6 +17,8 @@ body *{
     margin:1rem 1rem;
 }
 
+button:hover {background-color:rgb(178, 178, 178);}
+
 .row{
     display:flex;
     align-items: baseline;
@@ -28,12 +30,12 @@ ul {
     margin: 0;
     text-align: center;
     width: 100%;
+    padding:0;
 }
 li{
     display: inline-block;
     padding:1rem;
-    margin:0rem 1rem;
-    
+    margin:0rem 1rem;   
 }
 li picture{
     max-width:100%;
@@ -44,7 +46,8 @@ li img{
     vertical-align: middle;
     max-width:200px;
     max-height:150px;}
-
+li img.default{width:100px;}
+/* #aknowledgement-list li{outline: blue 1px solid;} */
 footer{
     margin-top:3rem;
 }
@@ -91,7 +94,35 @@ footer{
         </div>
     </div>
 
-    
+    <div id="aknowledgement-list" class="container">
+        <div class="">
+                <h1 class="pt-5 mb-0 mt-4">Aknowledgements</h2>
+        </div>
+        <div class="">
+            <ul>
+                <li>
+                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                    <h4>Sergey</h4>
+                </li>
+                <li>
+                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                    <h4>Andrew Holsaeter</h4>
+                </li>
+                <li>
+                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                    <h4>Robert Ewald</h4>
+                </li>
+                <li>
+                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                    <h4>Morten Bendiksen</h4>
+                </li>
+                <li>
+                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                    <h4>Sofija Ivanova</h4>
+                </li>
+            </ul>
+        </div>
+    </div>
 </body>
 <footer>
         <div id="sponsor-list" class="container">
