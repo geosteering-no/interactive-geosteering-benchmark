@@ -45,9 +45,11 @@ namespace ServerStateInterfaces
 
         private Random rnd = new Random();
         //4 is really bad 91 is bad
-        //good seeds in 100: 101, 102, 103!, 105
-        //good seeds in 200: 201, 202, 203, 204, 205, 206, 207, 208
-        private int[] seeds = {0, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 220, 221 };
+        //good seeds in 100: 101, 102?, 103!, 105
+        //good seeds in 200: 201, 202, 203, 204, 205, 206, 207, 208, 209
+        private int[] seeds = {0, 202, 105, 105,
+            212, 212, 213, 214, 215, 216, 217, 218, 219, 220,
+            221, 222, 223, 224, 225,226, 227,228,229,230,231, 232, 233, 234, 235, 236, 237, 238, 240, 241 };
         //private int[] seeds = {0, 91, 91, 10, 100};
         //private int[] seeds = { 0, 1, 91, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8 };
         private int seedInd = 0;
@@ -159,8 +161,8 @@ namespace ServerStateInterfaces
                 var users = _users;
                 InitializeNewSyntheticTruth(seed);
                 _scoreData.secretRealization = GetTruthForEvaluation();
-                var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(), 
-                    GetInitialPoint(), 
+                var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(),
+                    GetInitialPoint(),
                     EvaluatorTruth);
                 _scoreData.BestPossible = bestTrajectoryWithScore;
                 Parallel.ForEach(users.Keys, userKey =>
