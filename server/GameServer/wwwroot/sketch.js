@@ -174,7 +174,7 @@ function updateBars() {
             userEvaluationOld = userEvaluation;
           }
           userEvaluation = json;
-          setSizesAndPositions();
+          //setSizesAndPositions();
           drawBarCharts();
           //redrawEnabledForAninterval();
         });
@@ -381,46 +381,46 @@ function setup() {
 
   setSizesAndPositions();
 
-  var layerH = 15;
-  var r1l1 = [100, 80, 60, 90, 85, 65];
-  var r1l2 = [120, 100, 90, 80, 60, 50];
-  var r2l1 = r1l1.map(function (n) { return n + 20; });
-  var r2l2 = r1l2.map(function (n) { return n + 20; });
-  var addH = function (n) {
-    return n + layerH;
-  };
-  userdataFake = {
-    Xtopleft: 50,
-    Ytopleft: 50,
-    Width: 450,
-    Height: 100,
+  // var layerH = 15;
+  // var r1l1 = [100, 80, 60, 90, 85, 65];
+  // var r1l2 = [120, 100, 90, 80, 60, 50];
+  // var r2l1 = r1l1.map(function (n) { return n + 20; });
+  // var r2l2 = r1l2.map(function (n) { return n + 20; });
+  // var addH = function (n) {
+  //   return n + layerH;
+  // };
+  // userdataFake = {
+  //   Xtopleft: 50,
+  //   Ytopleft: 50,
+  //   Width: 450,
+  //   Height: 100,
 
-    wellPoints: [
-      { X: 50, Y: 50, Angle: PI / 180.0 * 10 },
-      { X: 100, Y: 52, Angle: PI / 180.0 * 11 }
-    ],
-    Xdist: 50,
+  //   wellPoints: [
+  //     { X: 50, Y: 50, Angle: PI / 180.0 * 10 },
+  //     { X: 100, Y: 52, Angle: PI / 180.0 * 11 }
+  //   ],
+  //   Xdist: 50,
 
-    xList: [50, 100, 200, 300, 400, 500],
-    realizations: [
-      {
-        yLists: [
-          r1l1,
-          r1l1.map(addH),
-          r1l2,
-          r1l2.map(addH)
-        ]
-      },
-      {
-        yLists: [
-          r2l1,
-          r2l1.map(addH),
-          r2l2,
-          r2l2.map(addH)
-        ]
-      }
-    ]
-  };
+  //   xList: [50, 100, 200, 300, 400, 500],
+  //   realizations: [
+  //     {
+  //       yLists: [
+  //         r1l1,
+  //         r1l1.map(addH),
+  //         r1l2,
+  //         r1l2.map(addH)
+  //       ]
+  //     },
+  //     {
+  //       yLists: [
+  //         r2l1,
+  //         r2l1.map(addH),
+  //         r2l2,
+  //         r2l2.map(addH)
+  //       ]
+  //     }
+  //   ]
+  // };
 
   //noLoop();
 
@@ -470,6 +470,8 @@ function getUserData() {
           updateBars();
           drawWellToBuffer();
           drawGeomodelToBuffer(userdata);
+          // window.resizeTo(width - 1, height);
+          // window.resizeTo(width + 1, height);
           setSizesAndPositions();
           //redrawEnabledForAninterval();
         });
