@@ -1,4 +1,4 @@
-<!DOCTYPE html><html>
+﻿<!DOCTYPE html><html>
 <head>
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -16,7 +16,7 @@ body {
 .login *{
     margin:1rem 1rem;
 }
-.login{margin-bottom:10vh;}
+.login{margin-bottom:0vh;}
 
 button:hover {background-color:rgb(178, 178, 178);}
 
@@ -52,7 +52,7 @@ li img.default{width:100px;}
 .modal-header{text-align: start;}
 .modal-body{text-align: justify;}
 footer{
-    margin-top:3rem;
+    margin-top:1rem;
 }
 </style>
 <body>
@@ -64,7 +64,7 @@ footer{
             <input type="text" name="userName" placeholder="Name" class="inputChangeVal" data-js-input-type="text" />
             <button class="btn" type="submit" name="confirm" id="newUserBtn">Create Game</button>
         </form>
-        <h3>Logged in already? <a href="/index.html">Continue game!</a></h2>
+        <h3>Logged in already? <a href="/index.html">Continue game!</a></h3>
     </div>
 
     <!-- Modal -->
@@ -102,38 +102,9 @@ footer{
 
 </body>
 <footer>
-        <div id="aknowledgement-list" class="container">
-                <div class="">
-                        <h1 class="pt-5 mb-0 mt-4">Aknowledgements</h2>
-                </div>
-                <div class="">
-                    <ul>
-                        <li>
-                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                            <h4>Sergey</h4>
-                        </li>
-                        <li>
-                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                            <h4>Andrew Holsaeter</h4>
-                        </li>
-                        <li>
-                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                            <h4>Robert Ewald</h4>
-                        </li>
-                        <li>
-                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                            <h4>Morten Bendiksen</h4>
-                        </li>
-                        <li>
-                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                            <h4>Sofija Ivanova</h4>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         <div id="sponsor-list" class="container">
                 <div class="">
-                        <h1 class="pt-5 mb-0 mt-4">Geosteering Sponsors</h2>
+                        <h2 class="pt-5 mb-0 mt-4">Competion Sponsors</h2>
                 </div>
             <div class="">
             <ul>
@@ -141,39 +112,57 @@ footer{
             <li><picture>
                     <img src="./assets/nfr.png" alt="The Research Council of Norway" />   
             </picture></li>
-        
+            <li><picture>
+                <img src="./assets/equinor.png" alt="Equinor" />   
+            </picture></li>
+            
+            <li><picture>
+                <img src="./assets/var-energi-black.svg" alt="Vår Energi" />   
+            </picture></li>
+    
             <li><picture>
                     <img src="./assets/akerbp.png" alt="Aker BP" />   
             </picture></li>
 
             <li><picture>
-                    <img src="./assets/baker.jpg" alt="Baker Hughes" />
+                    <img src="./assets/baker.jpg" alt="Baker Hughes"/>
             </picture></li>
                     
             <li><picture>
-                    <img src="./assets/bcam.png" alt="BCAM" />   
+                    <img src="./assets/norce.png" alt="NORCE" />   
             </picture></li>
-        
-            <li><picture>
-                    <img src="./assets/equinor.png" alt="Equinor" />   
-            </picture></li>
-        
-            <li><picture>
-                    <img src="./assets/var-energi-black.svg" alt="Vår Energi" />   
-            </picture></li>
-        
-            <li><picture>
-                    <img src="./assets/uis.png"alt="University of Stavanger" />   
-                </picture></li>
-                <li><picture>
-                        <img src="./assets/uib.png" alt="University of Bergen" />   
-                </picture></li>
-            
-                <li><picture>
-                        <img src="./assets/ut-bad.png" alt="University of Texas" />   
-                </picture></li>
+
             </ul>
         </div>
+        <div id="aknowledgement-list" class="container">
+                <div class="">
+                        <h2 class="pt-5 mb-0 mt-4">The creative team at NORCE</h2>
+                </div>
+                <div class="">
+                    <ul>
+                        <li>
+                            <picture><img class="default" src="./assets/sergey.jpg" alt="Sergey Alyaev" /></picture>                       
+                            <h4>Sergey Alyaev</h4>
+                        </li>
+                        <li>
+                                <picture><img class="default" src="./assets/morten.jpg" alt="Morten Bendiksen" /></picture>                       
+                                <h4>Morten Bendiksen</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/andrew.jpg" alt="Andrew Holsaeter" /></picture>                       
+                            <h4>Andrew Holsaeter</h4>
+                        </li>
+                        <li>
+                                <picture><img class="default" src="./assets/sofija.jpg" alt="Sofija Ivanova" /></picture>                       
+                                <h4>Sofija Ivanova</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="Robert Ewald" /></picture>                       
+                            <h4>Robert Ewald</h4>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 </footer></html>
 
