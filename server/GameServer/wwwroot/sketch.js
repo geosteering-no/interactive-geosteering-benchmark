@@ -536,8 +536,8 @@ function setSizesAndPositions() {
   var totalButtonHeight = buttonHeight * 5 + marginHeight * 7;
   var totalContentHeight = Math.round(canvasHeigth) - totalButtonHeight;
 
-  wellHeigth = Math.round(totalContentHeight * 0.6);
-  barHeigth = Math.round(totalContentHeight * 0.4);
+  wellHeigth = Math.round(totalContentHeight * 0.65);
+  barHeigth = Math.round(totalContentHeight * 0.35);
 
   //TODO if problems with safari, check here
   if (geoModelBuffer != null && wellBuffer != null) {
