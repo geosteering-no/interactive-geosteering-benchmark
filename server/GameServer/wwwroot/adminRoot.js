@@ -26,6 +26,8 @@ var legendBuffer = null;
 var oldLegendBuffer = null;
 var scaleBuffer = null;
 
+var finalTime = 0;
+
 var curResultsAscending = null;
 var prevBest = [];
 
@@ -34,14 +36,17 @@ function setup() {
 	createCanvas(100, 100);
 	prevButton = createButton("Update");
 	prevButton.mousePressed(buttonPreviousClick);
+	prevButton.style('font-size', '28px');
 
 	nextButton = createButton("Reveal");
 	nextButton.mousePressed(buttonNextClick);
+	nextButton.style('font-size', '28px');
 
 
 	newGameButton = createButton("New game");
 	newGameButton.position(100, 1400);
 	newGameButton.mousePressed(newGameClick);
+	
 
 	stopUsersButton = createButton("Stop all users");
 	stopUsersButton.position(200, 1400);
@@ -62,6 +67,9 @@ function setup() {
 	scoreBoardDiv = createDiv('Scores');
 	scoreBoardDiv.position(0, 1300);
 
+	
+	finalTime = new Date().getTime() + 15 * 60 * 1000;
+	fetchScoreData();
 
 	setSizesAndPositions();
 
@@ -113,6 +121,16 @@ function draw() {
 
 	//for debugging
 	//drawFrame();
+
+	var now = new Date().getTime();
+	var t = finalTime - now;
+	var mins = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+	var secs = Math.floor((t % (1000 * 60)) / 1000);
+	var secsStr = "0"+secs;
+	if (secsStr.length > 2){
+		secsStr = secsStr.substring(secsStr.length - 2);
+	}
+	nextButton.html('Remaining time: ' + mins + ":" + secsStr);
 
 	timerCountdown--;
 	if (timerCountdown <= 0) {
@@ -202,7 +220,7 @@ function drawAllWells() {
 				legendBuffer.fill(colors[fromTop]);
 				legendBuffer.textAlign(LEFT);
 				legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-					legendBuffer.width*0.75, legendBuffer.height / legendLength);
+					legendBuffer.width * 0.75, legendBuffer.height / legendLength);
 				legendBuffer.textAlign(RIGHT);
 				legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / legendLength,
 					legendBuffer.width, legendBuffer.height / legendLength);
@@ -234,7 +252,7 @@ function drawAllWells() {
 			var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 			var score = 0;
 			if (lastInd >= 0) {
-				score =  scoreData.bestPossible.trajectoryWithScore[lastInd].score;
+				score = scoreData.bestPossible.trajectoryWithScore[lastInd].score;
 			}
 			var shortUserName = scoreData.bestPossible.userName;
 			if (shortUserName.length > 30) {
@@ -245,7 +263,7 @@ function drawAllWells() {
 			legendBuffer.fill(colorBest);
 			legendBuffer.textAlign(LEFT);
 			legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-				legendBuffer.width*0.75, legendBuffer.windowHeight / legendLength);
+				legendBuffer.width * 0.75, legendBuffer.windowHeight / legendLength);
 			legendBuffer.textAlign(RIGHT);
 			legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / legendLength,
 				legendBuffer.width, legendBuffer.windowHeight / legendLength);
@@ -444,6 +462,7 @@ function newGameClick() {
 				console.log("restart complete");
 				revealIndex = -1;
 				updateButtonLabels();
+				finalTime = new Date().getTime() + 6 * 60 * 1000;
 				fetchScoreData();
 				//TODO consider making it impossible to add new points
 				//TODO consider sending a message to user
