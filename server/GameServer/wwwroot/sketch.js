@@ -174,6 +174,8 @@ function updateBars() {
             userEvaluationOld = userEvaluation;
           }
           userEvaluation = json;
+          updateBarsButton.elt.textContent = "No need to evaluate";
+
           //setSizesAndPositions();
           drawBarCharts();
           //redrawEnabledForAninterval();
@@ -354,7 +356,7 @@ function setup() {
   nextButton.mousePressed(nextButtonClick);
 
 
-  updateBarsButton = createButton("Reevaluate the objective");
+  updateBarsButton = createButton("Evaluate the well plan");
   updateBarsButton.mousePressed(updateBars);
   updateBarsButton.position(200, 850);
 
@@ -746,6 +748,16 @@ function getFullUserTrajectory() {
   return null;
 }
 
+function invalidateUserEvaluation() {
+  if (userEvaluation != null) {
+    userEvaluationOld = userEvaluation;
+    userEvaluation = null;
+    drawBarCharts();
+    updateBarsButton.elt.textContent = "Evaluate the new well-plan";
+  }
+}
+
+
 function sliderAngleChange() {
   //relative angle here
   if (editNextAngleNo < nextAngles.length) {
@@ -755,15 +767,8 @@ function sliderAngleChange() {
       prev += nextAngles[i - 1];
       nextAngles[i] = allowedAngleRelative(prev, nextAngles[i])
     }
-    if (userEvaluation != null) {
-      userEvaluationOld = userEvaluation;
-      userEvaluation = null;
-      drawBarCharts();
-    }
+    invalidateUserEvaluation();
   }
-
-
-
   //console.log(angleSlider.value());
   redrawEnabledForAninterval();
 
@@ -788,6 +793,7 @@ function previousButtonClick() {
 function stopButtonClick() {
   nextAngles.length = editNextAngleNo;
   detectGameStateAndUpdateButton();
+  invalidateUserEvaluation();
   redrawEnabledForAninterval();
 }
 
@@ -820,6 +826,7 @@ function continueClick() {
       nextAngles.push(0.0);
     }
     detectGameStateAndUpdateButton();
+    invalidateUserEvaluation();
     redrawEnabledForAninterval();
   }
 }
