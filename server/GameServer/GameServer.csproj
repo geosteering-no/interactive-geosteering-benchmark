@@ -19,5 +19,11 @@
     <ProjectReference Include="..\UserState\UserState.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="TrajectoryInterfaces">
+      <HintPath>..\..\..\geosteering-sergey\geosteering.net\TrajectoryInterfaces\bin\Debug\netstandard1.0\TrajectoryInterfaces.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 
 </Project>

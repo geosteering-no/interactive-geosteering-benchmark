@@ -1,14 +1,194 @@
-<!DOCTYPE html><html><head>
+<!DOCTYPE html><html>
+<head>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
-  </head>
-  <body>
-    <h1>Welcome to geobanana</h1>
-    <form method="POST" action="/geo/init">
-        <input type="text" name="userName"/>
-        <input type="submit" value="Login"></input>
-    </form>
-    <h2>Logged in already? <a href="/index.html">Continue game!</a></h2>
+</head>
+<style>
+body {
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+}
+.login *{
+    margin:1rem 1rem;
+}
+.login{margin-bottom:10vh;}
 
-</body></html>
+button:hover {background-color:rgb(178, 178, 178);}
+
+.row{
+    display:flex;
+    align-items: baseline;
+    justify-content: center;
+    max-width:100%;}
+
+ul {
+    list-style:none;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+    padding:0;
+}
+li{
+    display: inline-block;
+    padding:1rem;
+    margin:0rem 1rem;   
+}
+li picture{
+    max-width:100%;
+    vertical-align: middle;
+}
+li img{
+    /*max-width:100%;*/
+    vertical-align: middle;
+    max-width:200px;
+    max-height:150px;}
+li img.default{width:100px;}
+/* #aknowledgement-list li{outline: blue 1px solid;} */
+.modal-header{text-align: start;}
+.modal-body{text-align: justify;}
+footer{
+    margin-top:3rem;
+}
+</style>
+<body>
+    <div class="login">
+
+        <h1>Welcome to geomuffin!</h1>
+        
+        <form method="post" class="row" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
+            <input type="text" name="userName" placeholder="Name" class="inputChangeVal" data-js-input-type="text" />
+            <button class="btn" type="submit" name="confirm" id="newUserBtn">Create Game</button>
+        </form>
+        <h3>Logged in already? <a href="/index.html">Continue game!</a></h2>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Privacy/Cookie/Data Policy</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <strong>Data we store: </strong>
+                        In order to track scores and give out prizes, we must identify and track results through username identity.
+                        In order to accomplish this, we will store the given username and associate it with your submitted decisions in a database.
+                        Additionally, a cookie with just your username will be stored on your machine for cross-session identification.
+                    </p>
+                    <p>
+                        <strong>Data usage: </strong>
+                        NORCE reserves the right to use this anonymised game data for further research purposes.
+                    </p>
+                    <p>
+                        Click 'Edit' to review or change your username before proceeding (This username may be displayed and will be used to claim your prize if you happen to win)
+                        or click 'Agree & Continue' to confirm you have read and accept these terms and begin playing.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Edit Username</button>         
+                    <button class="btn btn-primary" id="continuebtn">Agree & Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<footer>
+        <div id="aknowledgement-list" class="container">
+                <div class="">
+                        <h1 class="pt-5 mb-0 mt-4">Aknowledgements</h2>
+                </div>
+                <div class="">
+                    <ul>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Sergey</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Andrew Holsaeter</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Robert Ewald</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Morten Bendiksen</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Sofija Ivanova</h4>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        <div id="sponsor-list" class="container">
+                <div class="">
+                        <h1 class="pt-5 mb-0 mt-4">Geosteering Sponsors</h2>
+                </div>
+            <div class="">
+            <ul>
+        
+            <li><picture>
+                    <img src="./assets/nfr.png" alt="The Research Council of Norway" />   
+            </picture></li>
+        
+            <li><picture>
+                    <img src="./assets/akerbp.png" alt="Aker BP" />   
+            </picture></li>
+
+            <li><picture>
+                    <img src="./assets/baker.jpg" alt="Baker Hughes" />
+            </picture></li>
+                    
+            <li><picture>
+                    <img src="./assets/bcam.png" alt="BCAM" />   
+            </picture></li>
+        
+            <li><picture>
+                    <img src="./assets/equinor.png" alt="Equinor" />   
+            </picture></li>
+        
+            <li><picture>
+                    <img src="./assets/var-energi-black.svg" alt="Vår Energi" />   
+            </picture></li>
+        
+            <li><picture>
+                    <img src="./assets/uis.png"alt="University of Stavanger" />   
+                </picture></li>
+                <li><picture>
+                        <img src="./assets/uib.png" alt="University of Bergen" />   
+                </picture></li>
+            
+                <li><picture>
+                        <img src="./assets/ut-bad.png" alt="University of Texas" />   
+                </picture></li>
+            </ul>
+        </div>
+        </div>
+</footer></html>
+
+<script>
+    $('document').ready(function(){
+    
+    $('#newUserBtn').on('click',function(e){
+      e.preventDefault();
+      $('#myModal').modal('toggle');
+  
+    });
+  
+    $('#continuebtn').on('click',function(){
+  
+      $('form').submit();
+    });
+  });
+</script>
