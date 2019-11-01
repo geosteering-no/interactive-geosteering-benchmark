@@ -13,9 +13,10 @@ body {
     flex-direction: column;
     text-align: center;
 }
-body *{
+.login *{
     margin:1rem 1rem;
 }
+.login{margin-bottom:10vh;}
 
 button:hover {background-color:rgb(178, 178, 178);}
 
@@ -48,18 +49,23 @@ li img{
     max-height:150px;}
 li img.default{width:100px;}
 /* #aknowledgement-list li{outline: blue 1px solid;} */
+.modal-header{text-align: start;}
+.modal-body{text-align: justify;}
 footer{
     margin-top:3rem;
 }
 </style>
 <body>
-    <h1>Welcome to geomuffin!</h1>
+    <div class="login">
 
-    <form method="post" class="row" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
-        <input type="text" name="userName" placeholder="Name" class="inputChangeVal" data-js-input-type="text" />
-        <button class="btn" type="submit" name="confirm" id="newUserBtn">Create Game</button>
-    </form>
-    <h3>Logged in already? <a href="/index.html">Continue game!</a></h2>
+        <h1>Welcome to geomuffin!</h1>
+        
+        <form method="post" class="row" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
+            <input type="text" name="userName" placeholder="Name" class="inputChangeVal" data-js-input-type="text" />
+            <button class="btn" type="submit" name="confirm" id="newUserBtn">Create Game</button>
+        </form>
+        <h3>Logged in already? <a href="/index.html">Continue game!</a></h2>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
@@ -94,37 +100,37 @@ footer{
         </div>
     </div>
 
-    <div id="aknowledgement-list" class="container">
-        <div class="">
-                <h1 class="pt-5 mb-0 mt-4">Aknowledgements</h2>
-        </div>
-        <div class="">
-            <ul>
-                <li>
-                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                    <h4>Sergey</h4>
-                </li>
-                <li>
-                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                    <h4>Andrew Holsaeter</h4>
-                </li>
-                <li>
-                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                    <h4>Robert Ewald</h4>
-                </li>
-                <li>
-                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                    <h4>Morten Bendiksen</h4>
-                </li>
-                <li>
-                    <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
-                    <h4>Sofija Ivanova</h4>
-                </li>
-            </ul>
-        </div>
-    </div>
 </body>
 <footer>
+        <div id="aknowledgement-list" class="container">
+                <div class="">
+                        <h1 class="pt-5 mb-0 mt-4">Aknowledgements</h2>
+                </div>
+                <div class="">
+                    <ul>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Sergey</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Andrew Holsaeter</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Robert Ewald</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Morten Bendiksen</h4>
+                        </li>
+                        <li>
+                            <picture><img class="default" src="./assets/person-icon.svg" alt="The Research Council of Norway" /></picture>                       
+                            <h4>Sofija Ivanova</h4>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         <div id="sponsor-list" class="container">
                 <div class="">
                         <h1 class="pt-5 mb-0 mt-4">Geosteering Sponsors</h2>
