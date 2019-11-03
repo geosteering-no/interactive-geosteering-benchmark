@@ -185,9 +185,6 @@ function ctouchEnded() {
     return false;
 }
 
-function drawWellToBuffer(buffer, wellPoints) {
-
-}
 
 
 
