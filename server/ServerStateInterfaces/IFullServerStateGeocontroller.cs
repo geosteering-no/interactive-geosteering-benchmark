@@ -14,6 +14,8 @@ namespace ServerStateInterfaces
         void ResetServer();
         TUserData UpdateUser(string userId, TWellPoint load = default);
         TUserData StopUser(string userId);
+
+        TUserData LossyCompress(TUserData data);
         TUserData GetUserData(string userId);
         TUserEvaluationData GetUserEvaluationData(string userId, IList<TWellPoint> trajectory);
         TScoreData GetScoreboard();

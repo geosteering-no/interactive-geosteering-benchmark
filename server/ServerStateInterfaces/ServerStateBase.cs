@@ -194,6 +194,11 @@ namespace ServerStateInterfaces
                 .StopUser(EvaluatorTruth, GetTruthForEvaluation());
         }
 
+        public virtual TUserDataModel LossyCompress(TUserDataModel data)
+        {
+            return data;
+        }
+
         public abstract void AddBotUserDefault();
 
 

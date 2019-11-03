@@ -63,6 +63,27 @@ namespace UserState
             return _secret;
         }
 
+        public override UserData LossyCompress(UserData data)
+        {
+            //the data is a freshly generated object so we can feedle with it in place
+            foreach (var realization in data.realizations)
+            {
+                for (var i = 0; i < realization.YLists.Count; i++)
+                {
+                    var realizationYList = realization.YLists[i];
+                    var newList = new List<double>(realizationYList.Count);
+                    foreach (var d in realizationYList)
+                    {
+                        newList.Add(Math.Round(d, 2));
+                    }
+
+                    realization.YLists[i] = newList;
+                }
+            }
+
+            return data;
+        }
+
         protected override WellPoint GetInitialPoint()
         {
             return _dummyUserData.wellPoints[0];

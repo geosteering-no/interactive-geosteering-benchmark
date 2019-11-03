@@ -164,8 +164,9 @@ namespace GameServer.Controllers
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " is stopping.");
             var res = _stateServer.StopUser(userId);
+            var lossyRes = _stateServer.LossyCompress(res);
             _logger.LogInformation("User {1} stopped in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
-            return res;
+            return lossyRes;
         }
 
 
@@ -177,8 +178,9 @@ namespace GameServer.Controllers
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " is submitting " + pt.X + ", " + pt.Y);
             var res = _stateServer.UpdateUser(userId, pt);
+            var lossyRes = _stateServer.LossyCompress(res);
             _logger.LogInformation("User {1} updated in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
-            return res;
+            return lossyRes;
         }
 
         [Route("evaluate")]
@@ -218,8 +220,9 @@ namespace GameServer.Controllers
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " requested userdata.");
             var res = _stateServer.GetUserData(userId);
+            var lossyRes = _stateServer.LossyCompress(res);
             _logger.LogInformation("User {1}, sending userdata in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
-            return res;
+            return lossyRes;
         }
     }
 
