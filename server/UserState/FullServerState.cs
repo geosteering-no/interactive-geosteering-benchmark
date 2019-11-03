@@ -65,6 +65,7 @@ namespace UserState
 
         public override UserData LossyCompress(UserData data)
         {
+            
             //the data is a freshly generated object so we can feedle with it in place
             foreach (var realization in data.realizations)
             {
@@ -74,12 +75,15 @@ namespace UserState
                     var newList = new List<double>(realizationYList.Count);
                     foreach (var d in realizationYList)
                     {
-                        newList.Add(Math.Round(d, 2));
+                        newList.Add(Math.Round(d, 1));
                     }
 
                     realization.YLists[i] = newList;
                 }
+
+                //realization.XList = null;
             }
+            
 
             return data;
         }
