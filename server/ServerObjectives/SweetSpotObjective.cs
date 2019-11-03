@@ -21,7 +21,7 @@ namespace ServerObjectives
         public bool FollowBottom = true;
         public double SweetSpotOffset = 0.5;
         //NOTE was 1.5
-        public double SweetSpotEnd = 2.0;
+        public double SweetSpotEnd = 1.5;
 
         public delegate Tuple<double, double> ThicknessAndDistenceAboveDelegate<T>(IList<double> xs, T model, double x, double z);
 
