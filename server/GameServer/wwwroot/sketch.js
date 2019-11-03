@@ -28,6 +28,7 @@ var colorSelection = '#fee090';
 var colorFutureOptions = '#4575b4';
 var colorDarkFuture = '#4575b4';
 
+
 //light blue here
 var colorInformation = '#91bfdb';
 
@@ -49,6 +50,7 @@ var colorInformation = '#91bfdb';
 
 var colorBarsBack = colorFutureOptions;
 var colorBarsFront = colorInformation;
+var colorBarsGray = '#3C3C3C';
 
 //var xTravelDistance = 50;
 var maxAngleChange = 3.14159265 / 180.0 * 2;
@@ -175,6 +177,8 @@ function updateBars() {
           }
           userEvaluation = json;
           updateBarsButton.elt.textContent = "No need to evaluate";
+          //TODO change color
+          updateBarsButton.style('background-color', colorBarsGray);
 
           //setSizesAndPositions();
           drawBarCharts();
@@ -358,11 +362,12 @@ function setup() {
 
   updateBarsButton = createButton("Evaluate the well plan");
   updateBarsButton.mousePressed(updateBars);
+  updateBarsButton.style('background-color', colorBarsFront);
   updateBarsButton.position(200, 850);
 
   submitDecisionButton = createButton("Check for new game.");
   submitDecisionButton.mousePressed(getUserData);
-  submitDecisionButton.style('background-color', '#f44336');
+  submitDecisionButton.style('background-color', colorDecision);
   submitDecisionButton.style('color', 'white'); //font color
   submitDecisionButton.position(200, 900);
 
@@ -627,8 +632,10 @@ function setSizesAndPositions() {
   //drawBarCharts();
   goDown(barHeigth);
 
-  updateBarsButton.position(5, yPos);
-  updateBarsButton.size(canvasWidth - 10, buttonHeight);
+  updateBarsButton.position(canvasWidth / 4, yPos);
+  updateBarsButton.size(canvasWidth / 2, buttonHeight);
+  //submitDecisionButton.position(canvasWidth / 4, yPos);
+  //submitDecisionButton.size(canvasWidth / 2, buttonHeight);
 
   centerCanvas();
   //redrawEnabledForAninterval();
@@ -667,7 +674,7 @@ function drawBarCharts() {
     }
     else {
       drawBarChartsToBufferWithShift(userEvaluationOld, barBuffer, 0, max, -offset, false, true);
-      barBuffer.fill(60);
+      barBuffer.fill(colorBarsGray);
       barBuffer.noStroke();
       drawBarChartsToBufferWithShift(userEvaluationOld, barBuffer, 0, max, -offset, true);
     }
@@ -754,6 +761,8 @@ function invalidateUserEvaluation() {
     userEvaluation = null;
     drawBarCharts();
     updateBarsButton.elt.textContent = "Evaluate the new well-plan";
+    updateBarsButton.style('background-color', colorBarsFront);
+    //TODO change the color
   }
 }
 
@@ -1067,7 +1076,8 @@ function drawWellToBuffer() {
     var myAngle = nextAngles[0] + prevAngle(0);
     x = x + xTravelDistance;
     y = y + tan(myAngle) * xTravelDistance;
-    for (var i = 1; i < nextAngles.length; i++) {
+    var remainingLen = userdata.totalDecisionPoints - userdata.wellPoints.length;
+    for (var i = 1; i < remainingLen; i++) {
       myAngle = myAngle + maxAngleChange;
       var x2 = x + xTravelDistance;
       var y2 = y + tan(myAngle) * xTravelDistance;
@@ -1091,7 +1101,7 @@ function drawWellToBuffer() {
     myAngle = nextAngles[0] + prevAngle(0);
     x = x + xTravelDistance;
     y = y + tan(myAngle) * xTravelDistance;
-    for (var i = 1; i < nextAngles.length; i++) {
+    for (var i = 1; i < remainingLen; i++) {
       myAngle = Math.max(0, myAngle - maxAngleChange);
       var x2 = x + xTravelDistance;
       var y2 = y + tan(myAngle) * xTravelDistance;
