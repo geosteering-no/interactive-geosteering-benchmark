@@ -8,7 +8,7 @@ namespace ServerObjectives
     {
         public SweetSpotObjective()
         {
-            NumPoint = 10;
+            NumPoint = 100;
         }
         public SweetSpotObjective(int numPoint)
         {
@@ -20,7 +20,8 @@ namespace ServerObjectives
         public double OtherReservoirMult = 1.0;
         public bool FollowBottom = true;
         public double SweetSpotOffset = 0.5;
-        public double SweetSpotEnd = 1.5;
+        //NOTE was 1.5
+        public double SweetSpotEnd = 2.0;
 
         public delegate Tuple<double, double> ThicknessAndDistenceAboveDelegate<T>(IList<double> xs, T model, double x, double z);
 
