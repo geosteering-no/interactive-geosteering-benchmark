@@ -85,6 +85,14 @@ function setup() {
 
 function draw() {
 	//clear();
+	var now = new Date().getTime();
+	var t = finalTime - now;
+	var mins = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+	var secs = Math.floor((t % (1000 * 60)) / 1000);
+	var secsStr = "0" + secs;
+	if (secsStr.length > 2) {
+		secsStr = secsStr.substring(secsStr.length - 2);
+	}
 	noStroke();
 	if (revealIndex >= 0) {
 		clear();
@@ -117,6 +125,7 @@ function draw() {
 		rect(0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		drawAllProgress();
 		image(progressBuffer, 0, 0, progressBuffer.width, progressBuffer.height);
+		nextButton.html('Remaining time: ' + mins + ":" + secsStr);
 	}
 
 	//drawWellToBuffer();
@@ -126,15 +135,9 @@ function draw() {
 	//for debugging
 	//drawFrame();
 
-	var now = new Date().getTime();
-	var t = finalTime - now;
-	var mins = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
-	var secs = Math.floor((t % (1000 * 60)) / 1000);
-	var secsStr = "0" + secs;
-	if (secsStr.length > 2) {
-		secsStr = secsStr.substring(secsStr.length - 2);
-	}
-	nextButton.html('Remaining time: ' + mins + ":" + secsStr);
+
+
+
 
 	timerCountdown--;
 	if (timerCountdown <= 0) {
