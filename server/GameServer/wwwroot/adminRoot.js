@@ -18,6 +18,7 @@ var stopUsersButton = null;
 var resetUserScoresButton = null;
 var addBotButton = null;
 var scoreBoardDiv = null;
+var showBotCheckBox = null;
 
 var progressBuffer = null;
 var wellBuffer = null;
@@ -59,6 +60,9 @@ function setup() {
 	addBotButton = createButton("Add bot");
 	addBotButton.position(500, 1400);
 	addBotButton.mousePressed(addBotClick);
+
+	showBotCheckBox = createCheckbox('Show bot', false);
+	showBotCheckBox.position(700, 1400);
 
 	updateTotalScoreButton = createButton("Update total scores");
 	updateTotalScoreButton.position(0, 1450);
@@ -260,6 +264,40 @@ function drawAllWells() {
 		}
 
 		//best trajectory
+		if (showBotCheckBox.checked() && scoreData.botResult != undefined && scoreData.botResult != null){
+			wellBuffer.stroke(colorBest);
+			wellBuffer.fill(colorBest);
+			wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
+			var userPoints = scoreData.botResult.trajectoryWithScore.slice(0)
+				.map(function (withScore) {
+					return withScore.wellPoint;
+				});
+			var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
+			var score = 0;
+			if (lastInd >= 0) {
+				score = scoreData.botResult.trajectoryWithScore[lastInd].score;
+			}
+			var shortUserName = scoreData.botResult.userName;
+			if (shortUserName.length > 30) {
+				shortUserName = shortUserName.substr(0, 30);
+			}
+
+			var fromTop = 3;
+			legendBuffer.fill(colorBest);
+			legendBuffer.textAlign(LEFT);
+			legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+				legendBuffer.width * 0.75, legendBuffer.windowHeight / legendLength);
+			legendBuffer.textAlign(RIGHT);
+			legendBuffer.text(Math.round(score), 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+				legendBuffer.width, legendBuffer.windowHeight / legendLength);
+			//best[userName] = null;
+			// if (userName in prevBest){
+			// 	prevBest
+			// }
+
+			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
+		}
+		else 
 		if (scoreData.bestPossible != null) {
 			wellBuffer.stroke(colorBest);
 			wellBuffer.fill(colorBest);
