@@ -14,7 +14,7 @@ namespace UserState
     public sealed class FullServerState : 
         ServerStateBase<WellPoint, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>
     {
-        private const string BotUserName = "DasBot 1030";
+
 
         private const double ExtraHeight = 5;
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();

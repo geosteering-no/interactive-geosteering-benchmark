@@ -19,6 +19,7 @@ namespace ServerDataStructures
         public IList<UserResultFinal<TWellPoint>> UserResults { get; set; }
 
         public UserResultFinal<TWellPoint> BestPossible { get; set; }
+        public UserResultFinal<TWellPoint> BotResult { get; set; }
 
     }
 }

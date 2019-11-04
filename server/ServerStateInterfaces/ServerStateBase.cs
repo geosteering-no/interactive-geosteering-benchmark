@@ -26,6 +26,7 @@ namespace ServerStateInterfaces
         //protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
 
         private object _restartLock = new object();
+        protected const string BotUserName = "DasBot 1030";
 
 
         protected TSecretState _secret = default;
@@ -165,11 +166,23 @@ namespace ServerStateInterfaces
                     GetInitialPoint(),
                     EvaluatorTruth);
                 _scoreData.BestPossible = bestTrajectoryWithScore;
-                Parallel.ForEach(users.Keys, userKey =>
+
+                var bestValueGame = 1.0;
+                if (_scoreData.BestPossible?.TrajectoryWithScore != null)
+                {
+                    var traj = _scoreData.BestPossible.TrajectoryWithScore;
+                    if (traj.Count > 0)
                     {
-                        users.GetOrAdd(userKey, GetNewDefaultUserPair)
-                            .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation());
-                    });
+                        bestValueGame = Math.Max(bestValueGame, traj[traj.Count - 1].Score);
+                    }
+                }
+
+                Parallel.ForEach(users.Keys, userKey =>
+                        {
+                            users.GetOrAdd(userKey, GetNewDefaultUserPair)
+                                .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation(),
+                                    bestValueGame);
+                        });
 
             }
 
@@ -227,6 +240,10 @@ namespace ServerStateInterfaces
                     .Select(userValue => userValue.Score)
                     .ToList();
                 _scoreData.UserResults = results;
+                if (UserExists(BotUserName))
+                {
+                    _scoreData.BotResult = _users[BotUserName].Score;
+                }
             }
             DumpScoreBoardToFile(_scoreData);
             return _scoreData;

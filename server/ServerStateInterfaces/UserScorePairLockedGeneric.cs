@@ -57,6 +57,8 @@ namespace ServerStateInterfaces
                     copyOfResult.Stopped = _score.Stopped;
                     copyOfResult.UserName = _score.UserName;
                     copyOfResult.AccumulatedScoreFromPreviousGames = _score.AccumulatedScoreFromPreviousGames;
+                    copyOfResult.AccumulatedScorePercentFromPreviousGames =
+                        _score.AccumulatedScorePercentFromPreviousGames;
                 }
                 return copyOfResult;
             }
@@ -134,7 +136,7 @@ namespace ServerStateInterfaces
         /// <param name="newTrueRealization"></param>
         public void MoveToNewGame(
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
-            TRealizationData newTrueRealization)
+            TRealizationData newTrueRealization, double oldBest)
         {
             var newUser = GetUserDefault(_UserIdPrivate, _EvaluatorUser);
             var newTrajectory = GetUserTrajectoryWithScore(
@@ -146,6 +148,7 @@ namespace ServerStateInterfaces
             {
                 var trajLen = _score.TrajectoryWithScore.Count;
                 _score.AccumulatedScoreFromPreviousGames += _score.TrajectoryWithScore[trajLen - 1].Score;
+                _score.AccumulatedScorePercentFromPreviousGames += _score.TrajectoryWithScore[trajLen - 1].Score / oldBest;
                 _user = newUser;
                 _score.TrajectoryWithScore = newTrajectory;
                 _score.Stopped = false;
@@ -210,6 +213,7 @@ namespace ServerStateInterfaces
             {
                 UserName = userName,
                 AccumulatedScoreFromPreviousGames = 0,
+                AccumulatedScorePercentFromPreviousGames = 0,
                 Stopped = false,
             };
             return result;

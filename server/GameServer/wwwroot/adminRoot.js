@@ -46,7 +46,7 @@ function setup() {
 	newGameButton = createButton("New game");
 	newGameButton.position(100, 1400);
 	newGameButton.mousePressed(newGameClick);
-	
+
 
 	stopUsersButton = createButton("Stop all users");
 	stopUsersButton.position(200, 1400);
@@ -61,13 +61,13 @@ function setup() {
 	addBotButton.mousePressed(addBotClick);
 
 	updateTotalScoreButton = createButton("Update total scores");
-	updateTotalScoreButton.position(0, 1250);
+	updateTotalScoreButton.position(0, 1450);
 	updateTotalScoreButton.mousePressed(updateScores);
 
 	scoreBoardDiv = createDiv('Scores');
-	scoreBoardDiv.position(0, 1300);
+	scoreBoardDiv.position(0, 1550);
 
-	
+
 	finalTime = new Date().getTime() + 15 * 60 * 1000;
 	fetchScoreData();
 
@@ -126,8 +126,8 @@ function draw() {
 	var t = finalTime - now;
 	var mins = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
 	var secs = Math.floor((t % (1000 * 60)) / 1000);
-	var secsStr = "0"+secs;
-	if (secsStr.length > 2){
+	var secsStr = "0" + secs;
+	if (secsStr.length > 2) {
 		secsStr = secsStr.substring(secsStr.length - 2);
 	}
 	nextButton.html('Remaining time: ' + mins + ":" + secsStr);
@@ -148,15 +148,34 @@ function updateScores() {
 			.sort(function (a, b) {
 				var valueA = a.accumulatedScoreFromPreviousGames;
 				var valueB = b.accumulatedScoreFromPreviousGames;
+				//var valueA = a.accumulatedScorePercentFromPreviousGames;
+				//var valueB = b.accumulatedScorePercentFromPreviousGames;
 				return valueB - valueA;
 			});
-		var s = "Scores<br>";
+		var topPercents = scoreData.userResults.slice(0)
+			.sort(function (a, b) {
+				//var valueA = a.accumulatedScoreFromPreviousGames;
+				//var valueB = b.accumulatedScoreFromPreviousGames;
+				var valueA = a.accumulatedScorePercentFromPreviousGames;
+				var valueB = b.accumulatedScorePercentFromPreviousGames;
+				return valueB - valueA;
+			});
+
+		var s = "Total top <br>";
 		for (var i = 0; i < Math.min(5, topScores.length); ++i) {
 			var shortUserName = topScores[i].userName;
 			if (shortUserName.length > 30) {
 				shortUserName = shortUserName.substr(0, 30);
 			}
-			s += topScores[i].userName.substring(0, 25); + " : " + Math.round(topScores[i].accumulatedScoreFromPreviousGames) + "<br>";
+			s += shortUserName + " : " + Math.round(topScores[i].accumulatedScoreFromPreviousGames) + "<br>";
+		}
+		s += "Percent top <br>";
+		for (var i = 0; i < Math.min(5, topPercents.length); ++i) {
+			var shortUserName = topPercents[i].userName;
+			if (shortUserName.length > 30) {
+				shortUserName = shortUserName.substr(0, 30);
+			}
+			s += shortUserName + " : " + Math.round(topPercents[i].accumulatedScorePercentFromPreviousGames * 100) + "<br>";
 		}
 		scoreBoardDiv.html(s);
 	}
@@ -213,8 +232,8 @@ function drawAllWells() {
 					score = curResultsAscending[i].trajectoryWithScore[lastInd].score;
 				}
 				var shortUserName = curResultsAscending[i].userName;
-				if (shortUserName.length > 30) {
-					shortUserName = shortUserName.substr(0, 30);
+				if (shortUserName.length > 18) {
+					shortUserName = shortUserName.substr(0, 18);
 				}
 
 				legendBuffer.fill(colors[fromTop]);
