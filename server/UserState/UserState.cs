@@ -158,7 +158,7 @@ namespace UserState
 
 
             //_Update(convertToIContinousState(newState), measuringFunction, 1);
-            _UpdateMulti(convertToIContinousState(newState), measuringFunction, 4);
+            _UpdateMulti(convertToIContinousState(newState), measuringFunction, 3);
 
             //_Update(convertToIContinousState(newState), measuringFunction);
 
