@@ -32,12 +32,13 @@ namespace ServerStateInterfaces
         {
             get
             {
+                TUserDataModel newUserData;
                 lock (this)
                 {
-                    var newUserData = _user.UserData;
-                    DumpUserStateToFile(_UserIdPrivate, newUserData);
-                    return newUserData;
+                    newUserData = _user.UserData;
                 }
+                DumpUserStateToFile(_UserIdPrivate, newUserData);
+                return newUserData;
             }
         }
 
@@ -78,6 +79,8 @@ namespace ServerStateInterfaces
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             TRealizationData trueRealization)
         {
+            TUserDataModel newUserData = default;
+
             lock (this)
             {
                 if (_Stopped)
@@ -86,17 +89,20 @@ namespace ServerStateInterfaces
                 }
 
                 var ok = _user.UpdateUser(load, secret);
+
                 if (ok)
                 {
                     var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealization);
                     _score.TrajectoryWithScore = newTrajWithScore;
-                    var newUserData = _user.UserData;
+                    newUserData = _user.UserData;
                     //var userResult = _userResults.
-                    DumpUserStateToFile(_UserIdPrivate, newUserData, "Update");
-                    return newUserData;
+
                 }
+
             }
-            throw new Exception("The update point was not accepted");
+            DumpUserStateToFile(_UserIdPrivate, newUserData, "Update");
+            return newUserData;
+
         }
 
         /// <summary>
@@ -110,6 +116,7 @@ namespace ServerStateInterfaces
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             TRealizationData trueRealization)
         {
+            TUserDataModel newUserData;
             lock (this)
             {
                 if (_Stopped)
@@ -122,10 +129,10 @@ namespace ServerStateInterfaces
 
                 var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealization);
                 _score.TrajectoryWithScore = newTrajWithScore;
-                var newUserData = _user.UserData;
-                DumpUserStateToFile(_UserIdPrivate, newUserData, "Stop");
-                return newUserData;
+                newUserData = _user.UserData;
             }
+            DumpUserStateToFile(_UserIdPrivate, newUserData, "Stop");
+            return newUserData;
         }
 
         /// <summary>
@@ -196,6 +203,7 @@ namespace ServerStateInterfaces
             var jsonStr = JsonConvert.SerializeObject(data);
             System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks + "_" + suffix, jsonStr);
         }
+
         private static TUserModel GetUserDefault(string userName,
             ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction evaluatorUser)
         {

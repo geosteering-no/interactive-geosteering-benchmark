@@ -49,6 +49,7 @@ namespace ServerStateInterfaces
         //good seeds in 100: 101, 102?, 103!, 105
         //good seeds in 200: 201, 202, 203, 204, 205, 206, 207, 208, 209
         private int[] seeds = {0, 202, 105, 105,
+            101, 103, 201, 203, 204, 205, 206, 207, 208, 209,
             212, 212, 213, 214, 215, 216, 217, 218, 219, 220,
             221, 222, 223, 224, 225,226, 227,228,229,230,231, 232, 233, 234, 235, 236, 237, 238, 240, 241 };
         //private int[] seeds = {0, 91, 91, 10, 100};
@@ -133,12 +134,14 @@ namespace ServerStateInterfaces
 
         public void StopAllUsers()
         {
-            var users = _users;
-            Parallel.ForEach(users.Keys, userKey =>
+            //_users;
+            var userArray = _users.ToArray();
+            foreach (var user in userArray)
             {
-                users.GetOrAdd(userKey, GetNewDefaultUserPair)
+                var userKey = user.Key;
+                _users.GetOrAdd(userKey, GetNewDefaultUserPair)
                     .StopUser(EvaluatorTruth, GetTruthForEvaluation());
-            });
+            };
         }
 
         protected abstract TWellPoint GetInitialPoint();
@@ -159,7 +162,7 @@ namespace ServerStateInterfaces
                     seed = NextSeed();
                 }
 
-                var users = _users;
+                //var users = _users;
                 InitializeNewSyntheticTruth(seed);
                 _scoreData.secretRealization = GetTruthForEvaluation();
                 var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(),
@@ -177,12 +180,14 @@ namespace ServerStateInterfaces
                     }
                 }
 
-                Parallel.ForEach(users.Keys, userKey =>
-                        {
-                            users.GetOrAdd(userKey, GetNewDefaultUserPair)
-                                .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation(),
-                                    bestValueGame);
-                        });
+                var userArray = _users.ToArray();
+                foreach (var user in userArray)
+                {
+                    var userKey = user.Key;
+                    _users.GetOrAdd(userKey, GetNewDefaultUserPair)
+                        .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation(),
+                            bestValueGame);
+                }
 
             }
 
@@ -236,9 +241,17 @@ namespace ServerStateInterfaces
         {
             if (_users != null)
             {
-                var results = _users.Values.AsParallel()
-                    .Select(userValue => userValue.Score)
-                    .ToList();
+                //var results = _users.Values.AsParallel()
+                //    .Select(userValue => userValue.Score)
+                //    .ToList();
+                //var userList = _users.Values.ToList();
+                var userArray = _users.ToArray();
+                var results = new List<UserResultFinal<TWellPoint>>(userArray.Length);
+                foreach (var user in userArray)
+                {
+                    var userPair = user.Value;
+                    results.Add(userPair.Score);
+                }
                 _scoreData.UserResults = results;
                 if (UserExists(BotUserName))
                 {
