@@ -14,6 +14,7 @@ namespace ServerStateInterfaces
             TUserEvaluation, TRealizationData>, new()
     {
 
+        private object _thisUserLockObject = new Object();
         public UserScorePairLockedGeneric(string userName,
             ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction
                 EvaluatorUser,
@@ -33,7 +34,7 @@ namespace ServerStateInterfaces
             get
             {
                 TUserDataModel newUserData;
-                lock (this)
+                lock (_thisUserLockObject)
                 {
                     newUserData = _user.UserData;
                 }
@@ -52,7 +53,7 @@ namespace ServerStateInterfaces
             get
             {
                 var copyOfResult = new UserResultFinal<TWellPoint>();
-                lock (this)
+                lock (_thisUserLockObject)
                 {
                     copyOfResult.TrajectoryWithScore = _score.TrajectoryWithScore;
                     copyOfResult.Stopped = _score.Stopped;
@@ -81,7 +82,7 @@ namespace ServerStateInterfaces
         {
             TUserDataModel newUserData = default;
 
-            lock (this)
+            lock (_thisUserLockObject)
             {
                 if (_Stopped)
                 {
@@ -117,7 +118,7 @@ namespace ServerStateInterfaces
             TRealizationData trueRealization)
         {
             TUserDataModel newUserData;
-            lock (this)
+            lock (_thisUserLockObject)
             {
                 if (_Stopped)
                 {
@@ -151,7 +152,7 @@ namespace ServerStateInterfaces
                 evaluatorTruth,
                 newTrueRealization);
 
-            lock (this)
+            lock (_thisUserLockObject)
             {
                 var trajLen = _score.TrajectoryWithScore.Count;
                 _score.AccumulatedScoreFromPreviousGames += _score.TrajectoryWithScore[trajLen - 1].Score;
@@ -168,7 +169,7 @@ namespace ServerStateInterfaces
         /// </summary>
         public TUserEvaluation GetEvalaution(IList<TWellPoint> trajectory)
         {
-            lock (this)
+            lock (_thisUserLockObject)
             {
                 var evaluation = _user.GetEvaluation(trajectory);
                 return evaluation;
