@@ -23,6 +23,6 @@ namespace ServerStateInterfaces
         void AddBotUserDefault();
 
         bool UserExists(string str);
-
+        TScoreData GetScoreboardFromFile(string fileName);
     }
 }

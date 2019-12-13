@@ -104,6 +104,26 @@ namespace GameServer.Controllers
         }
 
 
+        [Route("admin/load/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
+        [HttpPost]
+        public PopulationScoreData<WellPoint, RealizationData> LoadScoresFromFile([FromBody] string fileName)
+        {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");
+            var userId = GetUserId();
+            if (userId == ADMIN_SECRET_USER_NAME)
+            {
+                var fName = fileName;
+                var res = _stateServer.GetScoreboardFromFile(fName);
+                return res;
+            }
+            else
+            {
+                return null;
+                //throw new Exception("You are not the admin");
+            }
+        }
+
         [Route("init")]
         [HttpPost]
         public void InitNewUser([FromForm] string userName)

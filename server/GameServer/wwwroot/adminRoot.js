@@ -20,6 +20,9 @@ var addBotButton = null;
 var scoreBoardDiv = null;
 var showBotCheckBox = null;
 
+var loadScoreButton = null;
+var scoreFileName = null;
+
 var progressBuffer = null;
 var wellBuffer = null;
 var geoModelBuffer = null;
@@ -43,15 +46,21 @@ function setup() {
 	nextButton.mousePressed(buttonNextClick);
 	nextButton.style('font-size', '28px');
 
+	loadScoreButton = createButton("Load scores");
+	loadScoreButton.position(100, 1400);
+	loadScoreButton.mousePressed(loadOldScoresClick);
 
-	newGameButton = createButton("New game");
-	newGameButton.position(100, 1400);
-	newGameButton.mousePressed(newGameClick);
+	scoreFileName = createInput('game name number');
+	scoreFileName.position(200, 1400);
 
 
-	stopUsersButton = createButton("Stop all users");
-	stopUsersButton.position(200, 1400);
-	stopUsersButton.mousePressed(stopUsersClick);
+	// newGameButton = createButton("New game");
+	// newGameButton.position(100, 1400);
+	// newGameButton.mousePressed(newGameClick);
+
+	// stopUsersButton = createButton("Stop all users");
+	// stopUsersButton.position(200, 1400);
+	// stopUsersButton.mousePressed(stopUsersClick);
 
 	resetUserScoresButton = createButton("Reset user scores and new game");
 	resetUserScoresButton.position(300, 1400);
@@ -431,6 +440,34 @@ function updateAll() {
 
 function getPopulationData() {
 
+}
+
+function loadOldScoresClick() {
+	var bodyString = JSON.stringify(scoreFileName.value());
+	fetch("/geo/admin/load/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", 
+		{ 
+			credentials: 'include',
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json; charset=UTF-8'
+				// 'Content-Type': 'application/x-www-form-urlencoded',
+			  },
+			  body: bodyString
+		})
+		.then(function (res) {
+			if (!res.ok) {
+				alert("getting score failed");
+				throw Error("loading score failed");
+			}
+			res.json()
+				.then(function (json) {
+					console.log("got score:" + JSON.stringify(json));
+					scoreData = json;
+					revealIndex = 0;
+					drawGeomodelToBuffer(scoreData);
+					//drawAllWells();
+				});
+		});
 }
 
 function fetchScoreData() {

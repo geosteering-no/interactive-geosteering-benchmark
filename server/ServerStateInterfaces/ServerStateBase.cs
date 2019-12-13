@@ -104,6 +104,21 @@ namespace ServerStateInterfaces
             System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
         }
 
+        public PopulationScoreData<TWellPoint, TRealizationData> GetScoreboardFromFile(string fileName)
+        {
+            var dirId = "scoreLog/";
+            var fullName = dirId + fileName;
+            if (!File.Exists(fullName))
+            {
+                return null;
+            }
+
+            var fileString = File.ReadAllText(fullName);
+            var scoreBoard = JsonConvert.DeserializeObject<PopulationScoreData<TWellPoint, TRealizationData>>
+                (fileString);
+            return scoreBoard;
+        }
+
         public void DumpSectetStateToFile(int data)
         {
             var dirId = "serverstatelog/secret";
