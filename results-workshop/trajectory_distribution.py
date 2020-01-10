@@ -42,23 +42,30 @@ for u in results:
     plt.title(name)
 
     # computing correlations
+    ys0 = list(map(lambda x: x["wellPoint"]["Y"], trajs[0]))
     ys1 = list(map(lambda x: x["wellPoint"]["Y"], trajs[1]))
     ys2 = list(map(lambda x: x["wellPoint"]["Y"], trajs[2]))
-    # while len(ys1) < len(ys2):
-    #     ys1.append(0.0)
-    # while len(ys1) > len(ys2):
-    #     ys2.append(0.0)
+    while len(ys1) < len(ys2):
+        ys1.append(0.0)
+    while len(ys1) > len(ys2):
+        ys2.append(0.0)
     min_len = min(len(ys1), len(ys2))
+
+    while len(ys0) < len(ys2):
+        ys0.append(0.0)
+    y_vec0 = scipy.asarray(ys0[0:min_len])
     y_vec1 = scipy.asarray(ys1[0:min_len])
     y_vec2 = scipy.asarray(ys2[0:min_len])
 
     norm12 = np.linalg.norm(y_vec1-y_vec2, 1)/min_len
+    norm01 = np.linalg.norm(y_vec0-y_vec1, 1)/min_len
 
     #corr12 = np.corrcoef(ys1, ys2)[0, 1]
 
     correlations.append(norm12)
-    print("{:2}. {:22}: score: {:6.0f}  {:5.1f}% norm: {:6.1f}"
-          .format(i, u.name, u.total_score, u.total_percent_divided(), norm12))
+    print("{:2}. {:22}: score: {:6.0f}  {:5.1f}% distance norm between trajectories; "
+          "different: {:6.1f} same: {:6.1f}"
+          .format(i, u.name, u.total_score, u.total_percent_divided(), norm01, norm12))
 
     # plt.show()
     i += 1
