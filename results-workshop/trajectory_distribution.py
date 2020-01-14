@@ -26,6 +26,7 @@ def custom_func(x):
 
 def print_results(results, i = 0):
 
+    plt.figure(i)
     correlations = []
 
     for u in results:
@@ -79,14 +80,13 @@ def print_results(results, i = 0):
         u.mean_diff = mean_diff
 
 
-        # plt.show()
+        #plt.show()
         i += 1
 
 results = calc.get_user_scores(filter_users_func=custom_func)
 results = sorted(results, key=lambda x: x.name.lower(), reverse=False)
 print("Total qualified ", len(results))
 print_results(results)
-
 
 def simple_consistent_test(x):
     return x.all_diffs[2] <= 0.5
@@ -100,11 +100,20 @@ def comparatively_consistent_test(x):
 def sort_scores(results):
     return sorted(results, key=lambda x: x.total_percent_divided(), reverse=True)
 
+def make_plot(results, start_index, label=''):
+    plt.figure(100)
+    xs = np.array(range(start_index,start_index+len(results)))
+    ys = np.array(list(map(lambda x: x.total_percent_divided(), results)))
+    plt.bar(xs, ys, label=label)
 
+
+plt.figure(100)
+plt.bar([0.5], [100], align='edge', color='gray', label='Correct layer guessed randomly',width=len(results)/8)
 
 consistent_users = sort_scores(list(filter(simple_consistent_test, results)))
 print("consistent_users")
 print_results(consistent_users, 1)
+make_plot(consistent_users, 1, label="Consistent users")
 
 
 comparatively_consistent_users = sort_scores(list(filter(comparatively_consistent_test,
@@ -112,6 +121,9 @@ comparatively_consistent_users = sort_scores(list(filter(comparatively_consisten
 
 print("comparatively_consistent_users")
 print_results(comparatively_consistent_users, len(consistent_users)+1)
+make_plot(comparatively_consistent_users, len(consistent_users)+1,
+          label="Relatively consistent users")
+
 
 non_consistent_users = sort_scores(list(filter(lambda x:
                                    (not comparatively_consistent_test(x))
@@ -121,6 +133,15 @@ non_consistent_users = sort_scores(list(filter(lambda x:
 
 print("non_consistent_users")
 print_results(non_consistent_users, len(consistent_users)+len(comparatively_consistent_users)+1)
+make_plot(non_consistent_users, len(consistent_users)+len(comparatively_consistent_users)+1,
+          label="Other users")
+
+# hard-coded
+ys = np.array(list(map(lambda x: x.total_percent_divided(), consistent_users)))
+plt.plot([0, len(results)], [ys[0], ys[0]])
+plt.legend()
+
+plt.show()
 
 
 # compare  consistency with results
