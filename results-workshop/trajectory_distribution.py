@@ -88,20 +88,40 @@ print("Total qualified ", len(results))
 print_results(results)
 
 
-consistent_users = list(filter(lambda x: x.all_diffs[2] <= 0.5, results))
+def simple_consistent_test(x):
+    return x.all_diffs[2] <= 0.5
 
+def comparatively_consistent_test(x):
+    return (not simple_consistent_test(x)) \
+        and x.all_diffs[2] <= x.all_diffs[0]-x.std_diff \
+        and x.all_diffs[2] <= x.all_diffs[1]-x.std_diff
+
+
+def sort_scores(results):
+    return sorted(results, key=lambda x: x.total_percent_divided(), reverse=True)
+
+
+
+consistent_users = sort_scores(list(filter(simple_consistent_test, results)))
 print("consistent_users")
 print_results(consistent_users, 1)
 
 
-comparatively_consistent_users = list(filter(lambda x: x.all_diffs[2] > 0.5
-                                    and x.all_diffs[2] <= x.all_diffs[0]-x.std_diff
-                                    and x.all_diffs[2] <= x.all_diffs[1]-x.std_diff,
-                                        results))
-
+comparatively_consistent_users = sort_scores(list(filter(comparatively_consistent_test,
+                                        results)))
 
 print("comparatively_consistent_users")
 print_results(comparatively_consistent_users, len(consistent_users)+1)
+
+non_consistent_users = sort_scores(list(filter(lambda x:
+                                   (not comparatively_consistent_test(x))
+                                   and
+                                   (not simple_consistent_test(x)),
+                                   results)))
+
+print("non_consistent_users")
+print_results(non_consistent_users, len(consistent_users)+len(comparatively_consistent_users)+1)
+
 
 # compare  consistency with results
 
