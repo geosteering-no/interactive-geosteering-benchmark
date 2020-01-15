@@ -52,6 +52,7 @@ def print_results(results, i = 0, do_plot=False):
             plt.axis([0, 350, -40, 0])
             plt.legend()
             plt.title(name)
+            plt.savefig('user{}.pdf'.format(i))
 
         # computing correlations
         ys0 = list(map(lambda x: x["wellPoint"]["Y"], trajs[0]))
@@ -150,7 +151,7 @@ my_ax.yaxis.set_minor_locator(MultipleLocator(2))
 
 dss_users = sort_scores(list(filter(dss_test, results)))
 print("consistent_users")
-print_results(dss_users, i+1)
+print_results(dss_users, i+1, do_plot=True)
 make_plot(dss_users, 1, label="DSS bot user", plot_number=plot_number)
 
 i += len(dss_users)
@@ -163,7 +164,7 @@ plt.bar([0.5 + len(dss_users)], [100], align='edge', color='gray', alpha=0.3,
 
 consistent_users = sort_scores(list(filter(simple_consistent_test, results)))
 print("consistent_users")
-print_results(consistent_users, i+1)
+print_results(consistent_users, i+1, do_plot=True)
 make_plot(consistent_users, i+1, label="Consistent users", plot_number=plot_number)
 
 i += len(consistent_users)
@@ -187,7 +188,7 @@ non_consistent_users = sort_scores(list(filter(lambda x:
                                    results)))
 
 print("non_consistent_users")
-print_results(non_consistent_users, i+1)
+print_results(non_consistent_users, i+1, do_plot=True)
 make_plot(non_consistent_users, i+1,
           label="Other users", plot_number=plot_number)
 
@@ -197,6 +198,8 @@ plt.plot([0, len(results)], [ys[0], ys[0]])
 
 
 plt.legend()
+plt.savefig('consistency.pdf')
+
 
 plt.show()
 
