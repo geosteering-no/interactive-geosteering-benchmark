@@ -25,9 +25,7 @@ namespace ServerStateInterfaces
         //protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
         //protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
 
-        private object _restartLock = new object();
         protected const string BotUserName = "DasBot 1030";
-
 
         protected TSecretState _secret = default;
 
@@ -60,8 +58,8 @@ namespace ServerStateInterfaces
         //207 top bot 3327 / 4318
 
 
-        private int[] seeds = {0, 
-            202, 
+        private int[] seeds = {0,
+            202,
             105, 105,
             103, 103,
             214, 214,
@@ -188,45 +186,39 @@ namespace ServerStateInterfaces
 
         public void RestartServer(int seed = -1)
         {
-            lock (_restartLock)
+            //TODO resart lock was here
+            if (seed == -1)
             {
-                if (seed == -1)
-                {
-                    seed = NextSeed();
-                }
-
-                //var users = _users;
-                InitializeNewSyntheticTruth(seed);
-                _scoreData.secretRealization = GetTruthForEvaluation();
-                var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(),
-                    GetInitialPoint(),
-                    EvaluatorTruth);
-                _scoreData.BestPossible = bestTrajectoryWithScore;
-
-                var bestValueGame = 1.0;
-                if (_scoreData.BestPossible?.TrajectoryWithScore != null)
-                {
-                    var traj = _scoreData.BestPossible.TrajectoryWithScore;
-                    if (traj.Count > 0)
-                    {
-                        bestValueGame = Math.Max(bestValueGame, traj[traj.Count - 1].Score);
-                    }
-                }
-
-                var userArray = _users.ToArray();
-                foreach (var user in userArray)
-                {
-                    var userKey = user.Key;
-                    _users.GetOrAdd(userKey, GetNewDefaultUserPair)
-                        .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation(),
-                            bestValueGame);
-                }
-
+                seed = NextSeed();
             }
 
+            //var users = _users;
+            InitializeNewSyntheticTruth(seed);
+            _scoreData.secretRealization = GetTruthForEvaluation();
+            var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(),
+                GetInitialPoint(),
+                EvaluatorTruth);
+            _scoreData.BestPossible = bestTrajectoryWithScore;
+
+            var bestValueGame = 1.0;
+            if (_scoreData.BestPossible?.TrajectoryWithScore != null)
+            {
+                var traj = _scoreData.BestPossible.TrajectoryWithScore;
+                if (traj.Count > 0)
+                {
+                    bestValueGame = Math.Max(bestValueGame, traj[traj.Count - 1].Score);
+                }
+            }
+
+            var userArray = _users.ToArray();
+            foreach (var user in userArray)
+            {
+                var userKey = user.Key;
+                _users.GetOrAdd(userKey, GetNewDefaultUserPair)
+                    .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation(),
+                        bestValueGame);
+            }
         }
-
-
 
         public void ResetServer()
         {
