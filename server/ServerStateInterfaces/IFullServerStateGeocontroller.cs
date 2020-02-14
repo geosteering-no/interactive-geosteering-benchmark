@@ -9,9 +9,9 @@ namespace ServerStateInterfaces
         TScoreData>
     {
 
-        void RestartServer(int seed = -1);
-        void StopAllUsers();
-        void ResetServer();
+        //void RestartServer(int seed = -1);
+        void ResetServer(int seed = -1);
+        //TODO implement the seed
         TUserData UpdateUser(string userId, TWellPoint load = default);
         TUserData StopUser(string userId);
 

@@ -30,41 +30,41 @@ namespace GameServer.Controllers
             _stateServer = stateServer;
         }
 
-        [Route("stopall/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
-        [HttpPost]
-        public void StopAll()
-        {
-            var time = DateTime.Now;
-            _logger.LogInformation(time.ToLongTimeString() + ": Stopping all users");
-            var userId = GetUserId();
-            if (userId == ADMIN_SECRET_USER_NAME)
-            {
-                _stateServer.StopAllUsers();
-                _logger.LogInformation("Stopping finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
-            }
-            else
-            {
-                //throw new Exception("You are not the admin");
-            }
-        }
+        //[Route("stopall/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
+        //[HttpPost]
+        //public void StopAll()
+        //{
+        //    var time = DateTime.Now;
+        //    _logger.LogInformation(time.ToLongTimeString() + ": Stopping all users");
+        //    var userId = GetUserId();
+        //    if (userId == ADMIN_SECRET_USER_NAME)
+        //    {
+        //        _stateServer.StopAllUsers();
+        //        _logger.LogInformation("Stopping finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
+        //    }
+        //    else
+        //    {
+        //        //throw new Exception("You are not the admin");
+        //    }
+        //}
 
-        [Route("restart/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
-        [HttpPost]
-        public void Restart()
-        {
-            var time = DateTime.Now;
-            _logger.LogInformation(time.ToLongTimeString() + ": Starting new game");
-            var userId = GetUserId();
-            if (userId == ADMIN_SECRET_USER_NAME)
-            {
-                _stateServer.RestartServer();
-                _logger.LogInformation("Game restart finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
-            }
-            else
-            {
-                //throw new Exception("You are not the admin");
-            }
-        }
+        //[Route("restart/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
+        //[HttpPost]
+        //public void Restart()
+        //{
+        //    var time = DateTime.Now;
+        //    _logger.LogInformation(time.ToLongTimeString() + ": Starting new game");
+        //    var userId = GetUserId();
+        //    if (userId == ADMIN_SECRET_USER_NAME)
+        //    {
+        //        _stateServer.RestartServer();
+        //        _logger.LogInformation("Game restart finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
+        //    }
+        //    else
+        //    {
+        //        //throw new Exception("You are not the admin");
+        //    }
+        //}
 
         [Route("resetallscores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]

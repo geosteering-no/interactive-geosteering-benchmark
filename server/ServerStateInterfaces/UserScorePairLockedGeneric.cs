@@ -146,6 +146,7 @@ namespace ServerStateInterfaces
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             TRealizationData newTrueRealization, double oldBest)
         {
+            // TODO fix: look for deadlocks here
             var newUser = GetUserDefault(_UserIdPrivate, _EvaluatorUser);
             var newTrajectory = GetUserTrajectoryWithScore(
                 newUser,

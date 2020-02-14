@@ -2,10 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ServerDataStructures;
 
@@ -220,9 +216,12 @@ namespace ServerStateInterfaces
             }
         }
 
-        public void ResetServer()
+        public void ResetServer(int seed = -1)
         {
-            _users = new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
+            //TODO implement the seed
+            _users = new ConcurrentDictionary<string, 
+                UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, 
+                    TWellPoint, TUserResult, TRealizationData>>();
         }
 
         public TUserDataModel UpdateUser(string userId, TWellPoint load = default)

@@ -63,7 +63,8 @@ namespace serverConsoleApp
                 Random rnd = new Random();
                 int seed = rnd.Next();
                 int.TryParse(command, out seed);
-                _serverStateGeocontroller.RestartServer();
+                //_serverStateGeocontroller.RestartServer();
+                throw new NotImplementedException();
                 return;
             }
 
