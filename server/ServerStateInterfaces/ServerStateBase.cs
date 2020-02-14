@@ -23,7 +23,10 @@ namespace ServerStateInterfaces
 
         protected const string BotUserName = "DasBot 1030";
 
-        protected TSecretState _secret = default;
+        //protected TSecretState _secret = default;
+        protected ConcurrentDictionary<int, TSecretState> _secrets = new ConcurrentDictionary<int, TSecretState>();
+        //TODO update code for many secrets
+        //TODO make a funciton that fatches secret for a user given their game number
 
 
         protected PopulationScoreData<TWellPoint, TRealizationData> _scoreData;

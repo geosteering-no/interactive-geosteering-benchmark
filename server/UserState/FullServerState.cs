@@ -152,6 +152,7 @@ namespace UserState
 
         }
 
+        //TODO convert to be a static function of _secret
         protected override RealizationData GetTruthForEvaluation()
         {
             var secretModel = _secret.TrueSubsurfaseModel1;
