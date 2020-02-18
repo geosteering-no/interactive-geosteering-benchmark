@@ -11,25 +11,19 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
                                AutoMinorLocator)
 
+
 def several_steps_done(x):
     for traj in x.trajectories:
         if len(traj) < 6:
             return False
     return True
 
+
 def custom_func(x):
     return several_steps_done(x)
 
 
-
-
-
-
-
 def print_results(results, i = 0, do_plot=False):
-
-
-
     correlations = []
 
     for u in results:
@@ -52,7 +46,7 @@ def print_results(results, i = 0, do_plot=False):
             plt.axis([0, 350, -40, 0])
             plt.legend()
             plt.title(name)
-            plt.savefig('user{}.pdf'.format(i))
+            plt.savefig('result_plots/user{}.pdf'.format(i))
 
         # computing correlations
         ys0 = list(map(lambda x: x["wellPoint"]["Y"], trajs[0]))
@@ -81,9 +75,10 @@ def print_results(results, i = 0, do_plot=False):
         #corr12 = np.corrcoef(ys1, ys2)[0, 1]
 
         correlations.append(norm12)
-        print("{:2}. {:22}: score: {:6.0f}  {:5.1f}% distance norm between trajectories; "
+        print("{:2}. {:22}: score: {:6.0f}  {:5.1f}%      2: {:5.1f}% 3: {:5.1f}%      "
+              "delta_z: "
               "different: {:6.1f}, {:6.1f}  same: {:6.1f}      mean: {:6.1f} std: {:6.1f}"
-              .format(i, u.name, u.total_score, u.total_percent_divided(), norm01, norm02, norm12, mean_diff, std_diff))
+              .format(i, u.name, u.total_score, u.total_percent_divided(), u.percents[1], u.percents[2], norm01, norm02, norm12, mean_diff, std_diff))
 
         u.all_diffs = all_diffs_np
         u.std_diff = std_diff
@@ -92,6 +87,7 @@ def print_results(results, i = 0, do_plot=False):
 
         #plt.show()
         i += 1
+
 
 results = calc.get_user_scores(filter_users_func=custom_func)
 results = sorted(results, key=lambda x: x.name.lower(), reverse=False)
@@ -111,6 +107,11 @@ def comparatively_consistent_test(x):
     return (not dss_test(x) and not simple_consistent_test(x)) \
         and x.all_diffs[2] <= x.all_diffs[0]-x.std_diff*2 \
         and x.all_diffs[2] <= x.all_diffs[1]-x.std_diff*2
+
+
+def improvement_test(x):
+    return (not dss_test(x) and not simple_consistent_test(x)) \
+        and x.scores[2]/x.scores[1] > 1.194
 
 
 def sort_scores(results):
@@ -169,6 +170,11 @@ make_plot(consistent_users, i+1, label="Consistent users", plot_number=plot_numb
 
 i += len(consistent_users)
 
+improved_users = sort_scores(list(filter(improvement_test,
+                                        results)))
+print("improved_users")
+print_results(improved_users, i+1, do_plot=False)
+
 comparatively_consistent_users = sort_scores(list(filter(comparatively_consistent_test,
                                         results)))
 
@@ -198,10 +204,10 @@ plt.plot([0, len(results)], [ys[0], ys[0]])
 
 
 plt.legend()
-plt.savefig('consistency.pdf')
+plt.savefig('result_plots/consistency.pdf')
 
 
-plt.show()
+# plt.show()
 
 
 # compare  consistency with results
