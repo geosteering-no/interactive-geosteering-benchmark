@@ -16,15 +16,21 @@ namespace ServerStateInterfaces
             TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
 
     {
-        protected ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>> _users =
+
+        protected ConcurrentDictionary<string, int>
+            _userGameNumber = new ConcurrentDictionary<string, int>();
+
+        protected ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>> 
+            _users =
             new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
         //protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
         //protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
 
         protected const string BotUserName = "DasBot 1030";
 
+        protected const int TOTAL_LEVELS = 5;
         //protected TSecretState _secret = default;
-        protected ConcurrentDictionary<int, TSecretState> _secrets = new ConcurrentDictionary<int, TSecretState>();
+        protected TSecretState[] _secrets = new TSecretState[5];
         //TODO update code for many secrets
         //TODO make a funciton that fatches secret for a user given their game number
 
@@ -230,7 +236,7 @@ namespace ServerStateInterfaces
         public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
         {
             return _users.GetOrAdd(userId, GetNewDefaultUserPair)
-                .UpdateUser(load, _secret, EvaluatorTruth, GetTruthForEvaluation());
+                .UpdateUser(load, _secrets, EvaluatorTruth, GetTruthForEvaluation());
         }
 
         public TUserDataModel StopUser(string userId)

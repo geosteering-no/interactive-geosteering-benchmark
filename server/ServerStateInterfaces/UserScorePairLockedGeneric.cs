@@ -43,6 +43,21 @@ namespace ServerStateInterfaces
             }
         }
 
+        /// <summary>
+        /// locked
+        /// </summary>
+        public int GameIndex
+        {
+            get
+            {
+                //we lock to prevent game advancement 
+                lock (_thisUserLockObject)
+                {
+                    return _gameNumber;
+                }
+            }
+        }
+
 
 
         /// <summary>
@@ -66,17 +81,22 @@ namespace ServerStateInterfaces
             }
         }
 
+        private int _GetLevelIdForUser()
+        {
+            return hash(username);
+        }
+
         /// <summary>
         /// locked
         /// updates and evaluates user against truth 
         /// </summary>
         /// <param name="load"></param>
-        /// <param name="secret"></param>
+        /// <param name="secrets"></param>
         /// <param name="evaluatorTruth"></param>
         /// <param name="trueRealization"></param>
         /// <returns></returns>
         public TUserDataModel UpdateUser(TWellPoint load,
-            TSecretState secret,
+            IList<TSecretState> secrets,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             TRealizationData trueRealization)
         {
@@ -89,7 +109,7 @@ namespace ServerStateInterfaces
                     return _user.UserData;
                 }
 
-                var ok = _user.UpdateUser(load, secret);
+                var ok = _user.UpdateUser(load, secrets[_GetLevelIdForUser() % secrets.Count]);
 
                 if (ok)
                 {
@@ -248,6 +268,7 @@ namespace ServerStateInterfaces
 
         private TUserModel _user;
         private UserResultFinal<TWellPoint> _score;
+        private int _gameNumber;
 
         private bool _Stopped
         {
