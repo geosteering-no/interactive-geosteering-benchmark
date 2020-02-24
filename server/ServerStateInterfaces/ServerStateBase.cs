@@ -96,9 +96,9 @@ namespace ServerStateInterfaces
             InitializeNewSyntheticTruths(0);
         }
 
-        public void DumpScoreBoardToFile(PopulationScoreData<TWellPoint, TRealizationData> scoreBoard)
+        public void DumpScoreBoardToFile(PopulationScoreData<TWellPoint, TRealizationData> scoreBoard, 
+            string dirId="scoreLog/")
         {
-            var dirId = "scoreLog/";
             if (!Directory.Exists(dirId))
             {
                 Directory.CreateDirectory(dirId);
@@ -106,6 +106,25 @@ namespace ServerStateInterfaces
             var jsonStr = JsonConvert.SerializeObject(scoreBoard);
             System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
         }
+
+        public void DumpScoreBoardToFile(IList<PopulationScoreData<TWellPoint, TRealizationData>> scoreBoardMulty)
+        {
+            var dirId = "scoreLog/";
+            if (!Directory.Exists(dirId))
+            {
+                Directory.CreateDirectory(dirId);
+            }
+
+            var i = 0;
+            //TODO make it to random seed that generates truth
+            foreach (var scoreData in scoreBoardMulty)
+            {
+                DumpScoreBoardToFile(scoreData, dirId+i+"/");
+                i++;
+            }
+
+        }
+
 
         public PopulationScoreData<TWellPoint, TRealizationData> GetScoreboardFromFile(string fileName)
         {
@@ -226,7 +245,7 @@ namespace ServerStateInterfaces
                 .GetEvalaution(trajectory);
         }
 
-        public PopulationScoreData<TWellPoint, TRealizationData> GetScoreboard()
+        public PopulationScoreData<TWellPoint, TRealizationData> GetScoreboard(int i)
         {
             if (_users != null)
             {
@@ -241,14 +260,14 @@ namespace ServerStateInterfaces
                     var userPair = user.Value;
                     results.Add(userPair.Score);
                 }
-                _scoreData.UserResults = results;
+                _scoreDataAll[i].UserResults = results;
                 if (UserExists(BotUserName))
                 {
-                    _scoreData.BotResult = _users[BotUserName].Score;
+                    _scoreDataAll[i].BotResult = _users[BotUserName].Score;
                 }
             }
-            DumpScoreBoardToFile(_scoreData);
-            return _scoreData;
+            DumpScoreBoardToFile(_scoreDataAll);
+            return _scoreDataAll[i];
         }
     }
 }

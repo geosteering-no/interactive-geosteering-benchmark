@@ -37,7 +37,7 @@ namespace UserState
             InitializeNewSyntheticTruths(0);
 
 
-            _scoreData = new PopulationScoreData<WellPoint, RealizationData>()
+            _scoreDataAll = new PopulationScoreData<WellPoint, RealizationData>()
             {
                 Height = _dummyUserData.Height + ExtraHeight,
                 Width = _dummyUserData.Width,
@@ -50,10 +50,10 @@ namespace UserState
                 Xdist = _dummyUserData.Xdist,
             };
 
-            var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(),
+            var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthsForEvaluation(),
                 GetInitialPoint(),
                 EvaluatorTruth);
-            _scoreData.BestPossible = bestTrajectoryWithScore;
+            _scoreDataAll.BestPossible = bestTrajectoryWithScore;
         }
 
         protected override TrueModelState[] InitializeNewSyntheticTruths(int seed = 0)
@@ -102,8 +102,8 @@ namespace UserState
         {
             
             _bestSolutionFinder.Init(1.0,
-                _scoreData.Xdist,
-                _scoreData.TotalDecisionPoints - 1, 
+                _scoreDataAll.Xdist,
+                _scoreDataAll.TotalDecisionPoints - 1, 
                 _dummyUserData.MaxAngleChange, 
                 _dummyUserData.MinInclination,
                 _evaluatorClass.EvaluatorDelegate

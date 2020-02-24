@@ -28,7 +28,7 @@ namespace ServerStateInterfaces
         public ServerStateMock() : base()
         {
             _dummyUserData = UserStateMockBase.CreateUserData();
-            _scoreData = new PopulationScoreData<WellPoint, RealizationData>()
+            _scoreDataAll = new PopulationScoreData<WellPoint, RealizationData>()
             {
                 Height = _dummyUserData.Height,
                 Width = _dummyUserData.Width,
