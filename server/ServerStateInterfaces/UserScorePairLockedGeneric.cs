@@ -51,6 +51,7 @@ namespace ServerStateInterfaces
             get
             {
                 //we lock to prevent game advancement 
+                // TODO consider removing
                 lock (_thisUserLockObject)
                 {
                     return _gameNumber;
@@ -79,6 +80,17 @@ namespace ServerStateInterfaces
                 }
                 return copyOfResult;
             }
+        }
+
+        static int CalculateHashInt(string read)
+        {
+            UInt64 hashedValue = 3074457345618258791ul;
+            for (int i = 0; i < read.Length; i++)
+            {
+                hashedValue += read[i];
+                hashedValue *= 3074457345618258799ul;
+            }
+            return (int) hashedValue % 1000000009;
         }
 
         private int _GetLevelIdForUser()
@@ -268,7 +280,21 @@ namespace ServerStateInterfaces
 
         private TUserModel _user;
         private UserResultFinal<TWellPoint> _score;
-        private int _gameNumber;
+        private int _gameNumber = 0;
+        private int _myHash = -1;
+
+        private int _MyHash
+        {
+            get
+            {
+                if (_myHash < 0)
+                {
+                    _myHash = CalculateHashInt(_UserIdPrivate);
+                }
+
+                return _myHash;
+            }
+        }
 
         private bool _Stopped
         {
