@@ -49,6 +49,7 @@ namespace UserState
                 TotalDecisionPoints = _dummyUserData.TotalDecisionPoints,
                 Xdist = _dummyUserData.Xdist,
             };
+
             var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(),
                 GetInitialPoint(),
                 EvaluatorTruth);
@@ -127,14 +128,15 @@ namespace UserState
         protected UserScorePairLockedGeneric<UserState, UserData, TrueModelState, WellPoint,
             UserEvaluation, RealizationData> GetBotUserPair(string userKey)
         {
-            var botPair = new UserStatePairWithBotFull(
-                userKey,
-                EvaluatorUser, 
-                EvaluatorTruth, 
-                _evaluatorClass.EvaluatorDelegate,
-                GetTruthForEvaluation());
-            botPair.Bot = new DssBotGeneric<RealizationData>();
-            return botPair;
+            throw new NotImplementedException();
+            //var botPair = new UserStatePairWithBotFull(
+            //    userKey,
+            //    EvaluatorUser, 
+            //    EvaluatorTruth, 
+            //    _evaluatorClass.EvaluatorDelegate,
+            //    GetTruthForEvaluation());
+            //botPair.Bot = new DssBotGeneric<RealizationData>();
+            //return botPair;
         }
 
         public override void AddBotUserDefault()

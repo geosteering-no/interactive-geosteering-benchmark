@@ -35,7 +35,7 @@ namespace ServerStateInterfaces
         //TODO make a funciton that fatches secret for a user given their game number
 
 
-        protected PopulationScoreData<TWellPoint, TRealizationData> _scoreData;
+        protected IList<PopulationScoreData<TWellPoint, TRealizationData>> _scoreDataAll;
 
         protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
             EvaluatorUser
@@ -146,15 +146,16 @@ namespace ServerStateInterfaces
 
         private WellPointWithScore<TWellPoint> EvalueateSegmentAgainstTruth(TWellPoint p1, TWellPoint p2)
         {
-            var pointWithScore = new WellPointWithScore<TWellPoint>()
-            {
-                wellPoint = p2,
-            };
+            throw new NotImplementedException();
+            //var pointWithScore = new WellPointWithScore<TWellPoint>()
+            //{
+            //    wellPoint = p2,
+            //};
 
-            var twoPoints = new List<TWellPoint>() { p1, p2 };
-            var localScore = EvaluatorTruth(GetTruthForEvaluation(), twoPoints);
-            pointWithScore.Score = localScore;
-            return pointWithScore;
+            //var twoPoints = new List<TWellPoint>() { p1, p2 };
+            //var localScore = EvaluatorTruth(GetTruthForEvaluation(), twoPoints);
+            //pointWithScore.Score = localScore;
+            //return pointWithScore;
         }
 
         protected abstract IList<TRealizationData> GetTruthsForEvaluation();
@@ -162,10 +163,12 @@ namespace ServerStateInterfaces
         protected UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
             TUserResult, TRealizationData> GetNewDefaultUserPair(string userKey)
         {
-            return new UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
-                TUserResult, TRealizationData>(
-                userKey,
-                EvaluatorUser, EvaluatorTruth, GetTruthForEvaluation());
+            throw new NotImplementedException();
+            //TODO here we need to create synthetic tructh?
+            //return new UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
+            //    TUserResult, TRealizationData>(
+            //    userKey,
+            //    EvaluatorUser, EvaluatorTruth, GetTruthForEvaluation());
         }
 
         protected abstract TWellPoint GetInitialPoint();

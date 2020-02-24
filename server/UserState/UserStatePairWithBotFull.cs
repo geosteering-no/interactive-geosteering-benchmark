@@ -1,4 +1,5 @@
-﻿using ServerDataStructures;
+﻿using System;
+using ServerDataStructures;
 using ServerStateInterfaces;
 
 namespace UserState
@@ -29,11 +30,13 @@ namespace UserState
                     Objective);
                 var lastPoint = userData.wellPoints[userPointsCount - 1];
                 var nextChoice = Bot.ComputeBestChoice(userData.realizations, lastPoint, totalLeft);
-                UpdateUserLocked(nextChoice, trueState, evaluatorTruth, trueRealization);
+                throw new NotImplementedException();
+                //UpdateUserLocked(nextChoice, trueState, evaluatorTruth, trueRealization);
             }
 
-            StopUserLocked(evaluatorTruth, 
-                trueRealization);
+            throw new NotImplementedException();
+            //StopUserLocked(evaluatorTruth, 
+                //trueRealization);
         }
 
         public UserStatePairWithBotFull(string userName, ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluatorTruth, ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunctionSimple evaluatorSimple, RealizationData trueRealization) 
