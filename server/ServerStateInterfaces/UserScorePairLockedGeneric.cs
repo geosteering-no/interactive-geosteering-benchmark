@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using ServerDataStructures;
 
@@ -46,7 +47,7 @@ namespace ServerStateInterfaces
         /// <summary>
         /// locked
         /// </summary>
-        public int GameIndex
+        public int GameIndexLocked
         {
             get
             {
@@ -90,12 +91,48 @@ namespace ServerStateInterfaces
                 hashedValue += read[i];
                 hashedValue *= 3074457345618258799ul;
             }
-            return (int) hashedValue % 1000000009;
+            return (int) hashedValue % ModuloInt;
         }
 
+        private const int ModuloInt = 1000000009;
+
+        private void GenerateLevelIdsForUser()
+        {
+            _gameIds = new List<int>(TotalUniqueGameInds);
+            var rnd = new Random(_MyHash);
+            for (int i = 0; i < TotalUniqueGameInds; i++)
+            {
+                _gameIds.Add(rnd.Next(ModuloInt));
+            }
+
+            _gameIds[0] = 0;
+            var repeatOption = rnd.Next(3);
+            if (repeatOption == 0)
+            {
+                _gameIds[2] = _gameIds[1];
+            }
+            else if (repeatOption == 1)
+            {
+                _gameIds[3] = _gameIds[1];
+            }
+            else
+            {
+                _gameIds[3] = _gameIds[2];
+            }
+        }
+
+        /// <summary>
+        /// This returns a number that can be user modular, i.e. it is a non-negative integer
+        /// </summary>
+        /// <returns></returns>
         private int _GetLevelIdForUser()
         {
-            return hash(username);
+            if (_gameIds == null)
+            {
+                GenerateLevelIdsForUser();
+            }
+
+            return _gameIds[_gameNumber % _gameIds.Count];
         }
 
         /// <summary>
@@ -282,6 +319,22 @@ namespace ServerStateInterfaces
         private UserResultFinal<TWellPoint> _score;
         private int _gameNumber = 0;
         private int _myHash = -1;
+        //private Random _myRnd;
+        private IList<int> _gameIds;
+        private const int TotalUniqueGameInds = 101;
+
+        //private Random _MyRnd
+        //{
+        //    get
+        //    {
+        //        if (_MyRnd == null)
+        //        {
+        //            _myRnd = new Random(CalculateHashInt(_UserIdPrivate));
+        //        }
+
+        //        return _myRnd;
+        //    }
+        //}
 
         private int _MyHash
         {
