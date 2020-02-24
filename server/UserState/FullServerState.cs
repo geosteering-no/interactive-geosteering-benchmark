@@ -44,7 +44,8 @@ namespace UserState
                 Xtopleft = _dummyUserData.Xtopleft,
                 Ytopleft = _dummyUserData.Ytopleft - ExtraHeight,
                 xList = _dummyUserData.xList,
-                secretRealizations = UserState.convertToRealizationData(_secret.TrueSubsurfaseModel1),
+                secretRealizations = _secrets.Select(secret => 
+                    UserState.convertToRealizationData(secret.TrueSubsurfaseModel1)).ToList(),
                 TotalDecisionPoints = _dummyUserData.TotalDecisionPoints,
                 Xdist = _dummyUserData.Xdist,
             };
@@ -144,11 +145,12 @@ namespace UserState
             var botUser = (UserStatePairWithBotFull) user;
             if (botUser != null)
             {
-                botUser.StartBot(
-                    _secret,
-                    EvaluatorTruth,
-                    GetTruthForEvaluation()
-                    );
+                throw new NotImplementedException();
+                //botUser.StartBot(
+                //    _secret,
+                //    EvaluatorTruth,
+                //    GetTruthForEvaluation()
+                //    );
             }
 
         }
