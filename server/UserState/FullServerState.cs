@@ -15,7 +15,7 @@ namespace UserState
         ServerStateBase<WellPoint, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>
     {
 
-
+        private const int TotalTruths = 4;
         private const double ExtraHeight = 5;
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
         private readonly DssBotGeneric<RealizationData> _bestSolutionFinder = 
@@ -34,7 +34,7 @@ namespace UserState
         public FullServerState()
         {
             _dummyUserData = GetNewDefaultUserPair("").UserData;
-            InitializeNewSyntheticTruth(0);
+            InitializeNewSyntheticTruths(0);
 
 
             _scoreData = new PopulationScoreData<WellPoint, RealizationData>()
@@ -44,7 +44,7 @@ namespace UserState
                 Xtopleft = _dummyUserData.Xtopleft,
                 Ytopleft = _dummyUserData.Ytopleft - ExtraHeight,
                 xList = _dummyUserData.xList,
-                secretRealization = UserState.convertToRealizationData(_secret.TrueSubsurfaseModel1),
+                secretRealizations = UserState.convertToRealizationData(_secret.TrueSubsurfaseModel1),
                 TotalDecisionPoints = _dummyUserData.TotalDecisionPoints,
                 Xdist = _dummyUserData.Xdist,
             };
@@ -54,13 +54,14 @@ namespace UserState
             _scoreData.BestPossible = bestTrajectoryWithScore;
         }
 
-        protected override TrueModelState InitializeNewSyntheticTruth(int seed = 0)
+        protected override TrueModelState[] InitializeNewSyntheticTruths(int seed = 0)
         {
             Console.WriteLine("Initialized synthetic truth with seed: " + seed);
             Console.WriteLine("\n\n\n Seed: " + seed + "\n\n\n");
-            _secret = new TrueModelState(seed); 
+            _secrets = new TrueModelState[TotalTruths];
+                new TrueModelState(seed); 
             DumpSectetStateToFile(seed);
-            return _secret;
+            return _secrets;
         }
 
         public override UserData LossyCompress(UserData data)

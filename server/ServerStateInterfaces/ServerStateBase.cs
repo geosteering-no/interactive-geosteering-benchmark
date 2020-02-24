@@ -93,7 +93,7 @@ namespace ServerStateInterfaces
 
         public ServerStateBase()
         {
-            InitializeNewSyntheticTruth(0);
+            InitializeNewSyntheticTruths(0);
         }
 
         public void DumpScoreBoardToFile(PopulationScoreData<TWellPoint, TRealizationData> scoreBoard)
@@ -137,7 +137,7 @@ namespace ServerStateInterfaces
         /// this should call dump secret stateGeocontroller to file
         /// </summary>
         /// <param name="seed"></param>
-        protected abstract TSecretState InitializeNewSyntheticTruth(int seed = 0);
+        protected abstract TSecretState[] InitializeNewSyntheticTruths(int seed = 0);
         //{
         //    DumpSectetStateToFile(seed);
         //    //Console.WriteLine("Initialized synthetic truth with seed: " + seed);
@@ -168,18 +168,6 @@ namespace ServerStateInterfaces
                 EvaluatorUser, EvaluatorTruth, GetTruthForEvaluation());
         }
 
-        public void StopAllUsers()
-        {
-            //_users;
-            var userArray = _users.ToArray();
-            foreach (var user in userArray)
-            {
-                var userKey = user.Key;
-                _users.GetOrAdd(userKey, GetNewDefaultUserPair)
-                    .StopUser(EvaluatorTruth, GetTruthForEvaluation());
-            };
-        }
-
         protected abstract TWellPoint GetInitialPoint();
 
         protected virtual UserResultFinal<TWellPoint> GetBestTrajectoryWithScore(TRealizationData secret,
@@ -187,42 +175,6 @@ namespace ServerStateInterfaces
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluator)
         {
             return null;
-        }
-
-        public void RestartServer(int seed = -1)
-        {
-            //TODO resart lock was here
-            if (seed == -1)
-            {
-                seed = NextSeed();
-            }
-
-            //var users = _users;
-            InitializeNewSyntheticTruth(seed);
-            _scoreData.secretRealization = GetTruthForEvaluation();
-            var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthForEvaluation(),
-                GetInitialPoint(),
-                EvaluatorTruth);
-            _scoreData.BestPossible = bestTrajectoryWithScore;
-
-            var bestValueGame = 1.0;
-            if (_scoreData.BestPossible?.TrajectoryWithScore != null)
-            {
-                var traj = _scoreData.BestPossible.TrajectoryWithScore;
-                if (traj.Count > 0)
-                {
-                    bestValueGame = Math.Max(bestValueGame, traj[traj.Count - 1].Score);
-                }
-            }
-
-            var userArray = _users.ToArray();
-            foreach (var user in userArray)
-            {
-                var userKey = user.Key;
-                _users.GetOrAdd(userKey, GetNewDefaultUserPair)
-                    .MoveToNewGame(EvaluatorTruth, GetTruthForEvaluation(),
-                        bestValueGame);
-            }
         }
 
         public void ResetServer(int seed = -1)

@@ -35,23 +35,25 @@ namespace ServerStateInterfaces
                 Xtopleft = _dummyUserData.Xtopleft,
                 Ytopleft = _dummyUserData.Ytopleft,
                 xList = _dummyUserData.xList,
-                secretRealization = _secret,
+                secretRealizations = _secrets,
                 TotalDecisionPoints = TOTAL_DECISION_STEPS,
                 Xdist = _dummyUserData.Xdist
             };
         }
 
-        protected override RealizationData InitializeNewSyntheticTruth(int seed = 0)
+        protected override RealizationData[] InitializeNewSyntheticTruths(int seed = 0)
         {
-            var defaultUserData = GetNewDefaultUserPair("").UserData;
-            _secret = defaultUserData.realizations[seed % defaultUserData.realizations.Count];
-            DumpSectetStateToFile(seed);
-            return _secret;
+            throw new NotImplementedException();
+            //var defaultUserData = GetNewDefaultUserPair("").UserData;
+            //_secret = defaultUserData.realizations[seed % defaultUserData.realizations.Count];
+            //DumpSectetStateToFile(seed);
+            //return _secret;
         }
 
         protected override RealizationData GetTruthForEvaluation()
         {
-            return _secret;
+            throw new NotImplementedException();
+            //return _secret;
         }
 
         protected override WellPoint GetInitialPoint()
