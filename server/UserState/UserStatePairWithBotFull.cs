@@ -29,10 +29,10 @@ namespace UserState
                     Objective);
                 var lastPoint = userData.wellPoints[userPointsCount - 1];
                 var nextChoice = Bot.ComputeBestChoice(userData.realizations, lastPoint, totalLeft);
-                UpdateUser(nextChoice, trueState, evaluatorTruth, trueRealization);
+                UpdateUserLocked(nextChoice, trueState, evaluatorTruth, trueRealization);
             }
 
-            StopUser(evaluatorTruth, 
+            StopUserLocked(evaluatorTruth, 
                 trueRealization);
         }
 

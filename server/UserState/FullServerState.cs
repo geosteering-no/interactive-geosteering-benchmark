@@ -155,11 +155,17 @@ namespace UserState
 
         }
 
-        //TODO convert to be a static function of _secret
-        protected override RealizationData GetTruthForEvaluation()
+        private RealizationData GetSingleTruthForEvaluation(TrueModelState secret)
         {
-            var secretModel = _secret.TrueSubsurfaseModel1;
+            var secretModel = secret.TrueSubsurfaseModel1;
             var result = UserState.convertToRealizationData(secretModel);
+            return result;
+        }
+
+        //TODO convert to be a static function of _secret
+        protected override IList<RealizationData> GetTruthsForEvaluation()
+        { 
+            var result = _secrets.Select(secret => GetSingleTruthForEvaluation(secret)).ToList();
             return result;
         }
 
@@ -167,7 +173,7 @@ namespace UserState
 
 
 
-        //public bool UpdateUser(string userId, IContinousState updatePoint = default)
+        //public bool UpdateUserLocked(string userId, IContinousState updatePoint = default)
         //{
         //    if (!UserExists(userId))
         //    {

@@ -50,7 +50,7 @@ namespace ServerStateInterfaces
             //return _secret;
         }
 
-        protected override RealizationData GetTruthForEvaluation()
+        protected override IList<RealizationData> GetTruthsForEvaluation()
         {
             throw new NotImplementedException();
             //return _secret;

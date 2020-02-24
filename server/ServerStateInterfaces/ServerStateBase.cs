@@ -157,7 +157,7 @@ namespace ServerStateInterfaces
             return pointWithScore;
         }
 
-        protected abstract TRealizationData GetTruthForEvaluation(int index);
+        protected abstract IList<TRealizationData> GetTruthsForEvaluation();
 
         protected UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
             TUserResult, TRealizationData> GetNewDefaultUserPair(string userKey)
@@ -188,14 +188,14 @@ namespace ServerStateInterfaces
         public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
         {
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
-            var updatedUser = userPair.UpdateUser(load, _secrets, EvaluatorTruth, GetTruthForEvaluation());
+            var updatedUser = userPair.UpdateUserLocked(load, _secrets, EvaluatorTruth, GetTruthsForEvaluation());
             return updatedUser;
         }
 
         public TUserDataModel StopUser(string userId)
         {
             return _users.GetOrAdd(userId, GetNewDefaultUserPair)
-                .StopUser(EvaluatorTruth, GetTruthForEvaluation());
+                .StopUserLocked(EvaluatorTruth, GetTruthsForEvaluation());
         }
 
         public virtual TUserDataModel LossyCompress(TUserDataModel data)

@@ -144,10 +144,10 @@ namespace ServerStateInterfaces
         /// <param name="evaluatorTruth"></param>
         /// <param name="trueRealization"></param>
         /// <returns></returns>
-        public TUserDataModel UpdateUser(TWellPoint load,
+        public TUserDataModel UpdateUserLocked(TWellPoint load,
             IList<TSecretState> secrets,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
-            TRealizationData trueRealization)
+            IList<TRealizationData> trueRealizations)
         {
             TUserDataModel newUserData = default;
 
@@ -158,11 +158,13 @@ namespace ServerStateInterfaces
                     return _user.UserData;
                 }
 
-                var ok = _user.UpdateUser(load, secrets[_GetLevelIdForUser() % secrets.Count]);
+                var truthIndex = _GetLevelIdForUser() % secrets.Count;
+
+                var ok = _user.UpdateUser(load, secrets[truthIndex]);
 
                 if (ok)
                 {
-                    var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealization);
+                    var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealizations[truthIndex]);
                     _score.TrajectoryWithScore = newTrajWithScore;
                     newUserData = _user.UserData;
                     //var userResult = _userResults.
@@ -182,9 +184,9 @@ namespace ServerStateInterfaces
         /// <param name="evaluatorTruth"></param>
         /// <param name="trueRealization"></param>
         /// <returns></returns>
-        public TUserDataModel StopUser(
+        public TUserDataModel StopUserLocked(
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
-            TRealizationData trueRealization)
+            IList<TRealizationData> trueRealizations)
         {
             TUserDataModel newUserData;
             lock (_thisUserLockObject)
@@ -194,10 +196,12 @@ namespace ServerStateInterfaces
                     return _user.UserData;
                 }
 
+                var truthIndex = _GetLevelIdForUser() % trueRealizations.Count;
+
                 _user.StopDrilling();
                 _score.Stopped = true;
 
-                var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealization);
+                var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealizations[truthIndex]);
                 _score.TrajectoryWithScore = newTrajWithScore;
                 newUserData = _user.UserData;
             }
