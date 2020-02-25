@@ -9,8 +9,7 @@ namespace ServerStateInterfaces
         IUserImplementaion<UserData, WellPoint, TSecretState, UserEvaluation, RealizationData>
     {
         protected ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
-        public ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction
-            Evaluator
+        public ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction Evaluator
         {
             get
             {
