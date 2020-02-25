@@ -17,25 +17,26 @@ namespace ServerStateInterfaces
 
     {
 
-        protected ConcurrentDictionary<string, int>
-            _userGameNumber = new ConcurrentDictionary<string, int>();
 
         protected ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>> 
             _users =
-            new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
-        //protected ConcurrentDictionary<string, TUserModel> _users = new ConcurrentDictionary<string, TUserModel>();
-        //protected ConcurrentDictionary<string, UserResultFinal<TWellPoint>> _userResults = new ConcurrentDictionary<string, UserResultFinal<TWellPoint>>();
+                new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
+        //protected IList<PopulationScoreData<TWellPoint, TRealizationData>> _scoreDataAll;
+        protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
+            _resultingTrajectories = 
+                new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
+
 
         protected const string BotUserName = "DasBot 1030";
 
         protected const int TOTAL_LEVELS = 5;
         //protected TSecretState _secret = default;
         protected TSecretState[] _secrets = new TSecretState[5];
+        //TODO Generate secret states
         //TODO update code for many secrets
         //TODO make a funciton that fatches secret for a user given their game number
+        private int _seedInd = 0;
 
-
-        protected IList<PopulationScoreData<TWellPoint, TRealizationData>> _scoreDataAll;
 
         protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
             EvaluatorUser
@@ -75,16 +76,16 @@ namespace ServerStateInterfaces
             227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 240, 241 };
         //private int[] seeds = {0, 91, 91, 10, 100};
         //private int[] seeds = { 0, 1, 91, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8 };
-        private int seedInd = 0;
+        
 
 
         private int NextSeed()
         {
             var res = rnd.Next();
-            seedInd++;
-            if (seedInd < seeds.Length)
+            _seedInd++;
+            if (_seedInd < seeds.Length)
             {
-                res = seeds[seedInd];
+                res = seeds[_seedInd];
             }
 
 
