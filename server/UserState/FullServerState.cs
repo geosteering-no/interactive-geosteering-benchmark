@@ -36,19 +36,20 @@ namespace UserState
             _dummyUserData = GetNewDefaultUserPair("").UserData;
             InitializeNewSyntheticTruths(0);
 
-
-            _scoreDataAll = new PopulationScoreData<WellPoint, RealizationData>()
+            for (int i = 0; i < _levelDescriptions.Length; ++i)
             {
-                Height = _dummyUserData.Height + ExtraHeight,
-                Width = _dummyUserData.Width,
-                Xtopleft = _dummyUserData.Xtopleft,
-                Ytopleft = _dummyUserData.Ytopleft - ExtraHeight,
-                xList = _dummyUserData.xList,
-                secretRealizations = _secrets.Select(secret => 
-                    UserState.convertToRealizationData(secret.TrueSubsurfaseModel1)).ToList(),
-                TotalDecisionPoints = _dummyUserData.TotalDecisionPoints,
-                Xdist = _dummyUserData.Xdist,
-            };
+                _levelDescriptions[i] = new LevelDescription<WellPoint, RealizationData, TrueModelState>()
+                {
+                    Height = _dummyUserData.Height + ExtraHeight,
+                    Width = _dummyUserData.Width,
+                    Xtopleft = _dummyUserData.Xtopleft,
+                    Ytopleft = _dummyUserData.Ytopleft - ExtraHeight,
+                    xList = _dummyUserData.xList,
+                    secretRealization = UserState.convertToRealizationData(_secrets[i].TrueSubsurfaseModel1),
+                    TotalDecisionPoints = _dummyUserData.TotalDecisionPoints,
+                    Xdist = _dummyUserData.Xdist,
+                };
+            }
 
             var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthsForEvaluation(),
                 GetInitialPoint(),
@@ -58,11 +59,14 @@ namespace UserState
 
         protected override TrueModelState[] InitializeNewSyntheticTruths(int seed = 0)
         {
-            Console.WriteLine("Initialized synthetic truth with seed: " + seed);
-            Console.WriteLine("\n\n\n Seed: " + seed + "\n\n\n");
-            _secrets = new TrueModelState[TotalTruths];
-                new TrueModelState(seed); 
-            DumpSectetStateToFile(seed);
+            for (int i = 0; i < _secrets.Length; ++i)
+            {
+                Console.WriteLine("Initialized synthetic truth with seed: " + seed);
+                Console.WriteLine("\n\n\n Seed: " + seed + "\n\n\n");
+                _secrets[i] = new TrueModelState(seed);
+                DumpSectetStateToFile(seed);
+            }
+
             return _secrets;
         }
 

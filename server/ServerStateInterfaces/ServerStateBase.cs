@@ -11,7 +11,7 @@ namespace ServerStateInterfaces
         TWellPoint, TUserDataModel, TUserModel,
         TSecretState, TUserResult, TRealizationData> :
         IFullServerStateGeocontroller<
-            TWellPoint, TUserDataModel, TUserResult, PopulationScoreData<TWellPoint, TRealizationData>>
+            TWellPoint, TUserDataModel, TUserResult, LevelDescription<TWellPoint, TRealizationData, TSecretState>>
         where TUserModel : IUserImplementaion<
             TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
 
@@ -21,17 +21,27 @@ namespace ServerStateInterfaces
         protected ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>> 
             _users =
                 new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
-        //protected IList<PopulationScoreData<TWellPoint, TRealizationData>> _scoreDataAll;
+        //protected IList<LevelDescription<TWellPoint, TRealizationData>> _scoreDataAll;
         protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
             _resultingTrajectories = 
                 new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
+        /// <summary>
+        /// We never write to this one
+        /// </summary>
+        protected readonly LevelDescription<TWellPoint, TRealizationData, TSecretState>[] _levelDescriptions =
+            new LevelDescription<TWellPoint, TRealizationData, TSecretState>[TOTAL_LEVELS];
 
+        /// <summary>
+        /// 
+        /// </summary>
+        protected readonly TSecretState[] _secrets = new TSecretState[TOTAL_LEVELS];
+            
 
         protected const string BotUserName = "DasBot 1030";
 
         protected const int TOTAL_LEVELS = 5;
         //protected TSecretState _secret = default;
-        protected TSecretState[] _secrets = new TSecretState[5];
+
         //TODO Generate secret states
         //TODO update code for many secrets
         //TODO make a funciton that fatches secret for a user given their game number
@@ -97,7 +107,7 @@ namespace ServerStateInterfaces
             InitializeNewSyntheticTruths(0);
         }
 
-        public void DumpScoreBoardToFile(PopulationScoreData<TWellPoint, TRealizationData> scoreBoard, 
+        public void DumpScoreBoardToFile(LevelDescription<TWellPoint, TRealizationData, TSecretState> scoreBoard, 
             string dirId="scoreLog/")
         {
             if (!Directory.Exists(dirId))
@@ -108,7 +118,7 @@ namespace ServerStateInterfaces
             System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
         }
 
-        public void DumpScoreBoardToFile(IList<PopulationScoreData<TWellPoint, TRealizationData>> scoreBoardMulty)
+        public void DumpScoreBoardToFile(IList<LevelDescription<TWellPoint, TRealizationData, TSecretState>> scoreBoardMulty)
         {
             var dirId = "scoreLog/";
             if (!Directory.Exists(dirId))
@@ -127,7 +137,7 @@ namespace ServerStateInterfaces
         }
 
 
-        public PopulationScoreData<TWellPoint, TRealizationData> GetScoreboardFromFile(string fileName)
+        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboardFromFile(string fileName)
         {
             var dirId = "scoreLog/";
             var fullName = dirId + fileName;
@@ -137,7 +147,7 @@ namespace ServerStateInterfaces
             }
 
             var fileString = File.ReadAllText(fullName);
-            var scoreBoard = JsonConvert.DeserializeObject<PopulationScoreData<TWellPoint, TRealizationData>>
+            var scoreBoard = JsonConvert.DeserializeObject<LevelDescription<TWellPoint, TRealizationData, TSecretState>>
                 (fileString);
             return scoreBoard;
         }
@@ -246,29 +256,30 @@ namespace ServerStateInterfaces
                 .GetEvalaution(trajectory);
         }
 
-        public PopulationScoreData<TWellPoint, TRealizationData> GetScoreboard(int i)
+        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int i)
         {
-            if (_users != null)
-            {
-                //var results = _users.Values.AsParallel()
-                //    .Select(userValue => userValue.Score)
-                //    .ToList();
-                //var userList = _users.Values.ToList();
-                var userArray = _users.ToArray();
-                var results = new List<UserResultFinal<TWellPoint>>(userArray.Length);
-                foreach (var user in userArray)
-                {
-                    var userPair = user.Value;
-                    results.Add(userPair.Score);
-                }
-                _scoreDataAll[i].UserResults = results;
-                if (UserExists(BotUserName))
-                {
-                    _scoreDataAll[i].BotResult = _users[BotUserName].Score;
-                }
-            }
-            DumpScoreBoardToFile(_scoreDataAll);
-            return _scoreDataAll[i];
+            throw new NotImplementedException();
+            //if (_users != null)
+            //{
+            //    //var results = _users.Values.AsParallel()
+            //    //    .Select(userValue => userValue.Score)
+            //    //    .ToList();
+            //    //var userList = _users.Values.ToList();
+            //    var userArray = _users.ToArray();
+            //    var results = new List<UserResultFinal<TWellPoint>>(userArray.Length);
+            //    foreach (var user in userArray)
+            //    {
+            //        var userPair = user.Value;
+            //        results.Add(userPair.Score);
+            //    }
+            //    _scoreDataAll[i].UserResults = results;
+            //    if (UserExists(BotUserName))
+            //    {
+            //        _scoreDataAll[i].BotResult = _users[BotUserName].Score;
+            //    }
+            //}
+            //DumpScoreBoardToFile(_scoreDataAll);
+            //return _scoreDataAll[i];
         }
     }
 }

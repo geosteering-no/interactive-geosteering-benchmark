@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Pipelines;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using UserState;
 
 namespace GameServer.Controllers
 {
@@ -20,10 +21,10 @@ namespace GameServer.Controllers
 
         private const string UserId_ID = "geobanana-user-id";
         private readonly ILogger<GeoController> _logger;
-        private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint, RealizationData>> _stateServer;
+        private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, LevelDescription<WellPoint, RealizationData, TrueModelState>> _stateServer;
 
         public GeoController(ILogger<GeoController> logger,
-            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint, RealizationData>> stateServer)
+            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, LevelDescription<WellPoint, RealizationData, TrueModelState>> stateServer)
         {
             //Note! this is magic
             _logger = logger;
@@ -49,7 +50,7 @@ namespace GameServer.Controllers
         }
 
         [Route("admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
-        public PopulationScoreData<WellPoint, RealizationData> GetScores()
+        public LevelDescription<WellPoint, RealizationData, TrueModelState> GetScores()
         {
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");
@@ -69,7 +70,7 @@ namespace GameServer.Controllers
 
         [Route("admin/load/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]
-        public PopulationScoreData<WellPoint, RealizationData> LoadScoresFromFile([FromBody] string fileName)
+        public LevelDescription<WellPoint, RealizationData, TrueModelState> LoadScoresFromFile([FromBody] string fileName)
         {
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");

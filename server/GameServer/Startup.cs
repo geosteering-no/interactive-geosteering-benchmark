@@ -54,7 +54,7 @@ namespace GameServer
                 options.Cookie.IsEssential = true;
             });
             services.AddSingleton<
-                IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, PopulationScoreData<WellPoint, RealizationData>>,
+                IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, LevelDescription<WellPoint, RealizationData, TrueModelState>>,
                 FullServerState
                 //ServerStateMock
             >();

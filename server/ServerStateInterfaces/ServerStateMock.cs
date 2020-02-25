@@ -28,17 +28,20 @@ namespace ServerStateInterfaces
         public ServerStateMock() : base()
         {
             _dummyUserData = UserStateMockBase.CreateUserData();
-            _scoreDataAll = new PopulationScoreData<WellPoint, RealizationData>()
+            for (int i = 0; i < _levelDescriptions.Length; ++i)
             {
-                Height = _dummyUserData.Height,
-                Width = _dummyUserData.Width,
-                Xtopleft = _dummyUserData.Xtopleft,
-                Ytopleft = _dummyUserData.Ytopleft,
-                xList = _dummyUserData.xList,
-                secretRealizations = _secrets,
-                TotalDecisionPoints = TOTAL_DECISION_STEPS,
-                Xdist = _dummyUserData.Xdist
-            };
+                _levelDescriptions[i] = new LevelDescription<WellPoint, RealizationData, RealizationData>()
+                {
+                    Height = _dummyUserData.Height,
+                    Width = _dummyUserData.Width,
+                    Xtopleft = _dummyUserData.Xtopleft,
+                    Ytopleft = _dummyUserData.Ytopleft,
+                    xList = _dummyUserData.xList,
+                    secretRealization = _secrets[i],
+                    TotalDecisionPoints = TOTAL_DECISION_STEPS,
+                    Xdist = _dummyUserData.Xdist
+                };
+            }
         }
 
         protected override RealizationData[] InitializeNewSyntheticTruths(int seed = 0)
