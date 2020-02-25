@@ -44,7 +44,7 @@ namespace ServerStateInterfaces
             }
         }
 
-        protected override RealizationData[] InitializeNewSyntheticTruths(int seed = 0)
+        protected override RealizationData[] InitializeNewSyntheticTruths()
         {
             throw new NotImplementedException();
             //var defaultUserData = GetNewDefaultUserPair("").UserData;

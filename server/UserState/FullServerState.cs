@@ -34,7 +34,7 @@ namespace UserState
         public FullServerState()
         {
             _dummyUserData = GetNewDefaultUserPair("").UserData;
-            InitializeNewSyntheticTruths(0);
+            InitializeNewSyntheticTruths();
 
             for (int i = 0; i < _levelDescriptions.Length; ++i)
             {
@@ -49,18 +49,23 @@ namespace UserState
                     TotalDecisionPoints = _dummyUserData.TotalDecisionPoints,
                     Xdist = _dummyUserData.Xdist,
                 };
+                var bestTrajectoryWithScore = 
+                    GetBestTrajectoryWithScore(GetRealizationDataFromTruthForEvaluation(_secrets[i]), 
+                        GetInitialPoint(),
+                        EvaluatorTruth,
+                        _dummyUserData.Xdist,
+                        _dummyUserData.TotalDecisionPoints);
+                _levelDescriptions[i].BestPossible = bestTrajectoryWithScore;
             }
 
-            var bestTrajectoryWithScore = GetBestTrajectoryWithScore(GetTruthsForEvaluation(),
-                GetInitialPoint(),
-                EvaluatorTruth);
-            _scoreDataAll.BestPossible = bestTrajectoryWithScore;
+
         }
 
-        protected override TrueModelState[] InitializeNewSyntheticTruths(int seed = 0)
+        protected override TrueModelState[] InitializeNewSyntheticTruths()
         {
             for (int i = 0; i < _secrets.Length; ++i)
             {
+                var seed = seeds[i];
                 Console.WriteLine("Initialized synthetic truth with seed: " + seed);
                 Console.WriteLine("\n\n\n Seed: " + seed + "\n\n\n");
                 _secrets[i] = new TrueModelState(seed);
@@ -100,14 +105,16 @@ namespace UserState
             return _dummyUserData.wellPoints[0];
         }
 
-        protected override UserResultFinal<WellPoint> GetBestTrajectoryWithScore(RealizationData secret,
+        protected UserResultFinal<WellPoint> GetBestTrajectoryWithScore(RealizationData secret,
             WellPoint start,
-            ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluator)
+            ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluator,
+            double xDist,
+            int totalDecisionPoints)
         {
             
             _bestSolutionFinder.Init(1.0,
-                _scoreDataAll.Xdist,
-                _scoreDataAll.TotalDecisionPoints - 1, 
+                xDist,
+                totalDecisionPoints - 1, 
                 _dummyUserData.MaxAngleChange, 
                 _dummyUserData.MinInclination,
                 _evaluatorClass.EvaluatorDelegate
@@ -161,7 +168,7 @@ namespace UserState
 
         }
 
-        private RealizationData GetSingleTruthForEvaluation(TrueModelState secret)
+        private RealizationData GetRealizationDataFromTruthForEvaluation(TrueModelState secret)
         {
             var secretModel = secret.TrueSubsurfaseModel1;
             var result = UserState.convertToRealizationData(secretModel);
@@ -171,7 +178,7 @@ namespace UserState
         //TODO convert to be a static function of _secret
         protected override IList<RealizationData> GetTruthsForEvaluation()
         { 
-            var result = _secrets.Select(secret => GetSingleTruthForEvaluation(secret)).ToList();
+            var result = _secrets.Select(secret => GetRealizationDataFromTruthForEvaluation(secret)).ToList();
             return result;
         }
 

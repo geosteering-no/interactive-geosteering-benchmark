@@ -16,8 +16,6 @@ namespace ServerStateInterfaces
             TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
 
     {
-
-
         protected ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>> 
             _users =
                 new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
@@ -74,13 +72,13 @@ namespace ServerStateInterfaces
         //207 top bot 3327 / 4318
 
 
-        private int[] seeds = {0,
-            202,
-            105, 105,
-            103, 103,
-            214, 214,
+        protected int[] seeds = {0,
+            //202,
+            //105, //105,
+            //103, //103,
+            214, //214,
             209,
-            214,
+            //214,
             213,
             215,
             227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 240, 241 };
@@ -104,7 +102,8 @@ namespace ServerStateInterfaces
 
         public ServerStateBase()
         {
-            InitializeNewSyntheticTruths(0);
+            //TODO check if works without
+            //InitializeNewSyntheticTruths(0);
         }
 
         public void DumpScoreBoardToFile(LevelDescription<TWellPoint, TRealizationData, TSecretState> scoreBoard, 
@@ -167,7 +166,7 @@ namespace ServerStateInterfaces
         /// this should call dump secret stateGeocontroller to file
         /// </summary>
         /// <param name="seed"></param>
-        protected abstract TSecretState[] InitializeNewSyntheticTruths(int seed = 0);
+        protected abstract TSecretState[] InitializeNewSyntheticTruths();
         //{
         //    DumpSectetStateToFile(seed);
         //    //Console.WriteLine("Initialized synthetic truth with seed: " + seed);
@@ -203,12 +202,12 @@ namespace ServerStateInterfaces
 
         protected abstract TWellPoint GetInitialPoint();
 
-        protected virtual UserResultFinal<TWellPoint> GetBestTrajectoryWithScore(TRealizationData secret,
-            TWellPoint start,
-            ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluator)
-        {
-            return null;
-        }
+        //protected virtual UserResultFinal<TWellPoint> GetBestTrajectoryWithScore(TRealizationData secret,
+        //    TWellPoint start,
+        //    ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluator)
+        //{
+        //    return null;
+        //}
 
         public void ResetServer(int seed = -1)
         {
@@ -234,6 +233,11 @@ namespace ServerStateInterfaces
         public virtual TUserDataModel LossyCompress(TUserDataModel data)
         {
             return data;
+        }
+
+        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard()
+        {
+            throw new NotImplementedException();
         }
 
         public abstract void AddBotUserDefault();
