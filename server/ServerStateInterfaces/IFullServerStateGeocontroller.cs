@@ -24,7 +24,7 @@ namespace ServerStateInterfaces
         TUserData LossyCompress(TUserData data);
         TUserData GetUserData(string userId);
         TUserEvaluationData GetUserEvaluationData(string userId, IList<TWellPoint> trajectory);
-        TScoreData GetScoreboard();
+        TScoreData GetScoreboard(int serverGameIndex);
 
         void AddBotUserDefault();
 

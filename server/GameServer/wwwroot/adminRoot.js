@@ -544,30 +544,6 @@ function addBotClick() {
 		});
 }
 
-function newGameClick() {
-	fetch("geo/restart/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
-		{
-			credentials: 'include',
-			method: 'POST'
-		})
-		.then(function (res) {
-			if (!res.ok) {
-				alert("restarting was not accepted?!");
-				//throw Error("getting userdata failed");
-			}
-			else {
-				console.log("restart complete");
-				revealIndex = -1;
-				updateButtonLabels();
-				finalTime = new Date().getTime() + 6 * 60 * 1000;
-				fetchScoreData();
-				//TODO consider making it impossible to add new points
-				//TODO consider sending a message to user
-			}
-		});
-
-}
-
 function sliderAngleChange() {
 
 }

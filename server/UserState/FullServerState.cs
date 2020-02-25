@@ -32,7 +32,7 @@ namespace UserState
 
         public FullServerState() : base()
         {
-            _dummyUserData = GetNewDefaultUserPair("").UserData;
+            _dummyUserData = GetNewDefaultUserPair("").UserDataLocked;
             //InitializeNewSyntheticTruths();
 
             for (int i = 0; i < _levelDescriptions.Length; ++i)
@@ -73,6 +73,8 @@ namespace UserState
 
             return _secrets;
         }
+
+
 
         public override UserData LossyCompress(UserData data)
         {

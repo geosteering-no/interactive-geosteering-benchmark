@@ -240,11 +240,6 @@ namespace ServerStateInterfaces
             return data;
         }
 
-        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard()
-        {
-            throw new NotImplementedException();
-        }
-
         public abstract void AddBotUserDefault();
 
 
@@ -256,7 +251,7 @@ namespace ServerStateInterfaces
         public TUserDataModel GetUserData(string userId)
         {
             return _users.GetOrAdd(userId, GetNewDefaultUserPair)
-                .UserData;
+                .UserDataLocked;
         }
 
         public TUserResult GetUserEvaluationData(string userId, IList<TWellPoint> trajectory)
@@ -265,7 +260,7 @@ namespace ServerStateInterfaces
                 .GetEvalaution(trajectory);
         }
 
-        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int i)
+        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int serverGameIndex)
         {
             throw new NotImplementedException();
             //if (_users != null)

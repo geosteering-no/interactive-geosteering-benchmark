@@ -16,7 +16,7 @@ namespace UserState
         {
             while (true)
             {
-                var userData = UserData;
+                var userData = UserDataLocked;
                 var userPointsCount = userData.wellPoints.Count;
                 var totalLeft = userData.TotalDecisionPoints - userPointsCount;
                 if (totalLeft <= 0 || userData.stopped)

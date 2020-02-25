@@ -31,7 +31,7 @@ namespace ServerStateInterfaces
         /// <summary>
         /// locked
         /// </summary>
-        public TUserDataModel UserData
+        public TUserDataModel UserDataLocked
         {
             get
             {

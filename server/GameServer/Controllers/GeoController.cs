@@ -50,14 +50,14 @@ namespace GameServer.Controllers
         }
 
         [Route("admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
-        public LevelDescription<WellPoint, RealizationData, TrueModelState> GetScores()
+        public LevelDescription<WellPoint, RealizationData, TrueModelState> GetScores(int index=0)
         {
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
-                var res = _stateServer.GetScoreboard();
+                var res = _stateServer.GetScoreboard(index);
                 _logger.LogInformation("Score preparation finished in {1}ms", (DateTime.Now - time).TotalMilliseconds);
                 return res;
             }

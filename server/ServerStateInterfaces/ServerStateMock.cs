@@ -47,7 +47,7 @@ namespace ServerStateInterfaces
         protected override RealizationData[] InitializeNewSyntheticTruths()
         {
             throw new NotImplementedException();
-            //var defaultUserData = GetNewDefaultUserPair("").UserData;
+            //var defaultUserData = GetNewDefaultUserPair("").UserDataLocked;
             //_secret = defaultUserData.realizations[seed % defaultUserData.realizations.Count];
             //DumpSectetStateToFile(seed);
             //return _secret;
