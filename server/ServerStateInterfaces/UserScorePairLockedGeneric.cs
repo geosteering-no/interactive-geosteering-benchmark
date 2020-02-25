@@ -208,12 +208,10 @@ namespace ServerStateInterfaces
                     return _user.UserData;
                 }
 
-                var truthIndex = _GetLevelIdForUser() % trueRealizations.Count;
-
                 _user.StopDrilling();
                 _score.Stopped = true;
 
-                var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealizations[truthIndex]);
+                var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, _GetCurrentTrueRealization(trueRealizations));
                 _score.TrajectoryWithScore = newTrajWithScore;
                 newUserData = _user.UserData;
             }

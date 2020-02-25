@@ -15,7 +15,6 @@ namespace UserState
         ServerStateBase<WellPoint, UserData, UserState, TrueModelState, UserEvaluation, RealizationData>
     {
 
-        private const int TotalTruths = 4;
         private const double ExtraHeight = 5;
         private readonly ObjectiveEvaluator _evaluatorClass = new ObjectiveEvaluator();
         private readonly DssBotGeneric<RealizationData> _bestSolutionFinder = 
