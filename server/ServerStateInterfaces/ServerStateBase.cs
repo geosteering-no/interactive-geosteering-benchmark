@@ -260,6 +260,15 @@ namespace ServerStateInterfaces
             return lower / total * 100.0;
         }
 
+        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int serverGameIndex)
+        {
+            serverGameIndex %= _levelDescriptions.Length;
+            var results = GetUserResultsForGame(serverGameIndex);
+            var level = _levelDescriptions[serverGameIndex];
+            level.UserResults = results;
+            return level;
+        }
+
         public double GetScorePercentForGame(int serverGameIndex, double myScore)
         {
             serverGameIndex %= _levelDescriptions.Length;
@@ -277,6 +286,8 @@ namespace ServerStateInterfaces
             };
             return score;
         }
+
+
 
         public MyScore StopUser(string userId)
         {
@@ -320,30 +331,6 @@ namespace ServerStateInterfaces
                 .GetEvalaution(trajectory);
         }
 
-        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int serverGameIndex)
-        {
-            throw new NotImplementedException();
-            //if (_users != null)
-            //{
-            //    //var results = _users.Values.AsParallel()
-            //    //    .Select(userValue => userValue.Score)
-            //    //    .ToList();
-            //    //var userList = _users.Values.ToList();
-            //    var userArray = _users.ToArray();
-            //    var results = new List<UserResultFinal<TWellPoint>>(userArray.Length);
-            //    foreach (var user in userArray)
-            //    {
-            //        var userPair = user.Value;
-            //        results.Add(userPair.Score);
-            //    }
-            //    _scoreDataAll[i].UserResults = results;
-            //    if (UserExists(BotUserName))
-            //    {
-            //        _scoreDataAll[i].BotResult = _users[BotUserName].Score;
-            //    }
-            //}
-            //DumpScoreBoardToFile(_scoreDataAll);
-            //return _scoreDataAll[i];
-        }
+
     }
 }
