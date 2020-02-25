@@ -43,12 +43,14 @@ namespace ServerStateInterfaces
             ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, 
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunctionSimple evaluatorSimple,
-            TRealizationData trueRealization) : base(userName, EvaluatorUser, evaluatorTruth, trueRealization)
+            IList<TRealizationData> trueRealizations) : base(userName, EvaluatorUser, evaluatorTruth, trueRealizations)
         {
             Objective = evaluatorSimple;
         }
 
-        private UserScorePairGenericWithBot(string userName, ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth, TRealizationData trueRealization) : base(userName, EvaluatorUser, evaluatorTruth, trueRealization) 
+        private UserScorePairGenericWithBot(string userName, ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth, 
+            IList<TRealizationData> trueRealizations) :
+            base(userName, EvaluatorUser, evaluatorTruth, trueRealizations) 
         {
         }
     }

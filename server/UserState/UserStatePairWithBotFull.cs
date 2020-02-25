@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ServerDataStructures;
 using ServerStateInterfaces;
 
@@ -39,8 +40,12 @@ namespace UserState
                 //trueRealization);
         }
 
-        public UserStatePairWithBotFull(string userName, ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluatorTruth, ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunctionSimple evaluatorSimple, RealizationData trueRealization) 
-            : base(userName, EvaluatorUser, evaluatorTruth, evaluatorSimple, trueRealization)
+        public UserStatePairWithBotFull(string userName, 
+            ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, 
+            ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluatorTruth, 
+            ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunctionSimple evaluatorSimple, 
+            IList<RealizationData> trueRealizations) 
+            : base(userName, EvaluatorUser, evaluatorTruth, evaluatorSimple, trueRealizations)
         {
         }
     }

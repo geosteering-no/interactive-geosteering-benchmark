@@ -31,10 +31,10 @@ namespace UserState
 
         private UserData _dummyUserData;
 
-        public FullServerState()
+        public FullServerState() : base()
         {
             _dummyUserData = GetNewDefaultUserPair("").UserData;
-            InitializeNewSyntheticTruths();
+            //InitializeNewSyntheticTruths();
 
             for (int i = 0; i < _levelDescriptions.Length; ++i)
             {

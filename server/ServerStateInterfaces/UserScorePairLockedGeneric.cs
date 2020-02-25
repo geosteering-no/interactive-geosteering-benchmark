@@ -20,11 +20,12 @@ namespace ServerStateInterfaces
             ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction
                 EvaluatorUser,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
-            TRealizationData trueRealization)
+            IList<TRealizationData> trueRealizationsLevels)
         {
             _user = GetUserDefault(userName, EvaluatorUser);
             _score = GetResultEmpty(userName);
-            _score.TrajectoryWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealization);
+            _score.TrajectoryWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, 
+                _GetCurrentTrueRealization(trueRealizationsLevels));
         }
 
         /// <summary>
@@ -135,6 +136,19 @@ namespace ServerStateInterfaces
             return _gameIds[_gameNumber % _gameIds.Count];
         }
 
+        private TSecretState _GetCurrentSecretState(IList<TSecretState> secrets)
+        {
+            var truthIndex = _GetLevelIdForUser() % secrets.Count;
+            return secrets[truthIndex];
+        }
+
+
+        private TRealizationData _GetCurrentTrueRealization(IList<TRealizationData> realizations)
+        {
+            var truthIndex = _GetLevelIdForUser() % realizations.Count;
+            return realizations[truthIndex];
+        }
+
         /// <summary>
         /// locked
         /// updates and evaluates user against truth 
@@ -158,13 +172,11 @@ namespace ServerStateInterfaces
                     return _user.UserData;
                 }
 
-                var truthIndex = _GetLevelIdForUser() % secrets.Count;
-
-                var ok = _user.UpdateUser(load, secrets[truthIndex]);
+                var ok = _user.UpdateUser(load, _GetCurrentSecretState(secrets));
 
                 if (ok)
                 {
-                    var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, trueRealizations[truthIndex]);
+                    var newTrajWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, _GetCurrentTrueRealization(trueRealizations));
                     _score.TrajectoryWithScore = newTrajWithScore;
                     newUserData = _user.UserData;
                     //var userResult = _userResults.

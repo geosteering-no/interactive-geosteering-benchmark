@@ -103,7 +103,7 @@ namespace ServerStateInterfaces
         public ServerStateBase()
         {
             //TODO check if works without
-            //InitializeNewSyntheticTruths(0);
+            InitializeNewSyntheticTruths();
         }
 
         public void DumpScoreBoardToFile(LevelDescription<TWellPoint, TRealizationData, TSecretState> scoreBoard, 
@@ -192,12 +192,11 @@ namespace ServerStateInterfaces
         protected UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
             TUserResult, TRealizationData> GetNewDefaultUserPair(string userKey)
         {
-            throw new NotImplementedException();
-            //TODO here we need to create synthetic tructh?
-            //return new UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
-            //    TUserResult, TRealizationData>(
-            //    userKey,
-            //    EvaluatorUser, EvaluatorTruth, GetTruthForEvaluation());
+            //TODO here we need to create synthetic truth?
+            return new UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint,
+                TUserResult, TRealizationData>(
+                userKey,
+                EvaluatorUser, EvaluatorTruth, GetTruthsForEvaluation());
         }
 
         protected abstract TWellPoint GetInitialPoint();
