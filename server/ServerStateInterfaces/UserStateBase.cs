@@ -5,7 +5,8 @@ using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
-    public abstract class UserStateBase<TSecretState>: IUserImplementaion<UserData, WellPoint, TSecretState, UserEvaluation, RealizationData>
+    public abstract class UserStateBase<TSecretState>: 
+        IUserImplementaion<UserData, WellPoint, TSecretState, UserEvaluation, RealizationData>
     {
         protected ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction _evaluator;
         public ObjectiveEvaluationDelegateUser<UserData, WellPoint, UserEvaluation>.ObjectiveEvaluationFunction

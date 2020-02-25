@@ -243,6 +243,7 @@ function commitNextPoint(wellPoint) {
   });
 }
 
+
 function commitStop() {
   preventUpdatingStopAndUpdateButton();
   fetch("/geo/commitstop",
@@ -454,6 +455,31 @@ function tryStartNewGame() {
   }
 }
 
+function commitNewGame(){
+  preventUpdatingNewGameAndUpdateButton();
+  //this one just returns game index
+  fetch("/geo/newgame",
+    {
+      credentials: 'include',
+      method: 'POST'
+    })
+    .then(function (res) {
+      if (!res.ok) {
+        alert("New game was not accepted! Update?");
+        getUserData();
+        //throw Error("getting userdata failed");
+      }
+      else {
+        console.log("new game request went normally");
+        res.json().then(function (json){
+          console.log("starting game "+JSON.stringify(json));
+          getUserData();
+        }
+        );
+      }
+    });
+}
+
 function getUserData() {
   fetch("/geo/userdata", { credentials: 'include' })
     .then(function (res) {
@@ -499,6 +525,10 @@ function preventUpdatingStopAndUpdateButton() {
   submitDecisionButton.mousePressed(doNothing);
 }
 
+function preventUpdatingNewGameAndUpdateButton() {
+  submitDecisionButton.elt.textContent = "Finding new location to drill...";
+  submitDecisionButton.mousePressed(doNothing);
+}
 
 function detectGameStateAndUpdateButton() {
   if (userdata.stopped) {
@@ -516,7 +546,7 @@ function detectGameStateAndUpdateButton() {
 
 function stopGame() {
   submitDecisionButton.elt.textContent = "Stopped. Click to check for new game.";
-  submitDecisionButton.mousePressed(getUserData);
+  submitDecisionButton.mousePressed(commitNewGame);
 }
 
 function calculateCanvasSize() {

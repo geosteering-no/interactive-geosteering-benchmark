@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using ServerDataStructures;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Newtonsoft.Json;
-using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
@@ -23,6 +22,7 @@ namespace ServerStateInterfaces
             IList<TRealizationData> trueRealizationsLevels)
         {
             _user = GetUserDefault(userName, EvaluatorUser);
+            //TODO check if we need score for new game user...
             _score = GetResultEmpty(userName);
             _score.TrajectoryWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, 
                 _GetCurrentTrueRealization(trueRealizationsLevels));
@@ -220,32 +220,56 @@ namespace ServerStateInterfaces
         }
 
         /// <summary>
-        /// locked
-        /// does not update user scores for current game
+        /// This function just moves but does not do anything else
         /// </summary>
-        /// <param name="evaluatorTruth"></param>
-        /// <param name="newTrueRealization"></param>
-        public void MoveToNewGame(
+        /// <returns></returns>
+        public int MoveUserToNewGameLocked(
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
-            TRealizationData newTrueRealization, double oldBest)
+            IList<TRealizationData> trueRealizationLevels)
         {
-            // TODO fix: look for deadlocks here
-            var newUser = GetUserDefault(_UserIdPrivate, _EvaluatorUser);
-            var newTrajectory = GetUserTrajectoryWithScore(
-                newUser,
-                evaluatorTruth,
-                newTrueRealization);
-
             lock (_thisUserLockObject)
             {
-                var trajLen = _score.TrajectoryWithScore.Count;
-                _score.AccumulatedScoreFromPreviousGames += _score.TrajectoryWithScore[trajLen - 1].Score;
-                _score.AccumulatedScorePercentFromPreviousGames += _score.TrajectoryWithScore[trajLen - 1].Score / oldBest;
-                _user = newUser;
-                _score.TrajectoryWithScore = newTrajectory;
+                _gameNumber++;
+                _user = GetUserDefault(_UserIdPrivate, _EvaluatorUser);
                 _score.Stopped = false;
+                _score.TrajectoryWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth,
+                    _GetCurrentTrueRealization(trueRealizationLevels));
+                //TODO see which other things to reinit
+                //_score = GetResultEmpty(_score.UserName);
+                //_score.TrajectoryWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth,
+                //    _GetCurrentTrueRealization(trueRealizationsLevels));
+                //_Stopped = false;
+                return _gameNumber;
             }
         }
+
+        ///// <summary>
+        ///// locked
+        ///// does not update user scores for current game
+        ///// </summary>
+        ///// <param name="evaluatorTruth"></param>
+        ///// <param name="newTrueRealization"></param>
+        //public void MoveToNewGame(
+        //    ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
+        //    TRealizationData newTrueRealization, double oldBest)
+        //{
+        //    // TODO fix: look for deadlocks here
+        //    var newUser = GetUserDefault(_UserIdPrivate, _EvaluatorUser);
+        //    var newTrajectory = GetUserTrajectoryWithScore(
+        //        newUser,
+        //        evaluatorTruth,
+        //        newTrueRealization);
+
+        //    lock (_thisUserLockObject)
+        //    {
+        //        var trajLen = _score.TrajectoryWithScore.Count;
+        //        _score.AccumulatedScoreFromPreviousGames += _score.TrajectoryWithScore[trajLen - 1].Score;
+        //        _score.AccumulatedScorePercentFromPreviousGames += _score.TrajectoryWithScore[trajLen - 1].Score / oldBest;
+        //        _user = newUser;
+        //        _score.TrajectoryWithScore = newTrajectory;
+        //        _score.Stopped = false;
+        //    }
+        //}
 
         /// <summary>
         /// locked
@@ -295,7 +319,7 @@ namespace ServerStateInterfaces
             var newUser = new TUserModel()
             {
                 //TODO here is a bunch of hard-coded things
-                Evaluator = evaluatorUser
+                Evaluator = evaluatorUser,
             };
             return newUser;
         }

@@ -140,6 +140,18 @@ namespace GameServer.Controllers
             Response.Cookies.Append(UserId_ID, userId, option);
         }
 
+        [Route("newgame")]
+        [HttpPost]
+        public int StartNewGameForUser()
+        {
+            var userId = GetUserId();
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " wants to new game.");
+            var res = _stateServer.MoveUserToNewGame(userId);
+            _logger.LogInformation("User {1} moved to new game in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
+            return res;
+        }
+
         [Route("commitstop")]
         [HttpPost]
         public UserData CommitStop()

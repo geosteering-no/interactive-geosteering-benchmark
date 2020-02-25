@@ -14,6 +14,12 @@ namespace ServerStateInterfaces
         //TODO implement the seed
         TUserData UpdateUser(string userId, TWellPoint load = default);
         TUserData StopUser(string userId);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>sequential game index</returns>
+        int MoveUserToNewGame(string userId);
 
         TUserData LossyCompress(TUserData data);
         TUserData GetUserData(string userId);

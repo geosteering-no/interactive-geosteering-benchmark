@@ -229,6 +229,12 @@ namespace ServerStateInterfaces
                 .StopUserLocked(EvaluatorTruth, GetTruthsForEvaluation());
         }
 
+        public int MoveUserToNewGame(string userId)
+        {
+            return _users.GetOrAdd(userId, GetNewDefaultUserPair)
+                .MoveUserToNewGameLocked(EvaluatorTruth, GetTruthsForEvaluation());
+        }
+
         public virtual TUserDataModel LossyCompress(TUserDataModel data)
         {
             return data;
