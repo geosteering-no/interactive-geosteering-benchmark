@@ -45,23 +45,23 @@ namespace ServerStateInterfaces
             }
         }
 
-        /// <summary>
-        /// locked
-        /// </summary>
-        public int GameIndexLocked
-        {
-            get
-            {
-                //we lock to prevent game advancement 
-                // TODO consider removing
-                lock (_thisUserLockObject)
-                {
-                    return _gameNumber;
-                }
-            }
-        }
+        ///// <summary>
+        ///// locked
+        ///// </summary>
+        //private int GameIndexLocked
+        //{
+        //    get
+        //    {
+        //        //we lock to prevent game advancement 
+        //        // TODO consider removing
+        //        lock (_thisUserLockObject)
+        //        {
+        //            return _gameNumber;
+        //        }
+        //    }
+        //}
 
-        public UserResultFinal<TWellPoint> ScoreUnlocked
+        private UserResultFinal<TWellPoint> ScoreUnlocked
         {
             get
             {
@@ -73,26 +73,26 @@ namespace ServerStateInterfaces
             }
         }
 
-        /// <summary>
-        /// locked, marked for removal
-        /// </summary>
-        private UserResultFinal<TWellPoint> ScoreLocked
-        {
-            get
-            {
-                var copyOfResult = new UserResultFinal<TWellPoint>();
-                lock (_thisUserLockObject)
-                {
-                    copyOfResult.TrajectoryWithScore = _score.TrajectoryWithScore;
-                    copyOfResult.Stopped = _score.Stopped;
-                    copyOfResult.UserName = _score.UserName;
-                    //copyOfResult.AccumulatedScoreFromPreviousGames = _score.AccumulatedScoreFromPreviousGames;
-                    //copyOfResult.AccumulatedScorePercentFromPreviousGames =
-                    //    _score.AccumulatedScorePercentFromPreviousGames;
-                }
-                return copyOfResult;
-            }
-        }
+        ///// <summary>
+        ///// locked, marked for removal
+        ///// </summary>
+        //private UserResultFinal<TWellPoint> ScoreLocked
+        //{
+        //    get
+        //    {
+        //        var copyOfResult = new UserResultFinal<TWellPoint>();
+        //        lock (_thisUserLockObject)
+        //        {
+        //            copyOfResult.TrajectoryWithScore = _score.TrajectoryWithScore;
+        //            copyOfResult.Stopped = _score.Stopped;
+        //            copyOfResult.UserName = _score.UserName;
+        //            //copyOfResult.AccumulatedScoreFromPreviousGames = _score.AccumulatedScoreFromPreviousGames;
+        //            //copyOfResult.AccumulatedScorePercentFromPreviousGames =
+        //            //    _score.AccumulatedScorePercentFromPreviousGames;
+        //        }
+        //        return copyOfResult;
+        //    }
+        //}
 
         static int CalculateHashInt(string read)
         {
@@ -138,12 +138,18 @@ namespace ServerStateInterfaces
         /// <returns></returns>
         private int _GetLevelIdForUser()
         {
+            return _GetLevelIdForUserForGameIndexSafe(_gameNumber);
+        }
+
+        private int _GetLevelIdForUserForGameIndexSafe(int gameIndex)
+        {
             if (_gameIds == null)
             {
                 GenerateLevelIdsForUser();
             }
 
-            return _gameIds[_gameNumber % _gameIds.Count];
+            return _gameIds[gameIndex % _gameIds.Count];
+
         }
 
         private TSecretState _GetCurrentSecretState(IList<TSecretState> secrets)
@@ -299,6 +305,19 @@ namespace ServerStateInterfaces
 
 
         #region staticMembers
+
+        public KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> GetUserResultScorePairLocked()
+        {
+            //locked here
+            lock (_thisUserLockObject)
+            {
+                var gameInd = _gameNumber;
+                var resultId = new UserResultId(_UserIdPrivate, gameInd,
+                    _GetLevelIdForUserForGameIndexSafe(gameInd));
+                var scoreCopy = ScoreUnlocked;
+                return new KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>(resultId, scoreCopy);
+            }
+        }
 
         private static void DumpUserStateToFile(string userId, TUserDataModel data, string suffix = "")
         {

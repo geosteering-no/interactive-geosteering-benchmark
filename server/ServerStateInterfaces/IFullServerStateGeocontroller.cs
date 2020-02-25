@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ServerDataStructures;
 
 namespace ServerStateInterfaces
 {
@@ -13,7 +14,7 @@ namespace ServerStateInterfaces
         void ResetServer(int seed = -1);
         //TODO implement the seed
         TUserData UpdateUser(string userId, TWellPoint load = default);
-        TUserData StopUser(string userId);
+        MyScore StopUser(string userId);
         /// <summary>
         /// 
         /// </summary>

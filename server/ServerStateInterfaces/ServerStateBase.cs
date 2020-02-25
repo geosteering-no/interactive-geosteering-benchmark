@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using ServerDataStructures;
 
@@ -220,13 +221,71 @@ namespace ServerStateInterfaces
         {
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var updatedUser = userPair.UpdateUserLocked(load, _secrets, EvaluatorTruth, GetTruthsForEvaluation());
+            var pair = userPair.GetUserResultScorePairLocked();
+            _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
+                (key, value) => pair.Value);
             return updatedUser;
         }
 
-        public TUserDataModel StopUser(string userId)
+
+        public static double GetFinalScore(UserResultFinal<TWellPoint> userResult)
         {
-            return _users.GetOrAdd(userId, GetNewDefaultUserPair)
-                .StopUserLocked(EvaluatorTruth, GetTruthsForEvaluation());
+            return userResult.TrajectoryWithScore[userResult.TrajectoryWithScore.Count - 1].Score;
+        }
+
+        public IList<UserResultFinal<TWellPoint>> GetUserResultsForGame(int serverGameIndex)
+        {
+            serverGameIndex %= _levelDescriptions.Length;
+            var selectedKeys = _resultingTrajectories.Keys.Where(key => key.GameId == serverGameIndex);
+            var currentScores = new List<UserResultFinal<TWellPoint>>();
+            foreach (var userResultId in selectedKeys)
+            {
+                UserResultFinal<TWellPoint> curTrajectory;
+                var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
+                if (result)
+                {
+                    currentScores.Add(curTrajectory);
+                }
+            }
+
+            return currentScores;
+        }
+
+        public double GetPercentile100ForGame(int serverGameIndex, double myScore)
+        {
+            serverGameIndex %= _levelDescriptions.Length;
+            var results = GetUserResultsForGame(serverGameIndex);
+            double lower = results.Select(GetFinalScore).Count(value => value < myScore);
+            var total = results.Count;
+            return lower / total * 100.0;
+        }
+
+        public double GetScorePercentForGame(int serverGameIndex, double myScore)
+        {
+            serverGameIndex %= _levelDescriptions.Length;
+            var best = GetFinalScore(_levelDescriptions[serverGameIndex].BestPossible);
+            return myScore / best * 100.0;
+        }
+
+        public MyScore GetMyFullScore(int serverGameIndex, double valueScore)
+        {
+            var score = new MyScore()
+            {
+                ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
+                ScoreValue = valueScore,
+                YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore)
+            };
+            return score;
+        }
+
+        public MyScore StopUser(string userId)
+        {
+            var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
+            var updatedUser = userPair.StopUserLocked(EvaluatorTruth, GetTruthsForEvaluation());
+            var pair = userPair.GetUserResultScorePairLocked();
+            _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
+                (key, value) => pair.Value);
+            return GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value));
         }
 
         public int MoveUserToNewGame(string userId)
@@ -256,6 +315,7 @@ namespace ServerStateInterfaces
 
         public TUserResult GetUserEvaluationData(string userId, IList<TWellPoint> trajectory)
         {
+            //TODO copy to the global map
             return _users.GetOrAdd(userId, GetNewDefaultUserPair)
                 .GetEvalaution(trajectory);
         }

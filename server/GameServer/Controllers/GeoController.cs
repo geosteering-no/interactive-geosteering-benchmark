@@ -154,15 +154,14 @@ namespace GameServer.Controllers
 
         [Route("commitstop")]
         [HttpPost]
-        public UserData CommitStop()
+        public MyScore CommitStop()
         {
             var userId = GetUserId();
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " is stopping.");
             var res = _stateServer.StopUser(userId);
-            var lossyRes = _stateServer.LossyCompress(res);
             _logger.LogInformation("User {1} stopped in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
-            return lossyRes;
+            return res;
         }
 
 
