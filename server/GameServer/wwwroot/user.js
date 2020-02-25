@@ -471,6 +471,8 @@ function commitNewGame(){
       }
       else {
         console.log("new game request went normally");
+        userEvaluationOld = null;
+        userEvaluation = null;
         res.json().then(function (json){
           console.log("starting game "+JSON.stringify(json));
           getUserData();
