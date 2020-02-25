@@ -61,12 +61,22 @@ namespace ServerStateInterfaces
             }
         }
 
-
+        public UserResultFinal<TWellPoint> ScoreUnlocked
+        {
+            get
+            {
+                var copyOfResult = new UserResultFinal<TWellPoint>();
+                copyOfResult.Stopped = _score.Stopped;
+                copyOfResult.UserName = _score.UserName;
+                copyOfResult.TrajectoryWithScore = _score.TrajectoryWithScore;
+                return copyOfResult;
+            }
+        }
 
         /// <summary>
-        /// locked
+        /// locked, marked for removal
         /// </summary>
-        public UserResultFinal<TWellPoint> Score
+        private UserResultFinal<TWellPoint> ScoreLocked
         {
             get
             {
@@ -76,9 +86,9 @@ namespace ServerStateInterfaces
                     copyOfResult.TrajectoryWithScore = _score.TrajectoryWithScore;
                     copyOfResult.Stopped = _score.Stopped;
                     copyOfResult.UserName = _score.UserName;
-                    copyOfResult.AccumulatedScoreFromPreviousGames = _score.AccumulatedScoreFromPreviousGames;
-                    copyOfResult.AccumulatedScorePercentFromPreviousGames =
-                        _score.AccumulatedScorePercentFromPreviousGames;
+                    //copyOfResult.AccumulatedScoreFromPreviousGames = _score.AccumulatedScoreFromPreviousGames;
+                    //copyOfResult.AccumulatedScorePercentFromPreviousGames =
+                    //    _score.AccumulatedScorePercentFromPreviousGames;
                 }
                 return copyOfResult;
             }
@@ -275,12 +285,13 @@ namespace ServerStateInterfaces
         /// locked
         /// gets evaluation for the user given user trajectory
         /// </summary>
-        public TUserEvaluation GetEvalaution(IList<TWellPoint> trajectory, bool callback)
+        public TUserEvaluation GetEvalaution(IList<TWellPoint> trajectory)
         {
             //TODO add a proper callback to register trajectory
             lock (_thisUserLockObject)
             {
                 var evaluation = _user.GetEvaluation(trajectory);
+                _score.PlannedTrajectory = trajectory;
                 return evaluation;
             }
         }
@@ -330,8 +341,8 @@ namespace ServerStateInterfaces
             var result = new UserResultFinal<TWellPoint>()
             {
                 UserName = userName,
-                AccumulatedScoreFromPreviousGames = 0,
-                AccumulatedScorePercentFromPreviousGames = 0,
+                //AccumulatedScoreFromPreviousGames = 0,
+                //AccumulatedScorePercentFromPreviousGames = 0,
                 Stopped = false,
             };
             return result;
