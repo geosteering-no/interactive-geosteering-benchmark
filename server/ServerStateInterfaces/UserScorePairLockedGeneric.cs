@@ -275,8 +275,9 @@ namespace ServerStateInterfaces
         /// locked
         /// gets evaluation for the user given user trajectory
         /// </summary>
-        public TUserEvaluation GetEvalaution(IList<TWellPoint> trajectory)
+        public TUserEvaluation GetEvalaution(IList<TWellPoint> trajectory, bool callback)
         {
+            //TODO add a proper callback to register trajectory
             lock (_thisUserLockObject)
             {
                 var evaluation = _user.GetEvaluation(trajectory);
