@@ -8,9 +8,12 @@ var colors = ['#a6cee3', '#1f78b4', '#b2df8a'];
 var colorBest = '#33a02c';
 var oldBest = [];
 
+var canvasWidth;
+var canvasHeigth;
+
 var newGameButton;
 var revealIndex = -1;
-var scoreData = null;
+var allWellData = null;
 var legendOffsetTop = 40;
 
 // var updateTotalScoreButton = null;
@@ -113,10 +116,10 @@ function draw() {
 		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		//drawAllWells();
 		image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
-		if (scoreData != null) {
+		if (allWellData != null) {
 			fill(0);
-			var positionInGeomodelCoordinates = (revealIndex) * scoreData.xdist - scoreData.xtopleft;
-			rect(positionInGeomodelCoordinates / scoreData.width * geoModelBuffer.width * 1.02, 0,
+			var positionInGeomodelCoordinates = (revealIndex) * allWellData.xdist - allWellData.xtopleft;
+			rect(positionInGeomodelCoordinates / allWellData.width * geoModelBuffer.width * 1.02, 0,
 				geoModelBuffer.width, geoModelBuffer.height);
 			image(scaleBuffer, 0, 0, scaleBuffer.width, scaleBuffer.height);
 		}
@@ -164,8 +167,8 @@ function draw() {
 
 
 function updateScores() {
-	if (scoreBoardDiv != null && scoreData != null) {
-		var topScores = scoreData.userResults.slice(0)
+	if (scoreBoardDiv != null && allWellData != null) {
+		var topScores = allWellData.userResults.slice(0)
 			.sort(function (a, b) {
 				var valueA = a.accumulatedScoreFromPreviousGames;
 				var valueB = b.accumulatedScoreFromPreviousGames;
@@ -173,7 +176,7 @@ function updateScores() {
 				//var valueB = b.accumulatedScorePercentFromPreviousGames;
 				return valueB - valueA;
 			});
-		var topPercents = scoreData.userResults.slice(0)
+		var topPercents = allWellData.userResults.slice(0)
 			.sort(function (a, b) {
 				//var valueA = a.accumulatedScoreFromPreviousGames;
 				//var valueB = b.accumulatedScoreFromPreviousGames;
@@ -203,7 +206,7 @@ function updateScores() {
 }
 
 function drawAllWells() {
-	if (scoreData != null) {
+	if (allWellData != null) {
 		//oldLegendBuffer.resizeCanvas(legendBuffer.width, legendBuffer.height);
 		//oldLegendBuffer.clear();
 		//oldLegendBuffer.tint(255);
@@ -222,7 +225,7 @@ function drawAllWells() {
 		legendBuffer.textSize(textHeight);
 		var thicknessMultLine = 6;
 
-		curResultsAscending = scoreData.userResults.slice(0)
+		curResultsAscending = allWellData.userResults.slice(0)
 			.sort(function (a, b) {
 				var aLastInd = Math.min(a.trajectoryWithScore.length, revealIndex + 1) - 1;
 				var bLastInd = Math.min(b.trajectoryWithScore.length, revealIndex + 1) - 1;
@@ -246,7 +249,7 @@ function drawAllWells() {
 			if (fromTop < colors.length) {
 				wellBuffer.stroke(colors[fromTop]);
 				wellBuffer.fill(colors[fromTop]);
-				wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
+				wellBuffer.strokeWeight(thicknessMultLine * allWellData.height / wellBuffer.height * 2);
 				var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 				var score = 0;
 				if (lastInd >= 0) {
@@ -271,7 +274,7 @@ function drawAllWells() {
 			} else {
 				wellBuffer.stroke(220);
 				wellBuffer.stroke(220);
-				wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height);
+				wellBuffer.strokeWeight(thicknessMultLine * allWellData.height / wellBuffer.height);
 			}
 
 			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
@@ -281,20 +284,20 @@ function drawAllWells() {
 		}
 
 		//best trajectory
-		if (showBotCheckBox.checked() && scoreData.botResult != undefined && scoreData.botResult != null){
+		if (showBotCheckBox.checked() && allWellData.botResult != undefined && allWellData.botResult != null){
 			wellBuffer.stroke(colorBest);
 			wellBuffer.fill(colorBest);
-			wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
-			var userPoints = scoreData.botResult.trajectoryWithScore.slice(0)
+			wellBuffer.strokeWeight(thicknessMultLine * allWellData.height / wellBuffer.height * 2);
+			var userPoints = allWellData.botResult.trajectoryWithScore.slice(0)
 				.map(function (withScore) {
 					return withScore.wellPoint;
 				});
 			var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 			var score = 0;
 			if (lastInd >= 0) {
-				score = scoreData.botResult.trajectoryWithScore[lastInd].score;
+				score = allWellData.botResult.trajectoryWithScore[lastInd].score;
 			}
-			var shortUserName = scoreData.botResult.userName;
+			var shortUserName = allWellData.botResult.userName;
 			if (shortUserName.length > 30) {
 				shortUserName = shortUserName.substr(0, 30);
 			}
@@ -315,20 +318,20 @@ function drawAllWells() {
 			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
 		}
 		else 
-		if (scoreData.bestPossible != null) {
+		if (allWellData.bestPossible != null) {
 			wellBuffer.stroke(colorBest);
 			wellBuffer.fill(colorBest);
-			wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
-			var userPoints = scoreData.bestPossible.trajectoryWithScore.slice(0)
+			wellBuffer.strokeWeight(thicknessMultLine * allWellData.height / wellBuffer.height * 2);
+			var userPoints = allWellData.bestPossible.trajectoryWithScore.slice(0)
 				.map(function (withScore) {
 					return withScore.wellPoint;
 				});
 			var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 			var score = 0;
 			if (lastInd >= 0) {
-				score = scoreData.bestPossible.trajectoryWithScore[lastInd].score;
+				score = allWellData.bestPossible.trajectoryWithScore[lastInd].score;
 			}
-			var shortUserName = scoreData.bestPossible.userName;
+			var shortUserName = allWellData.bestPossible.userName;
 			if (shortUserName.length > 30) {
 				shortUserName = shortUserName.substr(0, 30);
 			}
@@ -352,12 +355,12 @@ function drawAllWells() {
 }
 
 function drawAllProgress() {
-	if (scoreData != null) {
+	if (allWellData != null) {
 		//progressBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
 		progressBuffer.noStroke();
 		//progressBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
 		//wellBuffer.strokeWeight(2 / scoreData.height);
-		var sortedResults = scoreData.userResults.slice(0).sort(function (a, b) {
+		var sortedResults = allWellData.userResults.slice(0).sort(function (a, b) {
 			if (a.stopped != b.stopped) {
 				if (a.stopped) {
 					return -1;
@@ -376,7 +379,7 @@ function drawAllProgress() {
 
 		for (var i = 0; i < totalUsers; i++) {
 			var userProgressInd = sortedResults[i].trajectoryWithScore.length;
-			var progresFraction = (userProgressInd - 0.5) / scoreData.totalDecisionPoints;
+			var progresFraction = (userProgressInd - 0.5) / allWellData.totalDecisionPoints;
 			if (sortedResults[i].stopped) {
 				progressBuffer.fill(colors[0]);
 				// progressBuffer.text("stopped",
@@ -397,16 +400,16 @@ function drawAllProgress() {
 }
 
 function updateButtonLabels() {
-	if (scoreData != null) {
+	if (allWellData != null) {
 		if (revealIndex - 1 >= 0) {
-			prevButton.html('<== ' + Math.round((revealIndex - 1) / scoreData.totalDecisionPoints * 100) + '%');
+			prevButton.html('<== ' + Math.round((revealIndex - 1) / allWellData.totalDecisionPoints * 100) + '%');
 		}
 		else {
 			prevButton.html('Update');
 			nextButton.html('Reveal');
 		}
-		if (revealIndex + 1 <= scoreData.totalDecisionPoints) {
-			nextButton.html(Math.round((revealIndex + 1) / scoreData.totalDecisionPoints * 100) + '%' + ' ==>');
+		if (revealIndex + 1 <= allWellData.totalDecisionPoints) {
+			nextButton.html(Math.round((revealIndex + 1) / allWellData.totalDecisionPoints * 100) + '%' + ' ==>');
 		}
 		else {
 			nextButton.html('Final step');
@@ -426,8 +429,8 @@ function buttonPreviousClick() {
 }
 
 function buttonNextClick() {
-	if (scoreData != null) {
-		if (revealIndex < scoreData.totalDecisionPoints) {
+	if (allWellData != null) {
+		if (revealIndex < allWellData.totalDecisionPoints) {
 			revealIndex++;
 		}
 	}
@@ -436,8 +439,8 @@ function buttonNextClick() {
 }
 
 function updateAll() {
-	if (scoreData != null)
-		drawGeomodelToBuffer(scoreData);
+	if (allWellData != null)
+		drawGeomodelToBuffer(allWellData);
 	else
 		drawGeomodelToBuffer(null);
 	drawAllWells();
@@ -467,9 +470,9 @@ function loadOldScoresClick() {
 			res.json()
 				.then(function (json) {
 					console.log("got score:" + JSON.stringify(json));
-					scoreData = json;
+					allWellData = json;
 					revealIndex = 0;
-					drawGeomodelToBuffer(scoreData);
+					drawGeomodelToBuffer(allWellData);
 					//drawAllWells();
 				});
 		});
@@ -496,8 +499,8 @@ function fetchScoreData() {
 			res.json()
 				.then(function (json) {
 					console.log("got score:" + JSON.stringify(json));
-					scoreData = json;
-					drawGeomodelToBuffer(scoreData);
+					allWellData = json;
+					drawGeomodelToBuffer(allWellData);
 					//drawAllWells();
 				});
 		});
@@ -599,7 +602,7 @@ function drawGeomodelToBuffer(scoredata) {
 
 	if (scoredata != null) {
 		scaleBufferForView(wellBuffer, scoredata);
-		drawScale(scaleBuffer, scoreData, 25, colorInformation);
+		drawScale(scaleBuffer, allWellData, 25, colorInformation);
 
 		//console.log("scaled");
 	}

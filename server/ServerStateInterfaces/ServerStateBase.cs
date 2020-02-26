@@ -252,7 +252,7 @@ namespace ServerStateInterfaces
                 var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
                 if (result)
                 {
-                    wells.Wells.Add(TrajectoryOutputSingle<TWellPoint>.FromUserResult(curTrajectory));
+                    wells.UserResults.Add(TrajectoryOutputSingle<TWellPoint>.FromUserResult(curTrajectory));
                 }
             }
 

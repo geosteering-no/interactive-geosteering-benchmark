@@ -28,6 +28,8 @@ var colorSelection = '#fee090';
 var colorFutureOptions = '#4575b4';
 var colorDarkFuture = '#4575b4';
 
+var canvasWidth;
+var canvasHeigth;
 
 //light blue here
 var colorInformation = '#91bfdb';

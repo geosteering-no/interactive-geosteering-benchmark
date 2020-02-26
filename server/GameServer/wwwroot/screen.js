@@ -8,8 +8,12 @@ var colors = ['#a6cee3', '#1f78b4', '#b2df8a'];
 var colorBest = '#33a02c';
 var oldBest = [];
 
-var scoreData = null;
+var allWellData = null;
+var userData = null;
 var legendOffsetTop = 40;
+
+var canvasWidth;
+var canvasHeigth;
 
 var loadScoreButton = null;
 var scoreFileNameInput = null;
@@ -39,19 +43,20 @@ function setup() {
 
 	// loadScoreButton = createButton("Load scores");
 	// loadScoreButton.position(100, 1400);
-	// loadScoreButton.mousePressed(loadOldScoresClick);
+	//loadScoreButton.mousePressed(loadOldScoresClick);
 
 	// scoreFileNameInput = createInput('game name number');
 	// scoreFileNameInput.position(200, 1400);
 
-	showBotCheckBox = createCheckbox('Show bot', false);
-	showBotCheckBox.position(700, 1400);
+	// showBotCheckBox = createCheckbox('Show bot', false);
+	// showBotCheckBox.position(700, 1400);
 
 
 
 
 
 	finalTime = new Date().getTime() + 15 * 60 * 1000;
+	fetchUserData();
 	fetchScoreData();
 
 	setSizesAndPositions();
@@ -76,6 +81,7 @@ function draw() {
 	// if (revealIndex >= 0) 
 	{
 		clear();
+		//geoModelBuffer.resetMatrix();
 		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		//drawAllWells();
 		image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
@@ -109,7 +115,7 @@ function draw() {
 	timerCountdown--;
 	if (timerCountdown <= 0) {
 		timerCountdown = frameRate() * 10;
-		fetchScoreData();
+		//fetchScoreData();
 	}
 }
 
@@ -154,7 +160,7 @@ function updateScores() {
 }
 
 function drawAllWells() {
-	if (scoreData != null) {
+	if (allWellData != null && userData != null) {
 		//oldLegendBuffer.resizeCanvas(legendBuffer.width, legendBuffer.height);
 		//oldLegendBuffer.clear();
 		//oldLegendBuffer.tint(255);
@@ -173,7 +179,7 @@ function drawAllWells() {
 		legendBuffer.textSize(textHeight);
 		var thicknessMultLine = 3;
 
-		curResultsAscending = scoreData.userResults.slice(0)
+		curResultsAscending = allWellData.userResults.slice(0)
 			.sort(function (a, b) {
 				var aLastInd = a.trajectoryWithScore.length - 1;
 				var bLastInd = b.trajectoryWithScore.length - 1;
@@ -188,26 +194,23 @@ function drawAllWells() {
 				return valueA - valueB;
 			});
 
-		bestScore = 1
-		if (scoreData.bestPossible != null){
-			var userPoints = scoreData.bestPossible.trajectoryWithScore.slice(0)
-			.map(function (withScore) {
-				return withScore.wellPoint;
-			});
-			var lastInd = userPoints.length - 1;
-			bestScore = scoreData.bestPossible.trajectoryWithScore[lastInd].score / 100.0;
-		}
+		bestScore = 1;
+		// if (allWellData.bestPossible != null){
+		// 	var userPoints = allWellData.bestPossible.trajectoryWithScore.slice(0)
+		// 	.map(function (withScore) {
+		// 		return withScore.wellPoint;
+		// 	});
+		// 	var lastInd = userPoints.length - 1;
+		// 	bestScore = allWellData.bestPossible.trajectoryWithScore[lastInd].score / 100.0;
+		// }
 		
 		for (var i = 0; i < curResultsAscending.length; ++i) {
 			var fromTop = curResultsAscending.length - 1 - i;
-			var userPoints = curResultsAscending[i].trajectoryWithScore.slice(0)
-				.map(function (withScore) {
-					return withScore.wellPoint;
-				});
+			var userPoints = curResultsAscending[i].trajectoryWithScore.slice(0);
 			if (fromTop < 1) {
 				wellBuffer.stroke(colors[fromTop]);
 				wellBuffer.fill(colors[fromTop]);
-				wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
+				wellBuffer.strokeWeight(thicknessMultLine * userData.height / wellBuffer.height * 2);
 				var lastInd = userPoints.length - 1;
 				var score = 0;
 				if (lastInd >= 0) {
@@ -233,7 +236,7 @@ function drawAllWells() {
 				fromTop = 1;
 				wellBuffer.stroke(colors[fromTop]);
 				wellBuffer.fill(colors[fromTop]);
-				wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
+				wellBuffer.strokeWeight(thicknessMultLine * userData.height / wellBuffer.height * 2);
 				var lastInd = userPoints.length - 1;
 				var score = 0;
 				if (lastInd >= 0) {
@@ -253,62 +256,62 @@ function drawAllWells() {
 					legendBuffer.width, legendBuffer.height / legendLength);
 			} else {
 				wellBuffer.stroke(220, 220, 220, 100);
-				wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height);
+				wellBuffer.strokeWeight(thicknessMultLine * userData.height / wellBuffer.height);
 			}
 			
 			// TODO add link
-			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
+			drawUserWellToBuffer(wellBuffer, userPoints);
 			//var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 			//var score = curResults[i].trajectoryWithScore[lastInd].score;
 			//wellBuffer.text(score, userPoints[lastInd].x, userPoints[lastInd].y, 100, 30);
 		}
 
 		//best trajectory
-		if (scoreData.bestPossible != null) {
-			wellBuffer.stroke(colorBest);
-			wellBuffer.fill(colorBest);
-			wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
-			var userPoints = scoreData.bestPossible.trajectoryWithScore.slice(0)
-				.map(function (withScore) {
-					return withScore.wellPoint;
-				});
-			var lastInd = userPoints.length - 1;
-			var score = 0;
-			if (lastInd >= 0) {
-				score = scoreData.bestPossible.trajectoryWithScore[lastInd].score;
-			}
-			var shortUserName = scoreData.bestPossible.userName;
-			if (shortUserName.length > 30) {
-				shortUserName = shortUserName.substr(0, 30);
-			}
+		// if (allWellData.bestPossible != null) {
+		// 	wellBuffer.stroke(colorBest);
+		// 	wellBuffer.fill(colorBest);
+		// 	wellBuffer.strokeWeight(thicknessMultLine * allWellData.height / wellBuffer.height * 2);
+		// 	var userPoints = allWellData.bestPossible.trajectoryWithScore.slice(0)
+		// 		.map(function (withScore) {
+		// 			return withScore.wellPoint;
+		// 		});
+		// 	var lastInd = userPoints.length - 1;
+		// 	var score = 0;
+		// 	if (lastInd >= 0) {
+		// 		score = allWellData.bestPossible.trajectoryWithScore[lastInd].score;
+		// 	}
+		// 	var shortUserName = allWellData.bestPossible.userName;
+		// 	if (shortUserName.length > 30) {
+		// 		shortUserName = shortUserName.substr(0, 30);
+		// 	}
 
-			var fromTop = 3;
-			legendBuffer.fill(colorBest);
-			legendBuffer.textAlign(LEFT);
-			legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-				legendBuffer.width * 0.75, legendBuffer.windowHeight / legendLength);
-			legendBuffer.textAlign(RIGHT);
-			legendBuffer.text(Math.round(score / bestScore) + "%", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-				legendBuffer.width, legendBuffer.windowHeight / legendLength);
-			//best[userName] = null;
-			// if (userName in prevBest){
-			// 	prevBest
-			// }
+		// 	var fromTop = 3;
+		// 	legendBuffer.fill(colorBest);
+		// 	legendBuffer.textAlign(LEFT);
+		// 	legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+		// 		legendBuffer.width * 0.75, legendBuffer.windowHeight / legendLength);
+		// 	legendBuffer.textAlign(RIGHT);
+		// 	legendBuffer.text(Math.round(score / bestScore) + "%", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+		// 		legendBuffer.width, legendBuffer.windowHeight / legendLength);
+		// 	//best[userName] = null;
+		// 	// if (userName in prevBest){
+		// 	// 	prevBest
+		// 	// }
 
-			//TODO fix the link
+		// 	//TODO fix the link
 
-			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
-		}
+		// 	drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
+		// }
 	}
 }
 
 function drawAllProgress() {
-	if (scoreData != null) {
+	if (allWellData != null && userData != null) {
 		//progressBuffer.stroke('rgba(50%, 50%, 0%, 1.0)');
 		progressBuffer.noStroke();
 		//progressBuffer.fill('rgba(50%, 50%, 0%, 1.0)');
 		//wellBuffer.strokeWeight(2 / scoreData.height);
-		var sortedResults = scoreData.userResults.slice(0).sort(function (a, b) {
+		var sortedResults = allWellData.userResults.slice(0).sort(function (a, b) {
 			if (a.stopped != b.stopped) {
 				if (a.stopped) {
 					return -1;
@@ -327,7 +330,7 @@ function drawAllProgress() {
 
 		for (var i = 0; i < totalUsers; i++) {
 			var userProgressInd = sortedResults[i].trajectoryWithScore.length;
-			var progresFraction = (userProgressInd - 0.5) / scoreData.totalDecisionPoints;
+			var progresFraction = (userProgressInd - 0.5) / userData.totalDecisionPoints;
 			if (sortedResults[i].stopped) {
 				progressBuffer.fill(colors[0]);
 				// progressBuffer.text("stopped",
@@ -365,8 +368,8 @@ function buttonNextClick() {
 }
 
 function updateAll() {
-	if (scoreData != null)
-		drawGeomodelToBuffer(scoreData);
+	if (userData != null)
+		drawGeomodelToBuffer(userData);
 	else
 		drawGeomodelToBuffer(null);
 	drawAllWells();
@@ -376,35 +379,37 @@ function getPopulationData() {
 
 }
 
-function loadOldScoresClick() {
-	var bodyString = JSON.stringify(scoreFileNameInput.value());
-	fetch("/geo/admin/load/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", 
-		{ 
-			credentials: 'include',
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json; charset=UTF-8'
-				// 'Content-Type': 'application/x-www-form-urlencoded',
-			  },
-			  body: bodyString
-		})
-		.then(function (res) {
-			if (!res.ok) {
-				alert("getting score failed");
-				throw Error("loading score failed");
-			}
-			res.json()
-				.then(function (json) {
-					console.log("got score:" + JSON.stringify(json));
-					scoreData = json;
-					drawGeomodelToBuffer(scoreData);
-					//drawAllWells();
-				});
-		});
-}
+// function loadOldScoresClick() {
+// 	var bodyString = JSON.stringify(scoreFileNameInput.value());
+// 	fetch("/geo/admin/load/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", 
+// 		{ 
+// 			credentials: 'include',
+// 			method: 'POST',
+// 			headers: {
+// 				'Content-Type': 'application/json; charset=UTF-8'
+// 				// 'Content-Type': 'application/x-www-form-urlencoded',
+// 			  },
+// 			  body: bodyString
+// 		})
+// 		.then(function (res) {
+// 			if (!res.ok) {
+// 				alert("getting score failed");
+// 				throw Error("loading score failed");
+// 			}
+// 			res.json()
+// 				.then(function (json) {
+// 					console.log("got score:" + JSON.stringify(json));
+// 					allWellData = json;
+// 					//drawGeomodelToBuffer(allWellData);
+// 					//drawAllWells();
+// 				});
+// 		});
+// }
 
-function fetchScoreData() {
-	fetch("/geo/admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", { credentials: 'include' })
+function fetchUserData() {
+	fetch("/geo/userdatadefault", 
+		{ credentials: 'include' }
+		)
 		.then(function (res) {
 			if (!res.ok) {
 				alert("getting score failed");
@@ -413,30 +418,28 @@ function fetchScoreData() {
 			res.json()
 				.then(function (json) {
 					console.log("got score:" + JSON.stringify(json));
-					scoreData = json;
-					drawGeomodelToBuffer(scoreData);
-					//drawAllWells();
+					userData = json;
+					drawGeomodelToBuffer(userData);
 				});
 		});
 }
 
-function stopUsersClick() {
-	fetch("geo/stopall/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
-		{
-			credentials: 'include',
-			method: 'POST'
-		})
+
+function fetchScoreData() {
+	fetch("/geo/screen", 
+		{ credentials: 'include' }
+		)
 		.then(function (res) {
 			if (!res.ok) {
-				alert("stopping all users was not accepted?!");
-				//throw Error("getting userdata failed");
+				alert("getting score failed");
+				throw Error("getting score failed");
 			}
-			else {
-				console.log("stopping complete");
-				fetchScoreData();
-				//TODO consider making it impossible to add new points
-				//TODO consider sending a message to user
-			}
+			res.json()
+				.then(function (json) {
+					console.log("got score:" + JSON.stringify(json));
+					allWellData = json;
+					drawAllWells();
+				});
 		});
 }
 
@@ -447,7 +450,7 @@ function windowResized() {
 function drawGeomodelToBuffer(scoredata) {
 
 	var bufferHeight = Math.round(canvasHeigth / 8 * 7);
-	var legendWidth = Math.round(canvasWidth / 2.5);
+	var legendWidth = Math.round(canvasWidth / 3);
 	var legendHeight = Math.round(canvasHeigth / 5);
 	if (geoModelBuffer == null) {
 		geoModelBuffer = createGraphics(canvasWidth, bufferHeight);
@@ -456,6 +459,7 @@ function drawGeomodelToBuffer(scoredata) {
 		scaleBuffer = createGraphics(canvasWidth, bufferHeight);
 		legendBuffer = createGraphics(legendWidth, legendHeight);
 		oldLegendBuffer = createGraphics(legendWidth, legendHeight);
+
 	} else {
 		geoModelBuffer.resizeCanvas(canvasWidth, bufferHeight);
 		wellBuffer.resizeCanvas(canvasWidth, bufferHeight);
@@ -467,9 +471,12 @@ function drawGeomodelToBuffer(scoredata) {
 		legendBuffer.resizeCanvas(legendWidth, legendHeight);
 	}
 
+
+
+
 	if (scoredata != null) {
 		scaleBufferForView(wellBuffer, scoredata);
-		drawScale(scaleBuffer, scoreData, 25, colorInformation);
+		drawScale(scaleBuffer, scoredata, 25, colorInformation);
 
 		//console.log("scaled");
 	}
@@ -479,21 +486,31 @@ function drawGeomodelToBuffer(scoredata) {
 	//geoModelBuffer.strokeWeight(1);
 	geoModelBuffer.noStroke();
 
+
 	if (scoredata != null) {
+		var maxAlpha = 255;
+		geoModelBuffer.colorMode(RGB, maxAlpha);
 		//if (false){
 		scaleBufferForView(geoModelBuffer, scoredata);
 		//console.log("drawing userdat");
 		//console.log("this is slow?");
+		var reals = scoredata.realizations;
+		var realcount = reals.length;
+		var alpha = Math.floor(maxAlpha / realcount);
 
 
-		//var alpha = 0.5;
-		//TODO this formula needs improvement
-		//var alpha = 2 * (1.0 - Math.pow(0.5, 2 / reals.length));
+		  //var alpha = 2 * (1.0 - Math.pow(0.5, 2 / reals.length));
 		geoModelBuffer.noStroke();
-		geoModelBuffer.fill(120);
-		var xlist = scoredata.secretRealization.xList;
-		var realization = scoredata.secretRealization;
-		drawRealizationToBuffer(geoModelBuffer, xlist, realization);
+	  
+		  //geoModelBuffer.fill('rgba(100%, 100%, 100%, ' + alpha + ')');
+		geoModelBuffer.fill(maxAlpha, maxAlpha, maxAlpha, alpha);
+
+		var xlist = scoredata.xList;
+		
+		for (var i=0; i<scoredata.realizations.length; ++i){
+			var realization = scoredata.realizations[i];
+			drawRealizationToBuffer(geoModelBuffer, xlist, realization);
+		}
 
 		//updateBars();
 
@@ -550,6 +567,7 @@ function drawGeomodelToBuffer(scoredata) {
 
 }
 
+  
 
 function setSizesAndPositions() {
 	canvasWidth = Math.round(windowWidth - oneMarginInScript * 2);
@@ -577,7 +595,7 @@ function setSizesAndPositions() {
 	// }
 
 
-	drawGeomodelToBuffer();
+	drawGeomodelToBuffer(userData);
 
 	prevButton.size(canvasWidth / 2 - 15, 100);
 	prevButton.position(10, geoModelBuffer.height + 5);

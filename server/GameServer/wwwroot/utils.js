@@ -1,5 +1,4 @@
-var canvasWidth;
-var canvasHeigth;
+
 var wellBufferX;
 var wellBufferY;
 var barBufferX;

@@ -80,10 +80,11 @@ namespace UserState
 
         public override UserData LossyCompress(UserData data)
         {
-            
+            data.xList = data.xList.Select(d => Math.Round(d, 2)).ToList();
             //the data is a freshly generated object so we can feedle with it in place
             foreach (var realization in data.realizations)
             {
+                realization.XList = data.xList;
                 for (var i = 0; i < realization.YLists.Count; i++)
                 {
                     var realizationYList = realization.YLists[i];

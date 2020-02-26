@@ -4,11 +4,11 @@ namespace ServerDataStructures
 {
     public class ManyWells<TWellPoint>
     {
-        public IList<TrajectoryOutputSingle<TWellPoint>> Wells { get; set; }
+        public IList<TrajectoryOutputSingle<TWellPoint>> UserResults { get; set; }
 
         public ManyWells()
         {
-            Wells = new List<TrajectoryOutputSingle<TWellPoint>>();
+            UserResults = new List<TrajectoryOutputSingle<TWellPoint>>();
         }
     }
 }
