@@ -8,17 +8,8 @@ var colors = ['#a6cee3', '#1f78b4', '#b2df8a'];
 var colorBest = '#33a02c';
 var oldBest = [];
 
-var newGameButton;
-var revealIndex = -1;
 var scoreData = null;
 var legendOffsetTop = 40;
-
-var updateTotalScoreButton = null;
-var stopUsersButton = null;
-var resetUserScoresButton = null;
-var addBotButton = null;
-var scoreBoardDiv = null;
-var showBotCheckBox = null;
 
 var loadScoreButton = null;
 var scoreFileNameInput = null;
@@ -46,39 +37,18 @@ function setup() {
 	nextButton.mousePressed(buttonNextClick);
 	nextButton.style('font-size', '28px');
 
-	loadScoreButton = createButton("Load scores");
-	loadScoreButton.position(100, 1400);
-	loadScoreButton.mousePressed(loadOldScoresClick);
+	// loadScoreButton = createButton("Load scores");
+	// loadScoreButton.position(100, 1400);
+	// loadScoreButton.mousePressed(loadOldScoresClick);
 
-	scoreFileNameInput = createInput('game name number');
-	scoreFileNameInput.position(200, 1400);
-
-
-	// newGameButton = createButton("New game");
-	// newGameButton.position(100, 1400);
-	// newGameButton.mousePressed(newGameClick);
-
-	// stopUsersButton = createButton("Stop all users");
-	// stopUsersButton.position(200, 1400);
-	// stopUsersButton.mousePressed(stopUsersClick);
-
-	resetUserScoresButton = createButton("Reset user scores and new game");
-	resetUserScoresButton.position(300, 1400);
-	resetUserScoresButton.mousePressed(resetScoresAndNewGameClick);
-
-	addBotButton = createButton("Add bot");
-	addBotButton.position(500, 1400);
-	addBotButton.mousePressed(addBotClick);
+	// scoreFileNameInput = createInput('game name number');
+	// scoreFileNameInput.position(200, 1400);
 
 	showBotCheckBox = createCheckbox('Show bot', false);
 	showBotCheckBox.position(700, 1400);
 
-	updateTotalScoreButton = createButton("Update total scores");
-	updateTotalScoreButton.position(0, 1450);
-	updateTotalScoreButton.mousePressed(updateScores);
 
-	scoreBoardDiv = createDiv('Scores');
-	scoreBoardDiv.position(0, 1550);
+
 
 
 	finalTime = new Date().getTime() + 15 * 60 * 1000;
@@ -103,39 +73,27 @@ function draw() {
 		secsStr = secsStr.substring(secsStr.length - 2);
 	}
 	noStroke();
-	if (revealIndex >= 0) {
+	// if (revealIndex >= 0) 
+	{
 		clear();
 		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		//drawAllWells();
 		image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
-		if (scoreData != null) {
-			fill(0);
-			var positionInGeomodelCoordinates = (revealIndex) * scoreData.xdist - scoreData.xtopleft;
-			rect(positionInGeomodelCoordinates / scoreData.width * geoModelBuffer.width * 1.02, 0,
-				geoModelBuffer.width, geoModelBuffer.height);
-			image(scaleBuffer, 0, 0, scaleBuffer.width, scaleBuffer.height);
-		}
+		image(scaleBuffer, 0, 0, scaleBuffer.width, scaleBuffer.height);
 		if (legendBuffer != null) {
 			image(legendBuffer, canvasWidth - legendBuffer.width, legendOffsetTop,
 				legendBuffer.width, legendBuffer.height);
 		}
-		if (oldLegendBuffer != null && false) {
-			fill(200);
-			//rect(canvasWidth - legendBuffer.width, legendBuffer.height, legendBuffer.width, legendBuffer.height);
-			//oldLegendBuffer.image(legendBuffer, 0, 0, legendBuffer.width, legendBuffer.height);
-			//var halfWidth = legelegendBuffer.width / 2;
-			var mult = 0.7;
-			image(oldLegendBuffer, canvasWidth - legendBuffer.width - legendBuffer.width * mult - legendOffsetTop, legendOffsetTop,
-				legendBuffer.width * mult, legendBuffer.height * mult);
-		}
-	} else {
-		clear();
-		fill(0);
-		rect(0, 0, geoModelBuffer.width, geoModelBuffer.height);
-		drawAllProgress();
-		image(progressBuffer, 0, 0, progressBuffer.width, progressBuffer.height);
-		nextButton.html('Remaining time: ' + mins + ":" + secsStr);
-	}
+
+	} 
+	// else {
+	// 	clear();
+	// 	fill(0);
+	// 	rect(0, 0, geoModelBuffer.width, geoModelBuffer.height);
+	// 	drawAllProgress();
+	// 	image(progressBuffer, 0, 0, progressBuffer.width, progressBuffer.height);
+	// 	nextButton.html('Remaining time: ' + mins + ":" + secsStr);
+	// }
 
 	//drawWellToBuffer();
 
@@ -151,50 +109,48 @@ function draw() {
 	timerCountdown--;
 	if (timerCountdown <= 0) {
 		timerCountdown = frameRate() * 10;
-		if (revealIndex < 0) {
-			fetchScoreData();
-		}
+		fetchScoreData();
 	}
 }
 
 
 function updateScores() {
-	if (scoreBoardDiv != null && scoreData != null) {
-		var topScores = scoreData.userResults.slice(0)
-			.sort(function (a, b) {
-				var valueA = a.accumulatedScoreFromPreviousGames;
-				var valueB = b.accumulatedScoreFromPreviousGames;
-				//var valueA = a.accumulatedScorePercentFromPreviousGames;
-				//var valueB = b.accumulatedScorePercentFromPreviousGames;
-				return valueB - valueA;
-			});
-		var topPercents = scoreData.userResults.slice(0)
-			.sort(function (a, b) {
-				//var valueA = a.accumulatedScoreFromPreviousGames;
-				//var valueB = b.accumulatedScoreFromPreviousGames;
-				var valueA = a.accumulatedScorePercentFromPreviousGames;
-				var valueB = b.accumulatedScorePercentFromPreviousGames;
-				return valueB - valueA;
-			});
+	// if (scoreBoardDiv != null && scoreData != null) {
+	// 	var topScores = scoreData.userResults.slice(0)
+	// 		.sort(function (a, b) {
+	// 			var valueA = a.accumulatedScoreFromPreviousGames;
+	// 			var valueB = b.accumulatedScoreFromPreviousGames;
+	// 			//var valueA = a.accumulatedScorePercentFromPreviousGames;
+	// 			//var valueB = b.accumulatedScorePercentFromPreviousGames;
+	// 			return valueB - valueA;
+	// 		});
+	// 	var topPercents = scoreData.userResults.slice(0)
+	// 		.sort(function (a, b) {
+	// 			//var valueA = a.accumulatedScoreFromPreviousGames;
+	// 			//var valueB = b.accumulatedScoreFromPreviousGames;
+	// 			var valueA = a.accumulatedScorePercentFromPreviousGames;
+	// 			var valueB = b.accumulatedScorePercentFromPreviousGames;
+	// 			return valueB - valueA;
+	// 		});
 
-		var s = "Total top <br>";
-		for (var i = 0; i < Math.min(5, topScores.length); ++i) {
-			var shortUserName = topScores[i].userName;
-			if (shortUserName.length > 30) {
-				shortUserName = shortUserName.substr(0, 30);
-			}
-			s += shortUserName + " : " + Math.round(topScores[i].accumulatedScoreFromPreviousGames) + "<br>";
-		}
-		s += "Percent top <br>";
-		for (var i = 0; i < Math.min(5, topPercents.length); ++i) {
-			var shortUserName = topPercents[i].userName;
-			if (shortUserName.length > 30) {
-				shortUserName = shortUserName.substr(0, 30);
-			}
-			s += shortUserName + " : " + Math.round(topPercents[i].accumulatedScorePercentFromPreviousGames * 100) + "<br>";
-		}
-		scoreBoardDiv.html(s);
-	}
+	// 	var s = "Total top <br>";
+	// 	for (var i = 0; i < Math.min(5, topScores.length); ++i) {
+	// 		var shortUserName = topScores[i].userName;
+	// 		if (shortUserName.length > 30) {
+	// 			shortUserName = shortUserName.substr(0, 30);
+	// 		}
+	// 		s += shortUserName + " : " + Math.round(topScores[i].accumulatedScoreFromPreviousGames) + "<br>";
+	// 	}
+	// 	s += "Percent top <br>";
+	// 	for (var i = 0; i < Math.min(5, topPercents.length); ++i) {
+	// 		var shortUserName = topPercents[i].userName;
+	// 		if (shortUserName.length > 30) {
+	// 			shortUserName = shortUserName.substr(0, 30);
+	// 		}
+	// 		s += shortUserName + " : " + Math.round(topPercents[i].accumulatedScorePercentFromPreviousGames * 100) + "<br>";
+	// 	}
+	// 	scoreBoardDiv.html(s);
+	// }
 }
 
 function drawAllWells() {
@@ -219,8 +175,8 @@ function drawAllWells() {
 
 		curResultsAscending = scoreData.userResults.slice(0)
 			.sort(function (a, b) {
-				var aLastInd = Math.min(a.trajectoryWithScore.length, revealIndex + 1) - 1;
-				var bLastInd = Math.min(b.trajectoryWithScore.length, revealIndex + 1) - 1;
+				var aLastInd = a.trajectoryWithScore.length - 1;
+				var bLastInd = b.trajectoryWithScore.length - 1;
 				if (aLastInd < 0) {
 					return 1;
 				}
@@ -238,7 +194,7 @@ function drawAllWells() {
 			.map(function (withScore) {
 				return withScore.wellPoint;
 			});
-			var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
+			var lastInd = userPoints.length - 1;
 			bestScore = scoreData.bestPossible.trajectoryWithScore[lastInd].score / 100.0;
 		}
 		
@@ -252,7 +208,7 @@ function drawAllWells() {
 				wellBuffer.stroke(colors[fromTop]);
 				wellBuffer.fill(colors[fromTop]);
 				wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
-				var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
+				var lastInd = userPoints.length - 1;
 				var score = 0;
 				if (lastInd >= 0) {
 					score = curResultsAscending[i].trajectoryWithScore[lastInd].score;
@@ -278,7 +234,7 @@ function drawAllWells() {
 				wellBuffer.stroke(colors[fromTop]);
 				wellBuffer.fill(colors[fromTop]);
 				wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
-				var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
+				var lastInd = userPoints.length - 1;
 				var score = 0;
 				if (lastInd >= 0) {
 					score = curResultsAscending[i].trajectoryWithScore[lastInd].score;
@@ -299,7 +255,8 @@ function drawAllWells() {
 				wellBuffer.stroke(220, 220, 220, 100);
 				wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height);
 			}
-
+			
+			// TODO add link
 			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
 			//var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
 			//var score = curResults[i].trajectoryWithScore[lastInd].score;
@@ -307,40 +264,6 @@ function drawAllWells() {
 		}
 
 		//best trajectory
-		if (showBotCheckBox.checked() && scoreData.botResult != undefined && scoreData.botResult != null){
-			var fromTop = 2;
-			wellBuffer.stroke(colors[fromTop]);
-			wellBuffer.fill(colors[fromTop]);
-			wellBuffer.strokeWeight(thicknessMultLine * scoreData.height / wellBuffer.height * 2);
-			var userPoints = scoreData.botResult.trajectoryWithScore.slice(0)
-				.map(function (withScore) {
-					return withScore.wellPoint;
-				});
-			var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
-			var score = 0;
-			if (lastInd >= 0) {
-				score = scoreData.botResult.trajectoryWithScore[lastInd].score;
-			}
-			var shortUserName = scoreData.botResult.userName;
-			if (shortUserName.length > 30) {
-				shortUserName = shortUserName.substr(0, 30);
-			}
-
-
-			legendBuffer.fill(colors[fromTop]);
-			legendBuffer.textAlign(LEFT);
-			legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-				legendBuffer.width * 0.75, legendBuffer.windowHeight / legendLength);
-			legendBuffer.textAlign(RIGHT);
-			legendBuffer.text(Math.round(score / bestScore) + "%", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-				legendBuffer.width, legendBuffer.windowHeight / legendLength);
-			//best[userName] = null;
-			// if (userName in prevBest){
-			// 	prevBest
-			// }
-
-			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
-		}
 		if (scoreData.bestPossible != null) {
 			wellBuffer.stroke(colorBest);
 			wellBuffer.fill(colorBest);
@@ -349,7 +272,7 @@ function drawAllWells() {
 				.map(function (withScore) {
 					return withScore.wellPoint;
 				});
-			var lastInd = Math.min(userPoints.length, revealIndex + 1) - 1;
+			var lastInd = userPoints.length - 1;
 			var score = 0;
 			if (lastInd >= 0) {
 				score = scoreData.bestPossible.trajectoryWithScore[lastInd].score;
@@ -371,6 +294,8 @@ function drawAllWells() {
 			// if (userName in prevBest){
 			// 	prevBest
 			// }
+
+			//TODO fix the link
 
 			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
 		}
@@ -423,40 +348,18 @@ function drawAllProgress() {
 }
 
 function updateButtonLabels() {
-	if (scoreData != null) {
-		if (revealIndex - 1 >= 0) {
-			prevButton.html('<== ' + Math.round((revealIndex - 1) / scoreData.totalDecisionPoints * 100) + '%');
-		}
-		else {
-			prevButton.html('Update');
-			nextButton.html('Reveal');
-		}
-		if (revealIndex + 1 <= scoreData.totalDecisionPoints) {
-			nextButton.html(Math.round((revealIndex + 1) / scoreData.totalDecisionPoints * 100) + '%' + ' ==>');
-		}
-		else {
-			nextButton.html('Final step');
-		}
-	}
+	prevButton.html('Update');
+	nextButton.html('TODO: new name');
 }
 
 function buttonPreviousClick() {
-	if (revealIndex > -1) {
-		revealIndex--;
-	}
-	else {
-		fetchScoreData();
-	}
+	fetchScoreData();
 	updateButtonLabels();
 	updateAll();
 }
 
 function buttonNextClick() {
-	if (scoreData != null) {
-		if (revealIndex < scoreData.totalDecisionPoints) {
-			revealIndex++;
-		}
-	}
+
 	updateButtonLabels();
 	updateAll();
 }
@@ -494,7 +397,6 @@ function loadOldScoresClick() {
 				.then(function (json) {
 					console.log("got score:" + JSON.stringify(json));
 					scoreData = json;
-					revealIndex = 0;
 					drawGeomodelToBuffer(scoreData);
 					//drawAllWells();
 				});
@@ -538,76 +440,9 @@ function stopUsersClick() {
 		});
 }
 
-function resetScoresAndNewGameClick() {
-	fetch("geo/resetallscores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
-		{
-			credentials: 'include',
-			method: 'POST'
-		})
-		.then(function (res) {
-			if (!res.ok) {
-				alert("resetting all user scores was not accepted?!");
-				//throw Error("getting userdata failed");
-			}
-			else {
-				console.log("reseting complete");
-				newGameClick();
-				//TODO consider making it impossible to add new points
-				//TODO consider sending a message to user
-			}
-		});
-}
-
-function addBotClick() {
-	fetch("geo/addbot/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
-		{
-			credentials: 'include',
-			method: 'POST'
-		})
-		.then(function (res) {
-			if (!res.ok) {
-				alert("starting bot was not accepted?!");
-				//throw Error("getting userdata failed");
-			}
-			else {
-				console.log("bot has started");
-			}
-		});
-}
-
-function newGameClick() {
-	fetch("geo/restart/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA",
-		{
-			credentials: 'include',
-			method: 'POST'
-		})
-		.then(function (res) {
-			if (!res.ok) {
-				alert("restarting was not accepted?!");
-				//throw Error("getting userdata failed");
-			}
-			else {
-				console.log("restart complete");
-				revealIndex = -1;
-				updateButtonLabels();
-				finalTime = new Date().getTime() + 6 * 60 * 1000;
-				fetchScoreData();
-				//TODO consider making it impossible to add new points
-				//TODO consider sending a message to user
-			}
-		});
-
-}
-
-function sliderAngleChange() {
-
-}
-
 function windowResized() {
 	setSizesAndPositions();
 }
-
-
 
 function drawGeomodelToBuffer(scoredata) {
 
@@ -621,7 +456,6 @@ function drawGeomodelToBuffer(scoredata) {
 		scaleBuffer = createGraphics(canvasWidth, bufferHeight);
 		legendBuffer = createGraphics(legendWidth, legendHeight);
 		oldLegendBuffer = createGraphics(legendWidth, legendHeight);
-
 	} else {
 		geoModelBuffer.resizeCanvas(canvasWidth, bufferHeight);
 		wellBuffer.resizeCanvas(canvasWidth, bufferHeight);
@@ -632,9 +466,6 @@ function drawGeomodelToBuffer(scoredata) {
 		oldLegendBuffer.image(legendBuffer, 0, 0, legendBuffer.width, legendBuffer.height);
 		legendBuffer.resizeCanvas(legendWidth, legendHeight);
 	}
-
-
-
 
 	if (scoredata != null) {
 		scaleBufferForView(wellBuffer, scoredata);
@@ -647,7 +478,6 @@ function drawGeomodelToBuffer(scoredata) {
 	geoModelBuffer.blendMode(ADD);
 	//geoModelBuffer.strokeWeight(1);
 	geoModelBuffer.noStroke();
-
 
 	if (scoredata != null) {
 		//if (false){
