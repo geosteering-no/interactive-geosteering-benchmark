@@ -24,6 +24,9 @@ namespace ServerStateInterfaces
         protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
             _resultingTrajectories = 
                 new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
+        protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
+            _newResultingTrajectories = 
+                new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
         /// <summary>
         /// We never write to this one
         /// </summary>
@@ -222,8 +225,7 @@ namespace ServerStateInterfaces
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var updatedUser = userPair.UpdateUserLocked(load, _secrets, EvaluatorTruth, GetTruthsForEvaluation());
             var pair = userPair.GetUserResultScorePairLocked();
-            _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
-                (key, value) => pair.Value);
+            PushToResultingTrajectories(pair);
             return updatedUser;
         }
 
@@ -287,15 +289,35 @@ namespace ServerStateInterfaces
             return score;
         }
 
+        private void CleanNewResultingTrajectories(int n = 60)
+        {
+            if (_newResultingTrajectories.Count > n)
+            {
+                var pairs = _newResultingTrajectories.ToList();
+                pairs.Sort((pair1,pair2) => (int) (pair1.Value.TimeTicks - pair2.Value.TimeTicks));
+                for (var i = 0; i < pairs.Count - n; ++i)
+                {
+                    _newResultingTrajectories.TryRemove(pairs[i].Key, out _);
+                }
+            }
+        }
 
+        private void PushToResultingTrajectories(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair)
+        {
+            _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
+                (key, value) => pair.Value);
+            _newResultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
+                (key, value) => pair.Value);
+
+        }
 
         public MyScore StopUser(string userId)
         {
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var updatedUser = userPair.StopUserLocked(EvaluatorTruth, GetTruthsForEvaluation());
-            var pair = userPair.GetUserResultScorePairLocked();
-            _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
-                (key, value) => pair.Value);
+            KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
+            pair = userPair.GetUserResultScorePairLocked();
+            PushToResultingTrajectories(pair);
             return GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value));
         }
 
@@ -325,10 +347,12 @@ namespace ServerStateInterfaces
         }
 
         public TUserResult GetUserEvaluationData(string userId, IList<TWellPoint> trajectory)
-        {
-            //TODO copy to the global map
-            return _users.GetOrAdd(userId, GetNewDefaultUserPair)
-                .GetEvalaution(trajectory);
+        { 
+            var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
+            var result = userPair.GetEvalaution(trajectory);
+            var pair = userPair.GetUserResultScorePairLocked();
+            PushToResultingTrajectories(pair);
+            return result;
         }
 
 
