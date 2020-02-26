@@ -10,6 +10,7 @@ namespace ServerDataStructures
         public IList<WellPointWithScore<TWellPoint>> TrajectoryWithScore { get; set; }
         public IList<TWellPoint> PlannedTrajectory { get; set; }
         public bool Stopped { get; set; }
+        public long TimeTicks { get; set; }
         ///// <summary>
         ///// Marked for removal
         ///// </summary>
@@ -21,7 +22,7 @@ namespace ServerDataStructures
 
         public UserResultFinal()
         {
-
+            TimeTicks = DateTime.Now.Ticks;
         }
 
     }
