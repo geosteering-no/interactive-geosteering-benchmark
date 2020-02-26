@@ -259,7 +259,11 @@ namespace ServerStateInterfaces
             serverGameIndex %= _levelDescriptions.Length;
             var results = GetUserResultsForGame(serverGameIndex);
             double lower = results.Select(GetFinalScore).Count(value => value < myScore);
-            var total = results.Count;
+            var total = results.Count - 1;
+            if (total == 0)
+            {
+                return 100;
+            }
             return lower / total * 100.0;
         }
 

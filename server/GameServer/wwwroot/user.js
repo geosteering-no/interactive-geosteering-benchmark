@@ -59,6 +59,8 @@ var maxAngle = 1.4;
 //var beginAngle = 3.14159265 / 180 * 10;
 var nextAngles = [];
 
+var myResult = undefined;
+
 
 
 
@@ -265,19 +267,22 @@ function commitStop() {
             if (logDisabled === undefined) {
               console.log("useradata : " + JSON.stringify(json));
             }
-            userdata = json;
-            //need to remove the first angle now that it is accepted
-            nextAngles.shift();
-            if (editNextAngleNo > 0) {
-              editNextAngleNo--;
-            }
+            //userdata = json;
+            myResult = json;
             stopGame();
-            correctAnglesIfNeeded();
-            detectGameStateAndUpdateButton();
-            updateSliderPosition();
-            updateBars();
-            drawGeomodelToBuffer(userdata);
-            redrawEnabledForAninterval();
+            getUserData();
+            // //need to remove the first angle now that it is accepted
+            // nextAngles.shift();
+            // if (editNextAngleNo > 0) {
+            //   editNextAngleNo--;
+            // }
+            // stopGame();
+            // correctAnglesIfNeeded();
+            // detectGameStateAndUpdateButton();
+            // updateSliderPosition();
+            // updateBars();
+            // drawGeomodelToBuffer(userdata);
+            // redrawEnabledForAninterval();
           });
 
       }
@@ -537,7 +542,7 @@ function detectGameStateAndUpdateButton() {
     stopGame();
   }
   else if (nextAngles.length == 0) {
-    submitDecisionButton.elt.textContent = "Stop drilling! (end game)";
+    submitDecisionButton.elt.textContent = "Stop drilling! (end game and see score)";
     submitDecisionButton.mousePressed(commitDecicion);
   }
   else {
@@ -547,7 +552,15 @@ function detectGameStateAndUpdateButton() {
 }
 
 function stopGame() {
-  submitDecisionButton.elt.textContent = "Stopped. Click to check for new game.";
+  if (myResult){
+    var value = myResult.scoreValue;
+    var percent = myResult.scorePercent;
+    var percentile = myResult.youDidBetterThan;
+    submitDecisionButton.elt.textContent = "Your score is " + Math.round(value) + ". You did better than " 
+      + Math.round(percentile) + "%. New game?";
+  }else{
+    submitDecisionButton.elt.textContent = "Stopped. Click to check for new game.";
+  }
   submitDecisionButton.mousePressed(commitNewGame);
 }
 
