@@ -250,17 +250,28 @@ namespace GameServer.Controllers
             return lossyRes;
         }
 
-        ////TODO make sure not to get too many requests
-        //[Route("screen")]
-        //public UserData GetUserState([FromQuery] object obj)
-        //{
-        //    var time = DateTime.Now;
-        //    _logger.LogInformation(time.ToLongTimeString() + ": someone requested screen.");
-        //    var res = _stateServer.GetUserData(userId);
-        //    var lossyRes = _stateServer.LossyCompress(res);
-        //    _logger.LogInformation("User {1}, sending userdata in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
-        //    return lossyRes;
-        //}
+        [Route("userdatadefault")]
+        public UserData GetDummyUserData()
+        {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": someone requested some userdata.");
+            var res = _stateServer.GetUserDataDefault();
+            var lossyRes = _stateServer.LossyCompress(res);
+            _logger.LogInformation("Sending some userdata in {1}ms", (DateTime.Now - time).TotalMilliseconds);
+            return lossyRes;
+        }
+
+        //TODO make sure not to get too many requests
+        [Route("screen")]
+        public ManyWells<WellPoint> GetUserState([FromQuery] object obj)
+        {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": someone requested screen.");
+            ManyWells<WellPoint> res;
+            res = _stateServer.GetScreenFull();
+            _logger.LogInformation("Sending screen in {1}ms", (DateTime.Now - time).TotalMilliseconds);
+            return res;
+        }
     }
 
 }

@@ -38,7 +38,9 @@ namespace ServerStateInterfaces
         /// 
         /// </summary>
         protected readonly TSecretState[] _secrets = new TSecretState[TOTAL_LEVELS];
-            
+
+        protected TUserDataModel _dummyUserData;
+
 
         protected const string BotUserName = "DasBot 1030";
 
@@ -156,6 +158,10 @@ namespace ServerStateInterfaces
             return scoreBoard;
         }
 
+        //TODO resurect dumping to file everywhere
+
+
+
         public void DumpSectetStateToFile(int data)
         {
             var dirId = "serverstatelog/secret";
@@ -234,6 +240,23 @@ namespace ServerStateInterfaces
         public static double GetFinalScore(UserResultFinal<TWellPoint> userResult)
         {
             return userResult.TrajectoryWithScore[userResult.TrajectoryWithScore.Count - 1].Score;
+        }
+
+        public ManyWells<TWellPoint> GetScreenFull()
+        {
+            var wells = new ManyWells<TWellPoint>();
+            var allTrajectoryKeys = _resultingTrajectories.Keys;
+            foreach (var userResultId in allTrajectoryKeys)
+            {
+                UserResultFinal<TWellPoint> curTrajectory;
+                var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
+                if (result)
+                {
+                    wells.Wells.Add(TrajectoryOutputSingle<TWellPoint>.FromUserResult(curTrajectory));
+                }
+            }
+
+            return wells;
         }
 
         public IList<UserResultFinal<TWellPoint>> GetUserResultsForGame(int serverGameIndex)
@@ -345,6 +368,11 @@ namespace ServerStateInterfaces
         public bool UserExists(string userId)
         {
             return _users.ContainsKey(userId);
+        }
+
+        public TUserDataModel GetUserDataDefault()
+        {
+            return _dummyUserData;
         }
 
         public TUserDataModel GetUserData(string userId)

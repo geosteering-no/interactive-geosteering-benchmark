@@ -6,5 +6,9 @@ namespace ServerDataStructures
     {
         public IList<TrajectoryOutputSingle<TWellPoint>> Wells { get; set; }
 
+        public ManyWells()
+        {
+            Wells = new List<TrajectoryOutputSingle<TWellPoint>>();
+        }
     }
 }

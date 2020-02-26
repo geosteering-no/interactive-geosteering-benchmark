@@ -28,7 +28,9 @@ namespace UserState
         protected override ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction
             EvaluatorTruth => _evaluatorClass.EvaluateOneRealizationDefault;
 
-        private UserData _dummyUserData;
+        
+
+
 
         public FullServerState() : base()
         {
