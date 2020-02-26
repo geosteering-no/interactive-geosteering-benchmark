@@ -5,6 +5,7 @@ using ServerDataStructures;
 using ServerStateInterfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Pipelines;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using UserState;
@@ -50,7 +51,8 @@ namespace GameServer.Controllers
         }
 
         [Route("admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
-        public LevelDescription<WellPoint, RealizationData, TrueModelState> GetScores(int index=0)
+        [HttpPost]
+        public LevelDescription<WellPoint, RealizationData, TrueModelState> GetScores([FromBody]  int index)
         {
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");
@@ -74,6 +76,13 @@ namespace GameServer.Controllers
         {
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");
+            foreach (var ch in Path.GetInvalidFileNameChars())
+            {
+                if (fileName.Contains(ch))
+                {
+                    return null;
+                }
+            }
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
