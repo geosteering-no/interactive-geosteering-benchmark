@@ -6,6 +6,7 @@ using ServerStateInterfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Web;
 using System.IO.Pipelines;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using UserState;
@@ -94,6 +95,26 @@ namespace GameServer.Controllers
             {
                 return null;
                 //throw new Exception("You are not the admin");
+            }
+        }
+
+        [Route("redirect")]
+        public void GetMePlaces()
+        {
+            try
+            {
+                var userId = GetUserId();
+                if (userId != null)
+                {
+                    Response.Redirect("/index.html");
+                }
+                else
+                {
+                    Response.Redirect("/login.html");
+                }
+            }catch (Exception e)
+            {
+                Response.Redirect("/login.html");
             }
         }
 
@@ -228,6 +249,18 @@ namespace GameServer.Controllers
             _logger.LogInformation("User {1}, sending userdata in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
             return lossyRes;
         }
+
+        ////TODO make sure not to get too many requests
+        //[Route("screen")]
+        //public UserData GetUserState([FromQuery] object obj)
+        //{
+        //    var time = DateTime.Now;
+        //    _logger.LogInformation(time.ToLongTimeString() + ": someone requested screen.");
+        //    var res = _stateServer.GetUserData(userId);
+        //    var lossyRes = _stateServer.LossyCompress(res);
+        //    _logger.LogInformation("User {1}, sending userdata in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
+        //    return lossyRes;
+        //}
     }
 
 }

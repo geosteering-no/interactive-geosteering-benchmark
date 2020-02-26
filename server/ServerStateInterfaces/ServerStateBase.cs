@@ -6,6 +6,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using ServerDataStructures;
 
+
 namespace ServerStateInterfaces
 {
     public abstract class ServerStateBase<
@@ -283,10 +284,11 @@ namespace ServerStateInterfaces
             return myScore / best * 100.0;
         }
 
-        public MyScore GetMyFullScore(int serverGameIndex, double valueScore)
+        public MyScore GetMyFullScore(int serverGameIndex, double valueScore, string userName)
         {
             var score = new MyScore()
             {
+
                 ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
                 ScoreValue = valueScore,
                 YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore)
@@ -323,7 +325,7 @@ namespace ServerStateInterfaces
             KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
             pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             PushToResultingTrajectories(pair);
-            return GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value));
+            return GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId);
         }
 
         public int MoveUserToNewGame(string userId)

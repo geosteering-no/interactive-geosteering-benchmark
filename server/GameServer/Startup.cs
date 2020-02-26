@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -63,6 +65,12 @@ namespace GameServer
 
         }
 
+        public static Task RedirectTask(HttpContext context)
+        {
+            context.Response.Redirect("/geo/redirect");
+            return context.Response.StartAsync();
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -80,8 +88,12 @@ namespace GameServer
 
             app.UseAuthorization();
 
+            
+
             app.UseEndpoints(endpoints =>
             {
+                endpoints.Map("default", context => RedirectTask(context));
+                endpoints.Map("/", context => RedirectTask(context));
                 endpoints.MapControllers();
             });
 
