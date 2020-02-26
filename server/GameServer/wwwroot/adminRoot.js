@@ -13,15 +13,17 @@ var revealIndex = -1;
 var scoreData = null;
 var legendOffsetTop = 40;
 
-var updateTotalScoreButton = null;
+// var updateTotalScoreButton = null;
 var stopUsersButton = null;
 var resetUserScoresButton = null;
 var addBotButton = null;
 var scoreBoardDiv = null;
 var showBotCheckBox = null;
 
+var scoreBoardNumberInput = null;
+
 var loadScoreButton = null;
-var scoreFileName = null;
+var scoreFileNameInput = null;
 
 var progressBuffer = null;
 var wellBuffer = null;
@@ -50,8 +52,11 @@ function setup() {
 	loadScoreButton.position(100, 1400);
 	loadScoreButton.mousePressed(loadOldScoresClick);
 
-	scoreFileName = createInput('game name number');
-	scoreFileName.position(200, 1400);
+	scoreFileNameInput = createInput('game name number');
+	scoreFileNameInput.position(200, 1400);
+
+	scoreBoardNumberInput = createInput('0');
+	scoreBoardNumberInput.position(50, 1250);
 
 
 	// newGameButton = createButton("New game");
@@ -73,9 +78,9 @@ function setup() {
 	showBotCheckBox = createCheckbox('Show bot', false);
 	showBotCheckBox.position(700, 1400);
 
-	updateTotalScoreButton = createButton("Update total scores");
-	updateTotalScoreButton.position(0, 1450);
-	updateTotalScoreButton.mousePressed(updateScores);
+	// updateTotalScoreButton = createButton("Update total scores");
+	// updateTotalScoreButton.position(0, 1450);
+	// updateTotalScoreButton.mousePressed(updateScores);
 
 	scoreBoardDiv = createDiv('Scores');
 	scoreBoardDiv.position(0, 1550);
@@ -443,7 +448,7 @@ function getPopulationData() {
 }
 
 function loadOldScoresClick() {
-	var bodyString = JSON.stringify(scoreFileName.value());
+	var bodyString = JSON.stringify(scoreFileNameInput.value());
 	fetch("/geo/admin/load/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", 
 		{ 
 			credentials: 'include',
@@ -471,7 +476,18 @@ function loadOldScoresClick() {
 }
 
 function fetchScoreData() {
-	fetch("/geo/admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", { credentials: 'include' })
+	var boardIndex = parseInt(scoreBoardNumberInput.value());
+	var bodyString = JSON.stringify(boardIndex);
+	fetch("/geo/admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", 
+			{ 
+				credentials: 'include',
+				method: 'POST',
+			  	headers: {
+					'Content-Type': 'application/json; charset=UTF-8'
+					// 'Content-Type': 'application/x-www-form-urlencoded',
+			  	},
+			  	body: bodyString
+			})
 		.then(function (res) {
 			if (!res.ok) {
 				alert("getting score failed");

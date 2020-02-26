@@ -224,7 +224,7 @@ namespace ServerStateInterfaces
         {
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var updatedUser = userPair.UpdateUserLocked(load, _secrets, EvaluatorTruth, GetTruthsForEvaluation());
-            var pair = userPair.GetUserResultScorePairLocked();
+            var pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             PushToResultingTrajectories(pair);
             return updatedUser;
         }
@@ -238,7 +238,8 @@ namespace ServerStateInterfaces
         public IList<UserResultFinal<TWellPoint>> GetUserResultsForGame(int serverGameIndex)
         {
             serverGameIndex %= _levelDescriptions.Length;
-            var selectedKeys = _resultingTrajectories.Keys.Where(key => key.GameId == serverGameIndex);
+            var allTrajectoryKeys = _resultingTrajectories.Keys;
+            var selectedKeys = allTrajectoryKeys.Where(key => key.GameId == serverGameIndex);
             var currentScores = new List<UserResultFinal<TWellPoint>>();
             foreach (var userResultId in selectedKeys)
             {
@@ -316,7 +317,7 @@ namespace ServerStateInterfaces
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var updatedUser = userPair.StopUserLocked(EvaluatorTruth, GetTruthsForEvaluation());
             KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
-            pair = userPair.GetUserResultScorePairLocked();
+            pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             PushToResultingTrajectories(pair);
             return GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value));
         }
@@ -350,7 +351,7 @@ namespace ServerStateInterfaces
         { 
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var result = userPair.GetEvalaution(trajectory);
-            var pair = userPair.GetUserResultScorePairLocked();
+            var pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             PushToResultingTrajectories(pair);
             return result;
         }

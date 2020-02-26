@@ -21,7 +21,7 @@ var scoreBoardDiv = null;
 var showBotCheckBox = null;
 
 var loadScoreButton = null;
-var scoreFileName = null;
+var scoreFileNameInput = null;
 
 var progressBuffer = null;
 var wellBuffer = null;
@@ -50,8 +50,8 @@ function setup() {
 	loadScoreButton.position(100, 1400);
 	loadScoreButton.mousePressed(loadOldScoresClick);
 
-	scoreFileName = createInput('game name number');
-	scoreFileName.position(200, 1400);
+	scoreFileNameInput = createInput('game name number');
+	scoreFileNameInput.position(200, 1400);
 
 
 	// newGameButton = createButton("New game");
@@ -474,7 +474,7 @@ function getPopulationData() {
 }
 
 function loadOldScoresClick() {
-	var bodyString = JSON.stringify(scoreFileName.value());
+	var bodyString = JSON.stringify(scoreFileNameInput.value());
 	fetch("/geo/admin/load/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", 
 		{ 
 			credentials: 'include',

@@ -306,14 +306,14 @@ namespace ServerStateInterfaces
 
         #region staticMembers
 
-        public KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> GetUserResultScorePairLocked()
+        public KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> GetUserResultScorePairLocked(int totalServerGames)
         {
             //locked here
             lock (_thisUserLockObject)
             {
                 var gameInd = _gameNumber;
                 var resultId = new UserResultId(_UserIdPrivate, gameInd,
-                    _GetLevelIdForUserForGameIndexSafe(gameInd));
+                    _GetLevelIdForUserForGameIndexSafe(gameInd) % totalServerGames);
                 var scoreCopy = ScoreUnlocked;
                 return new KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>(resultId, scoreCopy);
             }
