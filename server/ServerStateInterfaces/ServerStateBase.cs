@@ -44,7 +44,7 @@ namespace ServerStateInterfaces
 
         protected const string BotUserName = "Alyaev et al.[2019]";
 
-        protected const int TOTAL_LEVELS = 5;
+        protected const int TOTAL_LEVELS = 1;
         //protected TSecretState _secret = default;
 
         //TODO Generate secret states
@@ -79,8 +79,10 @@ namespace ServerStateInterfaces
         //207 top bot 3327 / 4318
 
 
-        protected int[] seeds = {0,
-            //202,
+        protected int[] seeds = {
+            //105,
+            //0,
+            202,
             //105, //105,
             //103, //103,
             214, //214,
