@@ -307,6 +307,8 @@ namespace ServerStateInterfaces
 
         #region staticMembers
 
+        public delegate void RegisterScorePairCallback(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair);
+
         public KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> GetUserResultScorePairLocked(int totalServerGames)
         {
             //locked here

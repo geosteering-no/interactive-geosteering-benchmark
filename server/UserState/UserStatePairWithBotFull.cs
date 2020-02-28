@@ -12,7 +12,8 @@ namespace UserState
         protected override void RunBot(
             IList<TrueModelState> trueStates,
             ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluatorTruth, 
-            IList<RealizationData> trueRealizations)
+            IList<RealizationData> trueRealizations,
+            RegisterScorePairCallback pushToResultingTrajectories)
         {
             foreach (var trueRealization in trueRealizations)
             {
@@ -37,6 +38,8 @@ namespace UserState
                 }
 
                 StopUserLocked(evaluatorTruth, trueRealizations);
+                var pair = this.GetUserResultScorePairLocked(trueStates.Count);
+                pushToResultingTrajectories(pair);
                 MoveUserToNewGameLocked(evaluatorTruth, trueRealizations);
             }
 

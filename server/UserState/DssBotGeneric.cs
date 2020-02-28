@@ -61,7 +61,6 @@ namespace UserState
             _oneRealizationOptimizer.MaxTurnAngle = maxTurnAngle;
             _oneRealizationOptimizer.MinInclinationAllowed = minInclination;
 
-            //TODO add the correct objective
             _oneRealizationOptimizer.AddObjectiveFucntion(Evaluate, 1.0);
         }
 

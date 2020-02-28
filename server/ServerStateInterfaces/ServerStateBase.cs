@@ -232,7 +232,8 @@ namespace ServerStateInterfaces
         {
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var updatedUser = userPair.UpdateUserLocked(load, _secrets, EvaluatorTruth, GetTruthsForEvaluation());
-            var pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
+            KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
+            pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             PushToResultingTrajectories(pair);
             return updatedUser;
         }
@@ -333,7 +334,7 @@ namespace ServerStateInterfaces
             }
         }
 
-        private void PushToResultingTrajectories(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair)
+        protected void PushToResultingTrajectories(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair)
         {
             _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
                 (key, value) => pair.Value);

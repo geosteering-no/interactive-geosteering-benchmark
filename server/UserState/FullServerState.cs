@@ -163,8 +163,10 @@ namespace UserState
                 botUser.StartBot(
                     _secrets,
                     EvaluatorTruth,
-                    GetTruthsForEvaluation()
+                    GetTruthsForEvaluation(),
+                    PushToResultingTrajectories
                 );
+                
                 //TODO force writting out the scores here
             }
 

@@ -220,15 +220,15 @@ namespace GameServer.Controllers
             return res;
         }
 
-        [Route("addbot/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
-        [HttpPost]
-        public void AddBot()
-        {
-            var time = DateTime.Now;
-            _logger.LogInformation(time.ToLongTimeString() + ": " + " adding a bot.");
-            _stateServer.AddBotUserDefault();
-            _logger.LogInformation("Bot started in {1}ms", (DateTime.Now - time).TotalMilliseconds);
-        }
+        //[Route("addbot/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
+        //[HttpPost]
+        //public void AddBot()
+        //{
+        //    var time = DateTime.Now;
+        //    _logger.LogInformation(time.ToLongTimeString() + ": " + " adding a bot.");
+        //    _stateServer.AddBotUserDefault();
+        //    _logger.LogInformation("Bot started in {1}ms", (DateTime.Now - time).TotalMilliseconds);
+        //}
 
         private string GetUserId()
         {

@@ -30,13 +30,14 @@ namespace ServerStateInterfaces
         public void StartBot(
             IList<TSecretState> secretStates,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
-            IList<TRealizationData> trueRealizations)
+            IList<TRealizationData> trueRealizations,
+            RegisterScorePairCallback registerScoreForAGameCallback)
         {
             if (Bot != null)
             {
                 var thread = new Thread(() =>
                 {
-                    RunBot(secretStates, evaluatorTruth, trueRealizations);
+                    RunBot(secretStates, evaluatorTruth, trueRealizations, registerScoreForAGameCallback);
                 });
                 thread.Priority = ThreadPriority.BelowNormal;
                 thread.Start();
@@ -46,7 +47,8 @@ namespace ServerStateInterfaces
         protected abstract void RunBot
             (IList<TSecretState> trueStates,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction objectiveEvaluationFunction, 
-            IList<TRealizationData> trueRealizations);
+            IList<TRealizationData> trueRealizations,
+            RegisterScorePairCallback registerScoreForAGameCallback);
 
 
         public UserScorePairGenericWithBot(string userName, 
