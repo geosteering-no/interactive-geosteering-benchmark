@@ -31,8 +31,7 @@ namespace UserState
                     Objective);
                 var lastPoint = userData.wellPoints[userPointsCount - 1];
                 var nextChoice = Bot.ComputeBestChoice(userData.realizations, lastPoint, totalLeft);
-                throw new NotImplementedException();
-                //UpdateUserLocked(nextChoice, trueState, evaluatorTruth, trueRealization);
+                UpdateUserLocked(nextChoice, trueState, evaluatorTruth, trueRealization);
             }
 
             throw new NotImplementedException();

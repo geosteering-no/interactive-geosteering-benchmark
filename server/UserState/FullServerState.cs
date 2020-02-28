@@ -143,31 +143,29 @@ namespace UserState
         protected UserScorePairLockedGeneric<UserState, UserData, TrueModelState, WellPoint,
             UserEvaluation, RealizationData> GetBotUserPair(string userKey)
         {
-            throw new NotImplementedException();
-            //var botPair = new UserStatePairWithBotFull(
-            //    userKey,
-            //    EvaluatorUser, 
-            //    EvaluatorTruth, 
-            //    _evaluatorClass.EvaluatorDelegate,
-            //    GetTruthForEvaluation());
-            //botPair.Bot = new DssBotGeneric<RealizationData>();
-            //return botPair;
+            var botPair = new UserStatePairWithBotFull(
+                userKey,
+                EvaluatorUser,
+                EvaluatorTruth,
+                _evaluatorClass.EvaluatorDelegate,
+                GetTruthsForEvaluation());
+            botPair.Bot = new DssBotGeneric<RealizationData>();
+            return botPair;
         }
 
         public override void AddBotUserDefault()
         {
             var userId = BotUserName;
-            
             var user = _users.GetOrAdd(userId, GetBotUserPair);
             var botUser = (UserStatePairWithBotFull) user;
             if (botUser != null)
             {
-                throw new NotImplementedException();
-                //botUser.StartBot(
-                //    _secret,
-                //    EvaluatorTruth,
-                //    GetTruthForEvaluation()
-                //    );
+                botUser.StartBot(
+                    _secret,
+                    EvaluatorTruth,
+                    GetTruthForEvaluation()
+                );
+                //TODO force writting out the scores here
             }
 
         }

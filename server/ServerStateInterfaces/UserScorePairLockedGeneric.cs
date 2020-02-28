@@ -107,28 +107,28 @@ namespace ServerStateInterfaces
 
         private const int ModuloInt = 1000000009;
 
-        private void GenerateLevelIdsForUser()
+        protected virtual void GenerateLevelIdsForUser()
         {
-            _gameIds = new List<int>(TotalUniqueGameInds);
+            GameIds = new List<int>(TotalUniqueGameInds);
             var rnd = new Random(_MyHash);
             for (int i = 0; i < TotalUniqueGameInds; i++)
             {
-                _gameIds.Add(rnd.Next(ModuloInt));
+                GameIds.Add(rnd.Next(ModuloInt));
             }
 
-            _gameIds[0] = 0;
+            GameIds[0] = 0;
             var repeatOption = rnd.Next(3);
             if (repeatOption == 0)
             {
-                _gameIds[2] = _gameIds[1];
+                GameIds[2] = GameIds[1];
             }
             else if (repeatOption == 1)
             {
-                _gameIds[3] = _gameIds[1];
+                GameIds[3] = GameIds[1];
             }
             else
             {
-                _gameIds[3] = _gameIds[2];
+                GameIds[3] = GameIds[2];
             }
         }
 
@@ -143,12 +143,12 @@ namespace ServerStateInterfaces
 
         private int _GetLevelIdForUserForGameIndexSafe(int gameIndex)
         {
-            if (_gameIds == null)
+            if (GameIds == null)
             {
                 GenerateLevelIdsForUser();
             }
 
-            return _gameIds[gameIndex % _gameIds.Count];
+            return GameIds[gameIndex % GameIds.Count];
 
         }
 
@@ -196,7 +196,6 @@ namespace ServerStateInterfaces
                     _score.TrajectoryWithScore = newTrajWithScore;
                     newUserData = _user.UserData;
                     //var userResult = _userResults.
-
                 }
 
             }
@@ -389,7 +388,7 @@ namespace ServerStateInterfaces
         private int _gameNumber = 0;
         private int _myHash = -1;
         //private Random _myRnd;
-        private IList<int> _gameIds;
+        protected IList<int> GameIds;
         private const int TotalUniqueGameInds = 101;
 
         //private Random _MyRnd

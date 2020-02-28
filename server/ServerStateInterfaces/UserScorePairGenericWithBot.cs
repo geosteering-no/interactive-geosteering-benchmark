@@ -13,6 +13,17 @@ namespace ServerStateInterfaces
         TUserEvaluation, TRealizationData> where TUserModel : IUserImplementaion<TUserDataModel, TWellPoint, TSecretState, TUserEvaluation, TRealizationData>, new()
     {
 
+        private readonly int TotalLevelsOnServer;
+
+        protected override void GenerateLevelIdsForUser()
+        {
+            GameIds = new List<int>(TotalLevelsOnServer);
+            for (int i = 0; i < TotalLevelsOnServer; ++i)
+            {
+                GameIds.Add(i);
+            }
+        }
+
         public IDssBotGeneric<TWellPoint, TRealizationData> Bot { get; set; }
         protected ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunctionSimple Objective { get; }
 
@@ -50,8 +61,9 @@ namespace ServerStateInterfaces
 
         private UserScorePairGenericWithBot(string userName, ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth, 
             IList<TRealizationData> trueRealizations) :
-            base(userName, EvaluatorUser, evaluatorTruth, trueRealizations) 
+            base(userName, EvaluatorUser, evaluatorTruth, trueRealizations)
         {
+            TotalLevelsOnServer = trueRealizations.Count;
         }
     }
 }
