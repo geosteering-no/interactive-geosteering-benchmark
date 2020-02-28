@@ -70,7 +70,7 @@ namespace UserState
                 Console.WriteLine("Initialized synthetic truth with seed: " + seed);
                 Console.WriteLine("\n\n\n Seed: " + seed + "\n\n\n");
                 _secrets[i] = new TrueModelState(seed);
-                DumpSectetStateToFile(seed);
+                //DumpSectetStateToFile(seed);
             }
 
             return _secrets;

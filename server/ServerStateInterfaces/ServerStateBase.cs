@@ -115,34 +115,76 @@ namespace ServerStateInterfaces
         }
 
         public void DumpScoreBoardToFile(LevelDescription<TWellPoint, TRealizationData, TSecretState> scoreBoard, 
-            string dirId="scoreLog/")
+            string dirIdHighScore="scoreLog/",
+            string fileName="")
         {
-            if (!Directory.Exists(dirId))
+            if (!Directory.Exists(dirIdHighScore))
             {
-                Directory.CreateDirectory(dirId);
+                Directory.CreateDirectory(dirIdHighScore);
+            }
+
+            if (fileName == "")
+            {
+                fileName += DateTime.Now.Ticks;
             }
             var jsonStr = JsonConvert.SerializeObject(scoreBoard);
-            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
+            System.IO.File.WriteAllText(dirIdHighScore + "/" + fileName, jsonStr);
         }
 
-        public void DumpScoreBoardToFile(IList<LevelDescription<TWellPoint, TRealizationData, TSecretState>> scoreBoardMulty)
+        public void DumpAllScoreBoardToFile(
+            string dirIdHighScore = "scoreLog/")
         {
-            var dirId = "scoreLog/";
+            ;
+            if (!Directory.Exists(dirIdHighScore))
+            {
+                Directory.CreateDirectory(dirIdHighScore);
+            }
+
+            
+            
+            for (int i=0; i<TOTAL_LEVELS; ++i)
+            {
+                DumpScoreBoardToFile(GetScoreboard(i), 
+                    dirIdHighScore, 
+                    "board_"+seeds[i]+".json");
+            }
+
+        }
+
+        public string DumpUserResultToFileOnStop(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> resultPair)
+        {
+            var userId = resultPair.Key.UserName;
+            var serverGameSeed = seeds[resultPair.Key.GameId];
+            var hashString = string.Format("{0:X}", userId.GetHashCode());
+            var strMaxLen = 15;
+            var userDirName = userId.Trim();
+            if (userDirName.Length > strMaxLen)
+            {
+                userDirName = userDirName.Remove(strMaxLen);
+            }
+            foreach (var ch in Path.GetInvalidFileNameChars())
+            {
+                userDirName = userDirName.Replace(ch, '-');
+            }
+
+            userDirName = userDirName + "_" + hashString;
+
+            var dirId = "resultLog/" + userDirName + "_" + DateTime.Now.Ticks;
             if (!Directory.Exists(dirId))
             {
                 Directory.CreateDirectory(dirId);
             }
 
-            var i = 0;
-            //TODO make it to random seed that generates truth
-            foreach (var scoreData in scoreBoardMulty)
-            {
-                DumpScoreBoardToFile(scoreData, dirId+i+"/");
-                i++;
-            }
+            var newPair = new KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>(
+                new UserResultId(userId, resultPair.Key.GameNumberForUser, serverGameSeed),
+                resultPair.Value);
 
+            var jsonStr = JsonConvert.SerializeObject(newPair);
+            File.WriteAllText(dirId + "/" + "userResultPair.json", jsonStr);
+
+            DumpAllScoreBoardToFile(dirId);
+            return dirId;
         }
-
 
         public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboardFromFile(string fileName)
         {
@@ -158,10 +200,6 @@ namespace ServerStateInterfaces
                 (fileString);
             return scoreBoard;
         }
-
-        //TODO resurect dumping to file everywhere
-
-
 
         public void DumpSectetStateToFile(int data)
         {
@@ -359,6 +397,7 @@ namespace ServerStateInterfaces
             KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
             pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             PushToResultingTrajectories(pair);
+            DumpUserResultToFileOnStop(pair);
             return GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId);
         }
 

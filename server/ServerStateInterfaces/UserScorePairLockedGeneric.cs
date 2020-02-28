@@ -42,7 +42,7 @@ namespace ServerStateInterfaces
                 {
                     newUserData = _user.UserData;
                 }
-                DumpUserStateToFile(_UserIdPrivate, newUserData);
+                //DumpUserStateToFile(_UserIdPrivate, newUserData);
                 return newUserData;
             }
         }
@@ -201,7 +201,7 @@ namespace ServerStateInterfaces
                 }
 
             }
-            DumpUserStateToFile(_UserIdPrivate, newUserData, "Update");
+            //DumpUserStateToFile(_UserIdPrivate, newUserData, "Update");
             return newUserData;
 
         }
