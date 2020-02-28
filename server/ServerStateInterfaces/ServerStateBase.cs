@@ -111,6 +111,7 @@ namespace ServerStateInterfaces
         {
             //TODO check if works without
             InitializeNewSyntheticTruths();
+            AddBotUserDefault();
         }
 
         public void DumpScoreBoardToFile(LevelDescription<TWellPoint, TRealizationData, TSecretState> scoreBoard, 

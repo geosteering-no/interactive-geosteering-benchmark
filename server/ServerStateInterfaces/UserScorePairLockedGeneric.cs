@@ -13,6 +13,7 @@ namespace ServerStateInterfaces
             TUserDataModel, TWellPoint, TSecretState,
             TUserEvaluation, TRealizationData>, new()
     {
+        protected readonly int TotalLevelsOnServer;
 
         private object _thisUserLockObject = new Object();
         public UserScorePairLockedGeneric(string userName,
@@ -24,6 +25,7 @@ namespace ServerStateInterfaces
             _user = GetUserDefault(userName, EvaluatorUser);
             //TODO check if we need score for new game user...
             _score = GetResultEmpty(userName);
+            TotalLevelsOnServer = trueRealizationsLevels.Count;
             _score.TrajectoryWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth, 
                 _GetCurrentTrueRealization(trueRealizationsLevels));
         }

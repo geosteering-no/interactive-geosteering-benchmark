@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -12,8 +13,6 @@ namespace ServerStateInterfaces
         TSecretState, TWellPoint,
         TUserEvaluation, TRealizationData> where TUserModel : IUserImplementaion<TUserDataModel, TWellPoint, TSecretState, TUserEvaluation, TRealizationData>, new()
     {
-
-        private readonly int TotalLevelsOnServer;
 
         protected override void GenerateLevelIdsForUser()
         {
@@ -29,15 +28,15 @@ namespace ServerStateInterfaces
 
 
         public void StartBot(
-            TSecretState secretState,
+            IList<TSecretState> secretStates,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
-            TRealizationData trueRealization)
+            IList<TRealizationData> trueRealizations)
         {
             if (Bot != null)
             {
                 var thread = new Thread(() =>
                 {
-                    RunBot(secretState, evaluatorTruth, trueRealization);
+                    RunBot(secretStates, evaluatorTruth, trueRealizations);
                 });
                 thread.Priority = ThreadPriority.BelowNormal;
                 thread.Start();
@@ -45,9 +44,9 @@ namespace ServerStateInterfaces
         }
 
         protected abstract void RunBot
-            (TSecretState trueState,
-            ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth, 
-            TRealizationData trueRealization);
+            (IList<TSecretState> trueStates,
+            ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction objectiveEvaluationFunction, 
+            IList<TRealizationData> trueRealizations);
 
 
         public UserScorePairGenericWithBot(string userName, 
@@ -56,14 +55,16 @@ namespace ServerStateInterfaces
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunctionSimple evaluatorSimple,
             IList<TRealizationData> trueRealizations) : base(userName, EvaluatorUser, evaluatorTruth, trueRealizations)
         {
+            //GenerateLevelIdsForUser();
             Objective = evaluatorSimple;
+            
         }
 
         private UserScorePairGenericWithBot(string userName, ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserEvaluation>.ObjectiveEvaluationFunction EvaluatorUser, ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth, 
             IList<TRealizationData> trueRealizations) :
             base(userName, EvaluatorUser, evaluatorTruth, trueRealizations)
         {
-            TotalLevelsOnServer = trueRealizations.Count;
+            //GenerateLevelIdsForUser();
         }
     }
 }

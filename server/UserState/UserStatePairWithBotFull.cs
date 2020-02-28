@@ -10,33 +10,36 @@ namespace UserState
         UserEvaluation, RealizationData>
     {
         protected override void RunBot(
-            TrueModelState trueState,
+            IList<TrueModelState> trueStates,
             ObjectiveEvaluatorDelegateTruth<RealizationData, WellPoint>.ObjectiveEvaluationFunction evaluatorTruth, 
-            RealizationData trueRealization)
+            IList<RealizationData> trueRealizations)
         {
-            while (true)
+            foreach (var trueRealization in trueRealizations)
             {
-                var userData = UserDataLocked;
-                var userPointsCount = userData.wellPoints.Count;
-                var totalLeft = userData.TotalDecisionPoints - userPointsCount;
-                if (totalLeft <= 0 || userData.stopped)
+                while (true)
                 {
-                    break;
+                    var userData = UserDataLocked;
+                    var userPointsCount = userData.wellPoints.Count;
+                    var totalLeft = userData.TotalDecisionPoints - userPointsCount;
+                    if (totalLeft <= 0 || userData.stopped)
+                    {
+                        break;
+                    }
+                    Bot.Init(0.9,
+                        userData.Xdist,
+                        totalLeft,
+                        userData.MaxAngleChange,
+                        userData.MinInclination,
+                        Objective);
+                    var lastPoint = userData.wellPoints[userPointsCount - 1];
+                    var nextChoice = Bot.ComputeBestChoice(userData.realizations, lastPoint, totalLeft);
+                    UpdateUserLocked(nextChoice, trueStates, evaluatorTruth, trueRealizations);
                 }
-                Bot.Init(0.9,
-                    userData.Xdist,
-                    totalLeft,
-                    userData.MaxAngleChange,
-                    userData.MinInclination,
-                    Objective);
-                var lastPoint = userData.wellPoints[userPointsCount - 1];
-                var nextChoice = Bot.ComputeBestChoice(userData.realizations, lastPoint, totalLeft);
-                UpdateUserLocked(nextChoice, trueState, evaluatorTruth, trueRealization);
+
+                StopUserLocked(evaluatorTruth, trueRealizations);
+                MoveUserToNewGameLocked(evaluatorTruth, trueRealizations);
             }
 
-            throw new NotImplementedException();
-            //StopUserLocked(evaluatorTruth, 
-                //trueRealization);
         }
 
         public UserStatePairWithBotFull(string userName, 

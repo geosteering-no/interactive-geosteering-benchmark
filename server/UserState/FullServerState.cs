@@ -161,9 +161,9 @@ namespace UserState
             if (botUser != null)
             {
                 botUser.StartBot(
-                    _secret,
+                    _secrets,
                     EvaluatorTruth,
-                    GetTruthForEvaluation()
+                    GetTruthsForEvaluation()
                 );
                 //TODO force writting out the scores here
             }
