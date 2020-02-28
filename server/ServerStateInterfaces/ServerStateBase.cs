@@ -280,6 +280,14 @@ namespace ServerStateInterfaces
             return currentScores;
         }
 
+        public UserResultFinal<TWellPoint> GetBotResultForGame(int serverGameIndex)
+        {
+            UserResultFinal<TWellPoint> botResult = null;
+            var key = new UserResultId(BotUserName, serverGameIndex, serverGameIndex);
+            var getResult = _resultingTrajectories.TryGetValue(key, out botResult);
+            return botResult;
+        }
+
         public double GetPercentile100ForGame(int serverGameIndex, double myScore)
         {
             serverGameIndex %= _levelDescriptions.Length;
@@ -299,6 +307,7 @@ namespace ServerStateInterfaces
             var results = GetUserResultsForGame(serverGameIndex);
             var level = _levelDescriptions[serverGameIndex];
             level.UserResults = results;
+            level.BotResult = GetBotResultForGame(serverGameIndex);
             return level;
         }
 
