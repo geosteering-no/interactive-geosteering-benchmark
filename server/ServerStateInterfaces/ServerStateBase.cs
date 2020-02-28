@@ -42,7 +42,7 @@ namespace ServerStateInterfaces
         protected TUserDataModel _dummyUserData;
 
 
-        protected const string BotUserName = "DasBot 1030";
+        protected const string BotUserName = "Alyaev et al.[2019]";
 
         protected const int TOTAL_LEVELS = 5;
         //protected TSecretState _secret = default;
