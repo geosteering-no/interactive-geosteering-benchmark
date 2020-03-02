@@ -232,7 +232,7 @@ namespace ServerStateInterfaces
                 _score.TrajectoryWithScore = newTrajWithScore;
                 newUserData = _user.UserData;
             }
-            //DumpUserStateToFile(_UserIdPrivate, newUserData, "Stop");
+            DumpUserStateToFile(_UserIdPrivate, newUserData, "Stop");
             return newUserData;
         }
 
@@ -246,6 +246,10 @@ namespace ServerStateInterfaces
         {
             lock (_thisUserLockObject)
             {
+                if (!_Stopped)
+                {
+                    return _gameNumber;
+                }
                 _gameNumber++;
                 _user = GetUserDefault(_UserIdPrivate, _EvaluatorUser);
                 _score.Stopped = false;
