@@ -169,7 +169,7 @@ namespace UserState
         {
             var measurement = measuringFunction(newState);
             _dataProvider.DataList = new List<IData<IContinousState, ResistivityData2DFull>> { measurement };
-            _enkf.Update();
+            _enkf.Update(useRolfsTrick: true);
             _enkf.AcceptUpdate();
         }
 
