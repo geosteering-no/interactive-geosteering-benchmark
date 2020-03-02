@@ -69,7 +69,7 @@ namespace UserState
         /// </summary>
         public UserState()
         {
-            _earthManipulator = InitializeManipulator(0, TrueModelState.DEVIATION);
+            _earthManipulator = InitializeManipulator(0, TrueModelState.DeviationModelGeneration);
             _trajectory = new List<IContinousState> { GetDefaultFirstState() };
             DefaultDecisionStep = GetDefaultDecisionStep();
             _InitializeEnkf(_earthManipulator);

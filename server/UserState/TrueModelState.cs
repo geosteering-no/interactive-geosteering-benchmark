@@ -12,7 +12,8 @@ namespace UserState
     public class TrueModelState
     {
 
-        public const double DEVIATION = 2.5; //originally 2.5
+        public const double DeviationModelGeneration = 2.5; //originally 2.5
+        public const double ResestivityMeasureStd = 0.75; //originally 0.5
 
         public const double InstrumentSize = 3.0;
         private MultiDataGenerator _trueModel;
@@ -33,7 +34,7 @@ namespace UserState
 
         private IEarthModelRealization _GenerateSyntheticTruthFromSeed(int randomSeed)
         {
-            var eManip = UserState.InitializeManipulator(randomSeed, DEVIATION);
+            var eManip = UserState.InitializeManipulator(randomSeed, DeviationModelGeneration);
             var model = eManip.Realizations[randomSeed % eManip.NumberOfRealizations];
             return model;
         }
@@ -41,6 +42,7 @@ namespace UserState
         private void _InitializeDataGenrator(IResistivityModel earthmodel)
         {
             _trueModel = new MultiDataGenerator(earthmodel, InstrumentSize);
+            _trueModel.dataError = ResestivityMeasureStd;
         }
 
         public ResistivityMeasurement GetData(IContinousState pos)
