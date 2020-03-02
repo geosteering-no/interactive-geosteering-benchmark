@@ -159,7 +159,8 @@ namespace ServerStateInterfaces
         {
             var userId = resultPair.Key.UserName;
             var serverGameSeed = seeds[resultPair.Key.GameId];
-            var hashString = string.Format("{0:X}", userId.GetHashCode());
+            var hashString = string.Format("{0:X}", UserScorePairLockedGeneric< TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult,TRealizationData>
+                .CalculateHashInt(userId));
             var strMaxLen = 15;
             var userDirName = userId.Trim();
             if (userDirName.Length > strMaxLen)

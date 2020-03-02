@@ -96,7 +96,7 @@ namespace ServerStateInterfaces
         //    }
         //}
 
-        static int CalculateHashInt(string read)
+        public static int CalculateHashInt(string read, int moduloInt = ModuloInt)
         {
             UInt64 hashedValue = 3074457345618258791ul;
             for (int i = 0; i < read.Length; i++)
@@ -104,7 +104,7 @@ namespace ServerStateInterfaces
                 hashedValue += read[i];
                 hashedValue *= 3074457345618258799ul;
             }
-            return (int) hashedValue % ModuloInt;
+            return (int) hashedValue % moduloInt;
         }
 
         private const int ModuloInt = 1000000009;
@@ -328,7 +328,7 @@ namespace ServerStateInterfaces
 
         private static void DumpUserStateToFile(string userId, TUserDataModel data, string suffix = "")
         {
-            var hashString = string.Format("{0:X}", userId.GetHashCode());
+            var hashString = string.Format("{0:X}", CalculateHashInt(userId));
             var strMaxLen = 15;
             var userDirName = userId.Trim();
             if (userDirName.Length > strMaxLen)
