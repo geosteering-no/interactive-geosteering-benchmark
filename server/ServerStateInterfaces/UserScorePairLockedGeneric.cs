@@ -232,7 +232,7 @@ namespace ServerStateInterfaces
                 _score.TrajectoryWithScore = newTrajWithScore;
                 newUserData = _user.UserData;
             }
-            DumpUserStateToFile(_UserIdPrivate, newUserData, "Stop");
+            //DumpUserStateToFile(_UserIdPrivate, newUserData, "Stop");
             return newUserData;
         }
 
