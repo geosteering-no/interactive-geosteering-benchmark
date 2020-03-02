@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -13,7 +13,8 @@ namespace UserState
     {
 
         public const double DeviationModelGeneration = 2.5; //originally 2.5
-        public const double ResestivityMeasureStd = 0.75; //originally 0.5
+        public const double ResestivityMeasureStd = 0.75; //originally 0.5; 0.75 works well
+
 
         public const double InstrumentSize = 3.0;
         private MultiDataGenerator _trueModel;

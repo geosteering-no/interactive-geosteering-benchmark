@@ -80,10 +80,12 @@ namespace ServerStateInterfaces
 
 
         protected int[] seeds = {
-            //105,
+            105,
+            //original NFES
             //0,
-            202,
+            //202,
             //105, //105,
+            //end of original NFES
             //103, //103,
             214, //214,
             209,
