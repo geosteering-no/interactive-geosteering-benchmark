@@ -206,6 +206,43 @@ namespace ServerStateInterfaces
             return scoreBoard;
         }
 
+        private string lastLoadedUser = "";
+        private string lastLoadedUserFile = "";
+
+        private string _GetNextDir()
+        {
+            var dirId = "userLog/";
+            var allDirs = Directory.GetDirectories(dirId);
+            Array.Sort(allDirs);
+            var nextDir = allDirs.First(str => str.CompareTo(lastLoadedUser) > 0);
+            return dirId + nextDir;
+        }
+
+        private string _GetNextFile(string dirId)
+        {
+            var files = Directory.GetFiles(dirId);
+            Array.Sort(files);
+            var getNextFile = files.First(str => str.CompareTo(lastLoadedUserFile) > 0);
+            return getNextFile;
+        }
+
+
+        public TUserDataModel GetNextUserStateFromFile(bool nextUser = false)
+        {
+            if (nextUser || lastLoadedUser == "")
+            {
+                lastLoadedUser = _GetNextDir();
+            }
+
+            lastLoadedUserFile = _GetNextFile(lastLoadedUser);
+
+            var fileName = lastLoadedUser + "/" + lastLoadedUserFile;
+            var fileString = File.ReadAllText(fileName);
+            var userState = JsonConvert.DeserializeObject<TUserDataModel>
+                (fileString);
+            return userState;
+        }
+
         public void DumpSectetStateToFile(int data)
         {
             var dirId = "serverstatelog/secret";

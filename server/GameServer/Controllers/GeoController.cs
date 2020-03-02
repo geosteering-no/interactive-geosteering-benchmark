@@ -5,6 +5,7 @@ using ServerDataStructures;
 using ServerStateInterfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Web;
 using System.IO.Pipelines;
@@ -89,6 +90,27 @@ namespace GameServer.Controllers
             {
                 var fName = fileName;
                 var res = _stateServer.GetScoreboardFromFile(fName);
+                return res;
+            }
+            else
+            {
+                return null;
+                //throw new Exception("You are not the admin");
+            }
+        }
+
+        [Route("admin/nextreplay/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
+        [HttpPost]
+        public UserData LoadNextUserDataFromFile(bool nextUser)
+        {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Replay requested");
+
+
+            var userId = GetUserId();
+            if (userId == ADMIN_SECRET_USER_NAME)
+            { 
+                var res = _stateServer.GetNextUserStateFromFile(nextUser);
                 return res;
             }
             else
@@ -237,7 +259,6 @@ namespace GameServer.Controllers
             return userId;
         }
 
-        //TODO remove
         [Route("userdata")]
         public UserData GetUserState()
         {
