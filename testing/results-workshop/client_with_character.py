@@ -68,7 +68,7 @@ class Geosteerer:
 
     def __init__(self, historical_user_result=None, verbose=False, my_url="http://game.geosteering.no"):
         self.user_result = historical_user_result
-        self.user_name = historical_user_result.name + str(datetime.now())
+        self.user_name = historical_user_result.name
         self.traj_with_scores = historical_user_result.trajectories
         self.trajectories = self._generate_trajectories()
         self.cookies = None
@@ -84,7 +84,7 @@ class Geosteerer:
         return trajectories
 
     def initialize_user(self):
-        self.cookies = log_me_in(base_url=self.url)
+        self.cookies = log_me_in(base_url=self.url, username=self.user_name)
         if self.verbose:
             print("got cookies", self.cookies)
 

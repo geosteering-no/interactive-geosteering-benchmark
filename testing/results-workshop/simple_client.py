@@ -47,8 +47,10 @@ def log_me_in(base_url, username=None):
     """
     add_url = "/geo/init"
     if username is None:
-        username = {"userName": "python " + str(datetime.now())}
-    response = requests.post(base_url + add_url, data=username)
+        data = {"userName": "python " + str(datetime.now())}
+    else:
+        data = {"userName": username + str(datetime.now())}
+    response = requests.post(base_url + add_url, data=data)
     return response.history[0].cookies
 
 
