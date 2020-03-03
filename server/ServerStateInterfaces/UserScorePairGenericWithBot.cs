@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using ServerDataStructures;
 
 namespace ServerStateInterfaces
@@ -27,7 +28,7 @@ namespace ServerStateInterfaces
         protected ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunctionSimple Objective { get; }
 
 
-        public void StartBot(
+        public Thread StartBot(
             IList<TSecretState> secretStates,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             IList<TRealizationData> trueRealizations,
@@ -41,7 +42,9 @@ namespace ServerStateInterfaces
                 });
                 thread.Priority = ThreadPriority.BelowNormal;
                 thread.Start();
+                return thread;
             }
+            throw new InvalidOperationException("There is no Bot to start");
         }
 
         protected abstract void RunBot

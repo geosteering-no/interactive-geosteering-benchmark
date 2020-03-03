@@ -156,18 +156,22 @@ namespace UserState
         public override void AddBotUserDefault()
         {
             var userId = BotUserName;
-            var user = _users.GetOrAdd(userId, GetBotUserPair);
-            var botUser = (UserStatePairWithBotFull) user;
+            var userPair = _users.GetOrAdd(userId, GetBotUserPair);
+            var botUser = (UserStatePairWithBotFull) userPair;
             if (botUser != null)
             {
-                botUser.StartBot(
+                var thread = botUser.StartBot(
                     _secrets,
                     EvaluatorTruth,
                     GetTruthsForEvaluation(),
                     PushToResultingTrajectories
-                );
+                    );
+                thread.Join();
+                KeyValuePair<UserResultId, UserResultFinal<WellPoint>> pair;
+                pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
+                PushToResultingTrajectories(pair);
+                DumpUserResultToFileOnStop(pair);
                 
-                //TODO force writting out the scores here
             }
 
         }

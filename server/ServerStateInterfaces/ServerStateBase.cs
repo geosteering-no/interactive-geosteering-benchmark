@@ -327,15 +327,7 @@ namespace ServerStateInterfaces
                     TWellPoint, TUserResult, TRealizationData>>();
         }
 
-        public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
-        {
-            var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
-            var updatedUser = userPair.UpdateUserLocked(load, _secrets, EvaluatorTruth, GetTruthsForEvaluation());
-            KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
-            pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
-            PushToResultingTrajectories(pair);
-            return updatedUser;
-        }
+
 
 
         public static double GetFinalScore(UserResultFinal<TWellPoint> userResult)
@@ -459,13 +451,15 @@ namespace ServerStateInterfaces
             pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             PushToResultingTrajectories(pair);
             DumpUserResultToFileOnStop(pair);
-            return GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId);
+            var myScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId);
+            return myScore;
         }
 
         public int MoveUserToNewGame(string userId)
         {
-            return _users.GetOrAdd(userId, GetNewDefaultUserPair)
+            var gameInd = _users.GetOrAdd(userId, GetNewDefaultUserPair)
                 .MoveUserToNewGameLocked(EvaluatorTruth, GetTruthsForEvaluation());
+            return gameInd;
         }
 
         public virtual TUserDataModel LossyCompress(TUserDataModel data)
@@ -488,19 +482,29 @@ namespace ServerStateInterfaces
 
         public TUserDataModel GetUserData(string userId)
         {
-            return _users.GetOrAdd(userId, GetNewDefaultUserPair)
+            var userData = _users.GetOrAdd(userId, GetNewDefaultUserPair)
                 .UserDataLocked;
+            return userData;
         }
 
         public TUserResult GetUserEvaluationData(string userId, IList<TWellPoint> trajectory)
         { 
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
-            var result = userPair.GetEvalaution(trajectory);
-            var pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
-            PushToResultingTrajectories(pair);
-            return result;
+            var resultDistribution = userPair.GetEvalautionLocked(trajectory);
+            var scorePair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
+            PushToResultingTrajectories(scorePair);
+            return resultDistribution;
         }
 
+        public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
+        {
+            var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
+            var updatedUser = userPair.UpdateUserLocked(load, _secrets, EvaluatorTruth, GetTruthsForEvaluation());
+            KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
+            pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
+            PushToResultingTrajectories(pair);
+            return updatedUser;
+        }
 
     }
 }
