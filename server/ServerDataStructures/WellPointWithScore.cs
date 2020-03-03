@@ -8,5 +8,6 @@ namespace ServerDataStructures
     {
         public TWellPoint wellPoint { get; set; }
         public double Score { get; set; }
+    
     }
 }
