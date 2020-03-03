@@ -1,0 +1,71 @@
+info: Microsoft.Hosting.Lifetime[0]
+      Now listening on: http://0.0.0.0:80
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\geosteering\netcoreapp3.0-deploy20-03-03
+Initialized synthetic truth with seed: 0
+
+
+
+ Seed: 0
+
+
+
+Initialized synthetic truth with seed: 202
+
+
+
+ Seed: 202
+
+
+
+Initialized synthetic truth with seed: 105
+
+
+
+ Seed: 105
+
+
+
+Initialized synthetic truth with seed: 214
+
+
+
+ Seed: 214
+
+
+
+Bot Started
+Bot started Level: 0
+Starting Bot's optimization, remaining steps: 12
+info: GameServer.Controllers.GeoController[0]
+      1:13:40 PM: gafgadfgdaffg requested userdata.
+warn: Microsoft.AspNetCore.Server.Kestrel[22]
+      Heartbeat took longer than "00:00:01" at "03/03/2020 13:13:40 +00:00". This could be caused by thread pool starvation.
+info: GameServer.Controllers.GeoController[0]
+      User gafgadfgdaffg, sending userdata in 3738.2316ms
+Preparation        12.0485
+Data generation    185.4308
+Centering          4.8017
+SVD                14.144200000000001
+SVD reduction      1.2051
+Perturbation time 3.0054000000000003
+Time update        0.0009000000000000001
+Preparation        0.4253
+Data generation    162.1421
+Centering          3.3065
+SVD                0.3477
+SVD reduction      0.0008
+Perturbation time 0.1389
+Time update        0.00030000000000000003
+Preparation        0.4295
+Data generation    105.2211
+Centering          2.8029
+SVD                0.3392
+SVD reduction      0.0196
+Perturbation time 0.08710000000000001
+Time update        22.988500000000002
+Starting Bot's optimization, remaining steps: 11
