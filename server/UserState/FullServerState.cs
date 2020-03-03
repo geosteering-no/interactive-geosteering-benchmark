@@ -172,9 +172,7 @@ namespace UserState
                     GetTruthsForEvaluation(),
                     BotReportingCallback
                     );
-                
-
-                
+               
             }
 
         }

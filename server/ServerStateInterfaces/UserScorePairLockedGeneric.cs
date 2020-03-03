@@ -182,7 +182,7 @@ namespace ServerStateInterfaces
             IList<TRealizationData> trueRealizations)
         {
             TUserDataModel newUserData = default;
-
+            System.Console.WriteLine("Locking "+ _UserIdPrivate);
             lock (_thisUserLockObject)
             {
                 if (_Stopped)
@@ -201,6 +201,7 @@ namespace ServerStateInterfaces
                 }
 
             }
+            System.Console.WriteLine("Releasing " + _UserIdPrivate);
             //DumpUserStateToFile(_UserIdPrivate, newUserData, "Update");
             return newUserData;
 
@@ -218,6 +219,7 @@ namespace ServerStateInterfaces
             IList<TRealizationData> trueRealizations)
         {
             TUserDataModel newUserData;
+            System.Console.WriteLine("Locking " + _UserIdPrivate);
             lock (_thisUserLockObject)
             {
                 if (_Stopped)
@@ -232,6 +234,7 @@ namespace ServerStateInterfaces
                 _score.TrajectoryWithScore = newTrajWithScore;
                 newUserData = _user.UserData;
             }
+            System.Console.WriteLine("Releasing " + _UserIdPrivate);
             DumpUserStateToFile(_UserIdPrivate, newUserData, "Stop");
             return newUserData;
         }
@@ -244,6 +247,7 @@ namespace ServerStateInterfaces
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             IList<TRealizationData> trueRealizationLevels)
         {
+            System.Console.WriteLine("Locking " + _UserIdPrivate);
             lock (_thisUserLockObject)
             {
                 if (!_Stopped)
@@ -260,6 +264,7 @@ namespace ServerStateInterfaces
                 //_score.TrajectoryWithScore = GetUserTrajectoryWithScore(_user, evaluatorTruth,
                 //    _GetCurrentTrueRealization(trueRealizationsLevels));
                 //_Stopped = false;
+                System.Console.WriteLine("Just before releasing " + _UserIdPrivate);
                 return _gameNumber;
             }
         }
@@ -301,8 +306,10 @@ namespace ServerStateInterfaces
             //TODO add a proper callback to register trajectory
             lock (_thisUserLockObject)
             {
+                System.Console.WriteLine("Locking " + _UserIdPrivate);
                 var evaluation = _user.GetEvaluation(trajectory);
                 _score.PlannedTrajectory = trajectory;
+                System.Console.WriteLine("Just before releasing " + _UserIdPrivate);
                 return evaluation;
             }
         }
@@ -318,10 +325,12 @@ namespace ServerStateInterfaces
             //locked here
             lock (_thisUserLockObject)
             {
+                System.Console.WriteLine("Locking " + _UserIdPrivate);
                 var gameInd = _gameNumber;
                 var resultId = new UserResultId(_UserIdPrivate, gameInd,
                     _GetLevelIdForUserForGameIndexSafe(gameInd) % totalServerGames);
                 var scoreCopy = ScoreUnlocked;
+                System.Console.WriteLine("Just before releasing " + _UserIdPrivate);
                 return new KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>(resultId, scoreCopy);
             }
         }
