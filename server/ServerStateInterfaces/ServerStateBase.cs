@@ -173,7 +173,7 @@ namespace ServerStateInterfaces
 
             userDirName = userDirName + "_" + hashString;
 
-            var dirId = "resultLog/" + userDirName + "_" + DateTime.Now.Ticks;
+            var dirId = "resultLog/" + DateTime.Now.Ticks + "_" + userDirName;
             if (!Directory.Exists(dirId))
             {
                 Directory.CreateDirectory(dirId);
