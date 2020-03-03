@@ -1,8 +1,26 @@
 import calc
-from client_with_character import Geosteerer
+import time
+from client_with_character import Geosteerer, run_sequential_geosteering
+from multiprocessing import Pool
+import threading
+import random
 
 all_results = calc.get_user_scores()
 print(all_results)
-result = all_results[0]
-geos0 = Geosteerer(my_url="http://127.0.0.1", verbose=True, historical_user_result=result)
-geos0.run_sequential()
+
+url = "http://game.geosteering.no"
+# url = "http://127.0.0.1"
+geosteerers = list(map(lambda r: Geosteerer(r, my_url=url, verbose=True), all_results))
+
+# with Pool(processes=2) as pool:
+#     results = list(pool.imap_unordered(run_sequential_geosteering, geosteerers))
+
+for g in geosteerers:
+    thr1 = threading.Thread(target=g.run_sequential, kwargs={"max_pause": 1, "max_evaluations": 10})
+    thr1.start()
+    time.sleep(random.randint(1, 10))
+
+
+
+
+#print(results)
