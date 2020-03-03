@@ -190,7 +190,8 @@ namespace ServerStateInterfaces
                     return _user.UserData;
                 }
 
-                var ok = _user.UpdateUser(load, _GetCurrentSecretState(secrets));
+                var secretState = _GetCurrentSecretState(secrets);
+                var ok = _user.UpdateUser(load, secretState);
 
                 if (ok)
                 {
