@@ -106,7 +106,6 @@ namespace GameServer.Controllers
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Replay requested");
 
-
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             { 

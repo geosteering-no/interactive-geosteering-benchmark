@@ -214,16 +214,36 @@ namespace ServerStateInterfaces
             var dirId = "userLog/";
             var allDirs = Directory.GetDirectories(dirId);
             Array.Sort(allDirs);
-            var nextDir = allDirs.First(str => str.CompareTo(lastLoadedUser) > 0);
-            return dirId + nextDir;
+            if (allDirs.Length == 0)
+            {
+                throw new InvalidOperationException("No folders to choose from");
+            }
+            try
+            {
+                var nextDir = allDirs.First(str => str.CompareTo(lastLoadedUser) > 0);
+                return nextDir;
+            }
+            catch (InvalidOperationException e)
+            {
+                lastLoadedUser = "";
+                return _GetNextDir();
+            }
         }
 
         private string _GetNextFile(string dirId)
         {
             var files = Directory.GetFiles(dirId);
             Array.Sort(files);
-            var getNextFile = files.First(str => str.CompareTo(lastLoadedUserFile) > 0);
-            return getNextFile;
+            try
+            {
+                var getNextFile = files.First(str => str.CompareTo(lastLoadedUserFile) > 0);
+                return getNextFile;
+            }
+            catch (InvalidOperationException e)
+            {
+                dirId = _GetNextDir();
+                return _GetNextFile(dirId);
+            }
         }
 
 
@@ -236,7 +256,7 @@ namespace ServerStateInterfaces
 
             lastLoadedUserFile = _GetNextFile(lastLoadedUser);
 
-            var fileName = lastLoadedUser + "/" + lastLoadedUserFile;
+            var fileName = lastLoadedUserFile;
             var fileString = File.ReadAllText(fileName);
             var userState = JsonConvert.DeserializeObject<TUserDataModel>
                 (fileString);

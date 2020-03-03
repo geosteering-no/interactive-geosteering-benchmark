@@ -371,7 +371,7 @@ function setup() {
   prevButton = createButton("<- Previous");
   prevButton.mousePressed(previousButtonClick);
 
-  nextButton = createButton("Plan ahead ->");
+  nextButton = createButton("Get next step ->");
   nextButton.mousePressed(nextButtonClick);
 
 
@@ -386,7 +386,7 @@ function setup() {
   submitDecisionButton.style('color', 'white'); //font color
   submitDecisionButton.position(200, 900);
 
-  stopButton = createButton("Plan stopping");
+  stopButton = createButton("Get next user vv");
   stopButton.mousePressed(stopButtonClick);
   stopButton.position(0, 450);
 
@@ -857,22 +857,54 @@ function previousButtonClick() {
 }
 
 function stopButtonClick() {
-  nextAngles.length = editNextAngleNo;
-  detectGameStateAndUpdateButton();
-  invalidateUserEvaluation();
+  getNextStepUserData(true);
   redrawEnabledForAninterval();
 }
 
 function nextButtonClick() {
-  if (editNextAngleNo >= nextAngles.length - 1) {
-    continueClick();
-  }
-  if (editNextAngleNo < nextAngles.length - 1) {
-    editNextAngleNo++;
-  }
-  updateSliderPosition();
+  getNextStepUserData(false);
   redrawEnabledForAninterval();
 }
+
+function getNextStepUserData(loadNextUser) {
+    var bodyString = JSON.stringify(loadNextUser);
+    fetch("/geo/admin/nextreplay/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", 
+    {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+      body: bodyString
+    }).then(function (res) {
+        if (!res.ok) {
+          alert("Getting userdata failed. Try going to login page.");
+          window.location.href = "/login.html";
+          //throw Error("getting userdata failed");
+        }
+        res.json()
+          .then(function (json) {
+            console.log("got userdata");
+            if (logDisabled === undefined) {
+              console.log("userdata : " + JSON.stringify(json));
+            }
+            userdata = json;
+  
+            tryStartNewGame();
+            detectGameStateAndUpdateButton();
+            correctAnglesIfNeeded();
+            updateSliderPosition();
+            updateBars();
+            drawWellToBuffer();
+            drawGeomodelToBuffer(userdata);
+            // window.resizeTo(width - 1, height);
+            // window.resizeTo(width + 1, height);
+            setSizesAndPositions();
+            //redrawEnabledForAninterval();
+          });
+      });
+  }
 
 
 function continueClick() {
