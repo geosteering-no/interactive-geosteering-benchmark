@@ -153,6 +153,12 @@ namespace UserState
             return botPair;
         }
 
+        protected void BotReportingCallback(KeyValuePair<UserResultId, UserResultFinal<WellPoint>> pair)
+        {
+            PushToResultingTrajectories(pair);
+            DumpUserResultToFileOnStop(pair);
+        }
+
         public override void AddBotUserDefault()
         {
             var userId = BotUserName;
@@ -160,17 +166,14 @@ namespace UserState
             var botUser = (UserStatePairWithBotFull) userPair;
             if (botUser != null)
             {
-                var thread = botUser.StartBot(
+                botUser.StartBot(
                     _secrets,
                     EvaluatorTruth,
                     GetTruthsForEvaluation(),
-                    PushToResultingTrajectories
+                    BotReportingCallback
                     );
-                thread.Join();
-                KeyValuePair<UserResultId, UserResultFinal<WellPoint>> pair;
-                pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
-                PushToResultingTrajectories(pair);
-                DumpUserResultToFileOnStop(pair);
+                
+
                 
             }
 

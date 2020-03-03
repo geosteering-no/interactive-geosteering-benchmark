@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="mkdir $(ProjectDir)$(OutDir)wwwroot&#xD;&#xA;xcopy $(ProjectDir)wwwroot $(ProjectDir)$(OutDir)wwwroot\ /E" />
+    <Exec Command="rmdir /Q/S $(ProjectDir)$(OutDir)wwwroot&#xD;&#xA;mkdir $(ProjectDir)$(OutDir)wwwroot&#xD;&#xA;xcopy $(ProjectDir)wwwroot $(ProjectDir)$(OutDir)wwwroot\ /E" />
   </Target>
 
 

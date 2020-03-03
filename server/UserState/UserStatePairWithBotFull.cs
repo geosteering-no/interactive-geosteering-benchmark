@@ -15,8 +15,10 @@ namespace UserState
             IList<RealizationData> trueRealizations,
             RegisterScorePairCallback pushToResultingTrajectories)
         {
-            foreach (var trueRealization in trueRealizations)
+            System.Console.WriteLine("Bot Started");
+            for (var index = 0; index < trueRealizations.Count; index++)
             {
+                System.Console.WriteLine("Bot started Level: " + index);
                 while (true)
                 {
                     var userData = UserDataLocked;
@@ -26,6 +28,7 @@ namespace UserState
                     {
                         break;
                     }
+
                     Bot.Init(0.9,
                         userData.Xdist,
                         totalLeft,
@@ -38,11 +41,14 @@ namespace UserState
                 }
 
                 StopUserLocked(evaluatorTruth, trueRealizations);
-                var pair = this.GetUserResultScorePairLocked(trueStates.Count);
+
+                KeyValuePair<UserResultId, UserResultFinal<WellPoint>> pair;
+                pair = GetUserResultScorePairLocked(trueRealizations.Count);
                 pushToResultingTrajectories(pair);
+
                 MoveUserToNewGameLocked(evaluatorTruth, trueRealizations);
             }
-
+            System.Console.WriteLine("Bot finished");
         }
 
         public UserStatePairWithBotFull(string userName, 

@@ -70,7 +70,7 @@ namespace UserState
             var resultCache = new TrajectoryOptimizationDPResult<TRealizationData>(model);
             var result =
                 optimizer.ComputeBestValue(wp.X, wp.Y, wp.Angle, resultCache);
-            Console.WriteLine("Result: " + result + " -- call count " + resultCache.CallCount);
+            //Console.WriteLine("Result: " + result + " -- call count " + resultCache.CallCount);
             return resultCache;
         }
 
@@ -120,6 +120,7 @@ namespace UserState
         public WellPoint ComputeBestChoice(IList<TRealizationData> realizations, WellPoint wp, int totalRemaining)
         {
             _oneRealizationOptimizer.MaxX = totalRemaining;
+            Console.WriteLine("Starting Bot's optimization, remaining steps: " + totalRemaining);
             UpdateForEach(realizations, wp);
             var bestNextKeyValue = _multiOptimizer.ComputeNextPointAndAngleAndValueDefault(_oneRealizationOptimizer,
                 _oneRealizationResults);

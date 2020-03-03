@@ -28,7 +28,7 @@ namespace ServerStateInterfaces
         protected ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunctionSimple Objective { get; }
 
 
-        public Thread StartBot(
+        public void StartBot(
             IList<TSecretState> secretStates,
             ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluatorTruth,
             IList<TRealizationData> trueRealizations,
@@ -42,9 +42,9 @@ namespace ServerStateInterfaces
                 });
                 thread.Priority = ThreadPriority.BelowNormal;
                 thread.Start();
-                return thread;
+
             }
-            throw new InvalidOperationException("There is no Bot to start");
+
         }
 
         protected abstract void RunBot

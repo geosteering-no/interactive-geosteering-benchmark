@@ -14,7 +14,6 @@ namespace UserState
 {
     [DataContract]
     public class UserState : UserStateBase<TrueModelState>
-    //IUserImplementaion<UserDataLocked, WellPoint, TrueModelState, UserResultFinal<WellPoint>, RealizationData>
     {
         [DataMember]
         private EarthModelManipulator _earthManipulator;
@@ -24,7 +23,6 @@ namespace UserState
         private GenericDataProvider<IResistivityModel, IContinousState, ResistivityData2DFull>
             _dataProvider;
 
-        private readonly object updateLock = new Object();
 
         private IList<IContinousState> _trajectory;
         private bool _stopped = false;

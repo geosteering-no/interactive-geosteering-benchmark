@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -443,24 +443,9 @@ namespace ServerStateInterfaces
 
         }
 
-        public MyScore StopUser(string userId)
-        {
-            var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
-            var updatedUser = userPair.StopUserLocked(EvaluatorTruth, GetTruthsForEvaluation());
-            KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
-            pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
-            PushToResultingTrajectories(pair);
-            DumpUserResultToFileOnStop(pair);
-            var myScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId);
-            return myScore;
-        }
 
-        public int MoveUserToNewGame(string userId)
-        {
-            var gameInd = _users.GetOrAdd(userId, GetNewDefaultUserPair)
-                .MoveUserToNewGameLocked(EvaluatorTruth, GetTruthsForEvaluation());
-            return gameInd;
-        }
+
+
 
         public virtual TUserDataModel LossyCompress(TUserDataModel data)
         {
@@ -482,6 +467,8 @@ namespace ServerStateInterfaces
 
         public TUserDataModel GetUserData(string userId)
         {
+            //GetNewDefaultUserPair does not lock
+            //seems to be locked only if update is locked
             var userData = _users.GetOrAdd(userId, GetNewDefaultUserPair)
                 .UserDataLocked;
             return userData;
@@ -489,6 +476,7 @@ namespace ServerStateInterfaces
 
         public TUserResult GetUserEvaluationData(string userId, IList<TWellPoint> trajectory)
         { 
+            //this method does NOT lock
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var resultDistribution = userPair.GetEvalautionLocked(trajectory);
             var scorePair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
@@ -496,8 +484,30 @@ namespace ServerStateInterfaces
             return resultDistribution;
         }
 
+        public MyScore StopUser(string userId)
+        {
+            //this method does NOT lock
+            var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
+            var updatedUser = userPair.StopUserLocked(EvaluatorTruth, GetTruthsForEvaluation());
+            KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
+            pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
+            PushToResultingTrajectories(pair);
+            DumpUserResultToFileOnStop(pair);
+            var myScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId);
+            return myScore;
+        }
+
+        public int MoveUserToNewGame(string userId)
+        {
+            //this method does not lock
+            var gameInd = _users.GetOrAdd(userId, GetNewDefaultUserPair)
+                .MoveUserToNewGameLocked(EvaluatorTruth, GetTruthsForEvaluation());
+            return gameInd;
+        }
+
         public TUserDataModel UpdateUser(string userId, TWellPoint load = default)
         {
+            //this method locks
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var updatedUser = userPair.UpdateUserLocked(load, _secrets, EvaluatorTruth, GetTruthsForEvaluation());
             KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
