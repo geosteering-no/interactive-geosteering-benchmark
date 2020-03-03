@@ -184,7 +184,7 @@ namespace GameServer.Controllers
         {
             CookieOptions option = new CookieOptions()
             {
-                Expires = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddDays(30),
                 IsEssential = true
             };
 

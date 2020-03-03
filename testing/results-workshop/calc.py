@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 files = ["637085610644465872", "637085617251785212", "637085622348807819"]
 
+
 class UserScore:
 
     def __init__(self, name):
@@ -28,8 +29,10 @@ class UserScore:
     def total_percent_divided(self):
         return self.total_score_percent / self.game_count()
 
+
 def filter_all_games(x):
     return x.game_count() >= 3
+
 
 def get_user_scores(filter_users_func=None):
     userScores = {}
@@ -45,7 +48,7 @@ def get_user_scores(filter_users_func=None):
                 score = user["TrajectoryWithScore"][-1]["Score"]
                 # if score <= 1e-2:
                 #     continue
-                score_percent = score/best*100.0
+                score_percent = score / best * 100.0
                 userData = userScores.get(name, UserScore(name))
 
                 userData.total_score += score
@@ -62,18 +65,17 @@ def get_user_scores(filter_users_func=None):
         filtered_list = list(filter(lambda x: filter_users_func(x), filtered_list))
     return filtered_list
 
+
 if __name__ == '__main__':
     filtered_list = get_user_scores()
     print('len(filtered) = {}'.format(len(filtered_list)))
     s = sorted(filtered_list, key=lambda x: x.total_percent_divided(), reverse=True)
-    #s = sorted(filtered_list, key=lambda x: x.name.lower())
+    # s = sorted(filtered_list, key=lambda x: x.name.lower())
 
     i = 0
     results_list = []
     for u in s:
         i += 1
-        #games: {}  u.game_count(),
+        # games: {}  u.game_count(),
         print("{:2}. {:22}: score: {:6.0f}  {:5.1f}%".format(i, u.name, u.total_score, u.total_percent_divided()))
         results_list.append(u.total_score)
-
-
