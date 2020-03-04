@@ -1,4 +1,5 @@
 import calc
+import sys
 import random
 import time
 from datetime import datetime
@@ -140,6 +141,9 @@ class Geosteerer:
             if scores and score:
                 min_score = min(scores)
                 max_score = max(scores)
+
+                procentile = next((p for p in range(len(scores)) if scores[p] >= score), len(scores))
+                print("Percentile {:7.2f}".format(procentile/len(scores)))
 
                 if score < min_score:
                     print("{:7.0f}-<-{:7.0f}-------------{:7.0f}----------".format(score, min_score, max_score))
