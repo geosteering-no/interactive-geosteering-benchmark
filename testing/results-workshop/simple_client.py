@@ -19,10 +19,17 @@ def commit_point(base_url, cookies, well_point):
 
 
 def commit_stop(base_url, cookies):
+    """
+
+    :param base_url:
+    :param cookies:
+    :return: score
+    """
     add_url = "/geo/commitstop"
     response = requests.post(base_url + add_url, cookies=cookies)
     json_result = response.json()
-    return json_result
+    score = json_result["scoreValue"]
+    return score
 
 
 def move_to_next_game(base_url, cookies):
@@ -33,10 +40,19 @@ def move_to_next_game(base_url, cookies):
 
 
 def request_evaluation(base_url, cookies, well_points):
+    """
+
+    :param base_url:
+    :param cookies:
+    :param well_points:
+    :return: scores
+    """
     add_url = "/geo/evaluate"
     response = requests.post(base_url + add_url, cookies=cookies, json=well_points)
     json_result = response.json()
-    return json_result
+    scores:  list = json_result['realizationScores']
+    scores.sort()
+    return scores
 
 
 def log_me_in(base_url, username=None):

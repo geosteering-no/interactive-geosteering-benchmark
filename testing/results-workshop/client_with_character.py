@@ -66,7 +66,7 @@ def run_sequential_geosteering(self, max_pause=0, max_evaluations=1):
 
 class Geosteerer:
 
-    def __init__(self, historical_user_result=None, verbose=False, my_url="http://game.geosteering.no"):
+    def __init__(self, historical_user_result=None, verbose=False, my_url="http://game.geosteering.no", max_games=None):
         self.user_result = historical_user_result
         self.user_name = historical_user_result.name
         self.traj_with_scores = historical_user_result.trajectories
@@ -74,7 +74,10 @@ class Geosteerer:
         self.cookies = None
         self.verbose = verbose
         self.url = my_url
-        self.max_games = random.randint(len(self.trajectories), 50)
+        if max_games is None:
+            self.max_games = random.randint(len(self.trajectories), 50)
+        else:
+            self.max_games = max_games
 
     def _generate_trajectories(self):
         trajectories = []
@@ -97,7 +100,8 @@ class Geosteerer:
             self.initialize_user()
 
         for i in range(self.max_games):
-
+            scores = None
+            score = None
             data = get_data(self.url, self.cookies)
             if self.verbose:
                 print("GET DATA")
@@ -119,19 +123,30 @@ class Geosteerer:
                 time.sleep(random.random() * max_pause)
 
                 for k in range(max(1, random.randint(0, max_evaluations))):
-                    data = request_evaluation(self.url, self.cookies, self.trajectories[replay_index])
+                    scores = request_evaluation(self.url, self.cookies, self.trajectories[replay_index])
                     if self.verbose:
                         print("EVALUATE")
-                        print(data)
+                        print(scores)
                 # TODO add a random operation here from time to time
                 time.sleep(random.random() * max_pause / (max_evaluations + 1))
 
             time.sleep(random.random()*max_pause)
 
-            data = commit_stop(self.url, self.cookies)
+            score = commit_stop(self.url, self.cookies)
             if self.verbose:
                 print("STOP")
-                print(data)
+                print("Score: ", score)
+
+            if scores and score:
+                min_score = min(scores)
+                max_score = max(scores)
+
+                if score < min_score:
+                    print("{:7.0f}-<-{:7.0f}-------------{:7.0f}----------".format(score, min_score, max_score))
+                elif score > max_score:
+                    print("----------{:7.0f}-------------{:7.0f}->-{:7.0f}".format(min_score, max_score, score))
+                else:
+                    print("----------{:7.0f}-<-{:7.0f}->-{:7.0f}----------".format(min_score, score, max_score))
 
             time.sleep(random.random()*max_pause)
 
