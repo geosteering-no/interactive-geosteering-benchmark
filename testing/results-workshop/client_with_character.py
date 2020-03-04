@@ -1,3 +1,5 @@
+from itertools import product
+
 import calc
 import sys
 import random
@@ -143,7 +145,10 @@ class Geosteerer:
                 max_score = max(scores)
 
                 procentile = next((p for p in range(len(scores)) if scores[p] >= score), len(scores))
-                print("Percentile {:7.2f}".format(procentile/len(scores)))
+                # print("Percentile {:7.2f}".format(procentile/len(scores)))
+                with open("percentiles.txt", 'a') as file:  # Use file to refer to the file object
+                    file.write(str(procentile/len(scores))+"\n")
+
 
                 if score < min_score:
                     print("{:7.0f}-<-{:7.0f}-------------{:7.0f}----------".format(score, min_score, max_score))
