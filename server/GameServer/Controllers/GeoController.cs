@@ -99,6 +99,26 @@ namespace GameServer.Controllers
             }
         }
 
+        [Route("admin/nextreplaywname/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
+        [HttpPost]
+        public UserData LoadNextUserDataFromFile(ObjectWithTextString userToLoad)
+        {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Replay requested");
+
+            var userId = GetUserId();
+            if (userId == ADMIN_SECRET_USER_NAME)
+            {
+                var res = _stateServer.GetNextUserStateFromFile(userToLoad: userToLoad.text);
+                return res;
+            }
+            else
+            {
+                return null;
+                //throw new Exception("You are not the admin");
+            }
+        }
+
         [Route("admin/nextreplay/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]
         public UserData LoadNextUserDataFromFile(bool nextUser)

@@ -368,8 +368,8 @@ function setup() {
   canvas.touchMoved(ctouchMoved);
   canvas.touchEnded(ctouchEnded);
   canvas.mouseMoved(cmouseMoved);
-  prevButton = createButton("<- Previous");
-  prevButton.mousePressed(previousButtonClick);
+  prevButton = createInput();
+  // prevButton.mousePressed(previousButtonClick);
 
   nextButton = createButton("Get next step ->");
   nextButton.mousePressed(nextButtonClick);
@@ -857,7 +857,12 @@ function previousButtonClick() {
 }
 
 function stopButtonClick() {
-  getNextStepUserData(true);
+  if (prevButton.value() != ""){
+    getNextStepUserDataWithUserName(prevButton.value());
+  }
+  else{
+    getNextStepUserData(true);
+  }
   redrawEnabledForAninterval();
 }
 
@@ -906,6 +911,46 @@ function getNextStepUserData(loadNextUser) {
       });
   }
 
+function getNextStepUserDataWithUserName(loadNextUser) {
+  var myObj = {"text" : loadNextUser}
+  var bodyString = JSON.stringify(myObj);
+  fetch("/geo/admin/nextreplaywname/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA", 
+  {
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+  },
+    body: bodyString
+  }).then(function (res) {
+      if (!res.ok) {
+        alert("Getting userdata failed. Try going to login page.");
+        window.location.href = "/login.html";
+        //throw Error("getting userdata failed");
+      }
+      res.json()
+        .then(function (json) {
+          console.log("got userdata");
+          if (logDisabled === undefined) {
+            console.log("userdata : " + JSON.stringify(json));
+          }
+          userdata = json;
+
+          tryStartNewGame();
+          detectGameStateAndUpdateButton();
+          correctAnglesIfNeeded();
+          updateSliderPosition();
+          updateBars();
+          drawWellToBuffer();
+          drawGeomodelToBuffer(userdata);
+          // window.resizeTo(width - 1, height);
+          // window.resizeTo(width + 1, height);
+          setSizesAndPositions();
+          //redrawEnabledForAninterval();
+        });
+    });
+}
 
 function continueClick() {
   if (userdata != null) {

@@ -220,6 +220,8 @@ namespace ServerStateInterfaces
             try
             {
                 var nextDir = allDirs.First(str => str.CompareTo(lastLoadedUser) > 0);
+                lastLoadedUser = nextDir;
+                lastLoadedUserFile = "";
                 return nextDir;
             }
             catch (InvalidOperationException e)
@@ -236,6 +238,7 @@ namespace ServerStateInterfaces
             try
             {
                 var getNextFile = files.First(str => str.CompareTo(lastLoadedUserFile) > 0);
+                lastLoadedUserFile = getNextFile;
                 return getNextFile;
             }
             catch (InvalidOperationException e)
@@ -246,8 +249,15 @@ namespace ServerStateInterfaces
         }
 
 
-        public TUserDataModel GetNextUserStateFromFile(bool nextUser = false)
+        public TUserDataModel GetNextUserStateFromFile(bool nextUser = false, string userToLoad = "")
         {
+            if (userToLoad != "")
+            {
+                //TODO make this into a const
+                lastLoadedUser = "userLog/" + userToLoad;
+                lastLoadedUserFile = "";
+                lastLoadedUser = _GetNextDir();
+            }
             if (nextUser || lastLoadedUser == "")
             {
                 lastLoadedUser = _GetNextDir();

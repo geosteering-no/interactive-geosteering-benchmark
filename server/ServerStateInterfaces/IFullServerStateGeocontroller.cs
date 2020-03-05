@@ -31,7 +31,7 @@ namespace ServerStateInterfaces
 
         bool UserExists(string str);
         TScoreData GetScoreboardFromFile(string fileName);
-        TUserData GetNextUserStateFromFile(bool nextUser);
+        TUserData GetNextUserStateFromFile(bool nextUser=false, string userToLoad="");
         ManyWells<TWellPoint> GetScreenFull();
         TUserData GetUserDataDefault();
 
