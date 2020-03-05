@@ -553,12 +553,32 @@ function detectGameStateAndUpdateButton() {
   }
 }
 
+function endGameModal(value, percentile) {
+  // Update with score / percentile
+ 
+  var html = "<p> Your score is <b>" + Math.round(value) + "</b>. You did better than <b>" 
+  + Math.round(percentile) + "%</b>.<p>Share your score, or start a new level!</p>"
+  
+  $('#endGameModal .modal-body').html(html);
+
+  // Set up buttons
+  $('#continuebtn').on('click',commitNewGame);
+
+  // Show modal
+  $('#endGameModal').modal('show');
+}
+
 function stopGame() {
   if (myResult){
     var value = myResult.scoreValue;
     var percent = myResult.scorePercent;
     var percentile = myResult.youDidBetterThan;
-    submitDecisionButton.elt.textContent = "Your score is " + Math.round(value) + ". You did better than " 
+    
+    // Show Finished game modal
+    endGameModal(value, percentile);
+
+    // Still want to show this in case modal was dismissed
+    submitDecisionButton.elt.textContent = "Your score was " + Math.round(value) + ". You did better than " 
       + Math.round(percentile) + "%. New game?";
   }else{
     submitDecisionButton.elt.textContent = "Stopped. Click to check for new game.";
