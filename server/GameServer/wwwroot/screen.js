@@ -84,7 +84,7 @@ function animateWell(wellBuffer, committedPoints){
 		finalPoint.y = committedPoints[len-1].y * lambda + committedPoints[len-2].y * (1-lambda);
 
 		
-		for (var i = 0; i < len; i++) {
+		for (var i = 0; i < len - 1; i++) {
 			var point = committedPoints[i];
 			var prev = point;
 			if (i > 0) prev = committedPoints[i - 1];
@@ -103,7 +103,7 @@ function animateWell(wellBuffer, committedPoints){
 		wellBuffer.stroke(0);
 		wellBuffer.noFill();
 		wellBuffer.strokeWeight(0.1);
-		for (var i = 0; i < len; i++) {
+		for (var i = 0; i < len - 1; i++) {
 			var point = {x: committedPoints[i].x, y: committedPoints[i].y};
 			point.x += random(-0.03, 0.03);
 			point.y += random(-0, 0.3);
@@ -178,7 +178,8 @@ function draw() {
 	timerCountdown--;
 	if (timerCountdown <= 0) {
 		timerCountdown = totalTimerTime;
-		//fetchScoreData();
+
+		fetchScoreData();
 	}
 }
 
