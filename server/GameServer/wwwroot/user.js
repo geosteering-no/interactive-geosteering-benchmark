@@ -361,10 +361,10 @@ function setup() {
   canvas.touchMoved(ctouchMoved);
   canvas.touchEnded(ctouchEnded);
   canvas.mouseMoved(cmouseMoved);
-  prevButton = createButton("<- Previous");
+  prevButton = createButton("⏮ Previous");
   prevButton.mousePressed(previousButtonClick);
 
-  nextButton = createButton("Plan ahead ->");
+  nextButton = createButton("Plan ahead ⏭");
   nextButton.mousePressed(nextButtonClick);
 
 
@@ -379,7 +379,7 @@ function setup() {
   submitDecisionButton.style('color', 'white'); //font color
   submitDecisionButton.position(200, 900);
 
-  stopButton = createButton("Plan stopping");
+  stopButton = createButton("Plan stopping ⏹");
   stopButton.mousePressed(stopButtonClick);
   stopButton.position(0, 450);
 
@@ -544,7 +544,7 @@ function detectGameStateAndUpdateButton() {
     stopGame();
   }
   else if (nextAngles.length == 0) {
-    submitDecisionButton.elt.textContent = "Stop drilling! (end game and see score)";
+    submitDecisionButton.elt.textContent = "🛑 Stop drilling! (end game and see score)";
     submitDecisionButton.mousePressed(commitDecicion);
   }
   else {
