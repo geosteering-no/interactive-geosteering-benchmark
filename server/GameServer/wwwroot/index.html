@@ -11,7 +11,7 @@
     <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
   </head>
   <header>
-        <!-- Modal -->
+    <!-- Modal -->
     <div class="modal fade" id="endGameModal" role="dialog">
       <div class="modal-dialog">
           <!-- Modal content-->
@@ -23,14 +23,24 @@
               <div class="modal-body">
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-default" >Share</button>         
-                <button class="btn btn-primary" id="continuebtn">New Game</button>
+                <div class="left">                  
+                  <div class="share-btn"><a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="Check out my score on geosteering.no! Can you beat it?" data-url="http://game.geosteering.no" data-hashtags="geosteering" data-related="NORCEresearch" data-dnt="true" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></div>
+                  <div class="share-btn fb-share-button" data-href="http://game.geosteering.no" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fgeosteering.no%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+                  <div class="share-btn"><script src="https://platform.linkedin.com/in.js" type="text/javascript">lang: en_US</script><script type="IN/Share" data-url="http://game.geosteering.no"></script></div>
+                </div>
+                <div class="right">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>                  
+                  <button class="btn btn-primary" id="continuebtn">New Game</button>
+                </div>          
               </div>
           </div>
       </div>
-  </div>
+    </div>
   </header>
   <body style="position: fixed;overflow: hidden; width: 100%; height: 100%">
+    <!-- Facebook says to put this right after opening body tag-->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0"></script>
+    <!---->
     <script src="user.js"></script>
 </body></html>
