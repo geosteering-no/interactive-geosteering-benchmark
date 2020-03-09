@@ -181,8 +181,11 @@ function updateBars() {
           }
           userEvaluation = json;
           updateBarsButton.elt.textContent = "No need to evaluate";
-          //TODO change color
-          updateBarsButton.style('background-color', colorBarsGray);
+          
+          //updateBarsButton.style('background-color', colorBarsGray);
+          updateBarsButton.removeClass("btn-info");
+          updateBarsButton.mousePressed(doNothingEvaluation);
+          //updateBarsButton.addStyle("btn-info");
 
           //setSizesAndPositions();
           drawBarCharts();
@@ -363,25 +366,35 @@ function setup() {
   canvas.mouseMoved(cmouseMoved);
   prevButton = createButton("⏮ Previous");
   prevButton.mousePressed(previousButtonClick);
+  prevButton.addClass("btn");
+  prevButton.addClass("btn-default");
 
   nextButton = createButton("Plan ahead ⏭");
   nextButton.mousePressed(nextButtonClick);
+  nextButton.addClass("btn");
+  nextButton.addClass("btn-default");
 
 
   updateBarsButton = createButton("Evaluate the well plan");
   updateBarsButton.mousePressed(updateBars);
-  updateBarsButton.style('background-color', colorBarsFront);
+  //updateBarsButton.style('background-color', colorBarsFront);
+  updateBarsButton.addClass("btn");
+  updateBarsButton.addClass("btn-info");
   updateBarsButton.position(200, 850);
 
   submitDecisionButton = createButton("Check for new game.");
   submitDecisionButton.mousePressed(getUserData);
-  submitDecisionButton.style('background-color', colorDecision);
-  submitDecisionButton.style('color', 'white'); //font color
+  //submitDecisionButton.style('background-color', colorDecision);
+  //submitDecisionButton.style('color', 'white'); //font color
+  submitDecisionButton.addClass("btn");
+  submitDecisionButton.addClass("btn-primary");
   submitDecisionButton.position(200, 900);
 
   stopButton = createButton("Plan stopping ⏹");
   stopButton.mousePressed(stopButtonClick);
   stopButton.position(0, 450);
+  stopButton.addClass("btn");
+  stopButton.addClass("btn-default");
 
   // resizeButton = createButton("Resize");
   // resizeButton.mousePressed(setSizesAndPositions);
@@ -523,6 +536,11 @@ function getUserData() {
 function doNothing() {
   alert("Drilling in progress... wait...");
 }
+
+function doNothingEvaluation() {
+  //alert("Drilling in progress... wait...");
+}
+
 
 function preventUpdatingAndUpdateButton() {
   submitDecisionButton.elt.textContent = "Drilling and updating...";
@@ -828,8 +846,10 @@ function invalidateUserEvaluation() {
     userEvaluation = null;
     drawBarCharts();
     updateBarsButton.elt.textContent = "Evaluate the new well-plan";
-    updateBarsButton.style('background-color', colorBarsFront);
-    //TODO change the color
+    //updateBarsButton.style('background-color', colorBarsFront);
+    updateBarsButton.addClass("btn-info");
+    updateBarsButton.mousePressed(updateBars);
+    
   }
 }
 
