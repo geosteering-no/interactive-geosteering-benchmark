@@ -228,7 +228,16 @@ namespace GameServer.Controllers
             var friendGameId = GetFriendGameId();
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " is stopping.");
-            var res = _stateServer.StopUser(userId);
+            MyScore res = null;
+            if (friendGameId != null)
+            {
+                res = _stateServer.StopUser(userId, friendGameId);
+            }
+            else
+            {
+                res = _stateServer.StopUser(userId);
+            }
+
             _logger.LogInformation("User {1} stopped in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
             return res;
         }
