@@ -30,6 +30,22 @@ body {
     margin-left:3px;
     margin-right:3px;
 }
+
+@media (max-width: 768px) {
+    .modal-footer {
+        flex-direction: column; /* IF CHANGED TO COLUMN-REVERSE, MOVE MARGIN-BOTTOM FROM .RIGHT TO .LEFT */ 
+        align-items: center;
+    }
+    .modal-footer .left{
+        width:100%;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    .modal-footer .right{
+        width:100%;
+        justify-content: center;
+    }
+  }
 /* END MODAL AND SHARE BUTTONS*/
 
 /*  SLIDER */
