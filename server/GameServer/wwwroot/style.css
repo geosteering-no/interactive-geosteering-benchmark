@@ -1,3 +1,8 @@
+:root{
+    --clr-primary: rgb(51, 122, 183);
+    --clr-bg-modal: rgb(255, 255, 255);
+  }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -9,7 +14,33 @@ body {
     touch-action: manipulation;
 }
 
+:focus{
+    box-shadow: 
+        0 0 0 5px var(--clr-bg-modal),
+        0 0 0 10px var(--clr-primary);
+        ;
+}
+/* Remove ugly additional focus firefox adds */
+::-moz-focus-inner,
+::-moz-focus-outer{
+    border:0;
+}
+
 /* MODAL AND SHARE BUTTONS */
+.share-btn a:visited{
+    color:  #fff;
+}
+
+.share-btn a:hover{
+text-decoration: none;
+color: #fff;
+}
+
+.share-btn :focus{
+color:  #fff;
+text-decoration: underline;
+}
+
 #endGameModal .modal-footer{
     display:flex;
 }
