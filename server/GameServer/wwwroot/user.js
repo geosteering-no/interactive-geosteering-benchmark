@@ -97,6 +97,7 @@ var pShowAllButton;
 
 //evaluation 
 var updateBarsButton;
+var undoButton;
 
 //submission
 var submitDecisionButton;
@@ -117,6 +118,9 @@ var selectedIndexCluster = -1;
 //var fullUserTrajectory;
 var userEvaluationOld = null;
 var userEvaluation = null;
+
+var oldTrajectoy = null;
+var currTrajectory = null;
 
 var wellHeigth;
 var barHeigth;
@@ -151,9 +155,24 @@ function buttonSelectSubSet(subsetIndex, curEvaluation) {
   redrawEnabledForAninterval();
 }
 
+function updateUndoState(){
+  if (oldTrajectoy){
+    undoButton.addClass("btn-default");
+    undoButton.mousePressed(undoTrajectory);
+  }
+  else{
+    undoButton.removeClass("btn-default");
+    undoButton.mousePressed(doNothingEvaluation);
+  }
+}
+
 function updateBars() {
 
   var fullUserTrajectory = getFullUserTrajectory();
+  //moving to old
+  oldTrajectoy = currTrajectory;
+  currTrajectory = fullUserTrajectory;
+  updateUndoState();
   var bodyString = JSON.stringify(fullUserTrajectory);
   //+"/?"+bodyString
   fetch("/geo/evaluate",
@@ -242,6 +261,7 @@ function commitNextPoint(wellPoint) {
           detectGameStateAndUpdateButton();
           sessionStorage.setItem("angles", JSON.stringify(nextAngles));
           updateSliderPosition();
+          currTrajectory = null;
           updateBars();
           drawGeomodelToBuffer(userdata);
           redrawEnabledForAninterval();
@@ -381,6 +401,11 @@ function setup() {
   updateBarsButton.addClass("btn");
   updateBarsButton.addClass("btn-info");
   updateBarsButton.position(200, 850);
+
+  undoButton = createButton("Undo");
+  undoButton.mousePressed(undoTrajectory);
+  undoButton.addClass("btn");
+  undoButton.position(0,850);
 
   submitDecisionButton = createButton("Check for new game.");
   submitDecisionButton.mousePressed(getUserData);
@@ -522,6 +547,7 @@ function getUserData() {
           detectGameStateAndUpdateButton();
           correctAnglesIfNeeded();
           updateSliderPosition();
+          currTrajectory = null;
           updateBars();
           drawWellToBuffer();
           drawGeomodelToBuffer(userdata);
@@ -717,8 +743,11 @@ function setSizesAndPositions() {
   //drawBarCharts();
   goDown(barHeigth);
 
-  updateBarsButton.position(canvasWidth / 4, yPos);
-  updateBarsButton.size(canvasWidth / 2, buttonHeight);
+  undoButton.position(10, yPos);
+  undoButton.size(canvasWidth / 5 - 10, buttonHeight);
+
+  updateBarsButton.position(canvasWidth / 3 + 5, yPos);
+  updateBarsButton.size(canvasWidth * 2 / 3 - 15 - 10 + 5 + 5, buttonHeight);
   //submitDecisionButton.position(canvasWidth / 4, yPos);
   //submitDecisionButton.size(canvasWidth / 2, buttonHeight);
 
@@ -726,7 +755,13 @@ function setSizesAndPositions() {
   //redrawEnabledForAninterval();
 }
 
-
+function undoTrajectory(){
+  setFullUserTrajectory(oldTrajectoy);
+  correctAnglesIfNeeded();
+  updateSliderPosition();
+  updateBars();
+  redrawEnabledForAninterval();
+}
 
 function drawBarCharts() {
   //var userEvaluationOld; //from another file
@@ -816,6 +851,25 @@ function prevAngle(editNextAngleNo) {
     return prev;
   }
   return 0;
+}
+
+function setFullUserTrajectory(trajectory) {
+  if (userdata && trajectory) {
+    var submittedUserTrajectory = userdata.wellPoints.slice(0);
+    var submittedTrajLen = submittedUserTrajectory.length;
+    var lastDefinedPoint = submittedUserTrajectory[submittedTrajLen - 1];
+    var angle = lastDefinedPoint.angle;
+    //relative angle here
+    nextAngles = [];
+    for (var i = submittedTrajLen; i < trajectory.length; ++i) {
+      //angle += nextAngles[i];
+      //var x2 = x + xTravelDistance;
+      //var y2 = y + tan(angle) * xTravelDistance;
+      //submittedUserTrajectory.push({ x: x2, y: y2, angle: angle });
+      nextAngles.push(trajectory[i].angle - angle);
+      angle = trajectory[i].angle;
+    }
+  }
 }
 
 function getFullUserTrajectory() {
