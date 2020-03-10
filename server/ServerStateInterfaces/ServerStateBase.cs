@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using ServerDataStructures;
 
@@ -143,8 +144,8 @@ namespace ServerStateInterfaces
                 Directory.CreateDirectory(dirIdHighScore);
             }
 
-            
-            
+            DumpAllScoresToFile(GetUserResultsForAllGames(), dirIdHighScore);
+
             for (int i=0; i<TOTAL_LEVELS; ++i)
             {
                 DumpScoreBoardToFile(GetScoreboard(i), 
@@ -186,6 +187,7 @@ namespace ServerStateInterfaces
             var jsonStr = JsonConvert.SerializeObject(newPair);
             File.WriteAllText(dirId + "/" + "userResultPair.json", jsonStr);
 
+
             DumpAllScoreBoardToFile(dirId);
             return dirId;
         }
@@ -203,6 +205,38 @@ namespace ServerStateInterfaces
             var scoreBoard = JsonConvert.DeserializeObject<LevelDescription<TWellPoint, TRealizationData, TSecretState>>
                 (fileString);
             return scoreBoard;
+        }
+
+        public void DumpAllScoresToFile(IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> scoreBoard,
+            string folderName)
+        {
+            var dirId = "";
+            var dirIdHighScore = dirId + folderName;
+            if (!Directory.Exists(dirIdHighScore))
+            {
+                Directory.CreateDirectory(dirIdHighScore);
+            }
+
+            var fileName = "allScores.json";
+
+            var jsonStr = JsonConvert.SerializeObject(scoreBoard);
+            System.IO.File.WriteAllText(dirIdHighScore + "/" + fileName, jsonStr);
+        }
+
+        public IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> GetAllScoresFromFile(string folderName)
+        {
+            var dirId = "resultLog/";
+            var fileId = "allScores.json";
+            var fullName = dirId + folderName + "/" + fileId;
+            if (!File.Exists(fullName))
+            {
+                return null;
+            }
+
+            var fileString = File.ReadAllText(fullName);
+            var allScores = JsonConvert.DeserializeObject<List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>>>
+                (fileString);
+            return allScores;
         }
 
         private string lastLoadedUser = "";
@@ -338,9 +372,7 @@ namespace ServerStateInterfaces
         }
 
 
-
-
-        public static double GetFinalScore(UserResultFinal<TWellPoint> userResult)
+        private static double GetFinalScore(UserResultFinal<TWellPoint> userResult)
         {
             return userResult.TrajectoryWithScore[userResult.TrajectoryWithScore.Count - 1].Score;
         }
@@ -360,6 +392,36 @@ namespace ServerStateInterfaces
             }
 
             return wells;
+        }
+
+        public IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> GetUserResultsForAllGames()
+        {
+            var allTrajectoryKeys = _resultingTrajectories.Keys;
+            var currentScores = new List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>>();
+            foreach (var userResultId in allTrajectoryKeys)
+            {
+                UserResultFinal<TWellPoint> curTrajectory;
+                var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
+                if (result)
+                {
+                    var serverGameSeed = seeds[userResultId.GameId];
+                    var newPair = new KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>(
+                        new UserResultId(userResultId.UserName, userResultId.GameNumberForUser, serverGameSeed),
+                        curTrajectory);
+                    currentScores.Add(newPair);
+                }
+            }
+
+            return currentScores;
+        }
+
+        private static IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> GetResultsForUser(List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> current, string userId)
+        {
+            //var allTrajectoryKeys = current.Select(x => x.Key);
+            var selectedPairs = current.Where(x => x.Key.UserName == userId).ToList();
+
+            selectedPairs = selectedPairs.OrderBy(x => x.Key.GameNumberForUser).ToList();
+            return selectedPairs;
         }
 
         public IList<UserResultFinal<TWellPoint>> GetUserResultsForGame(int serverGameIndex)
@@ -389,6 +451,17 @@ namespace ServerStateInterfaces
             return botResult;
         }
 
+        public double GetRaiting(string userName, 
+            List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> current, 
+            List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> original = null)
+        {
+            if (original == null)
+            {
+                original = current;
+            }
+            throw new NotImplementedException();
+        }
+
         public double GetPercentile100ForGame(int serverGameIndex, double myScore)
         {
             serverGameIndex %= _levelDescriptions.Length;
@@ -401,6 +474,8 @@ namespace ServerStateInterfaces
             }
             return lower / total * 100.0;
         }
+
+        
 
         public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int serverGameIndex)
         {
@@ -423,10 +498,10 @@ namespace ServerStateInterfaces
         {
             var score = new MyScore()
             {
-
                 ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
                 ScoreValue = valueScore,
-                YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore)
+                YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
+                UserName = userName
             };
             return score;
         }
