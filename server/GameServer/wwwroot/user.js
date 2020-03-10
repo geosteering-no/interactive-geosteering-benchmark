@@ -553,11 +553,43 @@ function detectGameStateAndUpdateButton() {
   }
 }
 
+function formatModalShareLinks(percentile){
+  /* 
+  Loops through all share-btns and replaces their anchors href placeholder strings w/ ranking injected Formats social media share urls 
+  TODO: Implement challenger username somehow
+  */
+  // Loop through all share-btns
+  $(".modal .share-btn").each(function(e){
+    var rating = percentile;
+    var username = "test-username" // Will need this later for head-to-head-competition
+    
+
+    var share_url = "game.geosteering.no";
+    var share_text = "I ranked in the top " + rating.toString() + "%25 percent on game.geosteering.no! Think you can beat me%3F";
+    
+    
+    // Get buttons anchor child which has the share link
+    var anchor = $(this).find('a:first');
+    
+    // Find and replace placeholders
+    var text =  anchor.attr('href');
+    var new_text = text.replace(/SHARE_URL/g, share_url).replace(/SHARE_TEXT/g, share_text); // wrapping in '/ /g' finds all string occurances
+    var formatted_text = new_text.replace(/ /g, "%20");
+    
+    console.log("====================\n", text, "\n=====\n", formatted_text, "\n=============================");
+
+    anchor.attr('href', formatted_text);
+  });
+}
+
 function endGameModal(value, percentile) {
+  // 
+  formatModalShareLinks(percentile);
+
   // Update with score / percentile
  
-  var html = "<p> Your score is <b>" + Math.round(value) + "</b>. You did better than <b>" 
-  + Math.round(percentile) + "%</b>.<p>Share your score, or start a new level!</p>"
+  var html = "<p> Your score is <b>" + Math.round(value) + "</b>. You did better than <b>"
+  + Math.round(percentile) + "%</b>.<p>Challenge a friend to beat your score by clicking any of the share options, or start a new level!</p>"
   
   $('#endGameModal .modal-body').html(html);
 
