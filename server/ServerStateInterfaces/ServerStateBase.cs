@@ -707,7 +707,7 @@ namespace ServerStateInterfaces
             KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
             pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             PushToResultingTrajectories(pair);
-            DumpUserResultToFileOnStop(pair);
+            var shareId = DumpUserResultToFileOnStop(pair);
             MyScore friendsScore = null;
             if (friendSaveId != null)
             {
@@ -726,6 +726,7 @@ namespace ServerStateInterfaces
 
             MyScore myScore;
             myScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId, true);
+            myScore.SharingId = shareId;
             myScore.FriendsScore = friendsScore;
             return myScore;
         }

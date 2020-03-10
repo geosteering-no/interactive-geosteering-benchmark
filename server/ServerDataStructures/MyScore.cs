@@ -12,5 +12,6 @@ namespace ServerDataStructures
         public double YouDidBetterThan { get; set; }
         public IList<double> Rating { get; set; }
         public MyScore FriendsScore { get; set; }
+        public string SharingId { get; set; }
     }
 }
