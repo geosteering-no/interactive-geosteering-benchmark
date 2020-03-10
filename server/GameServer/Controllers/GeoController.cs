@@ -23,6 +23,7 @@ namespace GameServer.Controllers
             "REmarIdYWorYpiETerdReMnAriDaYEpOsViABLEbACRoNCeNERbAlTIveIDECoMErTiOcHonypoLosenTioClATeRIGENEGMAty";
 
         private const string UserId_ID = "geobanana-user-id";
+        private string FriendGameId_ID = "referrer-game-id";
         private readonly ILogger<GeoController> _logger;
         private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, LevelDescription<WellPoint, RealizationData, TrueModelState>> _stateServer;
 
@@ -141,10 +142,14 @@ namespace GameServer.Controllers
 
         [Route("redirect")]
         [HttpGet]
-        public void GetMePlaces([FromQuery] string sid="default", [FromQuery] string platform="by_link")
+        public void GetMePlaces([FromQuery] string fgi=null, [FromQuery] string platform="other")
         {
             try
             {
+                if (fgi != null)
+                {
+                    SetFriendGameId(fgi);
+                }
                 var userId = GetUserId();
                 if (userId != null)
                 {
@@ -174,7 +179,7 @@ namespace GameServer.Controllers
             _logger.LogInformation(time.ToLongTimeString() + ": Requested adding of a user : " + userName);
             if (userName == ADMIN_SECRET_USER_NAME)
             {
-                WriteUserIdToCookie(userName);
+                SetUserId(userName);
                 Response.Redirect("/admin.html");
             }
             else
@@ -185,7 +190,7 @@ namespace GameServer.Controllers
                 }
                 else
                 {
-                    WriteUserIdToCookie(userName);
+                    SetUserId(userName);
                     _stateServer.GetUserData(userName);
                     Response.Redirect("/index.html");
                 }
@@ -201,16 +206,7 @@ namespace GameServer.Controllers
             return userId == userName;
         }
 
-        private void WriteUserIdToCookie(string userId)
-        {
-            CookieOptions option = new CookieOptions()
-            {
-                Expires = DateTime.Now.AddDays(30),
-                IsEssential = true
-            };
 
-            Response.Cookies.Append(UserId_ID, userId, option);
-        }
 
         [Route("newgame")]
         [HttpPost]
@@ -229,6 +225,7 @@ namespace GameServer.Controllers
         public MyScore CommitStop()
         {
             var userId = GetUserId();
+            var friendGameId = GetFriendGameId();
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " is stopping.");
             var res = _stateServer.StopUser(userId);
@@ -272,11 +269,38 @@ namespace GameServer.Controllers
         //    _logger.LogInformation("Bot started in {1}ms", (DateTime.Now - time).TotalMilliseconds);
         //}
 
+        private void SetUserId(string userId)
+        {
+            CookieOptions option = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(30),
+                IsEssential = true
+            };
+            Response.Cookies.Append(UserId_ID, userId, option);
+        }
+
         private string GetUserId()
         {
             //var userId = HttpContext.Session.GetString("userId");
             var userId = HttpContext.Request.Cookies[UserId_ID];
             return userId;
+        }
+
+        private void SetFriendGameId(string friendGameId)
+        {
+            CookieOptions option = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddDays(30),
+                IsEssential = true
+            };
+            Response.Cookies.Append(FriendGameId_ID, friendGameId, option);
+        }
+
+        private string GetFriendGameId()
+        {
+            //var userId = HttpContext.Session.GetString("userId");
+            var friendGameId = HttpContext.Request.Cookies[FriendGameId_ID];
+            return friendGameId;
         }
 
         [Route("userdata")]
