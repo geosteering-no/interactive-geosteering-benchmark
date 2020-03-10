@@ -415,7 +415,7 @@ function setup() {
   submitDecisionButton.addClass("btn-primary");
   submitDecisionButton.position(200, 900);
 
-  stopButton = createButton("Plan stopping ⏹");
+  stopButton = createButton("Plan stop ⏹");
   stopButton.mousePressed(stopButtonClick);
   stopButton.position(0, 450);
   stopButton.addClass("btn");
@@ -622,12 +622,13 @@ function stopGame() {
     endGameModal(value, percentile);
 
     // Still want to show this in case modal was dismissed
-    submitDecisionButton.elt.textContent = "Your score was " + Math.round(value) + ". You did better than " 
-      + Math.round(percentile) + "%. New game?";
+    submitDecisionButton.elt.textContent = "Your score is " + Math.round(value) + ". Share? New game?";
+    submitDecisionButton.mousePressed(stopGame);
   }else{
-    submitDecisionButton.elt.textContent = "Stopped. Click to check for new game.";
+    submitDecisionButton.elt.textContent = "Stopped. New game?";
+    submitDecisionButton.mousePressed(commitNewGame);
   }
-  submitDecisionButton.mousePressed(commitNewGame);
+  
 }
 
 function calculateCanvasSize() {
