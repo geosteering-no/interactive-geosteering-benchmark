@@ -26,6 +26,11 @@ body {
 }
 
 @media (max-width: 768px) {
+    #endGameModal {
+        display:flex !important;
+        flex-direction: column;
+        justify-content: center;
+    }
     .modal-footer {
         flex-direction: column; /* IF CHANGED TO COLUMN-REVERSE, MOVE MARGIN-BOTTOM FROM .RIGHT TO .LEFT */ 
         align-items: center;
