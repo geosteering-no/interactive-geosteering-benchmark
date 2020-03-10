@@ -606,7 +606,7 @@ function endGameModal(value, percentile) {
   $('#endGameModal .modal-body').html(html);
 
   // Set up buttons
-  $('#continuebtn').off().on('click',commitNewGame);
+  $('#continuebtn').off('click').on('click',commitNewGame);
 
   // Show modal
   $('#endGameModal').modal('show');
