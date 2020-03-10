@@ -24,12 +24,6 @@ body {
     align-items:center;
     justify-content: flex-end;
 }
-.share-btn{
-    display:flex;
-    align-items:center;
-    margin-left:3px;
-    margin-right:3px;
-}
 
 @media (max-width: 768px) {
     .modal-footer {
