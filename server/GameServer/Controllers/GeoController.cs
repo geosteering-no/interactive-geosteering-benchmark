@@ -140,7 +140,8 @@ namespace GameServer.Controllers
         }
 
         [Route("redirect")]
-        public void GetMePlaces()
+        [HttpGet]
+        public void GetMePlaces([FromQuery] string sid="default", [FromQuery] string platform="by_link")
         {
             try
             {

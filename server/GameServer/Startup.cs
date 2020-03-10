@@ -67,7 +67,8 @@ namespace GameServer
 
         public static Task RedirectTask(HttpContext context)
         {
-            context.Response.Redirect("/geo/redirect");
+            QueryString qs = context.Request.QueryString;
+            context.Response.Redirect("/geo/redirect"+qs.ToString());
             return context.Response.StartAsync();
         }
 
