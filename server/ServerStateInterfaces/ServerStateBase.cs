@@ -175,7 +175,9 @@ namespace ServerStateInterfaces
 
             userDirName = userDirName + "_" + hashString;
 
-            var dirId = "resultLog/" + DateTime.Now.Ticks + "_" + userDirName;
+            var dirPrefix = "resultLog/";
+            var userDirId = DateTime.Now.Ticks + "_" + userDirName;
+            var dirId = dirPrefix + userDirId;
             if (!Directory.Exists(dirId))
             {
                 Directory.CreateDirectory(dirId);
@@ -189,7 +191,7 @@ namespace ServerStateInterfaces
             File.WriteAllText(dirId + "/" + "userResultPair.json", jsonStr);
 
             DumpAllScoreBoardToFile(dirId);
-            return dirId;
+            return userDirId;
         }
 
         private KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> GetUserResultPairFromFile(string folderId)
@@ -482,6 +484,7 @@ namespace ServerStateInterfaces
             string folderName = "")
         {
             List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> resultsForUser = null;
+            var exclude = 1;
             if (original == null)
             {
                 resultsForUser = GetResultsForUser(current, userName);
@@ -490,6 +493,7 @@ namespace ServerStateInterfaces
             else
             {
                 resultsForUser = GetResultsForUser(original, userName);
+                exclude = 0;
             }
             
             
@@ -516,7 +520,7 @@ namespace ServerStateInterfaces
                 //the game is active on the server
                 if (serverIndex != -1 && serverIndex<TOTAL_LEVELS)
                 {
-                    curRating = GetPercentile100ForGame(serverIndex, GetFinalScore(keyValuePair.Value));
+                    curRating = GetPercentile100ForGame(serverIndex, GetFinalScore(keyValuePair.Value), exclude);
                 }
                 else
                 {
@@ -546,12 +550,12 @@ namespace ServerStateInterfaces
             return maxRating;
         }
 
-        public double GetPercentile100ForGame(int serverGameIndex, double myScore)
+        public double GetPercentile100ForGame(int serverGameIndex, double myScore, int exclude = 1)
         {
             serverGameIndex %= _levelDescriptions.Length;
             var results = GetUserResultsForGame(serverGameIndex);
             double lower = results.Select(GetFinalScore).Count(value => value < myScore);
-            var total = results.Count - 1;
+            var total = results.Count - exclude;
             if (total == 0)
             {
                 return 100;

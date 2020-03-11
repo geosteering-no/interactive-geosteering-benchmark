@@ -3,7 +3,7 @@ var wellBufferX;
 var wellBufferY;
 var barBufferX;
 var barBufferY;
-var logDisabled = true;
+var logDisabled = 1;
 
 
 

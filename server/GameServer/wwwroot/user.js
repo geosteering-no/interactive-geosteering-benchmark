@@ -289,7 +289,7 @@ function commitStop() {
         res.json()
           .then(function (json) {
             console.log("got updated userdata");
-            if (logDisabled === undefined) {
+            if (logDisabled === undefined || logDisabled == 1) {
               console.log("useradata : " + JSON.stringify(json));
             }
             //userdata = json;
