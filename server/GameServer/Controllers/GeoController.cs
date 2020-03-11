@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using ServerDataStructures;
 using ServerStateInterfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -140,6 +141,34 @@ namespace GameServer.Controllers
             }
         }
 
+        private void DumpPrintStatistics(string fileName, string sharer)
+        {
+            var dirShareStatistics = "sharingStatistics";
+            if (!Directory.Exists(dirShareStatistics))
+            {
+                Directory.CreateDirectory(dirShareStatistics);
+            }
+            foreach (var ch in Path.GetInvalidFileNameChars())
+            {
+                fileName = fileName.Replace(ch, '-');
+            }
+            if (fileName == "")
+            {
+                return;
+            }
+
+            if (fileName.Length > 20)
+            {
+                fileName = fileName.Substring(0, 20);
+            }
+            using (StreamWriter file =
+                new StreamWriter(dirShareStatistics + "/" + fileName + ".txt", true))
+            {
+                file.WriteLine(sharer + " / " + DateTime.Now);
+            }
+
+        }
+
         [Route("redirect")]
         [HttpGet]
         public void GetMePlaces([FromQuery] string fgi=null, [FromQuery] string platform="other")
@@ -149,6 +178,7 @@ namespace GameServer.Controllers
                 if (fgi != null)
                 {
                     SetFriendGameId(fgi);
+                    DumpPrintStatistics(platform, fgi);
                 }
                 var userId = GetUserId();
                 if (userId != null)

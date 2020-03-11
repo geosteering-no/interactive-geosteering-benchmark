@@ -546,3 +546,5 @@ server/GameServer/resultLog/
 testing/results-workshop/.idea/
 
 testing/results-workshop/result_plots/
+
+server/GameServer/sharingStatistics/
