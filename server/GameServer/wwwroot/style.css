@@ -89,6 +89,7 @@ text-decoration: underline;
 .carousel-control:focus,
 .carousel-control:hover{
     opacity: 1;
+    box-shadow: none;
 }
 .carousel-indicators {
     bottom:-50px;
