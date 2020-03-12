@@ -83,7 +83,12 @@ text-decoration: underline;
     margin-bottom:50px;
 }
 .carousel-control{
+    opacity: 0;
     margin-bottom:-50px;
+}
+.carousel-control:focus,
+.carousel-control:hover{
+    opacity: 1;
 }
 .carousel-indicators {
     bottom:-50px;
