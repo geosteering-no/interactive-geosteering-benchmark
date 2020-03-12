@@ -25,6 +25,11 @@ body {
 ::-moz-focus-outer{
     border:0;
 }
+/* BUTTONS */
+#instructionsModalButton{
+    margin-left: 10px;
+}
+/* END BUTTONS */
 
 /* MODAL AND SHARE BUTTONS */
 .share-btn a:visited{

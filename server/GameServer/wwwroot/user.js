@@ -374,6 +374,7 @@ function setup() {
   updateBarsButton.position(200, 850);
 
   submitDecisionButton = createButton("Check for new game.");
+  submitDecisionButton.id("submitButton");
   submitDecisionButton.mousePressed(getUserData);
   submitDecisionButton.style('background-color', colorDecision);
   submitDecisionButton.style('color', 'white'); //font color
@@ -631,6 +632,21 @@ function calculateCanvasSize() {
   // }
 }
 
+function repositionInstructionsButton(){
+  var submitButton = $("#submitButton");
+  var positions = submitButton.offset();
+  var width = submitButton.outerWidth();
+  var height = submitButton.outerHeight();
+
+  var instructionsButton = $("#instructionsModalButton");
+  var instructionHeight = instructionsButton.outerHeight();
+  var margin = parseInt(instructionsButton.css("margin-left"));
+  
+  var newTop = positions.top + 0.5*(height - instructionHeight);
+  var newX = positions.left + width + margin;
+
+  instructionsButton.offset({top:newTop, left: newX});
+}
 
 function setSizesAndPositions() {
   calculateCanvasSize();
@@ -737,6 +753,7 @@ function setSizesAndPositions() {
   //submitDecisionButton.size(canvasWidth / 2, buttonHeight);
 
   centerCanvas();
+  repositionInstructionsButton();
   //redrawEnabledForAninterval();
 }
 
