@@ -79,6 +79,15 @@ text-decoration: underline;
 /* END MODAL AND SHARE BUTTONS*/
 
 /* CAROUSEL */
+.carousel-inner {
+    margin-bottom:50px;
+}
+.carousel-control{
+    margin-bottom:-50px;
+}
+.carousel-indicators {
+    bottom:-50px;
+}
 .carousel-indicators li{
     background-color: rgba(0,0,0,0);
     border: 2px solid var(--clr-primary);
