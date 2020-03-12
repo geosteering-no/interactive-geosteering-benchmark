@@ -89,8 +89,13 @@ text-decoration: underline;
     margin-bottom:50px;
 }
 .carousel-inner > .item{
+    text-align: center;
+    text-align: -moz-center;
     transition-duration: 0.35s;
     -moz-transition-duration: 0.35s;
+}
+.carousel-inner > .item > img{
+    max-height:80vh;
 }
 .carousel-control{
     opacity: 0;
