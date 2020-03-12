@@ -78,6 +78,16 @@ text-decoration: underline;
   }
 /* END MODAL AND SHARE BUTTONS*/
 
+/* CAROUSEL */
+.carousel-indicators li{
+    background-color: rgba(0,0,0,0);
+    border: 2px solid var(--clr-primary);
+}
+.carousel-indicators li.active{
+    background-color: var(--clr-primary);
+}
+/* END CAROUSEL */
+
 /*  SLIDER */
 /* The slider itself */
 input[type=range] {
