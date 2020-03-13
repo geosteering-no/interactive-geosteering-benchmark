@@ -10,18 +10,27 @@
 </head>
 <body>
     <div class="login">
+        <!-- Hero Image -->
 
+        <!-- Title / Welcome text -->
         <h1>Welcome to geobanana!</h1>
-        
+
+        <!-- Challenger Text Score -->
+
+        <!-- Short instructions -->
+
+        <!-- Login -->
         <form method="post" class="row" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
             <input type="text" name="userName" placeholder="Name" class="inputChangeVal" data-js-input-type="text" />
             <button class="btn btn-primary" type="submit" name="confirm" id="newUserBtn">Create Game</button>
         </form>
-        <h3>Logged in already? <a href="/index.html">Continue game!</a></h3>
 
+        <h3>Logged in already? <a href="/index.html">Continue game!</a></h3>
+        
+        
         With all requests concerning the competition platform, please contact <a href="mailto:Sergey.Alyaev@norceresearch.no">Sergey.Alyaev@norceresearch.no</a>
     </div>
-
+    
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
@@ -57,68 +66,69 @@
 
 </body>
 <footer>
-        <div id="sponsor-list" class="container">
-                <div class="">
-                        <h2 class="pt-5 mb-0 mt-4">Competion Sponsors</h2>
-                </div>
-            <div class="">
-            <ul>
-        
-            <li><picture>
-                    <img src="./assets/nfr.png" alt="The Research Council of Norway" />   
-            </picture></li>
-            <li><picture>
-                <img src="./assets/equinor.png" alt="Equinor" />   
-            </picture></li>
-            
-            <li><picture>
-                <img src="./assets/var-energi-black.svg" alt="Vår Energi" />   
-            </picture></li>
-    
-            <li><picture>
-                    <img src="./assets/akerbp.png" alt="Aker BP" />   
-            </picture></li>
-
-            <li><picture>
-                    <img src="./assets/baker.jpg" alt="Baker Hughes"/>
-            </picture></li>
-                    
-            <li><picture>
-                    <img src="./assets/norce.png" alt="NORCE" />   
-            </picture></li>
-
-            </ul>
-        </div>
-        <div id="aknowledgement-list" class="container">
-                <div class="">
-                        <h2 class="pt-5 mb-0 mt-4">The creative team at NORCE</h2>
+    <!-- Sponser/Team -->
+    <div id="sponsor-list" class="container">
+        <div class="">
+                    <h2 class="pt-5 mb-0 mt-4">Competion Sponsors</h2>
                 </div>
                 <div class="">
                     <ul>
-                        <li>
-                            <picture><img class="default" src="./assets/sergey.jpg" alt="Sergey Alyaev" /></picture>                       
-                            <h4>Sergey Alyaev</h4>
-                        </li>
-                        <li>
-                                <picture><img class="default" src="./assets/morten.jpg" alt="Morten Bendiksen" /></picture>                       
-                                <h4>Morten Bendiksen</h4>
-                        </li>
-                        <li>
-                            <picture><img class="default" src="./assets/andrew.jpg" alt="Andrew Holsaeter" /></picture>                       
-                            <h4>Andrew Holsaeter</h4>
-                        </li>
-                        <li>
-                                <picture><img class="default" src="./assets/sofija.jpg" alt="Sofija Ivanova" /></picture>                       
-                                <h4>Sofija Ivanova</h4>
-                        </li>
-                        <li>
-                            <picture><img class="default" src="./assets/robert.jpg" alt="Robert Ewald" /></picture>                       
-                            <h4>Robert Ewald</h4>
-                        </li>
-                    </ul>
-                </div>
+                        
+        <li><picture>
+            <img src="./assets/nfr.png" alt="The Research Council of Norway" />   
+        </picture></li>
+        <li><picture>
+            <img src="./assets/equinor.png" alt="Equinor" />   
+        </picture></li>
+        
+        <li><picture>
+            <img src="./assets/var-energi-black.svg" alt="Vår Energi" />   
+        </picture></li>
+
+        <li><picture>
+                <img src="./assets/akerbp.png" alt="Aker BP" />   
+        </picture></li>
+
+        <li><picture>
+                <img src="./assets/baker.jpg" alt="Baker Hughes"/>
+        </picture></li>
+                
+        <li><picture>
+                <img src="./assets/norce.png" alt="NORCE" />   
+        </picture></li>
+
+        </ul>
+    </div>
+    <div id="aknowledgement-list" class="container">
+            <div class="">
+                    <h2 class="pt-5 mb-0 mt-4">The creative team at NORCE</h2>
+            </div>
+            <div class="">
+                <ul>
+                    <li>
+                        <picture><img class="default" src="./assets/sergey.jpg" alt="Sergey Alyaev" /></picture>                       
+                        <h4>Sergey Alyaev</h4>
+                    </li>
+                    <li>
+                            <picture><img class="default" src="./assets/morten.jpg" alt="Morten Bendiksen" /></picture>                       
+                            <h4>Morten Bendiksen</h4>
+                    </li>
+                    <li>
+                        <picture><img class="default" src="./assets/andrew.jpg" alt="Andrew Holsaeter" /></picture>                       
+                        <h4>Andrew Holsaeter</h4>
+                    </li>
+                    <li>
+                            <picture><img class="default" src="./assets/sofija.jpg" alt="Sofija Ivanova" /></picture>                       
+                            <h4>Sofija Ivanova</h4>
+                    </li>
+                    <li>
+                        <picture><img class="default" src="./assets/robert.jpg" alt="Robert Ewald" /></picture>                       
+                        <h4>Robert Ewald</h4>
+                    </li>
+                </ul>
             </div>
         </div>
+    </div>
 </footer></html>
 
 <script>
@@ -131,7 +141,6 @@
     });
   
     $('#continuebtn').on('click',function(){
-  
       $('form').submit();
     });
   });
