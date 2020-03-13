@@ -29,7 +29,7 @@
         <h5 style="margin-top:0;margin-bottom:2rem">Logged in already? <a style="margin-top:0" href="/index.html">Continue game!</a></h5>
         
         <!-- Short instructions -->
-        <h3 style="margin:0">Here's how to beat their score:</h3>
+        <h3 id="instructionsTitle" style="margin:0">Here's how to beat their score:</h3>
             <div id="shortInstructions" class="row" style="margin-top:0.25rem">
                 <div id="layers" class="col" style="width:50%">
                 </div>
@@ -159,12 +159,24 @@
     // Get challenger username and score
     var challenger = "Sergey"
     var score = 3674;
+
+    var challengeDiv = $("#challengeText");
+    var instructionsDiv = $("#instructionsTitle");
+    
+    var challengeText;
+    var instructionsText;
     
     if (challenger && score){
-        console.log("There has been a challenge");
-        var challenge = $("#challengeText");
-        var challenge_text = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
-        challenge.text(challenge_text);
+        challengeText = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
+        instructionsText = "Here's how to beat their score:"
+        
     }
+    else{
+        challengeText = "Create a game and then challenge your friends to beat your score!";
+        instructionsText = "Here's how to score:";
+    }
+
+    challengeDiv.text(challengeText);
+    instructionsDiv.text(instructionsText);
   });
 </script>
