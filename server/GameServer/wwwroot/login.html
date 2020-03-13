@@ -17,20 +17,36 @@
         <section id="hero"></section>
     
         <!-- Challenger Text Score -->
-        <h3 class="" id="challengeText"></h3>
+        <h3 class="" id="challengeText" style="margin-bottom:0.25rem"></h3>
     
-        <!-- Short instructions -->
         
         <!-- Login -->
-        <form method="post" class="row" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
+        <form method="post" class="row" style="margin-bottom:0" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
             <input type="text" name="userName" placeholder="Name" class="inputChangeVal" data-js-input-type="text" />
             <button class="btn btn-primary" type="submit" name="confirm" id="newUserBtn">Create Game</button>
         </form>
 
-        <h3>Logged in already? <a href="/index.html">Continue game!</a></h3>
+        <h5 style="margin-top:0;margin-bottom:2rem">Logged in already? <a style="margin-top:0" href="/index.html">Continue game!</a></h5>
         
-        
-        With all requests concerning the competition platform, please contact <a href="mailto:Sergey.Alyaev@norceresearch.no">Sergey.Alyaev@norceresearch.no</a>
+        <!-- Short instructions -->
+        <h3 style="margin:0">Here's how to beat their score:</h3>
+            <div id="shortInstructions" class="row" style="margin-top:0.25rem">
+                <div id="layers" class="col" style="width:50%">
+                </div>
+            <div id="scoring" class="col" style="width:50%">
+                <ul class="instructions" style="margin-top:0">
+                    <li class="money"><strong>h</strong>points for every meter in sand layer (along x-axis)</li>
+                    <li class="double-money"><strong>2*h</strong>points when you stay in sweet spot near the roof</li>
+                    <li class="decline"><strong>-c</strong>points cost of drilling drilling is subtracted for every meter</li>
+                </ul>
+                <ul class="tight">
+                    <li><strong>h</strong>is the layer thickness</li>
+                    <li>sweet spot:0.5 to 1.5 from the roof</li>
+                    <li><strong>c</strong>= 0.086</li>
+                </ul>
+                
+            </div>
+        </div>
     </div>
     
     <!-- Modal -->
@@ -64,8 +80,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
+    </div>   
 </body>
 <footer>
     <div>
@@ -83,7 +98,7 @@
                 <li>
                     <picture><img src="./assets/var-energi-black.svg" alt="Vår Energi" /></picture>
                 </li>
-
+                
                 <li>
                     <picture><img src="./assets/akerbp.png" alt="Aker BP"/></picture>
                 </li>
@@ -121,6 +136,9 @@
             </ul>
         </div>
     </div>   
+</div>
+<div class="contact">
+    With all requests concerning the competition platform, please contact <a href="mailto:Sergey.Alyaev@norceresearch.no">Sergey.Alyaev@norceresearch.no</a>
 </div>
 </footer></html>
 

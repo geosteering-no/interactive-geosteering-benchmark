@@ -25,15 +25,24 @@ body {
    /* margin-top:-1em;*/
     margin-bottom:2rem;
 }
+#layers{    
+    background:url('assets/help/layers.png') no-repeat; 
+    background-position: center;
+    background-size: contain;
+    width:100%;
+}
 button{background-color:#dddddd;}
 button:hover {background-color:rgb(178, 178, 178);}
 
+strong{margin-left:0!important;}
 .row{
     display:flex;
-    align-items: baseline;
     justify-content: center;
     max-width:100%;}
-
+form .row{
+    align-items:baseline;
+    margin-bottom:0!important;
+}
 ul {
     list-style:none;
     margin: 0;
@@ -44,7 +53,44 @@ ul {
 li{
     display: inline-block;
     padding:1rem;
-    margin:0rem 1rem;   
+    margin:0rem 1rem;
+}
+ul.instructions li:before,
+ul.tight li:before{
+    content: "\2022";
+    position: absolute;
+    margin-right:1em;
+    left:-1.5rem;
+    font-size: 3rem;
+}
+ul.instructions li:before{
+    top:-0.5rem;
+}
+ul.tight li:before{
+    top:-1.1rem;
+}
+
+ul.instructions,
+ul.tight{
+    text-align: start;
+}
+ul.instructions li,
+ul.tight li{
+    display:list-item;
+    margin:0;
+    font-style: italic;
+    list-style-type: none;
+    position: relative;
+    
+}
+
+ul.instructions li{
+    padding:0.5rem;
+}
+ul.tight li{
+    padding:0.25rem;
+    opacity: 0.6;
+    font-size: smaller;
 }
 li picture{
     max-width:100%;
