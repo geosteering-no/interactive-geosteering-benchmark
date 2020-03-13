@@ -16,12 +16,11 @@
         <!-- Hero Image -->
         <section id="hero"></section>
     
-        
-
         <!-- Challenger Text Score -->
-
+        <h3 class="" id="challengeText"></h3>
+    
         <!-- Short instructions -->
-
+        
         <!-- Login -->
         <form method="post" class="row" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
             <input type="text" name="userName" placeholder="Name" class="inputChangeVal" data-js-input-type="text" />
@@ -137,5 +136,17 @@
     $('#continuebtn').on('click',function(){
       $('form').submit();
     });
+
+    // Challenger
+    // Get challenger username and score
+    var challenger = "Sergey"
+    var score = 3674;
+    
+    if (challenger && score){
+        console.log("There has been a challenge");
+        var challenge = $("#challengeText");
+        var challenge_text = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
+        challenge.text(challenge_text);
+    }
   });
 </script>
