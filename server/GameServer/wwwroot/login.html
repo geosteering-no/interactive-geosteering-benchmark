@@ -29,7 +29,7 @@
         <h5 style="margin-top:0;margin-bottom:2rem">Logged in already? <a style="margin-top:0" href="/index.html">Continue game!</a></h5>
         
         <!-- Short instructions -->
-        <h3 id="instructionsTitle" style="margin:0">Here's how to beat their score:</h3>
+        <h3 id="instructionsTitle" style="margin:0"></h3>
             <div id="shortInstructions" class="row" style="margin-top:0.25rem">
                 <div id="layers" class="col" style="width:50%">
                 </div>
@@ -143,18 +143,6 @@
 </footer></html>
 
 <script>
-    $('document').ready(function(){
-    
-    $('#newUserBtn').on('click',function(e){
-      e.preventDefault();
-      $('#myModal').modal('toggle');
-  
-    });
-  
-    $('#continuebtn').on('click',function(){
-      $('form').submit();
-    });
-
     // Challenger
     // Get challenger username and score
     var challenger = "Sergey"
@@ -178,5 +166,17 @@
 
     challengeDiv.text(challengeText);
     instructionsDiv.text(instructionsText);
+
+    $('document').ready(function(){
+    
+    $('#newUserBtn').on('click',function(e){
+      e.preventDefault();
+      $('#myModal').modal('toggle');
+  
+    });
+  
+    $('#continuebtn').on('click',function(){
+      $('form').submit();
+    });
   });
 </script>
