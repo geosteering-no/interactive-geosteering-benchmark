@@ -6,7 +6,27 @@ body {
 .login *{
     margin:1rem 1rem;
 }
-.login{margin-bottom:0vh;}
+.login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 75vw;
+}
+
+#hero {
+    position:relative; 
+    background:url('assets/hero.png') no-repeat; 
+    background-position: center;
+    background-size: contain;
+    min-height:40vh; 
+    /*height:60vh;*/
+    width: 100%;
+    padding:0;
+   /* margin-top:-1em;*/
+    margin-bottom:2rem;
+}
+#hero .content {position: absolute; width:100%; transform: translate(-50%, -50%); left: 50%;top: 50%;}
+
 
 button{background-color:#dddddd;}
 button:hover {background-color:rgb(178, 178, 178);}
