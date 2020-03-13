@@ -1,8 +1,29 @@
+@import "./colors.css";
+
+:root{
+    --clr-txt-primary: rgb(0,0,0);
+    --clr-txt-secondary: #fff;
+}
+header{
+    background-color: var(--clr-off-black);
+    box-shadow: 0 0 2px 1px var(--clr-dark-grey);
+}
+header h1{
+    color: var(--clr-txt-secondary);
+}
 body {
     display:flex;
     flex-direction: column;
     text-align: center;
+    /*background-color: #fff;*/
 }
+ h1,h2,h3,h4,h5{
+     color:var(--clr-txt-primary);
+ }
+ p{
+     color:var(--clr-txt-primary);
+ }
+
 .login *{
     margin:1rem 1rem;
 }
@@ -11,6 +32,21 @@ body {
     flex-direction: column;
     justify-content: center;
     min-width: 75vw;
+}
+
+.line-break.full-width {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+.line-break.full-width.border{
+    border-bottom: 3px solid var(--clr-off-black);
+}
+.line-break.full-width.shadow{
+    box-shadow: 0 0 2px 1px var(--clr-off-black);
 }
 
 #hero {
