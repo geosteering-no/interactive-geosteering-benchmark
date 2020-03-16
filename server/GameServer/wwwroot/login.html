@@ -1,75 +1,58 @@
 ﻿<!DOCTYPE html><html>
 <head>
-    <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <meta charset="utf-8">
     <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
+    <link rel="stylesheet" type="text/css" href="login-style.css">
 </head>
-<style>
-body {
-    display:flex;
-    flex-direction: column;
-    text-align: center;
-}
-.login *{
-    margin:1rem 1rem;
-}
-.login{margin-bottom:0vh;}
-
-button{background-color:#dddddd;}
-button:hover {background-color:rgb(178, 178, 178);}
-
-.row{
-    display:flex;
-    align-items: baseline;
-    justify-content: center;
-    max-width:100%;}
-
-ul {
-    list-style:none;
-    margin: 0;
-    text-align: center;
-    width: 100%;
-    padding:0;
-}
-li{
-    display: inline-block;
-    padding:1rem;
-    margin:0rem 1rem;   
-}
-li picture{
-    max-width:100%;
-    vertical-align: middle;
-}
-li img{
-    /*max-width:100%;*/
-    vertical-align: middle;
-    max-width:200px;
-    max-height:150px;}
-li img.default{width:100px;}
-/* #aknowledgement-list li{outline: blue 1px solid;} */
-.modal-header{text-align: start;}
-.modal-body{text-align: justify;}
-footer{
-    margin-top:1rem;
-}
-</style>
 <body>
-    <div class="login">
-
-        <h1>Welcome to geobanana!</h1>
+    <header>
+        <!-- Title / Welcome text -->
+        <h1 class="">GEOSTEERING the NORCE way</h1>
+    </header>
+    <main>
         
-        <form method="post" class="row" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
+        <div class="login container">
+        
+        <!-- Hero Image -->
+        <section id="hero"></section>
+        
+        <!-- Challenger Text Score -->
+        <h3 class="" id="challengeText" style="margin-bottom:0.25rem"></h3>
+    
+        
+        <!-- Login -->
+        <form method="post" class="row" style="margin-bottom:0" action="/geo/init" data-js-validate="true" data-js-highlight-state-msg="true" data-js-show-valid-msg="true">
             <input type="text" name="userName" placeholder="Name" class="inputChangeVal" data-js-input-type="text" />
             <button class="btn btn-primary" type="submit" name="confirm" id="newUserBtn">Create Game</button>
         </form>
-        <h3>Logged in already? <a href="/index.html">Continue game!</a></h3>
 
-        With all requests concerning the competition platform, please contact <a href="mailto:Sergey.Alyaev@norceresearch.no">Sergey.Alyaev@norceresearch.no</a>
+        <h5 style="margin-top:0;margin-bottom:2rem">Logged in already? <a style="margin-top:0" href="/index.html">Continue game!</a></h5>
+        
+        <!-- Short instructions -->
+        <!-- <div class="line-break full-width border"></div> -->
+        <h3 id="instructionsTitle" style="margin:0"></h3>
+            <div id="shortInstructions" class="row" style="margin-top:0.25rem">
+                <div id="layers" class="col" style="width:50%">
+                </div>
+            <div id="scoring" class="col" style="width:50%">
+                <ul class="instructions" style="margin-top:0">
+                    <li class="money"><strong>h</strong>points for every meter in sand layer (along x-axis)</li>
+                    <li class="double-money"><strong>2*h</strong>points when you stay in sweet spot near the roof</li>
+                    <li class="decline"><strong>-c</strong>points cost of drilling drilling is subtracted for every meter</li>
+                </ul>
+                <ul class="tight">
+                    <li><strong>h</strong>is the layer thickness</li>
+                    <li>sweet spot:0.5 to 1.5 from the roof</li>
+                    <li><strong>c</strong>= 0.086</li>
+                </ul>
+                
+            </div>
+        </div>
     </div>
-
+    
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
@@ -101,75 +84,94 @@ footer{
                 </div>
             </div>
         </div>
-    </div>
-
+    </div>   
 </body>
+</main>
 <footer>
+    <div>
+        <!-- Sponser/Team -->
         <div id="sponsor-list" class="container">
-                <div class="">
-                        <h2 class="pt-5 mb-0 mt-4">Competition Sponsors</h2>
-                </div>
-            <div class="">
-            <ul>
-        
-            <li><picture>
-                    <img src="./assets/nfr.png" alt="The Research Council of Norway" />   
-            </picture></li>
-            <li><picture>
-                <img src="./assets/equinor.png" alt="Equinor" />   
-            </picture></li>
-            
-            <li><picture>
-                <img src="./assets/var-energi-black.svg" alt="Vår Energi" />   
-            </picture></li>
-    
-            <li><picture>
-                    <img src="./assets/akerbp.png" alt="Aker BP" />   
-            </picture></li>
-
-            <li><picture>
-                    <img src="./assets/baker.jpg" alt="Baker Hughes"/>
-            </picture></li>
-                    
-            <li><picture>
-                    <img src="./assets/norce.png" alt="NORCE" />   
-            </picture></li>
-
+            <h2 class="pt-5 mb-0 mt-4">Competion Sponsors</h2>
+            <ul>                       
+                <li>
+                    <picture><img src="./assets/nfr.png" alt="The Research Council of Norway" /></picture>
+                </li>
+                <li>
+                    <picture><img src="./assets/equinor.png" alt="Equinor" /></picture>
+                </li>
+                
+                <li>
+                    <picture><img src="./assets/var-energi-black.svg" alt="Vår Energi" /></picture>
+                </li>
+                
+                <li>
+                    <picture><img src="./assets/akerbp.png" alt="Aker BP"/></picture>
+                </li>
+                <li>
+                    <picture><img src="./assets/baker.jpg" alt="Baker Hughes"/></picture>
+                </li>      
+                <li>
+                    <picture><img src="./assets/norce.png" alt="NORCE"/></picture>
+                </li>
             </ul>
         </div>
         <div id="aknowledgement-list" class="container">
-                <div class="">
-                        <h2 class="pt-5 mb-0 mt-4">The creative team at NORCE</h2>
-                </div>
-                <div class="">
-                    <ul>
-                        <li>
-                            <picture><img class="default" src="./assets/sergey.jpg" alt="Sergey Alyaev" /></picture>                       
-                            <h4>Sergey Alyaev</h4>
-                        </li>
-                        <li>
-                                <picture><img class="default" src="./assets/morten.jpg" alt="Morten Bendiksen" /></picture>                       
-                                <h4>Morten Bendiksen</h4>
-                        </li>
-                        <li>
-                            <picture><img class="default" src="./assets/andrew.jpg" alt="Andrew Holsaeter" /></picture>                       
-                            <h4>Andrew Holsaeter</h4>
-                        </li>
-                        <li>
-                                <picture><img class="default" src="./assets/sofija.jpg" alt="Sofija Ivanova" /></picture>                       
-                                <h4>Sofija Ivanova</h4>
-                        </li>
-                        <li>
-                            <picture><img class="default" src="./assets/robert.jpg" alt="Robert Ewald" /></picture>                       
-                            <h4>Robert Ewald</h4>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <h2 class="pt-5 mb-0 mt-4">The creative team at NORCE</h2>
+            <ul>
+                <li>
+                    <picture><img class="default" src="./assets/sergey.jpg" alt="Sergey Alyaev" /></picture>                       
+                    <h4>Sergey Alyaev</h4>
+                </li>
+                <li>
+                    <picture><img class="default" src="./assets/morten.jpg" alt="Morten Bendiksen" /></picture>                       
+                    <h4>Morten Bendiksen</h4>
+                </li>
+                <li><picture>
+                    <img class="default" src="./assets/andrew.jpg" alt="Andrew Holsaeter" /></picture>                       
+                    <h4>Andrew Holsaeter</h4>
+                </li>
+                <li><picture>
+                    <img class="default" src="./assets/sofija.jpg" alt="Sofija Ivanova" /></picture>                       
+                    <h4>Sofija Ivanova</h4>
+                </li>
+                <li><picture>
+                    <img class="default" src="./assets/robert.jpg" alt="Robert Ewald" /></picture>                       
+                    <h4>Robert Ewald</h4>
+                </li>
+            </ul>
         </div>
+    </div>   
+</div>
+<div class="contact">
+    With all requests concerning the competition platform, please contact <a href="mailto:Sergey.Alyaev@norceresearch.no">Sergey.Alyaev@norceresearch.no</a>
+</div>
 </footer></html>
 
 <script>
+    // Challenger
+    // Get challenger username and score
+    var challenger = "Sergey"
+    var score = 3674;
+
+    var challengeDiv = $("#challengeText");
+    var instructionsDiv = $("#instructionsTitle");
+    
+    var challengeText;
+    var instructionsText;
+    
+    if (challenger && score){
+        challengeText = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
+        instructionsText = "Here's how to beat their score:"
+        
+    }
+    else{
+        challengeText = "Create a game and then challenge your friends to beat your score!";
+        instructionsText = "Here's how to score:";
+    }
+
+    challengeDiv.text(challengeText);
+    instructionsDiv.text(instructionsText);
+
     $('document').ready(function(){
     
     $('#newUserBtn').on('click',function(e){
@@ -179,7 +181,6 @@ footer{
     });
   
     $('#continuebtn').on('click',function(){
-  
       $('form').submit();
     });
   });

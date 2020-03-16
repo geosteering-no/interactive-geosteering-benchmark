@@ -1,3 +1,8 @@
+:root{
+    --clr-primary: rgb(51, 122, 183);
+    --clr-bg-modal: rgb(255, 255, 255);
+  }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -9,7 +14,39 @@ body {
     touch-action: manipulation;
 }
 
+:focus{
+    box-shadow: 
+        0 0 0 5px var(--clr-bg-modal),
+        0 0 0 10px var(--clr-primary);
+        ;
+}
+/* Remove ugly additional focus firefox adds */
+::-moz-focus-inner,
+::-moz-focus-outer{
+    border:0;
+}
+/* BUTTONS */
+#instructionsModalButton{
+    margin-left: 10px;
+    font-size: 18px;
+}
+/* END BUTTONS */
+
 /* MODAL AND SHARE BUTTONS */
+.share-btn a:visited{
+    color:  #fff;
+}
+
+.share-btn a:hover{
+text-decoration: none;
+color: #fff;
+}
+
+.share-btn :focus{
+color:  #fff;
+text-decoration: underline;
+}
+
 #endGameModal .modal-footer{
     display:flex;
 }
@@ -24,14 +61,13 @@ body {
     align-items:center;
     justify-content: flex-end;
 }
-.share-btn{
-    display:flex;
-    align-items:center;
-    margin-left:3px;
-    margin-right:3px;
-}
 
 @media (max-width: 768px) {
+    #endGameModal {
+        display:flex !important;
+        flex-direction: column;
+        justify-content: center;
+    }
     .modal-footer {
         flex-direction: column; /* IF CHANGED TO COLUMN-REVERSE, MOVE MARGIN-BOTTOM FROM .RIGHT TO .LEFT */ 
         align-items: center;
@@ -47,6 +83,40 @@ body {
     }
   }
 /* END MODAL AND SHARE BUTTONS*/
+
+/* CAROUSEL */
+.carousel-inner {
+    margin-bottom:50px;
+}
+.carousel-inner > .item{
+    text-align: center;
+    text-align: -moz-center;
+    transition-duration: 0.35s;
+    -moz-transition-duration: 0.35s;
+}
+.carousel-inner > .item > img{
+    max-height:80vh;
+}
+.carousel-control{
+    opacity: 0;
+    margin-bottom:-50px;
+}
+.carousel-control:focus,
+.carousel-control:hover{
+    opacity: 1;
+    box-shadow: none;
+}
+.carousel-indicators {
+    bottom:-50px;
+}
+.carousel-indicators li{
+    background-color: rgba(0,0,0,0);
+    border: 2px solid var(--clr-primary);
+}
+.carousel-indicators li.active{
+    background-color: var(--clr-primary);
+}
+/* END CAROUSEL */
 
 /*  SLIDER */
 /* The slider itself */
