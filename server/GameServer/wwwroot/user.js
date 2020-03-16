@@ -99,6 +99,10 @@ var pShowAllButton;
 var updateBarsButton;
 var undoButton;
 
+
+//info
+var infoButton;
+
 //submission
 var submitDecisionButton;
 
@@ -406,6 +410,21 @@ function setup() {
   undoButton.mousePressed(undoTrajectory);
   undoButton.addClass("btn");
   undoButton.position(0,850);
+
+  //info 
+  //<!-- <button 
+  //id="instructionsModalButton" 
+  //class="btn btn-default mdc-icon-button material-icons" 
+  //data-toggle="modal" 
+  //data-target="#instructionsModal">info_outline</button> --><!-- <button id="instructionsModalButton" class="btn btn-default mdc-icon-button material-icons" data-toggle="modal" data-target="#instructionsModal">info_outline</button> -->
+  infoButton = createButton("info_outline");
+  infoButton.addClass("btn");
+  infoButton.addClass("btn-default");
+  infoButton.addClass("mdc-icon-button");
+  infoButton.addClass("material-icons");
+  infoButton.attribute("data-toggle", "modal");
+  infoButton.attribute("data-target", "#instructionsModal");
+
 
   submitDecisionButton = createButton("Check for new game.");
   submitDecisionButton.id("submitButton");
@@ -752,10 +771,17 @@ function setSizesAndPositions() {
   //submit button
   goDown(0);
 
+  //info button
+  infoButton.position(10, yPos);
+  let infoWidth = Math.min(buttonHeight*2, canvasWidth/4 - 20);
+  infoButton.size(infoWidth, buttonHeight);
+
   //var submitHeight = wellHeigth / 5;
 
-  submitDecisionButton.position(canvasWidth / 4, yPos);
-  submitDecisionButton.size(canvasWidth / 2, buttonHeight);
+  // submitDecisionButton.position(canvasWidth / 4, yPos);
+  // submitDecisionButton.size(canvasWidth / 2, buttonHeight);
+  submitDecisionButton.position(canvasWidth / 3 + 5, yPos);
+  submitDecisionButton.size(canvasWidth * 2 / 3 - 15 - 10 + 5 + 5, buttonHeight);
 
   //main display
   goDown(buttonHeight);
