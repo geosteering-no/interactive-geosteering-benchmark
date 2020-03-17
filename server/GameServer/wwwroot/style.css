@@ -63,8 +63,8 @@ text-decoration: underline;
 }
 
 @media (max-width: 768px) {
-    #endGameModal {
-        display:flex !important;
+    .modal-open #endGameModal{
+        display:flex!important;
         flex-direction: column;
         justify-content: center;
     }
