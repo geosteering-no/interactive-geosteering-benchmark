@@ -14,13 +14,7 @@ body {
     touch-action: manipulation;
 }
 
-:focus{
-    box-shadow: 
-        0 0 0 5px var(--clr-bg-modal),
-        0 0 0 10px var(--clr-primary);
-        ;
-}
-/* Remove ugly additional focus firefox adds */
+/* Remove ugly focus firefox adds */
 ::-moz-focus-inner,
 ::-moz-focus-outer{
     border:0;
@@ -134,6 +128,7 @@ input[type=range] {
 }
 
 /* Mouse-over effects */
+input[type=range]:focus,
 input[type=range]:hover {
     opacity: 1; /* Fully shown on mouse-over */
 }
