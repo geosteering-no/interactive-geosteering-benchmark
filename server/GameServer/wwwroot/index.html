@@ -140,4 +140,17 @@
       })
     });
   });
+
+  $(document).keydown(function(e) {
+    if (e.keyCode === 37) {
+       // Previous
+       $(".modal-open .carousel").carousel('prev');
+       return false;
+    }
+    if (e.keyCode === 39) {
+       // Next
+       $(".modal-open .carousel").carousel('next');
+       return false;
+    }
+});
 </script>
