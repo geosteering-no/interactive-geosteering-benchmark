@@ -627,7 +627,7 @@ function formatModalShareLinks(percentile){
     var rating = percentile;
     var username = "test-username" // Will need this later for head-to-head-competition
     
-
+    //TODO Sergey, fix this
     var share_url = "game.geosteering.no";
     var share_text = "I ranked in the top " + rating.toString() + "%25 percent on game.geosteering.no! Think you can beat me%3F";
     
