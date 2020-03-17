@@ -388,29 +388,8 @@ function setup() {
   canvas.touchMoved(ctouchMoved);
   canvas.touchEnded(ctouchEnded);
   canvas.mouseMoved(cmouseMoved);
-  prevButton = createButton("⏮ Previous");
-  prevButton.mousePressed(previousButtonClick);
-  prevButton.addClass("btn");
-  prevButton.addClass("btn-default");
 
-  nextButton = createButton("Plan ahead ⏭");
-  nextButton.mousePressed(nextButtonClick);
-  nextButton.addClass("btn");
-  nextButton.addClass("btn-default");
-
-
-  updateBarsButton = createButton("Evaluate the well plan");
-  updateBarsButton.mousePressed(updateBars);
-  //updateBarsButton.style('background-color', colorBarsFront);
-  updateBarsButton.addClass("btn");
-  updateBarsButton.addClass("btn-info");
-  updateBarsButton.position(200, 850);
-
-  undoButton = createButton("Undo");
-  undoButton.mousePressed(undoTrajectory);
-  undoButton.addClass("btn");
-  undoButton.position(0,850);
-
+  /* Order buttons are created affect tab order */
   //info 
   //<!-- <button 
   //id="instructionsModalButton" 
@@ -425,7 +404,6 @@ function setup() {
   infoButton.attribute("data-toggle", "modal");
   infoButton.attribute("data-target", "#instructionsModal");
 
-
   submitDecisionButton = createButton("Check for new game.");
   submitDecisionButton.id("submitButton");
   submitDecisionButton.mousePressed(getUserData);
@@ -435,22 +413,45 @@ function setup() {
   submitDecisionButton.addClass("btn-primary");
   submitDecisionButton.position(200, 900);
 
+  prevButton = createButton("⏮ Previous");
+  prevButton.mousePressed(previousButtonClick);
+  prevButton.addClass("btn");
+  prevButton.addClass("btn-default");
+
   stopButton = createButton("Plan stop ⏹");
   stopButton.mousePressed(stopButtonClick);
   stopButton.position(0, 450);
   stopButton.addClass("btn");
   stopButton.addClass("btn-default");
 
-  // resizeButton = createButton("Resize");
-  // resizeButton.mousePressed(setSizesAndPositions);
-  // resizeButton.position(300, 0);
-
+  nextButton = createButton("Plan ahead ⏭");
+  nextButton.mousePressed(nextButtonClick);
+  nextButton.addClass("btn");
+  nextButton.addClass("btn-default");
+  
   angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
   angleSlider.input(sliderAngleChange);
   // angleSlider.style('width', '280px');
   // angleSlider.style('height', '180px');
   // angleSlider.style('transform', 'scale(3)');
+  
+  undoButton = createButton("Undo");
+  undoButton.mousePressed(undoTrajectory);
+  undoButton.addClass("btn");
+  undoButton.addClass("btn-undo");
+  undoButton.addClass("disabled");
+  undoButton.position(0,850);
+  
+  updateBarsButton = createButton("Evaluate the well plan");
+  updateBarsButton.mousePressed(updateBars);
+  //updateBarsButton.style('background-color', colorBarsFront);
+  updateBarsButton.addClass("btn");
+  updateBarsButton.addClass("btn-info");
+  updateBarsButton.position(200, 850);
 
+  // resizeButton = createButton("Resize");
+  // resizeButton.mousePressed(setSizesAndPositions);
+  // resizeButton.position(300, 0);
 
   setSizesAndPositions();
 
