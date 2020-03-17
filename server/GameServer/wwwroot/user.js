@@ -162,10 +162,12 @@ function buttonSelectSubSet(subsetIndex, curEvaluation) {
 function updateUndoState(){
   if (oldTrajectoy){
     undoButton.addClass("btn-default");
+    undoButton.removeClass("disabled");
     undoButton.mousePressed(undoTrajectory);
   }
   else{
     undoButton.removeClass("btn-default");
+    undoButton.addClass("disabled");
     undoButton.mousePressed(doNothingEvaluation);
   }
 }
