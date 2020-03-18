@@ -367,6 +367,54 @@ function centerCanvas() {
   }
 }
 
+function addButtonHandlers() {
+  // Remove focus from buttons / inputs in order to remove css effects
+  $("document").ready(function(){
+    $("button").each(function(){
+      $(this).mouseleave(function(){
+        $(this).blur();
+      });
+    });
+    $("input").each(function(){
+      $(this).mouseleave(function(){
+        $(this).blur();
+      })
+    });
+
+    // Add keypress events dto left/right arrow keys for slider and carousel
+    $("body").on("keydown", function(e) {
+      // Left arrow
+      if (e.keyCode === 37) {
+        // Previous
+        $(".modal-open .carousel").carousel('prev');
+        
+        var slider = $("#angleSlider");
+        if (slider.is(":focus")){
+          var min = parseFloat(slider.attr("min"));
+          var max = parseFloat(slider.attr("max"));
+          var step = (max-min)/50;
+          var preVal = parseFloat(slider.val());
+          slider.val(preVal - step);
+        }
+      }
+      // Right arrow
+      if (e.keyCode === 39) {
+        // Next
+        $(".modal-open .carousel").carousel('next');
+        
+        var slider = $("#angleSlider");
+        if (slider.is(":focus")){
+          var min = parseFloat(slider.attr("min"));
+          var max = parseFloat(slider.attr("max"));
+          var step = (max-min)/50;
+          var preVal = parseFloat(slider.val());
+          slider.val(preVal + step);
+        }
+      }
+    });
+  });
+}
+
 function setup() {
 
   calculateCanvasSize();
@@ -433,6 +481,7 @@ function setup() {
   
   angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
   angleSlider.input(sliderAngleChange);
+  angleSlider.id("angleSlider");
   // angleSlider.style('width', '280px');
   // angleSlider.style('height', '180px');
   // angleSlider.style('transform', 'scale(3)');
@@ -456,6 +505,8 @@ function setup() {
   // resizeButton.position(300, 0);
 
   setSizesAndPositions();
+
+  addButtonHandlers();
 
   // var layerH = 15;
   // var r1l1 = [100, 80, 60, 90, 85, 65];

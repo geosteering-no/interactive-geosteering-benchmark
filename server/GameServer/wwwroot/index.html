@@ -127,30 +127,3 @@
     <!-- <button id="instructionsModalButton" class="btn btn-default mdc-icon-button material-icons" data-toggle="modal" data-target="#instructionsModal">info_outline</button> -->
   </body>
 </html>
-<script>
-  $("document").ready(function(){
-    $("button").each(function(){
-      $(this).mouseleave(function(){
-        $(this).blur();
-      });
-    });
-    $("input").each(function(){
-      $(this).mouseleave(function(){
-        $(this).blur();
-      })
-    });
-  });
-
-  $(document).keydown(function(e) {
-    if (e.keyCode === 37) {
-       // Previous
-       $(".modal-open .carousel").carousel('prev');
-       return false;
-    }
-    if (e.keyCode === 39) {
-       // Next
-       $(".modal-open .carousel").carousel('next');
-       return false;
-    }
-});
-</script>
