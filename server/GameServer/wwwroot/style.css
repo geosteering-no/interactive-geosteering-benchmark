@@ -14,7 +14,11 @@ canvas {
 body {
     touch-action: manipulation;
 }
-
+/* Override bootsrap btn outline that shows up in chrome */
+btn:focus,
+.btn:focus{
+    outline:none;
+}
 /* Remove ugly focus firefox adds */
 ::-moz-focus-inner,
 ::-moz-focus-outer{
