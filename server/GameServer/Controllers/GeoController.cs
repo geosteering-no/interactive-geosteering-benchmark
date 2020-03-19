@@ -195,7 +195,7 @@ namespace GameServer.Controllers
             dynamicText = dynamicText.Replace("{{CHALLENGE_TEXT_HERE}}", challengeText);
             dynamicText = dynamicText.Replace("{{INSTRUCTIONS_CAPTION_HERE}}", instructionsText);
 
-            if (userId != null)
+            if (userId == null)
             {
                 var loginText = System.IO.File.ReadAllText("wwwroot/responces/login_text.html2");
                 dynamicText = dynamicText.Replace("{{LOGIN_TEXT_HERE}}", loginText);
@@ -203,6 +203,7 @@ namespace GameServer.Controllers
             else
             {
                 var loggedInText = System.IO.File.ReadAllText("wwwroot/responces/continue_text.html2");
+                loggedInText = loggedInText.Replace("{{USER_NAME_HERE}}", userId);
                 //TODO show the name
                 dynamicText = dynamicText.Replace("{{LOGIN_TEXT_HERE}}", loggedInText);
             }

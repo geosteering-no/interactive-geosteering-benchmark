@@ -1,2 +1,2 @@
             <!-- Continue -->
-            <h5 style="margin-top:0;margin-bottom:2rem">Logged in already? <a style="margin-top:0" href="/index.html">Continue game!</a></h5>
+            <h5 style="margin-top:0;margin-bottom:2rem">You are logged in as {{USER_NAME_HERE}} <a class="btn btn-primary" style="margin-top:0" href="/index.html">Continue game!</a></h5>
