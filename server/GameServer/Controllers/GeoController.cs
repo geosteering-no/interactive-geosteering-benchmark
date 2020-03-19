@@ -18,7 +18,7 @@ namespace GameServer.Controllers
     [ApiController]
     [Route("[controller]")]
     public class GeoController : ControllerBase
-    //TODO consider changing to Geocontroller<TWellPoint>
+        //TODO consider changing to Geocontroller<TWellPoint>
     {
         private const string ADMIN_SECRET_USER_NAME =
             "REmarIdYWorYpiETerdReMnAriDaYEpOsViABLEbACRoNCeNERbAlTIveIDECoMErTiOcHonypoLosenTioClATeRIGENEGMAty";
@@ -26,10 +26,14 @@ namespace GameServer.Controllers
         private const string UserId_ID = "geobanana-user-id";
         private string FriendGameId_ID = "referrer-game-id";
         private readonly ILogger<GeoController> _logger;
-        private readonly IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, LevelDescription<WellPoint, RealizationData, TrueModelState>> _stateServer;
+
+        private readonly
+            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation,
+                LevelDescription<WellPoint, RealizationData, TrueModelState>> _stateServer;
 
         public GeoController(ILogger<GeoController> logger,
-            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation, LevelDescription<WellPoint, RealizationData, TrueModelState>> stateServer)
+            IFullServerStateGeocontroller<WellPoint, UserData, UserEvaluation,
+                LevelDescription<WellPoint, RealizationData, TrueModelState>> stateServer)
         {
             //Note! this is magic
             _logger = logger;
@@ -56,7 +60,7 @@ namespace GameServer.Controllers
 
         [Route("admin/scores/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]
-        public LevelDescription<WellPoint, RealizationData, TrueModelState> GetScores([FromBody]  int index)
+        public LevelDescription<WellPoint, RealizationData, TrueModelState> GetScores([FromBody] int index)
         {
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");
@@ -76,7 +80,8 @@ namespace GameServer.Controllers
 
         [Route("admin/load/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]
-        public LevelDescription<WellPoint, RealizationData, TrueModelState> LoadScoresFromFile([FromBody] string fileName)
+        public LevelDescription<WellPoint, RealizationData, TrueModelState> LoadScoresFromFile(
+            [FromBody] string fileName)
         {
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Scores requested");
@@ -87,6 +92,7 @@ namespace GameServer.Controllers
                     return null;
                 }
             }
+
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
@@ -130,7 +136,7 @@ namespace GameServer.Controllers
 
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
-            { 
+            {
                 var res = _stateServer.GetNextUserStateFromFile(nextUser);
                 return res;
             }
@@ -148,10 +154,12 @@ namespace GameServer.Controllers
             {
                 Directory.CreateDirectory(dirShareStatistics);
             }
+
             foreach (var ch in Path.GetInvalidFileNameChars())
             {
                 fileName = fileName.Replace(ch, '-');
             }
+
             if (fileName == "")
             {
                 return;
@@ -161,6 +169,7 @@ namespace GameServer.Controllers
             {
                 fileName = fileName.Substring(0, 20);
             }
+
             using (StreamWriter file =
                 new StreamWriter(dirShareStatistics + "/" + fileName + ".txt", true))
             {
@@ -169,29 +178,71 @@ namespace GameServer.Controllers
 
         }
 
+        private string ComposeHtml(string userId=null, string fgi=null, string platform=null)
+        {
+            var dynamicText = System.IO.File.ReadAllText("wwwroot/responces/dynamic.html2");
+            var challenger = fgi;
+
+            var challengeText = "Create a game and then challenge your friends to beat your score!";
+            var instructionsText = "Here's how to score:";
+            if (challenger != null)
+            {
+                challengeText = challenger + " has challenged you! See if you can beat their score?";
+                //" of " + score.toString() + "!"
+                instructionsText = "Here's how to beat their score:";
+            }
+
+            dynamicText = dynamicText.Replace("{{CHALLENGE_TEXT_HERE}}", challengeText);
+            dynamicText = dynamicText.Replace("{{INSTRUCTIONS_CAPTION_HERE}}", instructionsText);
+
+            if (userId != null)
+            {
+                var loginText = System.IO.File.ReadAllText("wwwroot/responces/login_text.html2");
+                dynamicText = dynamicText.Replace("{{LOGIN_TEXT_HERE}}", loginText);
+            }
+            else
+            {
+                var loggedInText = System.IO.File.ReadAllText("wwwroot/responces/continue_text.html2");
+                //TODO show the name
+                dynamicText = dynamicText.Replace("{{LOGIN_TEXT_HERE}}", loggedInText);
+            }
+
+            return dynamicText;
+            
+        }
+
         [Route("redirect")]
         [HttpGet]
-        public void GetMePlaces([FromQuery] string fgi=null, [FromQuery] string platform="other")
+        public ContentResult GetMePlaces([FromQuery] string fgi=null, [FromQuery] string platform="other")
         {
             try
             {
+                
                 if (fgi != null)
                 {
                     SetFriendGameId(fgi);
                     DumpPrintStatistics(platform, fgi);
                 }
                 var userId = GetUserId();
-                if (userId != null)
+                var dynamicString = ComposeHtml(userId, fgi, platform);
+                var myResult = new ContentResult()
                 {
-                    Response.Redirect("/index.html");
-                }
-                else
-                {
-                    Response.Redirect("/login.html");
-                }
+                    ContentType = "text/html",
+                    Content = dynamicString
+                };
+                return myResult;
+                //if (userId != null)
+                //{
+                //    Response.Redirect("/index.html");
+                //}
+                //else
+                //{
+                //    Response.Redirect("/login.html");
+                //}
             }catch (Exception e)
             {
                 Response.Redirect("/login.html");
+                return new ContentResult();
             }
         }
 
