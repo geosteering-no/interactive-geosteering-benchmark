@@ -671,8 +671,8 @@ function detectGameStateAndUpdateButton() {
   }
 }
 
-function copyToClipboard(){
-  var str = "http://game.geosteering.no";
+function copyToClipboard(linkWithPlatform){
+  var str = linkWithPlatform;
   
   const el = document.createElement('textarea');  // Create a <textarea> element
   el.value = str;                                 // Set its value to the string that you want copied
@@ -702,7 +702,7 @@ function copyToClipboard(){
    setTimeout(function(){ snackbar.removeClass("show"); }, 3000);
 }
 
-function formatModalShareLinks(percentile){
+function formatModalShareLinks(percentile, linkID){
   /* 
   Loops through all share-btns and replaces their anchors href placeholder strings w/ ranking injected Formats social media share urls 
   TODO: Implement challenger username somehow
@@ -713,8 +713,11 @@ function formatModalShareLinks(percentile){
     var username = "test-username" // Will need this later for head-to-head-competition
     
     //TODO Sergey, fix this
-    var share_url = "game.geosteering.no";
-    var share_text = "I ranked in the top " + rating.toString() + "%25 percent on game.geosteering.no! Think you can beat me%3F";
+    var getUrl = window.location;
+    var baseUrl = getUrl .protocol + "//" + getUrl.host;
+    //var share_url = baseUrl+"?fgi="+linkID;
+    var share_url = linkID;
+    var share_text = "I ranked in the top " + rating.toString() + "%25 percent on "+getUrl.host+"! Think you can beat me%3F";
     
     
     // Get buttons anchor child which has the share link
@@ -729,9 +732,9 @@ function formatModalShareLinks(percentile){
   });
 }
 
-function endGameModal(value, percentile) {
+function endGameModal(value, percentile, linkTextSocial, link) {
   // 
-  formatModalShareLinks(percentile);
+  formatModalShareLinks(percentile, linkTextSocial);
 
   // Update with score / percentile
  
@@ -742,7 +745,9 @@ function endGameModal(value, percentile) {
 
   // Set up buttons
   $('#continuebtn').off('click').on('click',commitNewGame);
-  $("#copyToClipboard").click(copyToClipboard);
+  $("#copyToClipboard").click(function (){
+      copyToClipboard(link);
+  });
 
   // Show modal
   $('#endGameModal').modal('show');
@@ -753,9 +758,13 @@ function stopGame() {
     var value = myResult.scoreValue;
     var percent = myResult.scorePercent;
     var percentile = myResult.youDidBetterThan;
+    var getUrl = window.location;
+    var baseUrl = getUrl .protocol + "//" + getUrl.host;
+    var linkCopyable =  baseUrl + "?fgi="+myResult.sharingId+"&platform=link"
+    var linkStringSocial = encodeURI(baseUrl + "?fgi="+myResult.sharingId+"&platform=");
     
     // Show Finished game modal
-    endGameModal(value, percentile);
+    endGameModal(value, percentile, linkStringSocial, linkCopyable);
 
     // Still want to show this in case modal was dismissed
     submitDecisionButton.elt.textContent = "Your score is " + Math.round(value) + ". Share? New game?";

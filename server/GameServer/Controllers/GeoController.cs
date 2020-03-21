@@ -183,7 +183,7 @@ namespace GameServer.Controllers
             var dynamicText = System.IO.File.ReadAllText("wwwroot/responces/dynamic.html2");
             var challenger = fgi;
 
-            var challengeText = "Create a game and then challenge your friends to beat your score!";
+            var challengeText = "Steer your wells and then challenge your friends to beat your score!";
             var instructionsText = "Here's how to score:";
             if (challenger != null)
             {

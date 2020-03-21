@@ -62,7 +62,7 @@ body {
 }
 #layers{    
     background:url('assets/help/layers.png') no-repeat; 
-    background-position: center;
+    background-position: right;
     background-size: contain;
     width:100%;
 }

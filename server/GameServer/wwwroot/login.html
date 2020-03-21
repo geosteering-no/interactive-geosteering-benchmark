@@ -20,7 +20,9 @@
             <section id="hero"></section>
 
             <!-- Challenger Text Score -->
-            <h3 class="" id="challengeText" style="margin-bottom:0.25rem"></h3>
+            <h3 class="" id="challengeText" style="margin-bottom:0.25rem">
+                Steer your wells and then challenge your friends to beat your score!
+            </h3>
 
 
             <!-- Login -->
@@ -33,7 +35,9 @@
 
             <!-- Short instructions -->
             <!-- <div class="line-break full-width border"></div> -->
-            <h3 id="instructionsTitle" style="margin:0"></h3>
+            <h3 id="instructionsTitle" style="margin:0">
+                Here's how to score:
+            </h3>
             <div id="shortInstructions" class="row" style="margin-top:0.25rem">
                 <div id="layers" class="col" style="width:50%">
                 </div>
@@ -150,29 +154,30 @@
 </footer></html>
 
 <script>
-    // Challenger
-    // Get challenger username and score
-    var challenger = "Sergey"
-    var score = 3674;
 
-    var challengeDiv = $("#challengeText");
-    var instructionsDiv = $("#instructionsTitle");
+    // // Challenger
+    // // Get challenger username and score
+    // var challenger = "Sergey"
+    // var score = 3674;
+
+    // var challengeDiv = $("#challengeText");
+    // var instructionsDiv = $("#instructionsTitle");
     
-    var challengeText;
-    var instructionsText;
+    // var challengeText;
+    // var instructionsText;
     
-    if (challenger && score){
-        challengeText = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
-        instructionsText = "Here's how to beat their score:"
+    // if (challenger && score){
+    //     challengeText = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
+    //     instructionsText = "Here's how to beat their score:"
         
-    }
-    else{
-        challengeText = "Create a game and then challenge your friends to beat your score!";
-        instructionsText = "Here's how to score:";
-    }
+    // }
+    // else{
+    //     challengeText = "Steer your wells and then challenge your friends to beat your score!";
+    //     instructionsText = "Here's how to score:";
+    // }
 
-    challengeDiv.text(challengeText);
-    instructionsDiv.text(instructionsText);
+    // challengeDiv.text(challengeText);
+    // instructionsDiv.text(instructionsText);
 
     $('document').ready(function(){
     
