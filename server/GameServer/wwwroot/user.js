@@ -206,6 +206,7 @@ function updateBars() {
           }
           userEvaluation = json;
           updateBarsButton.elt.textContent = "No need to evaluate";
+          updateBarsButton.addClass("disabled");
           
           //updateBarsButton.style('background-color', colorBarsGray);
           updateBarsButton.removeClass("btn-info");
@@ -760,8 +761,8 @@ function stopGame() {
     var percentile = myResult.youDidBetterThan;
     var getUrl = window.location;
     var baseUrl = getUrl .protocol + "//" + getUrl.host;
-    var linkCopyable =  baseUrl + "?fgi="+myResult.sharingId+"&platform=link"
-    var linkStringSocial = encodeURI(baseUrl + "?fgi="+myResult.sharingId+"&platform=");
+    var linkCopyable =  baseUrl + "?fgi="+myResult.sharingId+"&p=link"
+    var linkStringSocial = encodeURI(baseUrl + "?fgi="+myResult.sharingId+"%26p=");
     
     // Show Finished game modal
     endGameModal(value, percentile, linkStringSocial, linkCopyable);
@@ -1069,6 +1070,7 @@ function invalidateUserEvaluation() {
     userEvaluation = null;
     drawBarCharts();
     updateBarsButton.elt.textContent = "Evaluate the new well-plan";
+    updateBarsButton.removeClass("disabled");
     //updateBarsButton.style('background-color', colorBarsFront);
     updateBarsButton.addClass("btn-info");
     updateBarsButton.mousePressed(updateBars);

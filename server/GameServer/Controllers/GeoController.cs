@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Web;
 using System.IO.Pipelines;
+using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using UserState;
 
@@ -214,18 +215,39 @@ namespace GameServer.Controllers
 
         [Route("redirect")]
         [HttpGet]
-        public ContentResult GetMePlaces([FromQuery] string fgi=null, [FromQuery] string platform="other")
+        public ContentResult GetMePlaces([FromQuery] string fgi=null, [FromQuery] string p=null)
         {
             try
             {
-                
+                //this code is extracting the second parameter from string which is a server glitch
+                if (fgi!=null && fgi.Contains('&'))
+                {
+                    var parts = fgi.Split('&');
+                    fgi = parts[0];
+                    try
+                    {
+                        if (p == null)
+                        {
+                            var pEq = parts.First(s => s.StartsWith("p="));
+                            p = pEq.Substring(2);
+                        }
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                    }
+                }
+
+                if (p == null)
+                {
+                    p = "other";
+                }
                 if (fgi != null)
                 {
                     SetFriendGameId(fgi);
-                    DumpPrintStatistics(platform, fgi);
+                    DumpPrintStatistics(p, fgi);
                 }
                 var userId = GetUserId();
-                var dynamicString = ComposeHtml(userId, fgi, platform);
+                var dynamicString = ComposeHtml(userId, fgi, p);
                 var myResult = new ContentResult()
                 {
                     ContentType = "text/html",
