@@ -209,7 +209,7 @@ function updateBars() {
           updateBarsButton.addClass("disabled");
           
           //updateBarsButton.style('background-color', colorBarsGray);
-          updateBarsButton.removeClass("btn-info");
+          //updateBarsButton.removeClass("btn-info");
           updateBarsButton.mousePressed(doNothingEvaluation);
           //updateBarsButton.addStyle("btn-info");
 
@@ -645,16 +645,19 @@ function doNothingEvaluation() {
 
 function preventUpdatingAndUpdateButton() {
   submitDecisionButton.elt.textContent = "Drilling and updating...";
+  submitDecisionButton.addClass("disabled");
   submitDecisionButton.mousePressed(doNothing);
 }
 
 function preventUpdatingStopAndUpdateButton() {
   submitDecisionButton.elt.textContent = "Stopping and pulling out...";
+  submitDecisionButton.addClass("disabled");
   submitDecisionButton.mousePressed(doNothing);
 }
 
 function preventUpdatingNewGameAndUpdateButton() {
   submitDecisionButton.elt.textContent = "Finding new location to drill...";
+  submitDecisionButton.addClass("disabled");
   submitDecisionButton.mousePressed(doNothing);
 }
 
@@ -664,10 +667,12 @@ function detectGameStateAndUpdateButton() {
   }
   else if (nextAngles.length == 0) {
     submitDecisionButton.elt.textContent = "🛑 Stop drilling! (end game and see score)";
+    submitDecisionButton.removeClass("disabled");
     submitDecisionButton.mousePressed(commitDecicion);
   }
   else {
     submitDecisionButton.elt.textContent = "Drill ahead!";
+    submitDecisionButton.removeClass("disabled");
     submitDecisionButton.mousePressed(commitDecicion);
   }
 }
@@ -769,9 +774,11 @@ function stopGame() {
 
     // Still want to show this in case modal was dismissed
     submitDecisionButton.elt.textContent = "Your score is " + Math.round(value) + ". Share? New game?";
+    submitDecisionButton.removeClass("disabled");
     submitDecisionButton.mousePressed(stopGame);
   }else{
     submitDecisionButton.elt.textContent = "Stopped. New game?";
+    submitDecisionButton.removeClass("disabled");
     submitDecisionButton.mousePressed(commitNewGame);
   }
   
@@ -1072,7 +1079,7 @@ function invalidateUserEvaluation() {
     updateBarsButton.elt.textContent = "Evaluate the new well-plan";
     updateBarsButton.removeClass("disabled");
     //updateBarsButton.style('background-color', colorBarsFront);
-    updateBarsButton.addClass("btn-info");
+    //updateBarsButton.addClass("btn-info");
     updateBarsButton.mousePressed(updateBars);
     
   }
