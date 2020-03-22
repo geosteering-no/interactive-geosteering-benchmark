@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="rmdir /Q/S $(ProjectDir)$(OutDir)wwwroot&#xD;&#xA;mkdir $(ProjectDir)$(OutDir)wwwroot&#xD;&#xA;xcopy $(ProjectDir)wwwroot $(ProjectDir)$(OutDir)wwwroot\ /E" />
+    <Exec Command="rmdir /Q/S $(ProjectDir)wwwroot\GEO&#xD;&#xA;rmdir /Q/S $(ProjectDir)$(OutDir)wwwroot&#xD;&#xA;mkdir $(ProjectDir)$(OutDir)wwwroot&#xD;&#xA;xcopy $(ProjectDir)wwwroot $(ProjectDir)$(OutDir)wwwroot\ /E&#xD;&#xA;mkdir $(ProjectDir)$(OutDir)wwwroot\GEO&#xD;&#xA;xcopy $(ProjectDir)wwwroot $(ProjectDir)$(OutDir)wwwroot\GEO /E&#xD;&#xA;mkdir $(ProjectDir)wwwroot\GEO&#xD;&#xA;xcopy $(ProjectDir)$(OutDir)wwwroot\GEO $(ProjectDir)wwwroot\GEO /E&#xD;&#xA;&#xD;&#xA;" />
   </Target>
 
 
