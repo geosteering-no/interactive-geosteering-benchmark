@@ -1,6 +1,6 @@
 # geosteering-game
 
-Server/Client for November Geosteering Demo
+Server/Client for Geosteering Competition Platform
 
 ## Server
 Dotnet Core 3.0 Kestrel Server
