@@ -182,7 +182,8 @@ namespace GameServer.Controllers
         private string ComposeHtml(string userId=null, string fgi=null, string platform=null)
         {
             var dynamicText = System.IO.File.ReadAllText("wwwroot/responces/dynamic.html2");
-            var challenger = fgi;
+            var friendGameId = fgi;
+            var challenger = _stateServer.GetFriendUserNameFromFile(fgi);
 
             var challengeText = "Steer your wells and then challenge your friends to beat your score!";
             var instructionsText = "Here's how to score:";

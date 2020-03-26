@@ -194,7 +194,7 @@ namespace ServerStateInterfaces
             return userDirId;
         }
 
-        private KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> GetUserResultPairFromFile(string folderId)
+        private static KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> GetUserResultPairFromFile(string folderId)
         {
             var dirId = "resultLog/" ;
             var fileSuffix = "/userResultPair.json";
@@ -203,7 +203,7 @@ namespace ServerStateInterfaces
             return userResultPair;
         }
 
-        private T ReadFromFileSafe<T>(string prefix, string unsafeName, string suffix="") {
+        private static T ReadFromFileSafe<T>(string prefix, string unsafeName, string suffix="") {
             foreach (var ch in GetInvalidFileNameChars())
             {
                 if (unsafeName.Contains(ch))
@@ -608,6 +608,17 @@ namespace ServerStateInterfaces
                 score.Rating = GetRating(userName, GetResultsForUser(GetUserResultsForAllGames(), userName));
             }
             return score;
+        }
+
+        public string GetFriendUserNameFromFile(string folderId)
+        {
+            var pair = GetUserResultPairFromFile(folderId);
+            if (pair.Value == null)
+            {
+                return null;
+            }
+
+            return pair.Key.UserName;
         }
 
         private MyScore GetUserResultFromFile(string folderId)
