@@ -19,7 +19,9 @@
         <div class="login container">
 
             <!-- Hero Image -->
-            <section id="hero"></section>
+            <div class="container hero-container">
+                <img id="hero-img" src="./assets/hero.png">
+            </div>
 
             <!-- Challenger Text Score -->
             <h3 class="" id="challengeText" style="margin-bottom:0.25rem">
