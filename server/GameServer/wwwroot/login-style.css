@@ -32,6 +32,7 @@ body {
     flex-direction: column;
     justify-content: center;
     min-width: 75vw;
+    margin-top: 1.5rem;
 }
 
 .line-break.full-width {
@@ -60,6 +61,36 @@ body {
    /* margin-top:-1em;*/
     margin-bottom:2rem;
 }
+.hero-container{
+    position: relative;
+    width: auto;
+    max-width: 100vw;
+    padding:0;
+    margin:0;
+}
+@media (max-width: 768px) {
+    .hero-container{
+        width: 96vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -48vw;
+        margin-right: -48vw;
+    }
+}
+img#hero-img{
+    padding:0;
+    margin:0;
+    max-height:40vh;
+    max-width: 100%;
+}
+@media (min-height: 600px) {
+    img#hero-img{
+        /* Mobile landscape fix*/
+        width:inherit;
+    }
+}
+
 #layers{    
     background:url('assets/help/layers.png') no-repeat; 
     background-position: right;
