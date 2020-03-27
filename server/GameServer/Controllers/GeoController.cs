@@ -98,7 +98,7 @@ namespace GameServer.Controllers
             if (userId == ADMIN_SECRET_USER_NAME)
             {
                 var fName = fileName;
-                var res = _stateServer.GetScoreboardFromFile(fName);
+                var res = _stateServer.LoadScoreboardFromFile(fName);
                 return res;
             }
             else
@@ -118,7 +118,7 @@ namespace GameServer.Controllers
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
-                var res = _stateServer.GetNextUserStateFromFile(userToLoad: userToLoad.text);
+                var res = _stateServer.LoadNextUserStateFromFile(userToLoad: userToLoad.text);
                 return res;
             }
             else
@@ -138,7 +138,7 @@ namespace GameServer.Controllers
             var userId = GetUserId();
             if (userId == ADMIN_SECRET_USER_NAME)
             {
-                var res = _stateServer.GetNextUserStateFromFile(nextUser);
+                var res = _stateServer.LoadNextUserStateFromFile(nextUser);
                 return res;
             }
             else
@@ -183,7 +183,7 @@ namespace GameServer.Controllers
         {
             var dynamicText = System.IO.File.ReadAllText("wwwroot/responces/dynamic.html2");
             var friendGameId = fgi;
-            var challenger = _stateServer.GetFriendUserNameFromFile(fgi);
+            var challenger = _stateServer.LoadFriendUserNameFromFile(fgi);
 
             var challengeText = "Steer your wells and then challenge your friends to beat your score!";
             var instructionsText = "Here's how to score:";

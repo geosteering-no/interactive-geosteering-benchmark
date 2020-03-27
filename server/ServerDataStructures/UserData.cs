@@ -3,6 +3,8 @@ using System.Collections.Generic;
 namespace ServerDataStructures {
     public class UserData  {
 
+        //TODO add game number
+
         public UserData()
         {
 

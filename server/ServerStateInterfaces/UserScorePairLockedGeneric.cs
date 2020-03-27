@@ -118,20 +118,20 @@ namespace ServerStateInterfaces
                 GameIds.Add(rnd.Next(ModuloInt));
             }
 
-            GameIds[0] = 0;
-            var repeatOption = rnd.Next(3);
-            if (repeatOption == 0)
-            {
-                GameIds[2] = GameIds[1];
-            }
-            else if (repeatOption == 1)
-            {
-                GameIds[3] = GameIds[1];
-            }
-            else
-            {
-                GameIds[3] = GameIds[2];
-            }
+            //GameIds[0] = 0;
+            //var repeatOption = rnd.Next(3);
+            //if (repeatOption == 0)
+            //{
+            //    GameIds[2] = GameIds[1];
+            //}
+            //else if (repeatOption == 1)
+            //{
+            //    GameIds[3] = GameIds[1];
+            //}
+            //else
+            //{
+            //    GameIds[3] = GameIds[2];
+            //}
         }
 
         /// <summary>
@@ -149,9 +149,27 @@ namespace ServerStateInterfaces
             {
                 GenerateLevelIdsForUser();
             }
-
             return GameIds[gameIndex % GameIds.Count];
+        }
 
+        public int GameNumberLocked
+        {
+            get
+            {
+                lock (_thisUserLockObject)
+                {
+                    return _gameNumber;
+                }
+            }
+        }
+
+        public int GetLevelSeed(int gameIndex, int totalSerevrGames)
+        {
+            if (GameIds == null || GameIds.Count != TotalUniqueGameInds)
+            {
+                return -1;
+            }
+            return GameIds[gameIndex % GameIds.Count] % totalSerevrGames;
         }
 
         private TSecretState _GetCurrentSecretState(IList<TSecretState> secrets)

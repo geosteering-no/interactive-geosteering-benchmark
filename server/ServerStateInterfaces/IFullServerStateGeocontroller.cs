@@ -29,11 +29,11 @@ namespace ServerStateInterfaces
 
         void AddBotUserDefault();
 
-        string GetFriendUserNameFromFile(string folderId);
+        string LoadFriendUserNameFromFile(string folderId);
 
         bool UserExists(string str);
-        TScoreData GetScoreboardFromFile(string fileName);
-        TUserData GetNextUserStateFromFile(bool nextUser=false, string userToLoad="");
+        TScoreData LoadScoreboardFromFile(string fileName);
+        TUserData LoadNextUserStateFromFile(bool nextUser=false, string userToLoad="");
         ManyWells<TWellPoint> GetScreenFull();
         TUserData GetUserDataDefault();
 

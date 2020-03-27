@@ -194,7 +194,7 @@ namespace ServerStateInterfaces
             return userDirId;
         }
 
-        private static KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> GetUserResultPairFromFile(string folderId)
+        private static KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> LoadUserResultPairFromFile(string folderId)
         {
             var dirId = "resultLog/" ;
             var fileSuffix = "/userResultPair.json";
@@ -224,7 +224,7 @@ namespace ServerStateInterfaces
             }
         }
 
-        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboardFromFile(string fileName)
+        public LevelDescription<TWellPoint, TRealizationData, TSecretState> LoadScoreboardFromFile(string fileName)
         {
             var dirId = "scoreLog";
             
@@ -249,7 +249,7 @@ namespace ServerStateInterfaces
             System.IO.File.WriteAllText(dirIdHighScore + "/" + fileName, jsonStr);
         }
 
-        public IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> GetAllScoresFromFile(string folderName)
+        public IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> LoadAllScoresFromFile(string folderName)
         {
             var dirId = "resultLog/";
             var fileId = "/allScores.json";
@@ -258,7 +258,7 @@ namespace ServerStateInterfaces
             return allScores;
         }
 
-        public IList<UserResultFinal<TWellPoint>> GetScoresForGameFromFile(string folderName, int fileInd)
+        public IList<UserResultFinal<TWellPoint>> LoadScoresForGameFromFile(string folderName, int fileInd)
         {
             var dirId = "resultLog/";
             var fileId = "/board_"+fileInd+".json";
@@ -311,7 +311,7 @@ namespace ServerStateInterfaces
         }
 
 
-        public TUserDataModel GetNextUserStateFromFile(bool nextUser = false, string userToLoad = "")
+        public TUserDataModel LoadNextUserStateFromFile(bool nextUser = false, string userToLoad = "")
         {
             if (userToLoad != "")
             {
@@ -565,7 +565,7 @@ namespace ServerStateInterfaces
 
         public double LoadPercentile100ForGame(double myScore, string folderName, int gameId)
         {
-            var results = GetScoresForGameFromFile(folderName, gameId);
+            var results = LoadScoresForGameFromFile(folderName, gameId);
             double lower = results.Select(GetFinalScore).Count(value => value < myScore);
             var total = results.Count - 1;
             if (total == 0)
@@ -610,9 +610,9 @@ namespace ServerStateInterfaces
             return score;
         }
 
-        public string GetFriendUserNameFromFile(string folderId)
+        public string LoadFriendUserNameFromFile(string folderId)
         {
-            var pair = GetUserResultPairFromFile(folderId);
+            var pair = LoadUserResultPairFromFile(folderId);
             if (pair.Value == null)
             {
                 return null;
@@ -621,13 +621,66 @@ namespace ServerStateInterfaces
             return pair.Key.UserName;
         }
 
-        private MyScore GetUserResultFromFile(string folderId)
+        private MyScore LoadUserResultFromFileForGame(string folderId, int gameSeed)
         {
-            var pair = GetUserResultPairFromFile(folderId);
+            var pair = LoadUserResultPairFromFile(folderId);
             if (pair.Value == null)
             {
                 return null;
             }
+            //try load score from current scores
+            var serverGameIndex = seeds.ToList().FindIndex(x => x == gameSeed);
+            if (serverGameIndex != -1 && serverGameIndex < TOTAL_LEVELS)
+            {
+                var valueScore = GetFinalScore(pair.Value);
+                var score = new MyScore()
+                {
+                    ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
+                    ScoreValue = valueScore,
+                    YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
+                    UserName = pair.Key.UserName,
+                };
+                return score;
+            }
+            //try loading from folder
+            else
+            {
+               
+                try
+                {
+                    var scores = LoadScoresForGameFromFile(folderId, gameSeed);
+                    var userResult = scores.First(x => x.UserName == pair.Key.UserName);
+                    var len = userResult.TrajectoryWithScore.Count;
+                    var valueScore = userResult.TrajectoryWithScore[len - 1].Score;
+                    var score = new MyScore()
+                    {
+                        ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
+                        ScoreValue = valueScore,
+                        YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
+                        UserName = pair.Key.UserName,
+                    };
+                    return score;
+                }
+                catch (Exception e)
+                {
+                    var score = new MyScore()
+                    {
+                        UserName = pair.Key.UserName,
+                    };
+                    return score;
+                }
+            }
+
+        }
+
+        private MyScore LoadUserResultFromFileDepricated(string folderId)
+        {
+            var pair = LoadUserResultPairFromFile(folderId);
+            if (pair.Value == null)
+            {
+                return null;
+            }
+            //try load score from current scores
             var serverGameIndex = seeds.ToList().FindIndex(x => x==pair.Key.GameId);
             if (serverGameIndex != -1 && serverGameIndex < TOTAL_LEVELS)
             {
@@ -641,6 +694,7 @@ namespace ServerStateInterfaces
                 };
                 return score;
             }
+            //try load scores from old scores
             else
             {
                 var score = new MyScore()
@@ -723,26 +777,49 @@ namespace ServerStateInterfaces
             pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             PushToResultingTrajectories(pair);
             var shareId = DumpUserResultToFileOnStop(pair);
+
+            var gameNumber = userPair.GameNumberLocked;
+            var gameSeed = userPair.GetLevelSeed(gameNumber, _levelDescriptions.Length);
+
+            //handling of friends score
             MyScore friendsScore = null;
             if (friendSaveId != null)
             {
-                friendsScore = GetUserResultFromFile(friendSaveId);
+                friendsScore = LoadUserResultFromFileForGame(friendSaveId, gameSeed);
                 if (friendsScore != null)
                 {
                     friendsScore.Rating = GetRating(friendsScore.UserName, GetUserResultsForAllGames(),
-                        GetAllScoresFromFile(friendSaveId), friendSaveId);
+                        LoadAllScoresFromFile(friendSaveId), friendSaveId);
                 }
             }
-        
             if (friendsScore == null)
             {
                 friendsScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), BotUserName, true);
             }
 
+
+            //handling of AI score
+            MyScore aiScore = null;
+            var serverGameIndex = seeds.ToList().FindIndex(x => x == gameSeed);
+            if (serverGameIndex >= 0)
+            {
+                var aiResult = GetBotResultForGame(serverGameIndex);
+                var aiScoreValue = aiResult.TrajectoryWithScore[aiResult.TrajectoryWithScore.Count - 1].Score;
+                aiScore = new MyScore()
+                {
+                    UserName = BotUserName,
+                    ScoreValue = aiScoreValue,
+                    //Rating = GetRating(BotUserName, GetUserResultsForAllGames(), )
+                    //TODO add rating
+                };
+            }
+
+
             MyScore myScore;
             myScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId, true);
             myScore.SharingId = shareId;
             myScore.FriendsScore = friendsScore;
+            myScore.AiScore = aiScore;
             return myScore;
         }
 
