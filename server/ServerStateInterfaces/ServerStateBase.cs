@@ -645,13 +645,15 @@ namespace ServerStateInterfaces
             //try loading from folder
             else
             {
-               
+                //note when ID is correct this code should be never reached
                 try
                 {
+                    
                     var scores = LoadScoresForGameFromFile(folderId, gameSeed);
                     var userResult = scores.First(x => x.UserName == pair.Key.UserName);
                     var len = userResult.TrajectoryWithScore.Count;
                     var valueScore = userResult.TrajectoryWithScore[len - 1].Score;
+                    System.Console.WriteLine("Warning: This code should not be reached");
                     var score = new MyScore()
                     {
                         ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
@@ -779,13 +781,15 @@ namespace ServerStateInterfaces
             var shareId = DumpUserResultToFileOnStop(pair);
 
             var gameNumber = userPair.GameNumberLocked;
-            var gameSeed = userPair.GetLevelSeed(gameNumber, _levelDescriptions.Length);
+            var serverGameIndex = userPair.GetLevelIndex(gameNumber, _levelDescriptions.Length);
+            var gameSeed = seeds[serverGameIndex];
 
             //handling of friends score
             MyScore friendsScore = null;
             if (friendSaveId != null)
             {
                 friendsScore = LoadUserResultFromFileForGame(friendSaveId, gameSeed);
+                friendsScore.SharingId = friendSaveId;
                 if (friendsScore != null)
                 {
                     friendsScore.Rating = GetRating(friendsScore.UserName, GetUserResultsForAllGames(),
@@ -800,18 +804,25 @@ namespace ServerStateInterfaces
 
             //handling of AI score
             MyScore aiScore = null;
-            var serverGameIndex = seeds.ToList().FindIndex(x => x == gameSeed);
-            if (serverGameIndex >= 0)
+            try
             {
-                var aiResult = GetBotResultForGame(serverGameIndex);
-                var aiScoreValue = aiResult.TrajectoryWithScore[aiResult.TrajectoryWithScore.Count - 1].Score;
-                aiScore = new MyScore()
+                if (serverGameIndex >= 0)
                 {
-                    UserName = BotUserName,
-                    ScoreValue = aiScoreValue,
-                    //Rating = GetRating(BotUserName, GetUserResultsForAllGames(), )
-                    //TODO add rating
-                };
+                    var aiResult = GetBotResultForGame(serverGameIndex);
+                    var aiScoreValue = aiResult.TrajectoryWithScore[aiResult.TrajectoryWithScore.Count - 1].Score;
+                    aiScore = new MyScore()
+                    {
+                        UserName = BotUserName,
+                        ScoreValue = aiScoreValue,
+                        //Rating = GetRating(BotUserName, GetUserResultsForAllGames(), )
+                        //TODO add rating
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Warning: AI is probably not finished");
+                //pass
             }
 
 

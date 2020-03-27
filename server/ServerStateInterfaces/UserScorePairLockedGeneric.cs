@@ -163,7 +163,7 @@ namespace ServerStateInterfaces
             }
         }
 
-        public int GetLevelSeed(int gameIndex, int totalSerevrGames)
+        public int GetLevelIndex(int gameIndex, int totalSerevrGames)
         {
             if (GameIds == null || GameIds.Count != TotalUniqueGameInds)
             {
