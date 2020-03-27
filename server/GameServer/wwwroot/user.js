@@ -739,14 +739,33 @@ function formatModalShareLinks(percentile, linkID){
   });
 }
 
-function endGameModal(value, percentile, linkTextSocial, link) {
+function endGameModal(myResult, linkTextSocial, link) {
   // 
+  var value = myResult.scoreValue;
+  var percentile = myResult.scorePercent;
   formatModalShareLinks(percentile, linkTextSocial);
 
   // Update with score / percentile
  
-  var html = "<p> Your score is <b>" + Math.round(value) + "</b>. You did better than <b>"
-  + Math.round(percentile) + "%</b>.<p>Challenge a friend to beat your score by clicking any of the share options, or start a new level!</p>"
+  var html = "<p> Your score is <b>" + Math.round(value) + "</b>. ";
+  html += "<br> You did better than <b>"
+    + Math.round(percentile) + "%</b>.";
+  if (myResult.friendsScore != null){
+    if (myResult.friendsScore.scoreValue > value){
+      html += "<br><b>" + myResult.friendsScore.userName + "</b> beat you with score <b>"+ Math.round(myResult.friendsScore.scoreValue) +"</b>";
+    }else if (myResult.friendsScore.scoreValue < value){
+      html += "<br>You beat <b>" + myResult.friendsScore.userName + "</b> who scored <b>"+Math.round(myResult.friendsScore.scoreValue)+"</b>";
+    }
+  }
+  if (myResult.aiScore != null){
+    if (myResult.aiScore.scoreValue > value){
+      html += "<br>The AI beat you with score <b>"+ Math.round(myResult.aiScore.scoreValue) +"</b>";
+    }else if (myResult.aiScore.scoreValue < value){
+      html += "<br>You beat <b>the AI</b> who scored <b>"+Math.round(myResult.aiScore.scoreValue)+"</b>";
+    }
+  }
+
+  html += "<p>Challenge a friend to beat your score by clicking any of the share options, or start a new level!</p>";
   
   $('#endGameModal .modal-body').html(html);
 
@@ -771,7 +790,7 @@ function stopGame() {
     var linkStringSocial = encodeURI(baseUrl + "?fgi="+myResult.sharingId+"%26p=");
     
     // Show Finished game modal
-    endGameModal(value, percentile, linkStringSocial, linkCopyable);
+    endGameModal(myResult, linkStringSocial, linkCopyable);
 
     // Still want to show this in case modal was dismissed
     submitDecisionButton.elt.textContent = "Your score is " + Math.round(value) + ". Share? New game?";
