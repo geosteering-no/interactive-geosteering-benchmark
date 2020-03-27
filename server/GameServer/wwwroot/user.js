@@ -741,32 +741,57 @@ function formatModalShareLinks(percentile, linkID){
 
 function endGameModal(myResult, linkTextSocial, link) {
   // 
-  var value = myResult.scoreValue;
-  var percentile = myResult.scorePercent;
-  formatModalShareLinks(percentile, linkTextSocial);
+  var html = "";
+  if (myResult){
+    var value = myResult.scoreValue;
+    var percentile = myResult.scorePercent;
+    formatModalShareLinks(percentile, linkTextSocial);
 
-  // Update with score / percentile
- 
-  var html = "<p> Your score is <b>" + Math.round(value) + "</b>. ";
-  html += "<br> You did better than <b>"
-    + Math.round(percentile) + "%</b>.";
-  if (myResult.friendsScore != null){
-    if (myResult.friendsScore.scoreValue > value){
-      html += "<br><b>" + myResult.friendsScore.userName + "</b> beat you with score <b>"+ Math.round(myResult.friendsScore.scoreValue) +"</b>";
-    }else if (myResult.friendsScore.scoreValue < value){
-      html += "<br>You beat <b>" + myResult.friendsScore.userName + "</b> who scored <b>"+Math.round(myResult.friendsScore.scoreValue)+"</b>";
+    // Update with score / percentile
+    var friendInfo = false;
+    html += "<p> Your score is <b>" + Math.round(value) + "</b>. ";
+    html += "<br> You did better than <b>"
+      + Math.round(percentile) + "%</b>.";
+    if (myResult.friendsScore != null){
+      friendInfo = true;
+      if (myResult.friendsScore.scoreValue > value){
+        html += "<br><b>" + myResult.friendsScore.userName + "</b> beat you with score <b>"+ Math.round(myResult.friendsScore.scoreValue) +"</b>";
+      }else if (myResult.friendsScore.scoreValue < value){
+        html += "<br>You beat <b>" + myResult.friendsScore.userName + "</b> who scored <b>"+Math.round(myResult.friendsScore.scoreValue)+"</b>";
+      }else{
+        html += "<br>You scared same as <b>" + myResult.friendsScore.userName + "</b>";
+      }
     }
-  }
-  if (myResult.aiScore != null){
-    if (myResult.aiScore.scoreValue > value){
-      html += "<br>The AI beat you with score <b>"+ Math.round(myResult.aiScore.scoreValue) +"</b>";
-    }else if (myResult.aiScore.scoreValue < value){
-      html += "<br>You beat <b>the AI</b> who scored <b>"+Math.round(myResult.aiScore.scoreValue)+"</b>";
+    if (myResult.aiScore != null){
+      if (myResult.aiScore.scoreValue > value){
+        html += "<br>The AI beat you with score <b>"+ Math.round(myResult.aiScore.scoreValue) +"</b>";
+      }else //if (myResult.aiScore.scoreValue < value)
+      {
+        html += "<br>You beat <b>the AI</b> who scored <b>"+Math.round(myResult.aiScore.scoreValue)+"</b>";
+      }
     }
+
+    //TODO add link to score board here
+    if (friendInfo){
+      html += "<p>Show your score to <b>" +myResult.friendsScore.userName+ "</b> or challenge another friend to beat your score by clicking any of the share options, or start a new round!</p>";
+    }
+    else{
+      html += "<p>Challenge a friend to beat your score by clicking any of the share options, or start a new round!</p>";
+    }
+
+    if (myResult.rating.length < 3){
+      html += "<p>Steer through "+ (3 - myResult.rating.length)+" more rounds to get into our <b>prize draw!</b></p>";
+    }
+    else{
+      html += "<p>Your rating from 3 best rounds is <b>"+Math.round(myResult.rating[2])+"%</b>. Add <b>#geobanana</b> when sharing to enter our <b>prize draw!</b> or pass more rounds to get even better score!</p>";
+    }
+
+  }else{
+    html += "<p>Challenge a friend by clicking any of the share options, or start a new round!</p>";
   }
 
-  html += "<p>Challenge a friend to beat your score by clicking any of the share options, or start a new level!</p>";
-  
+
+
   $('#endGameModal .modal-body').html(html);
 
   // Set up buttons
