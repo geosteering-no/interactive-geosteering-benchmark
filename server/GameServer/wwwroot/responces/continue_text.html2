@@ -1,5 +1,5 @@
             <!-- Continue -->
-            <h5 style="margin-top:0;margin-bottom:2rem">You are logged in as <b>{{USER_NAME_HERE}}</b> <br> 
+            <h5 style="margin-top:2rem;margin-bottom:2rem">You are logged in as <b>{{USER_NAME_HERE}}</b> <br> 
                 <a class="btn btn-primary" href="/index.html">Continue game!</a>
                 <br>
                 <a style="margin-top:0" href="/login.html">Change name</a></h5>

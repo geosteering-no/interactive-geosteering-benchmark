@@ -44,10 +44,15 @@
             <!-- Short instructions -->
             <!-- <div class="line-break full-width border"></div> -->
             <h3 id="instructionsTitle" style="margin:0">{{INSTRUCTIONS_CAPTION_HERE}}</h3>
+            <h4>
+                Navigate in layered enviorment with up to two sand layers (white) to score points:
+                </h4>
+
             <div id="shortInstructions" class="row" style="margin-top:0.25rem">
                 <div id="layers" class="col" style="width:50%">
                 </div>
                 <div id="scoring" class="col" style="width:50%">
+
                     <ul class="instructions" style="margin-top:0">
                         <li class="money"><strong>h</strong>points for every meter in sand layer (along x-axis)</li>
                         <li class="double-money"><strong>2*h</strong>points when you stay in sweet spot near the roof</li>
