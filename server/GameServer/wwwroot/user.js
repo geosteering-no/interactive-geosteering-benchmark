@@ -577,6 +577,7 @@ function tryStartNewGame() {
 
 function commitNewGame(){
   preventUpdatingNewGameAndUpdateButton();
+  $('#endGameModal').modal('hide');
   //this one just returns game index
   fetch("/geo/newgame",
     {
