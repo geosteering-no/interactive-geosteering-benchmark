@@ -1,4 +1,5 @@
 var timerCountdown = 1;
+var revealedPoints = 0;
 var prevButton;
 var nextButton;
 
@@ -84,11 +85,11 @@ function animateWell(wellBuffer, committedPoints){
 		finalPoint.y = committedPoints[len-1].y * lambda + committedPoints[len-2].y * (1-lambda);
 
 		
-		for (var i = 0; i < len - 1; i++) {
+		for (var i = 0; i < len; i++) {
 			var point = committedPoints[i];
 			var prev = point;
 			if (i > 0) prev = committedPoints[i - 1];
-			if (i >= len-2){
+			if (i >= len-1){
 				point = finalPoint;
 				// point.x = point.x * lambda + prev.x * (1-lambda);
 				// point.y = point.y * lambda + prev.y * (1-lambda);
@@ -103,11 +104,11 @@ function animateWell(wellBuffer, committedPoints){
 		wellBuffer.stroke(0);
 		wellBuffer.noFill();
 		wellBuffer.strokeWeight(0.1);
-		for (var i = 0; i < len - 1; i++) {
+		for (var i = 0; i < len; i++) {
 			var point = {x: committedPoints[i].x, y: committedPoints[i].y};
 			point.x += random(-0.03, 0.03);
 			point.y += random(-0, 0.3);
-			if (i >= len-2){
+			if (i >= len-1){
 				point = finalPoint;
 				point.x +=  random(-0.5, 0.03);
 				// point.x = point.x * lambda + prev.x * (1-lambda);
@@ -143,7 +144,8 @@ function draw() {
 		image(geoModelBuffer, 0, 0, geoModelBuffer.width, geoModelBuffer.height);
 		drawAllWells();
 		if (animatedWellPoints){
-			animateWell(wellBuffer, animatedWellPoints);
+			pointsCopy = animatedWellPoints.slice(0, revealedPoints);
+			animateWell(wellBuffer, pointsCopy);
 		}
 
 		image(wellBuffer, 0, 0, wellBuffer.width, wellBuffer.height);
@@ -178,8 +180,11 @@ function draw() {
 	timerCountdown--;
 	if (timerCountdown <= 0) {
 		timerCountdown = totalTimerTime;
-
-		fetchScoreData();
+		if (animatedWellPoints === null || animatedWellPoints === undefined || revealedPoints >= animatedWellPoints.length){
+			fetchScoreData();
+		}else{
+			revealedPoints++;
+		}
 	}
 }
 
@@ -239,7 +244,8 @@ function drawAllWells() {
 
 		legendBuffer.noStroke();
 
-		var legendLength = colors.length + 1;
+		//var legendLength = colors.length + 1;
+		var legendLength = 1;
 		var textShift = 10;
 		var textHeight = (legendBuffer.height - textShift * 2) / legendLength;
 		legendBuffer.textSize(textHeight);
@@ -247,6 +253,7 @@ function drawAllWells() {
 
 		curResultsAscending = allWellData.userResults.slice(0)
 			.sort(function (a, b) {
+				return a.timeTicks - b.timeTicks;
 				var aLastInd = a.trajectoryWithScore.length - 1;
 				var bLastInd = b.trajectoryWithScore.length - 1;
 				if (aLastInd < 0) {
@@ -288,45 +295,47 @@ function drawAllWells() {
 					score = curResultsAscending[i].trajectoryWithScore[lastInd].score;
 				}
 				var shortUserName = curResultsAscending[i].userName;
-				if (shortUserName.length > 18) {
-					shortUserName = shortUserName.substr(0, 18);
+				if (shortUserName.length > 22) {
+					shortUserName = shortUserName.substr(0, 22);
 				}
 
 				legendBuffer.fill(colors[fromTop]);
 				legendBuffer.textAlign(LEFT);
-				legendBuffer.text(shortUserName + " (top):", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-					legendBuffer.width * 0.75, legendBuffer.height / legendLength);
-				legendBuffer.textAlign(RIGHT);
-				legendBuffer.text(Math.round(score / bestScore) + "%", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+				legendBuffer.text(shortUserName, 0, textShift + (fromTop) * legendBuffer.height / legendLength,
 					legendBuffer.width, legendBuffer.height / legendLength);
+				legendBuffer.textAlign(RIGHT);
+				// legendBuffer.text(Math.round(score) , 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+				// 	legendBuffer.width, legendBuffer.height / legendLength);
 				
 				//best[userName] = null;
 				// if (userName in prevBest){
 				// 	prevBest
 				// }
-			} else if (fromTop == Math.round(curResultsAscending.length/2.0)){
-				fromTop = 1;
-				wellBuffer.stroke(colors[fromTop]);
-				wellBuffer.fill(colors[fromTop]);
-				wellBuffer.strokeWeight(thicknessMultLine * userData.height / wellBuffer.height * 2);
-				var lastInd = userPoints.length - 1;
-				var score = 0;
-				if (lastInd >= 0) {
-					score = curResultsAscending[i].trajectoryWithScore[lastInd].score;
-				}
-				var shortUserName = curResultsAscending[i].userName;
-				if (shortUserName.length > 18) {
-					shortUserName = shortUserName.substr(0, 18);
-				}
+			} 
+			// else if (fromTop == Math.round(curResultsAscending.length/2.0)){
+			// 	fromTop = 1;
+			// 	wellBuffer.stroke(colors[fromTop]);
+			// 	wellBuffer.fill(colors[fromTop]);
+			// 	wellBuffer.strokeWeight(thicknessMultLine * userData.height / wellBuffer.height * 2);
+			// 	var lastInd = userPoints.length - 1;
+			// 	var score = 0;
+			// 	if (lastInd >= 0) {
+			// 		score = curResultsAscending[i].trajectoryWithScore[lastInd].score;
+			// 	}
+			// 	var shortUserName = curResultsAscending[i].userName;
+			// 	if (shortUserName.length > 18) {
+			// 		shortUserName = shortUserName.substr(0, 18);
+			// 	}
 
-				legendBuffer.fill(colors[fromTop]);
-				legendBuffer.textAlign(LEFT);
-				legendBuffer.text(shortUserName + " (median):", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-					legendBuffer.width * 0.75, legendBuffer.height / legendLength);
-				legendBuffer.textAlign(RIGHT);
-				legendBuffer.text(Math.round(score / bestScore) + "%", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
-					legendBuffer.width, legendBuffer.height / legendLength);
-			} else {
+			// 	legendBuffer.fill(colors[fromTop]);
+			// 	legendBuffer.textAlign(LEFT);
+			// 	legendBuffer.text(shortUserName + " (median):", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+			// 		legendBuffer.width * 0.75, legendBuffer.height / legendLength);
+			// 	legendBuffer.textAlign(RIGHT);
+			// 	legendBuffer.text(Math.round(score) + "" , 0, textShift + (fromTop) * legendBuffer.height / legendLength,
+			// 		legendBuffer.width, legendBuffer.height / legendLength);
+			// } 
+			else {
 				wellBuffer.stroke(220, 220, 220, 100);
 				wellBuffer.strokeWeight(thicknessMultLine * userData.height / wellBuffer.height);
 			}
@@ -515,6 +524,7 @@ function fetchScoreData() {
 				.then(function (json) {
 					console.log("got score:" + JSON.stringify(json));
 					allWellData = json;
+					revealedPoints = 2;
 					drawAllWells();
 				});
 		});
@@ -529,7 +539,7 @@ function drawGeomodelToBuffer(scoredata) {
 
 	var bufferHeight = Math.round(canvasHeigth / 8 * 7);
 	var legendWidth = Math.round(canvasWidth / 3);
-	var legendHeight = Math.round(canvasHeigth / 5);
+	var legendHeight = Math.round(canvasHeigth / 15);
 	if (geoModelBuffer == null) {
 		geoModelBuffer = createGraphics(canvasWidth, bufferHeight);
 		wellBuffer = createGraphics(canvasWidth, bufferHeight);
