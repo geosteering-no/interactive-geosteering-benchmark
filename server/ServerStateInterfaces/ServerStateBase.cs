@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using ServerDataStructures;
@@ -46,7 +47,7 @@ namespace ServerStateInterfaces
 
         protected const string BotUserName = "Alyaev et al.[2019]";
 
-        protected const int TOTAL_LEVELS = 1;
+        protected const int TOTAL_LEVELS = 20;
         //protected TSecretState _secret = default;
 
         //TODO Generate secret states
@@ -81,11 +82,57 @@ namespace ServerStateInterfaces
         //207 top bot 3327 / 4318
 
 
+
+
+
+
+
         protected int[] seeds = {
+            500,
+            501,
+            502,
+            503,
+            504,
+            505,
+            506,
+            507,
+            508,
+            509,
+            510,
+            511,
+            512,
+            513,
+            514,
+            515,
+            516,
+            517,
+            518,
+            519,
+            //409,
+            401, 
+            //402,
+            //403,
+            //404,
+            //405,
+            //406,
+            //407,
+            //408,
+            //409,
+            410,
+            //411,
+            412,
+            413,
+            414,
+            415,
+            416,
+            417,
+            418,
+            419,
+            420,
             //original NFES
             //0,
-            202,
-            105, //105,
+            //202,
+            //105, //105,
             //end of original NFES
             //103, //103,
             214, //214,
@@ -623,55 +670,62 @@ namespace ServerStateInterfaces
 
         private MyScore LoadUserResultFromFileForGame(string folderId, int gameSeed)
         {
-            var pair = LoadUserResultPairFromFile(folderId);
-            if (pair.Value == null)
+            var pair1 = LoadUserResultPairFromFile(folderId);
+            var fgi = pair1.Key;
+            var allScores = LoadAllScoresFromFile(folderId);
+            var myScores = allScores.Where(x => (x.Key.UserName == fgi.UserName && x.Key.GameId == gameSeed)).ToList();
+            if (myScores.Count <= 0)
             {
                 return null;
             }
+            var orderedScores = myScores.OrderBy(x => x.Key.GameNumberForUser);
+            var trajValue = orderedScores.First();
+            //TODO try loading correct game do not use value
             //try load score from current scores
             var serverGameIndex = seeds.ToList().FindIndex(x => x == gameSeed);
             if (serverGameIndex != -1 && serverGameIndex < TOTAL_LEVELS)
             {
-                var valueScore = GetFinalScore(pair.Value);
+                var valueScore = GetFinalScore(trajValue.Value);
                 var score = new MyScore()
                 {
                     ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
                     ScoreValue = valueScore,
                     YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
-                    UserName = pair.Key.UserName,
+                    UserName = pair1.Key.UserName,
                 };
                 return score;
             }
-            //try loading from folder
-            else
-            {
-                //note when ID is correct this code should be never reached
-                try
-                {
-                    
-                    var scores = LoadScoresForGameFromFile(folderId, gameSeed);
-                    var userResult = scores.First(x => x.UserName == pair.Key.UserName);
-                    var len = userResult.TrajectoryWithScore.Count;
-                    var valueScore = userResult.TrajectoryWithScore[len - 1].Score;
-                    System.Console.WriteLine("Warning: This code should not be reached");
-                    var score = new MyScore()
-                    {
-                        ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
-                        ScoreValue = valueScore,
-                        YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
-                        UserName = pair.Key.UserName,
-                    };
-                    return score;
-                }
-                catch (Exception e)
-                {
-                    var score = new MyScore()
-                    {
-                        UserName = pair.Key.UserName,
-                    };
-                    return score;
-                }
-            }
+
+            return null;
+            ////try loading from folder
+            //else
+            //{
+            //    try
+            //    {
+
+            //        var scores = LoadScoresForGameFromFile(folderId, gameSeed);
+            //        var userResult = scores.First(x => x.UserName == pair1.Key.UserName);
+            //        var len = userResult.TrajectoryWithScore.Count;
+            //        var valueScore = userResult.TrajectoryWithScore[len - 1].Score;
+            //        System.Console.WriteLine("Warning: This code should not be reached");
+            //        var score = new MyScore()
+            //        {
+            //            ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
+            //            ScoreValue = valueScore,
+            //            YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
+            //            UserName = pair1.Key.UserName,
+            //        };
+            //        return score;
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        var score = new MyScore()
+            //        {
+            //            UserName = pair.Key.UserName,
+            //        };
+            //        return score;
+            //    }
+            //}
 
         }
 
@@ -789,17 +843,17 @@ namespace ServerStateInterfaces
             if (friendSaveId != null)
             {
                 friendsScore = LoadUserResultFromFileForGame(friendSaveId, gameSeed);
-                friendsScore.SharingId = friendSaveId;
                 if (friendsScore != null)
                 {
+                    friendsScore.SharingId = friendSaveId;
                     friendsScore.Rating = GetRating(friendsScore.UserName, GetUserResultsForAllGames(),
                         LoadAllScoresFromFile(friendSaveId), friendSaveId);
                 }
             }
-            if (friendsScore == null)
-            {
-                friendsScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), BotUserName, true);
-            }
+            //if (friendsScore == null)
+            //{
+            //    friendsScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), BotUserName, true);
+            //}
 
 
             //handling of AI score
