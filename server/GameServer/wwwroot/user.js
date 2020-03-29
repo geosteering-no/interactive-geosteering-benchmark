@@ -463,28 +463,27 @@ function setup() {
   submitDecisionButton.addClass("btn");
   submitDecisionButton.addClass("btn-primary");
   submitDecisionButton.position(200, 900);
-  submitDecisionButton.style("text-overflow", "hidden");
+  submitDecisionButton.style("overflow", "hidden");
 
   prevButton = createButton("⏮ Previous");
   prevButton.mousePressed(previousButtonClick);
   prevButton.addClass("btn");
   prevButton.addClass("btn-default");
-  prevButton.style("text-overflow", "hidden");
+  prevButton.style("overflow", "hidden");
 
   stopButton = createButton("Plan stop ⏹");
   stopButton.mousePressed(stopButtonClick);
   stopButton.position(0, 450);
   stopButton.addClass("btn");
   stopButton.addClass("btn-default");
-  stopButton.style("text-overflow", "hidden");
+  stopButton.style("overflow", "hidden");
 
 
   nextButton = createButton("Plan ahead ⏭");
   nextButton.mousePressed(nextButtonClick);
   nextButton.addClass("btn");
   nextButton.addClass("btn-default");
-  nextButton.style("text-overflow", "hidden");
-
+  nextButton.style("overflow", "hidden");
   
   angleSlider = createSlider(-maxAngleChange, maxAngleChange, 0, 0);
   angleSlider.input(sliderAngleChange);
@@ -506,8 +505,8 @@ function setup() {
   updateBarsButton.addClass("btn");
   updateBarsButton.addClass("btn-info");
   updateBarsButton.position(200, 850);
-  updateBarsButton.style("text-overflow", "hidden");
-
+  updateBarsButton.style("overflow", "hidden");
+  
   // resizeButton = createButton("Resize");
   // resizeButton.mousePressed(setSizesAndPositions);
   // resizeButton.position(300, 0);
