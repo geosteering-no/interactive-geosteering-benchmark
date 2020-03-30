@@ -115,7 +115,7 @@ namespace GameServer.Controllers
         {
             var result = _stateServer.GetAllRatings();
             var filtered = result.Values.Where(x => x.Rating.Count >= 3);
-            filtered = filtered.OrderBy(x => x.Rating[2]);
+            filtered = filtered.OrderBy(x => -x.Rating[2]);
             int i = 0;
 
             var dynamicText = System.IO.File.ReadAllText("wwwroot/responces/table.html2");
@@ -126,6 +126,10 @@ namespace GameServer.Controllers
             {
                 i++;
                 var userName = userRating.UserName;
+                if (userName.Length > 25)
+                {
+                    userName = userName.Substring(0, 23)+"...";
+                }
                 var rating = userRating.Rating[2];
                 line.Append("<tr><td>");
                 line.Append(i);
