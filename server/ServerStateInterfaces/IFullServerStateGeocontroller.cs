@@ -31,6 +31,8 @@ namespace ServerStateInterfaces
 
         string LoadFriendUserNameFromFile(string folderId);
 
+        Dictionary<string, UserRating> GetAllRatings();
+
         bool UserExists(string str);
         TScoreData LoadScoreboardFromFile(string fileName);
         TUserData LoadNextUserStateFromFile(bool nextUser=false, string userToLoad="");

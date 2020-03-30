@@ -11,6 +11,7 @@ using System.IO;
 using System.Web;
 using System.IO.Pipelines;
 using System.Linq;
+using System.Text;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using UserState;
 
@@ -107,6 +108,45 @@ namespace GameServer.Controllers
                 //throw new Exception("You are not the admin");
             }
         }
+
+        [Route("ratings")]
+        [HttpGet]
+        public ContentResult GetServerRatings([FromQuery] string fgi = null)
+        {
+            var result = _stateServer.GetAllRatings();
+            var filtered = result.Values.Where(x => x.Rating.Count >= 3);
+            filtered = filtered.OrderBy(x => x.Rating[2]);
+            int i = 0;
+
+            var dynamicText = System.IO.File.ReadAllText("wwwroot/responces/table.html2");
+
+            var line = new StringBuilder();
+
+            foreach (var userRating in filtered)
+            {
+                i++;
+                var userName = userRating.UserName;
+                var rating = userRating.Rating[2];
+                line.Append("<tr><td>");
+                line.Append(i);
+                line.Append("</td><td class=\"tduser\">");
+                line.Append(userName);
+                line.Append("</td><td>");
+                line.Append(Math.Round(rating) + "%");
+                line.Append("</td></tr>\n");
+            }
+
+            var str = line.ToString();
+            dynamicText = dynamicText.Replace("{{TABLE_HERE}}", str);
+            var myResult = new ContentResult()
+            {
+                ContentType = "text/html",
+                Content = dynamicText
+            };
+
+            return myResult;
+        }
+
 
         [Route("admin/nextreplaywname/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]

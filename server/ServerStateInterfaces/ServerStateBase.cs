@@ -641,6 +641,37 @@ namespace ServerStateInterfaces
             return myScore / best * 100.0;
         }
 
+        public Dictionary<string, UserRating> GetAllRatings()
+        {
+            var allResults = GetUserResultsForAllGames();
+            var result = new Dictionary<string, UserRating>();
+            foreach (var keyValuePair in allResults)
+            {
+                var userName = keyValuePair.Key.UserName;
+                if (result.ContainsKey(userName))
+                {
+                    continue;
+                }
+
+                var userResults = GetResultsForUser(allResults, userName).OrderBy(x => -x.Key.GameNumberForUser).ToList();
+                var lastResultTicks = userResults.First().Value.TimeTicks;
+                //var time0 = new DateTime(userResults[0].Value.TimeTicks);
+                //var time1 = new DateTime(userResults[1].Value.TimeTicks);
+                //var time2 = new DateTime(userResults[2].Value.TimeTicks);
+                //var ourTime = new DateTime(lastResultTicks);
+                var ratings = GetRating(userName, userResults);
+                var rating = new UserRating()
+                {
+                    Rating = ratings,
+                    TimeTicks = lastResultTicks,
+                    UserName = userName
+                };
+                result.Add(userName, rating);
+            }
+
+            return result;
+        }
+
         public MyScore GetMyFullScore(int serverGameIndex, double valueScore, string userName, bool getRating = false)
         {
             var score = new MyScore()
