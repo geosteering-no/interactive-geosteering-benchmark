@@ -871,15 +871,22 @@ namespace ServerStateInterfaces
 
             //handling of friends score
             MyScore friendsScore = null;
-            if (friendSaveId != null)
+            try
             {
-                friendsScore = LoadUserResultFromFileForGame(friendSaveId, gameSeed);
-                if (friendsScore != null)
+                if (friendSaveId != null)
                 {
-                    friendsScore.SharingId = friendSaveId;
-                    friendsScore.Rating = GetRating(friendsScore.UserName, GetUserResultsForAllGames(),
-                        LoadAllScoresFromFile(friendSaveId), friendSaveId);
+                    friendsScore = LoadUserResultFromFileForGame(friendSaveId, gameSeed);
+                    if (friendsScore != null)
+                    {
+                        friendsScore.SharingId = friendSaveId;
+                        friendsScore.Rating = GetRating(friendsScore.UserName, GetUserResultsForAllGames(),
+                            LoadAllScoresFromFile(friendSaveId), friendSaveId);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                //pass
             }
             //if (friendsScore == null)
             //{
