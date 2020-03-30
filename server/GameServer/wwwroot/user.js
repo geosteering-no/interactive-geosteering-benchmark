@@ -506,7 +506,7 @@ function setup() {
   updateBarsButton.addClass("btn-info");
   updateBarsButton.position(200, 850);
   updateBarsButton.style("overflow", "hidden");
-  
+
   // resizeButton = createButton("Resize");
   // resizeButton.mousePressed(setSizesAndPositions);
   // resizeButton.position(300, 0);
@@ -750,7 +750,7 @@ function endGameModal(myResult, linkTextSocial, link) {
   var html = "";
   if (myResult){
     var value = myResult.scoreValue;
-    var percentile = myResult.scorePercent;
+    var percentile = myResult.youDidBetterThan;
     formatModalShareLinks(percentile, linkTextSocial);
 
     // Update with score / percentile
