@@ -67,7 +67,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog">
@@ -153,6 +153,13 @@
                     <picture>
                         <a href="https://www.norceresearch.no/en/">
                             <img src="./assets/norce.png" alt="NORCE"/>
+                        </a>
+                    </picture>
+                </li>
+                <li>
+                    <picture>
+                        <a href="https://openlab.app/">
+                            <img class="img-svg" src="./assets/openlab.svg" alt="Openlab">                            
                         </a>
                     </picture>
                 </li>
