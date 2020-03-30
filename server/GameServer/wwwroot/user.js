@@ -669,6 +669,9 @@ function preventUpdatingNewGameAndUpdateButton() {
 }
 
 function detectGameStateAndUpdateButton() {
+  if (userdata == null){
+    return;
+  }
   if (userdata.stopped) {
     stopGame();
   }
@@ -727,7 +730,7 @@ function formatModalShareLinks(percentile, linkID){
     
     //TODO Sergey, fix this
     var getUrl = window.location;
-    var baseUrl = getUrl .protocol + "//" + getUrl.host;
+    var baseUrl = getUrl.protocol + "//" + getUrl.host;
     //var share_url = baseUrl+"?fgi="+linkID;
     var share_url = linkID;
     var share_text = "I ranked in the top " + rating.toString() + "%25 percent on "+getUrl.host+"! Think you can beat me%3F";
@@ -789,7 +792,10 @@ function endGameModal(myResult, linkTextSocial, link) {
       html += "<p>Steer through "+ (3 - myResult.rating.length)+" more rounds to get into our <b>prize draw!</b></p>";
     }
     else{
+      var getUrl = window.location;
+      var baseUrl = getUrl.protocol + "//" + getUrl.host;
       html += "<p>Your rating from 3 best rounds is <b>"+Math.round(myResult.rating[2])+"%</b>. Add <b>#geobanana</b> when sharing to enter our <b>prize draw!</b> or pass more rounds to get even better score!</p>";
+      html += "<p><a href=\""+baseUrl+"/geo/ratings\">See current score-board</a></p>";
     }
 
   }else{
