@@ -171,6 +171,10 @@ li img.default{width:100px;}
 /* #aknowledgement-list li{outline: blue 1px solid;} */
 .modal-header{text-align: start;}
 .modal-body{text-align: justify;}
+
+li .img-svg{
+    height:5rem;
+}
 footer{
     margin-top:1rem;
 }
