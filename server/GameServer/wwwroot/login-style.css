@@ -95,8 +95,37 @@ img#hero-img{
     background:url('assets/help/layers.png') no-repeat; 
     background-position: right;
     background-size: contain;
-    width:100%;
+    width:50%;
+    margin-top:1.75rem;
 }
+#scoring{
+    width:50%;
+}
+
+@media (max-width: 768px) {
+    #shortInstructions{
+        display:flex;
+        flex-direction: column;
+    }
+    #layers {
+        background-position: center;
+        height:25vh;
+        width:100%;
+        margin-left:0;
+        margin-right:0;
+    }
+    #scoring{
+        width:100%;
+        display: flex;
+        justify-content:center;
+        align-items:baseline;
+    }
+    #scoring ul {
+        width:fit-content;
+        width:-moz-fit-content;
+    }
+}
+
 button{background-color:#dddddd;}
 button:hover {background-color:rgb(178, 178, 178);}
 
@@ -171,6 +200,10 @@ li img.default{width:100px;}
 /* #aknowledgement-list li{outline: blue 1px solid;} */
 .modal-header{text-align: start;}
 .modal-body{text-align: justify;}
+
+li .img-svg{
+    height:5rem;
+}
 footer{
     margin-top:1rem;
 }
