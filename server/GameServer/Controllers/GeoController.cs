@@ -109,6 +109,7 @@ namespace GameServer.Controllers
             }
         }
 
+
         [Route("ratings")]
         [HttpGet]
         public ContentResult GetServerRatings([FromQuery] string fgi = null)
@@ -226,6 +227,10 @@ namespace GameServer.Controllers
         private string ComposeHtml(string userId=null, string fgi=null, string platform=null)
         {
             var dynamicText = System.IO.File.ReadAllText("wwwroot/responces/dynamic.html2");
+            if (fgi == null)
+            {
+                fgi = "i";
+            }
             var friendGameId = fgi;
             var challenger = _stateServer.LoadFriendUserNameFromFile(fgi);
 
