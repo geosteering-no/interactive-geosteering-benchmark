@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using ServerDataStructures;
 using static System.IO.Path;
@@ -230,15 +231,16 @@ namespace ServerStateInterfaces
             {
                 userDirName = userDirName.Remove(strMaxLen);
             }
-            foreach (var ch in GetInvalidFileNameChars())
-            {
-                userDirName = userDirName.Replace(ch, '-');
-            }
+            //foreach (var ch in GetInvalidFileNameChars())
+            //{
+            //    userDirName = userDirName.Replace(ch, '-');
+            //}
+            userDirName = Regex.Replace(userDirName, @"[^A-Za-z0-9]+", "");
 
-            userDirName = userDirName + "_" + hashString;
+            userDirName = userDirName + "-" + hashString;
 
             var dirPrefix = "resultLog/";
-            var userDirId = DateTime.Now.Ticks + "_" + userDirName;
+            var userDirId = DateTime.Now.Ticks + "-" + userDirName;
             var dirId = dirPrefix + userDirId;
             if (!Directory.Exists(dirId))
             {
