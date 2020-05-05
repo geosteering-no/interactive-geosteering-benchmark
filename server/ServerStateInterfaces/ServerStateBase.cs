@@ -235,7 +235,7 @@ namespace ServerStateInterfaces
             //{
             //    userDirName = userDirName.Replace(ch, '-');
             //}
-            userDirName = Regex.Replace(userDirName, @"[^A-Za-z0-9]+", "");
+            userDirName = Regex.Replace(userDirName, @"[^A-Za-z0-9]+", "-");
 
             userDirName = userDirName + "-" + hashString;
 

@@ -3,6 +3,7 @@ using ServerDataStructures;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace ServerStateInterfaces
 {
@@ -363,12 +364,17 @@ namespace ServerStateInterfaces
             {
                 userDirName = userDirName.Remove(strMaxLen);
             }
-            foreach (var ch in Path.GetInvalidFileNameChars())
-            {
-                userDirName = userDirName.Replace(ch, '-');
-            }
+            //foreach (var ch in Path.GetInvalidFileNameChars())
+            //{
+            //    userDirName = userDirName.Replace(ch, '-');
+            //}
 
-            userDirName = userDirName + "_" + hashString;
+            userDirName = Regex.Replace(userDirName, @"[^A-Za-z0-9]+", "-");
+
+
+
+
+            userDirName = userDirName + "-" + hashString;
 
             var dirId = "userLog/" + userDirName;
             if (!Directory.Exists(dirId))
@@ -376,7 +382,7 @@ namespace ServerStateInterfaces
                 Directory.CreateDirectory(dirId);
             }
             var jsonStr = JsonConvert.SerializeObject(data);
-            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks + "_" + suffix, jsonStr);
+            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks + "-" + suffix, jsonStr);
         }
 
         private static TUserModel GetUserDefault(string userName,
