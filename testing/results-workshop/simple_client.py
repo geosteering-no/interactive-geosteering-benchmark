@@ -38,8 +38,7 @@ def move_to_next_game(base_url, cookies):
     json_result = response.json()
     return json_result
 
-
-def request_evaluation(base_url, cookies, well_points):
+def request_evaluation_raw(base_url, cookies, well_points):
     """
 
     :param base_url:
@@ -50,6 +49,17 @@ def request_evaluation(base_url, cookies, well_points):
     add_url = "/geo/evaluate"
     response = requests.post(base_url + add_url, cookies=cookies, json=well_points)
     json_result = response.json()
+    return json_result
+
+def request_evaluation(base_url, cookies, well_points):
+    """
+
+    :param base_url:
+    :param cookies:
+    :param well_points:
+    :return: scores
+    """
+    json_result = request_evaluation_raw(base_url, cookies, well_points)
     scores:  list = json_result['realizationScores']
     scores.sort()
     return scores

@@ -5,9 +5,10 @@ import simplejson
 import json
 from simple_client import *
 
-
+my_name = "new_user"
 origin = 'http://game.geosteering.no'
-my_cookies = log_me_in(base_url=origin)
+my_cookies = log_me_in(base_url=origin, username=my_name + str(datetime.now()))
+PORT = 12000
 
 class MyHandler(http.server.SimpleHTTPRequestHandler):
 
@@ -19,10 +20,10 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
     def _write_result(self, result):
         self.send_response(200)
         self.end_headers()
+        print(result)
         encoded = json.dumps(result).encode('utf-8')
         print(encoded)
         self.wfile.write(encoded)
-
 
     def do_GET(self):
         logging.info(self.headers)
@@ -56,15 +57,15 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])  # <--- Gets the size of data
-        post_data = self.rfile.read(content_length).decode('utf-8')  # <--- Gets the data itself
+        post_data = json.loads(self.rfile.read(content_length).decode('utf-8'))  # <--- Gets the data itself
         # test_data = simplejson.loads(post_data)
-        print('post_data {}'.format(post_data))
+        print('post_data type: {} : {}'.format(type(post_data), post_data))
         # print('user_name {}'.format(test_data))
         if self.path.startswith('/geo'):
             if self.path.startswith('/geo'):
                 print('Redirecting post to origin')
                 if self.path == "/geo/evaluate":
-                    result = request_evaluation(origin, my_cookies, post_data)
+                    result = request_evaluation_raw(origin, my_cookies, post_data)
                     self._write_result(result)
                     return
                 # if self.path.startswith('/geo/init'):
@@ -76,7 +77,6 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
                 #     self.end_headers()
 
 
-PORT = 12000
 handler = socketserver.TCPServer(("", PORT), MyHandler)
 print("serving at port {}".format(PORT))
 handler.serve_forever()
