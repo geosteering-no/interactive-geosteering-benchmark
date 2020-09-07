@@ -55,6 +55,18 @@ def request_evaluation(base_url, cookies, well_points):
     return scores
 
 
+def log_me_in_direct(base_url, user_data=None):
+    """
+    :param user_data:
+    :returns cookies
+    :param base_url:
+    :return:
+    """
+    add_url = "/geo/init"
+    response = requests.post(base_url + add_url, data=user_data)
+    return response.history[0].cookies
+
+
 def log_me_in(base_url, username=None):
     """
     :param username:
