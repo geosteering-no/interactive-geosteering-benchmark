@@ -3,9 +3,9 @@ import requests
 from datetime import datetime
 
 
-def get_data(base_url, cookies):
+def get_data(base_url, my_cookies):
     add_url = "/geo/userdata"
-    response = requests.get(base_url + add_url, cookies=cookies)
+    response = requests.get(base_url + add_url, cookies=my_cookies)
     json_result = response.json()
     return json_result
 
@@ -57,16 +57,17 @@ def request_evaluation(base_url, cookies, well_points):
 
 def log_me_in(base_url, username=None):
     """
+    :param username:
     :returns cookies
     :param base_url:
     :return:
     """
     add_url = "/geo/init"
     if username is None:
-        data = {"userName": "python " + str(datetime.now())}
+        user_data = {"userName": "python " + str(datetime.now())}
     else:
-        data = {"userName": username + str(datetime.now())}
-    response = requests.post(base_url + add_url, data=data)
+        user_data = {"userName": username + str(datetime.now())}
+    response = requests.post(base_url + add_url, data=user_data)
     return response.history[0].cookies
 
 
@@ -81,7 +82,7 @@ if __name__ == "__main__":
         print(data)
 
         print("COMMIT")
-        well_point_with_score = {"wellPoint":{"X":28.559424837354033,"Y":5.092764085867846,"Angle":0.17646679684123262},"Score":-2.4948553947636065}
+        well_point_with_score = {"wellPoint": {"X":28.559424837354033,"Y":5.092764085867846,"Angle":0.17646679684123262},"Score":-2.4948553947636065}
         well_point = well_point_with_score["wellPoint"]
         data = commit_point(url, cookies, well_point)
         print(data)
