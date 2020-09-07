@@ -8,7 +8,8 @@ from simple_client import *
 my_name = "new_user"
 origin = 'http://game.geosteering.no'
 my_cookies = log_me_in(base_url=origin, username=my_name + str(datetime.now()))
-PORT = 12000
+PORT = 9000
+
 
 class MyHandler(http.server.SimpleHTTPRequestHandler):
 
@@ -42,7 +43,6 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
                 self._write_result(result)
                 return
 
-
             print('Should not come here! Get: {}'.format(self.path))
             self.send_response(404)
         else:
@@ -56,25 +56,39 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
         # self.end_headers()
 
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])  # <--- Gets the size of data
-        post_data = json.loads(self.rfile.read(content_length).decode('utf-8'))  # <--- Gets the data itself
+        try:
+            content_length = int(self.headers['Content-Length'])  # <--- Gets the size of data
+            post_data = json.loads(self.rfile.read(content_length).decode('utf-8'))  # <--- Gets the data itself
+        except:
+            post_data = None
+
         # test_data = simplejson.loads(post_data)
         print('post_data type: {} : {}'.format(type(post_data), post_data))
         # print('user_name {}'.format(test_data))
         if self.path.startswith('/geo'):
             if self.path.startswith('/geo'):
                 print('Redirecting post to origin')
+                print('Path {}'.format(self.path))
+                print('Posted data {}'.format(post_data))
                 if self.path == "/geo/evaluate":
                     result = request_evaluation_raw(origin, my_cookies, post_data)
                     self._write_result(result)
                     return
-                # if self.path.startswith('/geo/init'):
-                #     my_cookies = log_me_in(origin, post_data)
-                #     print('cookies obtained '.format(my_cookies))
-                #     self.send_response(301)
-                #     # new_path = '%s%s' % ('/index.html', self.path)
-                #     self.send_header('Location', '/index.html')
-                #     self.end_headers()
+                if self.path == "/geo/commitpoint":
+                    result = commit_point(origin, my_cookies, post_data)
+                    self._write_result(result)
+                    return
+                if self.path == "/geo/commitstop":
+                    result = commit_stop_raw(origin, my_cookies)
+                    self._write_result(result)
+                    return
+                if self.path == "/geo/newgame":
+                    result = move_to_next_game(origin, my_cookies)
+                    self._write_result(result)
+                    return
+
+        print('Should not come here! Post: {}'.format(self.path))
+        self.send_response(404)
 
 
 handler = socketserver.TCPServer(("", PORT), MyHandler)

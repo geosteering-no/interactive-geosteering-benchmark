@@ -17,8 +17,7 @@ def commit_point(base_url, cookies, well_point):
     json_result = response.json()
     return json_result
 
-
-def commit_stop(base_url, cookies):
+def commit_stop_raw(base_url, cookies):
     """
 
     :param base_url:
@@ -28,6 +27,17 @@ def commit_stop(base_url, cookies):
     add_url = "/geo/commitstop"
     response = requests.post(base_url + add_url, cookies=cookies)
     json_result = response.json()
+    return json_result
+
+
+def commit_stop(base_url, cookies):
+    """
+
+    :param base_url:
+    :param cookies:
+    :return: score
+    """
+    json_result = commit_stop_raw(base_url, cookies)
     score = json_result["scoreValue"]
     return score
 
@@ -37,6 +47,7 @@ def move_to_next_game(base_url, cookies):
     response = requests.post(base_url + add_url, cookies=cookies)
     json_result = response.json()
     return json_result
+
 
 def request_evaluation_raw(base_url, cookies, well_points):
     """
