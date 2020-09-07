@@ -2,6 +2,7 @@ import http.server
 import socketserver
 import logging
 import simplejson
+import json
 from simple_client import *
 
 
@@ -17,9 +18,10 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
 
     def _write_result(self, result):
         self.send_response(200)
-        self.wfile.write(result)
-        print(result)
         self.end_headers()
+        encoded = json.dumps(result).encode('utf-8')
+        print(encoded)
+        self.wfile.write(encoded)
 
 
     def do_GET(self):
@@ -32,15 +34,11 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
             print('Redirecting get to origin')
             print('Path: {}'.format(self.path))
             # if self.path.startswith('/geo/init'):
-            if self.path == "/geo/evaluate":
-                result = request_evaluation(origin, my_cookies)
-                self._write_result(result)
-                return
+
             if self.path == "/geo/userdata":
                 result = get_data(origin, my_cookies)
                 print("got result: {}".format(result))
                 self._write_result(result)
-                print("Wrote-up")
                 return
 
 
@@ -58,23 +56,27 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])  # <--- Gets the size of data
-        post_data = str(self.rfile.read(content_length))  # <--- Gets the data itself
+        post_data = self.rfile.read(content_length).decode('utf-8')  # <--- Gets the data itself
         # test_data = simplejson.loads(post_data)
         print('post_data {}'.format(post_data))
         # print('user_name {}'.format(test_data))
         if self.path.startswith('/geo'):
             if self.path.startswith('/geo'):
                 print('Redirecting post to origin')
-                if self.path.startswith('/geo/init'):
-                    my_cookies = log_me_in(origin, post_data)
-                    print('cookies obtained '.format(my_cookies))
-                    self.send_response(301)
-                    # new_path = '%s%s' % ('/index.html', self.path)
-                    self.send_header('Location', '/index.html')
-                    self.end_headers()
+                if self.path == "/geo/evaluate":
+                    result = request_evaluation(origin, my_cookies, post_data)
+                    self._write_result(result)
+                    return
+                # if self.path.startswith('/geo/init'):
+                #     my_cookies = log_me_in(origin, post_data)
+                #     print('cookies obtained '.format(my_cookies))
+                #     self.send_response(301)
+                #     # new_path = '%s%s' % ('/index.html', self.path)
+                #     self.send_header('Location', '/index.html')
+                #     self.end_headers()
 
 
-PORT = 10000
+PORT = 12000
 handler = socketserver.TCPServer(("", PORT), MyHandler)
 print("serving at port {}".format(PORT))
 handler.serve_forever()
