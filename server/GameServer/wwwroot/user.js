@@ -862,11 +862,10 @@ function stopGame() {
 }
 
 function calculateCanvasSize() {
+  canvasHeigth = Math.round(windowHeight - 20);
   if (windowWidth > windowHeight / 3 * 2) {
-    canvasHeigth = Math.round(windowHeight);
     canvasWidth = Math.round(windowHeight / 3 * 2);
   } else {
-    canvasHeigth = Math.round(windowHeight);
     canvasWidth = Math.round(windowWidth);
   }
   // if (canvasWidth > canvasHeigth) {
