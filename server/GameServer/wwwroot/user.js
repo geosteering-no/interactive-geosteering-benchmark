@@ -803,12 +803,19 @@ function endGameModal(myResult, linkTextSocial, link) {
       var getUrl = window.location;
       var baseUrl = getUrl.protocol + "//" + getUrl.host;
       html += "<p>Your rating from 3 best rounds is <b>"+Math.round(myResult.rating[2])+
-        "%</b>.  "+
-        "Use the quick links or the copy-URL button below to share your score on social media. "+
-        "Add <b>#geobanana</b> when sharing to enter our <b>prize draw!</b> "
-        +
-        " Pass more rounds to get even better score! </p>";      
+        "%</b>.  ";
+      html += "To register in the <b>compatition for the main prize</b>, please fill the survey. </p>";      
+      html += "<p><a href=\"https://docs.google.com/forms/d/e/1FAIpQLScdge3rYD5UtpjkF_-jNAW_LqjGGdDM3zRG_s3jfZbh52DtAA/viewform?usp=sf_link\" target=\"_blank\">Fill in the survey (new tab)</a></p>";
+      html += "<p>A random lucky form respondent will recieve a <b>research-supporter prize!</b> "+
+      " This competition runs from November 2 to November 10, 2020." +
+      " Your participatoin and answers help us with further research.</p>";      
+
+      html += "<p>Use the quick links or the copy-URL button below to share your score on social media. "+
+        "Add <b>#geobanana</b> when sharing to enter our <b>bonus social prize</b> draw!</p> ";
+      
       html += "<p><a href=\""+baseUrl+"/geo/ratings\" target=\"_blank\">See current score-board (new tab)</a></p>";
+      html += "<p>Pass more rounds to get even better score! </p>";      
+
     }
 
   }else{
