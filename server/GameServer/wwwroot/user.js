@@ -718,7 +718,7 @@ function copyToClipboard(linkWithPlatform){
    setTimeout(function(){ snackbar.removeClass("show"); }, 3000);
 }
 
-function formatModalShareLinks(percentile, linkID){
+function formatModalShareLinks(percentile, linkID, scoreForOneRound = true){
   /* 
   Loops through all share-btns and replaces their anchors href placeholder strings w/ ranking injected Formats social media share urls 
   TODO: Implement challenger username somehow
@@ -733,7 +733,10 @@ function formatModalShareLinks(percentile, linkID){
     var baseUrl = getUrl.protocol + "//" + getUrl.host;
     //var share_url = baseUrl+"?fgi="+linkID;
     var share_url = linkID;
-    var share_text = "I ranked in the top " + rating.toString() + "%25 percent on "+getUrl.host+"! Think you can beat me%3F";
+    var share_text = "I ranked higher then " + rating.toString() + "%25 in a round on "+getUrl.host+"! Think you can beat me%3F";
+    if (!scoreForOneRound){
+      share_text = "I ranked in the top " + rating.toString() + "%25 on "+getUrl.host+"! Think you can beat me%3F";
+    }
     
     
     // Get buttons anchor child which has the share link
@@ -753,15 +756,20 @@ function endGameModal(myResult, linkTextSocial, link) {
   var html = "";
   if (myResult){
     var value = myResult.scoreValue;
-    var percentile = myResult.youDidBetterThan;
-    formatModalShareLinks(percentile, linkTextSocial);
+    var percentileRound = myResult.youDidBetterThan;
+    if (myResult.rating.length < 3){
+      formatModalShareLinks(percentileRound, linkTextSocial);
+    } else{
+      let percentileTotal = Math.round(myResult.rating[2]);
+      formatModalShareLinks(percentileTotal, linkTextSocial, false);
+    }
 
     // Update with score / percentile
     var friendInfo = false;
     html += "<p> You are logged in as <b>" + myResult.userName + "</b>. ";
     html += "<p> Your score is <b>" + Math.round(value) + "</b>. ";
     html += "<br> You did better than <b>"
-      + Math.round(percentile) + "%</b>.";
+      + Math.round(percentileRound) + "%</b>.";
     if (myResult.friendsScore != null){
       friendInfo = true;
       if (myResult.friendsScore.scoreValue > value){
@@ -794,8 +802,13 @@ function endGameModal(myResult, linkTextSocial, link) {
     else{
       var getUrl = window.location;
       var baseUrl = getUrl.protocol + "//" + getUrl.host;
-      html += "<p>Your rating from 3 best rounds is <b>"+Math.round(myResult.rating[2])+"%</b>. Add <b>#geobanana</b> when sharing to enter our <b>prize draw!</b> or pass more rounds to get even better score!</p>";
-      html += "<p><a href=\""+baseUrl+"/geo/ratings\">See current score-board</a></p>";
+      html += "<p>Your rating from 3 best rounds is <b>"+Math.round(myResult.rating[2])+
+        "%</b>.  "+
+        "Use the quick links or the copy-URL button below to share your score on social media. "+
+        "Add <b>#geobanana</b> when sharing to enter our <b>prize draw!</b> "
+        +
+        " Pass more rounds to get even better score! </p>";      
+      html += "<p><a href=\""+baseUrl+"/geo/ratings\" target=\"_blank\">See current score-board (new tab)</a></p>";
     }
 
   }else{
