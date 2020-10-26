@@ -65,9 +65,29 @@
 
                 </div>
             </div>
-    
-
         </div>
+
+                <!-- invisible modal-->
+                <div class="modal fade" id="hiddenModal" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Instructions</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    <strong>Steer your wells and then challenge your friends to beat your score!</strong>
+                                    Position your well in an uncertin layered environment with up to two sand layers to score points.
+                                    Recieve points equal to layer's thickness for every meter in a sand layer.
+                                    Recieve double points when drilling 0.5 - 1.5 meters from a sand layer's roof.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
 
         <!-- Modal -->
         <div class="modal fade" id="myModal" role="dialog">
@@ -212,29 +232,6 @@
 </html>
 
 <script>
-    // Challenger
-    // Get challenger username and score
-    // var challenger = "Sergey"
-    // var score = 3674;
-
-    // var challengeDiv = $("#challengeText");
-    // var instructionsDiv = $("#instructionsTitle");
-    
-    // var challengeText;
-    // var instructionsText;
-    
-    // if (challenger && score){
-    //     challengeText = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
-    //     instructionsText = "Here's how to beat their score:"
-        
-    // }
-    // else{
-    //     challengeText = "Create a game and then challenge your friends to beat your score!";
-    //     instructionsText = "Here's how to score:";
-    // }
-
-    // challengeDiv.text(challengeText);
-    // instructionsDiv.text(instructionsText);
 
     $('document').ready(function(){
     

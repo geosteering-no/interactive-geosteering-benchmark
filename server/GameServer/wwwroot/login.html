@@ -12,7 +12,7 @@
     <meta property="og:title" 
         content="GEOSTEERING game the NORCE way"/>
     <meta property="og:description" 
-        content="Steer your wells and then challenge your friends to beat your score!"/>
+        content="Steer your wells and then challenge your friends to beat your score! Position your well in an uncertin layered environment with up to two sand layers to score points. Recieve points for every meter in a sand layer."/>
     <meta property="og:image" content="./assets/hero.png">
     <meta property="og:url" content="http://game.geosteering.no/">
     <!-- <meta property="og:type" content="blog"/> -->
@@ -73,6 +73,8 @@
             </div>
             
         </div>
+
+        
         <!-- invisible modal-->
         <div class="modal fade" id="hiddenModal" role="dialog">
             <div class="modal-dialog">
@@ -85,7 +87,7 @@
                     <div class="modal-body">
                         <p>
                             <strong>Steer your wells and then challenge your friends to beat your score!</strong>
-                            Navigate in layered environment with up to two sand layers (white) to score points.
+                            Position your well in an uncertin layered environment with up to two sand layers to score points.
                             Recieve points equal to layer's thickness for every meter in a sand layer.
                             Recieve double points when drilling 0.5 - 1.5 meters from a sand layer's roof.
                         </p>
@@ -238,31 +240,6 @@
 </html>
 
 <script>
-
-    // // Challenger
-    // // Get challenger username and score
-    // var challenger = "Sergey"
-    // var score = 3674;
-
-    // var challengeDiv = $("#challengeText");
-    // var instructionsDiv = $("#instructionsTitle");
-    
-    // var challengeText;
-    // var instructionsText;
-    
-    // if (challenger && score){
-    //     challengeText = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
-    //     instructionsText = "Here's how to beat their score:"
-        
-    // }
-    // else{
-    //     challengeText = "Steer your wells and then challenge your friends to beat your score!";
-    //     instructionsText = "Here's how to score:";
-    // }
-
-    // challengeDiv.text(challengeText);
-    // instructionsDiv.text(instructionsText);
-
     $('document').ready(function(){
     
     $('#newUserBtn').on('click',function(e){
