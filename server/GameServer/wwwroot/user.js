@@ -758,6 +758,7 @@ function endGameModal(myResult, linkTextSocial, link) {
 
     // Update with score / percentile
     var friendInfo = false;
+    html += "<p> You are logged in as <b>" + myResult.userName + "</b>. ";
     html += "<p> Your score is <b>" + Math.round(value) + "</b>. ";
     html += "<br> You did better than <b>"
       + Math.round(percentile) + "%</b>.";
@@ -780,7 +781,6 @@ function endGameModal(myResult, linkTextSocial, link) {
       }
     }
 
-    //TODO add link to score board here
     if (friendInfo){
       html += "<p>Show your score to <b>" +myResult.friendsScore.userName+ "</b> or challenge another friend to beat your score by clicking any of the share options, or start a new round!</p>";
     }
