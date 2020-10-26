@@ -721,14 +721,12 @@ function copyToClipboard(linkWithPlatform){
 function formatModalShareLinks(percentile, linkID, scoreForOneRound = true){
   /* 
   Loops through all share-btns and replaces their anchors href placeholder strings w/ ranking injected Formats social media share urls 
-  TODO: Implement challenger username somehow
   */
   // Loop through all share-btns
   $(".modal .share-btn").each(function(e){
     var rating = percentile;
     var username = "test-username" // Will need this later for head-to-head-competition
     
-    //TODO Sergey, fix this
     var getUrl = window.location;
     var baseUrl = getUrl.protocol + "//" + getUrl.host;
     //var share_url = baseUrl+"?fgi="+linkID;
