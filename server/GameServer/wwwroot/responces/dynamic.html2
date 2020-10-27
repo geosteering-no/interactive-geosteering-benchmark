@@ -40,7 +40,7 @@
 
             {{LOGIN_TEXT_HERE}}
 
-            <p><b>On iPhone</b> rotate device to portrait and back if you have scaling issues of the game UI.</p>
+            <!-- <p><b>On iPhone</b> rotate device to portrait and back if you have scaling issues of the game UI.</p> -->
 
 
             <!-- Short instructions -->

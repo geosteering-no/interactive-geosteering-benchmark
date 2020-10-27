@@ -862,11 +862,20 @@ function stopGame() {
 }
 
 function calculateCanvasSize() {
-  canvasHeigth = Math.round(windowHeight - 20);
-  if (windowWidth > windowHeight / 3 * 2) {
-    canvasWidth = Math.round(windowHeight / 3 * 2);
+  let clientHeight = windowHeight - 20;
+  if (displayHeight < clientHeight){
+    clientHeight = displayHeight - 20;
+  }
+  let clientWidth = windowWidth;
+  if (displayWidth < clientWidth){
+    clientWidth = displayWidth;
+  }
+
+  canvasHeigth = Math.round(clientHeight);
+  if (clientWidth > clientHeight / 3 * 2) {
+    canvasWidth = Math.round(clientHeight / 3 * 2);
   } else {
-    canvasWidth = Math.round(windowWidth);
+    canvasWidth = Math.round(clientWidth);
   }
   // if (canvasWidth > canvasHeigth) {
   //   canvasWidth = Math.round(canvasHeigth / 4 * 3);
