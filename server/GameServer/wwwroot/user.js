@@ -754,7 +754,7 @@ function endGameModal(myResult, linkTextSocial, link) {
   var html = "";
   if (myResult){
     var value = myResult.scoreValue;
-    var percentileRound = myResult.youDidBetterThan;
+    var percentileRound = Math.round(myResult.youDidBetterThan);
     if (myResult.rating.length < 3){
       formatModalShareLinks(percentileRound, linkTextSocial);
     } else{
