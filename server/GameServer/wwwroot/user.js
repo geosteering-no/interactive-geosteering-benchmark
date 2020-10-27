@@ -831,7 +831,7 @@ function endGameModal(myResult, linkTextSocial, link) {
       var baseUrl = getUrl.protocol + "//" + getUrl.host;
       html += "<p>Your rating from 3 best rounds is <b>"+Math.round(myResult.rating[2])+
         "%</b>.  ";
-      html += "To register in the <b>compatition for the main prize</b> and help us with research, please fill the survey. "
+      html += "To register in the <b>competition for the main prize</b> and help us with research, please fill the survey. "
         +"</p>";      
       html += "<p><a href=\"https://docs.google.com/forms/d/e/1FAIpQLScdge3rYD5UtpjkF_-jNAW_LqjGGdDM3zRG_s3jfZbh52DtAA/viewform?usp=sf_link\" target=\"_blank\">Fill in the survey (new tab)</a>"
         +"</p>";
