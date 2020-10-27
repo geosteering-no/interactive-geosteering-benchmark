@@ -864,7 +864,7 @@ function stopGame() {
 function calculateCanvasSize() {
   let clientHeight = windowHeight - 20;
   if (displayHeight < clientHeight){
-    clientHeight = displayHeight - 20;
+    clientHeight = displayHeight - 186;
   }
   let clientWidth = windowWidth;
   if (displayWidth < clientWidth){
