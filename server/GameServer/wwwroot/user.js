@@ -764,9 +764,10 @@ function endGameModal(myResult, linkTextSocial, link) {
 
     // Update with score / percentile
     var friendInfo = false;
-    html += "<p> You are logged in as <b>" + myResult.userName + "</b>. ";
-    html += "<p> Your score is <b>" + Math.round(value) + "</b>. ";
-    html += "<br> You did better than <b>"
+    html += "<p>";
+    html += "You are logged in as <b>" + myResult.userName + "</b>. <br>";
+    html += "Your score is <b>" + Math.round(value) + "</b>. <br> ";
+    html += "You did better than <b>"
       + Math.round(percentileRound) + "%</b>.";
     if (myResult.friendsScore != null){
       friendInfo = true;
@@ -786,15 +787,17 @@ function endGameModal(myResult, linkTextSocial, link) {
         html += "<br>You beat <b>the AI</b> who scored <b>"+Math.round(myResult.aiScore.scoreValue)+"</b>";
       }
     }
-
-    if (friendInfo){
-      html += "<p>Show your score to <b>" +myResult.friendsScore.userName+ "</b> or challenge another friend to beat your score by clicking any of the share options, or start a new round!</p>";
-    }
-    else{
-      html += "<p>Challenge a friend to beat your score by clicking any of the share options, or start a new round!</p>";
-    }
+    html += "</p>";
 
     if (myResult.rating.length < 3){
+      if (friendInfo){
+        html += "<p>Show your score to <b>" +myResult.friendsScore.userName+ "</b> or challenge another friend to beat your score by clicking any of the share options, or start a new round!"
+        +"</p>";
+      }
+      else{
+        html += "<p>Challenge a friend to beat your score by clicking any of the share options, or start a new round!"
+        +"</p>";
+      }
       html += "<p>Steer through "+ (3 - myResult.rating.length)+" more rounds to get into our <b>prize draw!</b></p>";
     }
     else{
@@ -802,17 +805,16 @@ function endGameModal(myResult, linkTextSocial, link) {
       var baseUrl = getUrl.protocol + "//" + getUrl.host;
       html += "<p>Your rating from 3 best rounds is <b>"+Math.round(myResult.rating[2])+
         "%</b>.  ";
-      html += "To register in the <b>compatition for the main prize</b>, please fill the survey. </p>";      
-      html += "<p><a href=\"https://docs.google.com/forms/d/e/1FAIpQLScdge3rYD5UtpjkF_-jNAW_LqjGGdDM3zRG_s3jfZbh52DtAA/viewform?usp=sf_link\" target=\"_blank\">Fill in the survey (new tab)</a></p>";
-      html += "<p>A random lucky form respondent will recieve a <b>research-supporter prize!</b> "+
-      " This competition runs from November 2 to November 10, 2020." +
-      " Your participatoin and answers help us with further research.</p>";      
-
-      html += "<p>Use the quick links or the copy-URL button below to share your score on social media. "+
+      html += "To register in the <b>compatition for the main prize</b> and help us with research, please fill the survey. "
+        +"</p>";      
+      html += "<p><a href=\"https://docs.google.com/forms/d/e/1FAIpQLScdge3rYD5UtpjkF_-jNAW_LqjGGdDM3zRG_s3jfZbh52DtAA/viewform?usp=sf_link\" target=\"_blank\">Fill in the survey (new tab)</a>"
+        +"</p>";
+      html += "<p> A random lucky form respondent will recieve a <b>research-supporter prize!</b> ";
+      html += "Use the quick links or the copy-URL button below to share your score on social media. "+
         "Add <b>#geobanana</b> when sharing to enter our <b>bonus social prize</b> draw!</p> ";
       
       html += "<p><a href=\""+baseUrl+"/geo/ratings\" target=\"_blank\">See current score-board (new tab)</a></p>";
-      html += "<p>Pass more rounds to get even better score! </p>";      
+      html += "<p>This competition runs from November 2 to November 10, 2020. Pass more rounds to get even better score! </p>";      
 
     }
 
