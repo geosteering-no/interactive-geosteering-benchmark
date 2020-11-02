@@ -114,6 +114,8 @@ namespace GameServer.Controllers
         [HttpGet]
         public ContentResult GetServerRatings([FromQuery] string fgi = null)
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Sending ratings");
             var result = _stateServer.GetAllRatings();
             var filtered = result.Values.Where(x => x.Rating.Count >= 3);
             filtered = filtered.OrderBy(x => -x.Rating[2]);
@@ -267,6 +269,8 @@ namespace GameServer.Controllers
         [HttpGet]
         public ContentResult GetMePlaces([FromQuery] string fgi=null, [FromQuery] string p=null)
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Redirecting from home");
             try
             {
                 //this code is extracting the second parameter from string which is a server glitch
@@ -323,13 +327,15 @@ namespace GameServer.Controllers
         [HttpPost]
         public void InitNewUser([FromForm] string userName)
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Initializing user started");
             if (userName.Length < 2)
             {
                 Response.Redirect("/username-taken.html");
                 return;
                 //throw new Exception("User ID too short");
             }
-            var time = DateTime.Now;
+            time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Requested adding of a user : " + userName);
             if (userName == ADMIN_SECRET_USER_NAME)
             {
@@ -366,8 +372,11 @@ namespace GameServer.Controllers
         [HttpPost]
         public int StartNewGameForUser()
         {
-            var userId = GetUserId();
             var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Starting new game");
+
+            var userId = GetUserId();
+            time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " wants to new game.");
             var res = _stateServer.MoveUserToNewGame(userId);
             _logger.LogInformation("User {1} moved to new game in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
@@ -378,9 +387,12 @@ namespace GameServer.Controllers
         [HttpPost]
         public MyScore CommitStop()
         {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Stopping a user");
+
             var userId = GetUserId();
             var friendGameId = GetFriendGameId();
-            var time = DateTime.Now;
+            time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " is stopping.");
             MyScore res = null;
             if (friendGameId != null)
@@ -401,8 +413,10 @@ namespace GameServer.Controllers
         [HttpPost]
         public UserData Commit([FromBody] WellPoint pt)
         {
-            var userId = GetUserId();
             var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Commiting a user point");
+            var userId = GetUserId();
+            time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " is submitting " + pt.X + ", " + pt.Y);
             var res = _stateServer.UpdateUser(userId, pt);
             var lossyRes = _stateServer.LossyCompress(res);
@@ -414,8 +428,10 @@ namespace GameServer.Controllers
         [HttpPost]
         public UserEvaluation GetEvaluationForTrajectory([FromBody] IList<WellPoint> trajectory)
         {
-            var userId = GetUserId();
             var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Evaluating user trajectory");
+            var userId = GetUserId();
+            time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " requested evaluation.");
             var res = _stateServer.GetUserEvaluationData(userId, trajectory);
             _logger.LogInformation("User {1}, sending evaluation in {2}ms", userId, (DateTime.Now - time).TotalMilliseconds);
@@ -469,8 +485,10 @@ namespace GameServer.Controllers
         [Route("userdata")]
         public UserData GetUserState()
         {
-            var userId = GetUserId();
             var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Requesting user data");
+            var userId = GetUserId();
+            time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": " + userId + " requested userdata.");
             var res = _stateServer.GetUserData(userId);
             var lossyRes = _stateServer.LossyCompress(res);
