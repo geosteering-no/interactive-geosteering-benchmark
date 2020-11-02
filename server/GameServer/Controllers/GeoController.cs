@@ -155,6 +155,51 @@ namespace GameServer.Controllers
         }
 
 
+        [Route("ratings3")]
+        [HttpGet]
+        public ContentResult GetServerRatingsFromFiles()
+        {
+            var time = DateTime.Now;
+            _logger.LogInformation(time.ToLongTimeString() + ": Sending ratings");
+
+            var ratings = _stateServer.LoadAndCreateScoreBoards();
+
+            int i = 0;
+
+            var dynamicText = System.IO.File.ReadAllText("wwwroot/responces/table.html2");
+
+            var line = new StringBuilder();
+
+            foreach (var userRating in ratings)
+            {
+                i++;
+                var userName = userRating.Key;
+                if (userName.Length > 25)
+                {
+                    userName = userName.Substring(0, 23) + "...";
+                }
+                var rating = userRating.Value;
+                line.Append("<tr><td>");
+                line.Append(i);
+                line.Append("</td><td class=\"tduser\">");
+                line.Append(userName);
+                line.Append("</td><td>");
+                line.Append(Math.Round(rating) + "%");
+                line.Append("</td></tr>\n");
+            }
+
+            var str = line.ToString();
+            dynamicText = dynamicText.Replace("{{TABLE_HERE}}", str);
+            var myResult = new ContentResult()
+            {
+                ContentType = "text/html",
+                Content = dynamicText
+            };
+
+            return myResult;
+        }
+
+
         [Route("admin/nextreplaywname/iERVaNDsOrphIcATHOrSeRlabLYpoIcESTawLstenTESTENTIonosterTaKOReskICIMPLATeRnA")]
         [HttpPost]
         public UserData LoadNextUserDataFromFile(ObjectWithTextString userToLoad)

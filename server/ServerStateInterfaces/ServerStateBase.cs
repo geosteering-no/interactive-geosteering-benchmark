@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -22,13 +23,17 @@ namespace ServerStateInterfaces
             TUserDataModel, TWellPoint, TSecretState, TUserResult, TRealizationData>, new()
 
     {
-        protected ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>> 
+        protected ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState,
+                TWellPoint, TUserResult, TRealizationData>>
             _users =
-                new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult, TRealizationData>>();
+                new ConcurrentDictionary<string, UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState,
+                    TWellPoint, TUserResult, TRealizationData>>();
+
         //protected IList<LevelDescription<TWellPoint, TRealizationData>> _scoreDataAll;
-        protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
-            _resultingTrajectories = 
+        protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>
+            _resultingTrajectories =
                 new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
+
         //protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
         //    _newResultingTrajectories = 
         //        new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
@@ -57,13 +62,12 @@ namespace ServerStateInterfaces
         private int _seedInd = 0;
 
 
-        protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.ObjectiveEvaluationFunction
-            EvaluatorUser
-        { get; }
+        protected abstract ObjectiveEvaluationDelegateUser<TUserDataModel, TWellPoint, TUserResult>.
+            ObjectiveEvaluationFunction
+            EvaluatorUser { get; }
 
         protected abstract ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction
-            EvaluatorTruth
-        { get; }
+            EvaluatorTruth { get; }
 
 
 
@@ -88,9 +92,10 @@ namespace ServerStateInterfaces
 
 
 
-        protected int[] seeds = {
+        protected int[] seeds =
+        {
             503,
-            401, 
+            401,
             //402,
             //403,
             //404,
@@ -125,7 +130,7 @@ namespace ServerStateInterfaces
             518,
             519,
             //409,
-            401, 
+            401,
             //402,
             //403,
             //404,
@@ -156,10 +161,11 @@ namespace ServerStateInterfaces
             //214,
             213,
             215,
-            227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 240, 241 };
+            227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 240, 241
+        };
         //private int[] seeds = {0, 91, 91, 10, 100};
         //private int[] seeds = { 0, 1, 91, 91, 10, 100, 3, 1, 4, 4, 5, 6, 7, 7, 8, 8, 8 };
-        
+
 
 
         private int NextSeed()
@@ -182,9 +188,9 @@ namespace ServerStateInterfaces
             AddBotUserDefault();
         }
 
-        public void DumpScoreBoardToFile(LevelDescription<TWellPoint, TRealizationData, TSecretState> scoreBoard, 
-            string dirIdHighScore="scoreLog/",
-            string fileName="")
+        public void DumpScoreBoardToFile(LevelDescription<TWellPoint, TRealizationData, TSecretState> scoreBoard,
+            string dirIdHighScore = "scoreLog/",
+            string fileName = "")
         {
             if (!Directory.Exists(dirIdHighScore))
             {
@@ -195,6 +201,7 @@ namespace ServerStateInterfaces
             {
                 fileName += DateTime.Now.Ticks;
             }
+
             var jsonStr = JsonConvert.SerializeObject(scoreBoard);
             System.IO.File.WriteAllText(dirIdHighScore + "/" + fileName, jsonStr);
         }
@@ -210,27 +217,31 @@ namespace ServerStateInterfaces
 
             DumpAllScoresToFile(GetUserResultsForAllGames(), dirIdHighScore);
 
-            for (int i=0; i<TOTAL_LEVELS; ++i)
+            for (int i = 0; i < TOTAL_LEVELS; ++i)
             {
-                DumpScoreBoardToFile(GetScoreboard(i), 
-                    dirIdHighScore, 
-                    "board_"+seeds[i]+".json");
+                DumpScoreBoardToFile(GetScoreboard(i),
+                    dirIdHighScore,
+                    "board_" + seeds[i] + ".json");
             }
 
         }
 
+        //TODO extract trajectory
         public string DumpUserResultToFileOnStop(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> resultPair)
         {
             var userId = resultPair.Key.UserName;
             var serverGameSeed = seeds[resultPair.Key.GameId];
-            var hashString = string.Format("{0:X}", UserScorePairLockedGeneric< TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult,TRealizationData>
-                .CalculateHashInt(userId));
+            var hashString = string.Format("{0:X}",
+                UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult,
+                        TRealizationData>
+                    .CalculateHashInt(userId));
             var strMaxLen = 15;
             var userDirName = userId.Trim();
             if (userDirName.Length > strMaxLen)
             {
                 userDirName = userDirName.Remove(strMaxLen);
             }
+
             //foreach (var ch in GetInvalidFileNameChars())
             //{
             //    userDirName = userDirName.Replace(ch, '-');
@@ -258,6 +269,139 @@ namespace ServerStateInterfaces
             return userDirId;
         }
 
+        private static double _GetRatingPercent(IList<UserResultFinal<TWellPoint>> results,
+            UserResultFinal<TWellPoint> singleResult)
+        {
+            var myScore = GetFinalScore(singleResult);
+            double lower = results.Select(GetFinalScore).Count(value => value < myScore);
+            var total = results.Count - 1;
+            if (total == 0)
+            {
+                return 100;
+            }
+            return lower / total * 100.0;
+        }
+
+        private static IList<double> ComputeRatingsForUser(Dictionary<int, LevelDescription<TWellPoint, TRealizationData, TSecretState>> boards,
+            IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> resultsForUser)
+        {
+            
+            var resCount = resultsForUser.Count;
+
+            var oneGameRatings = new double[resCount];
+            var curTotal = 0.0;
+            var sumRating = new double[resCount];
+
+            var maxRating = new double[resCount];
+
+            for (var index = 0; index<resCount; index++)
+            {
+                var userResultPair = resultsForUser[index];
+                var key = userResultPair.Key;
+                var curBoard = boards[key.GameId];
+
+                var curRating = _GetRatingPercent(curBoard.UserResults, userResultPair.Value);
+                oneGameRatings[index] = curRating;
+                
+                
+                //update averages
+                for (var j = 0; j < index; ++j)
+                {
+                    //update total
+                    sumRating[j] += - oneGameRatings[index - j - 1] + curRating;
+                    if (sumRating[j] / (j + 1) > maxRating[j])
+                    {
+                        maxRating[j] = sumRating[j] / (j + 1);
+                    }
+                }
+                //for index
+                sumRating[index] = curTotal + curRating;
+                maxRating[index] = sumRating[index] / (index + 1);
+                //for next
+                curTotal = sumRating[index];
+            }
+
+            return maxRating;
+        }
+
+
+        /// <summary>
+        /// This gets the dictionary containing all standings
+        /// </summary>
+        /// <returns></returns>
+        public IList<KeyValuePair<string, double>> LoadAndCreateScoreBoards()
+        {
+            var dirId = "resultLog/";
+            var allDirectories = Directory.GetDirectories(dirId);
+            Array.Sort(allDirectories);
+            var boards = new Dictionary<int, LevelDescription<TWellPoint, TRealizationData, TSecretState>>();
+            var userScores = new Dictionary<string, 
+                IList<KeyValuePair<UserResultId,UserResultFinal<TWellPoint>>>>();
+            for (var i = 0; i < TOTAL_LEVELS; ++i)
+            {
+                boards.Add(seeds[i], new LevelDescription<TWellPoint, TRealizationData, TSecretState>());
+                boards[seeds[i]].UserResults = new List<UserResultFinal<TWellPoint>>();
+            }
+            //this gives a list of rounds and all boards
+            foreach (var directory in allDirectories)
+            {
+                try
+                {
+                    var dir = directory.Substring(directory.LastIndexOf('/') + 1);
+                    var pair = LoadUserResultPairFromFile(dir);
+                    var key = pair.Key;
+                    //board
+                    var curBoard = boards[key.GameId];
+                    curBoard.UserResults.Add(pair.Value);
+                    //user
+                    if (!userScores.ContainsKey(key.UserName))
+                    {
+                        userScores.Add(key.UserName, new List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>>());
+                    }
+                    var curList = userScores[key.UserName];
+                    curList.Add(pair);
+                }
+                catch (Exception e)
+                {
+                    System.Console.Write("Probably no needed file in a dir: " + e);
+                }
+            }
+
+            //foreach (var board in boards.Values)
+            //{
+            //    board.UserResults = board.UserResults.OrderBy(x => GetFinalScore(x)).ToList();
+            //}
+
+            var score3List = new List<KeyValuePair<string, double>>(userScores.Count);
+            var ratingsDict = new Dictionary<string, IList<double>>(userScores.Count);
+            var numGames = 3;
+            foreach (var userPair in userScores)
+            {
+                var userId = userPair.Key;
+                var ratings = ComputeRatingsForUser(boards, userPair.Value);
+                ratingsDict.Add(userId, ratings);
+                
+                if (ratings.Count >= numGames)
+                {
+                    score3List.Add(new KeyValuePair<string, double>(userId, ratings[numGames-1]));
+                }
+            }
+
+            var scoreBoard = score3List.OrderByDescending(x => x.Value).ToList();
+            
+            return scoreBoard;
+        }
+
+        private static double GetFinalScore(UserResultFinal<TWellPoint> userResult)
+        {
+            return userResult.TrajectoryWithScore[userResult.TrajectoryWithScore.Count - 1].Score;
+        }
+
+        /// <summary>
+        /// Load user results from file useful
+        /// </summary>
+        /// <param name="folderId"></param>
+        /// <returns></returns>
         private static KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> LoadUserResultPairFromFile(string folderId)
         {
             var dirId = "resultLog/" ;
@@ -288,15 +432,21 @@ namespace ServerStateInterfaces
             }
         }
 
+
+        /// <summary>
+        /// Load scoreboard from file useful
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public LevelDescription<TWellPoint, TRealizationData, TSecretState> LoadScoreboardFromFile(string fileName)
         {
             var dirId = "scoreLog";
-            
 
             var scoreBoard = ReadFromFileSafe<LevelDescription<TWellPoint, TRealizationData, TSecretState>>(dirId, fileName);
             return scoreBoard;
         }
 
+        //TODO remove
         public void DumpAllScoresToFile(IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> scoreBoard,
             string folderName)
         {
@@ -322,6 +472,13 @@ namespace ServerStateInterfaces
             return allScores;
         }
 
+        //TODO remove
+        /// <summary>
+        /// Not to be used
+        /// </summary>
+        /// <param name="folderName"></param>
+        /// <param name="fileInd"></param>
+        /// <returns></returns>
         public IList<UserResultFinal<TWellPoint>> LoadScoresForGameFromFile(string folderName, int fileInd)
         {
             var dirId = "resultLog/";
@@ -397,16 +554,6 @@ namespace ServerStateInterfaces
             return userState;
         }
 
-        public void DumpSectetStateToFile(int data)
-        {
-            var dirId = "serverstatelog/secret";
-            if (!Directory.Exists(dirId))
-            {
-                Directory.CreateDirectory(dirId);
-            }
-            var jsonStr = JsonConvert.SerializeObject(data);
-            System.IO.File.WriteAllText(dirId + "/" + DateTime.Now.Ticks, jsonStr);
-        }
 
         /// <summary>
         /// this should call dump secret stateGeocontroller to file
@@ -418,20 +565,6 @@ namespace ServerStateInterfaces
         //    //Console.WriteLine("Initialized synthetic truth with seed: " + seed);
         //    //_syntheticTruth = new TrueModelState(seed);
         //}
-
-        private WellPointWithScore<TWellPoint> EvalueateSegmentAgainstTruth(TWellPoint p1, TWellPoint p2)
-        {
-            throw new NotImplementedException();
-            //var pointWithScore = new WellPointWithScore<TWellPoint>()
-            //{
-            //    wellPoint = p2,
-            //};
-
-            //var twoPoints = new List<TWellPoint>() { p1, p2 };
-            //var localScore = EvaluatorTruth(GetTruthForEvaluation(), twoPoints);
-            //pointWithScore.Score = localScore;
-            //return pointWithScore;
-        }
 
         protected abstract IList<TRealizationData> GetTruthsForEvaluation();
 
@@ -445,15 +578,6 @@ namespace ServerStateInterfaces
                 EvaluatorUser, EvaluatorTruth, GetTruthsForEvaluation());
         }
 
-        protected abstract TWellPoint GetInitialPoint();
-
-        //protected virtual UserResultFinal<TWellPoint> GetBestTrajectoryWithScore(TRealizationData secret,
-        //    TWellPoint start,
-        //    ObjectiveEvaluatorDelegateTruth<TRealizationData, TWellPoint>.ObjectiveEvaluationFunction evaluator)
-        //{
-        //    return null;
-        //}
-
         public void ResetServer(int seed = -1)
         {
             //TODO implement the seed
@@ -463,10 +587,6 @@ namespace ServerStateInterfaces
         }
 
 
-        private static double GetFinalScore(UserResultFinal<TWellPoint> userResult)
-        {
-            return userResult.TrajectoryWithScore[userResult.TrajectoryWithScore.Count - 1].Score;
-        }
 
         public ManyWells<TWellPoint> GetScreenFull()
         {
@@ -716,6 +836,8 @@ namespace ServerStateInterfaces
             return pair.Key.UserName;
         }
 
+
+        //TODO remove
         private MyScore LoadUserResultFromFileForGame(string folderId, int gameSeed)
         {
             var pair1 = LoadUserResultPairFromFile(folderId);
@@ -749,39 +871,8 @@ namespace ServerStateInterfaces
 
         }
 
-        private MyScore LoadUserResultFromFileDepricated(string folderId)
-        {
-            var pair = LoadUserResultPairFromFile(folderId);
-            if (pair.Value == null)
-            {
-                return null;
-            }
-            //try load score from current scores
-            var serverGameIndex = seeds.ToList().FindIndex(x => x==pair.Key.GameId);
-            if (serverGameIndex != -1 && serverGameIndex < TOTAL_LEVELS)
-            {
-                var valueScore = GetFinalScore(pair.Value);
-                var score = new MyScore()
-                {
-                    ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
-                    ScoreValue = valueScore,
-                    YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
-                    UserName = pair.Key.UserName,
-                };
-                return score;
-            }
-            //try load scores from old scores
-            else
-            {
-                var score = new MyScore()
-                {
-                    UserName = pair.Key.UserName,
-                };
-                return score;
-            }
-        }
 
-
+        //TODO remove
         protected void PushToResultingTrajectories(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair)
         {
             _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
@@ -790,9 +881,6 @@ namespace ServerStateInterfaces
             //    (key, value) => pair.Value);
 
         }
-
-
-
 
 
         public virtual TUserDataModel LossyCompress(TUserDataModel data)
@@ -832,6 +920,14 @@ namespace ServerStateInterfaces
             return resultDistribution;
         }
 
+
+        //TODO update
+        /// <summary>
+        /// stopping
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="friendSaveId"></param>
+        /// <returns></returns>
         public MyScore StopUser(string userId, string friendSaveId = null)
         {
             //this method does NOT lock

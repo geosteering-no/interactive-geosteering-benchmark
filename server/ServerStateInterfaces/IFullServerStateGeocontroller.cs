@@ -38,6 +38,6 @@ namespace ServerStateInterfaces
         TUserData LoadNextUserStateFromFile(bool nextUser=false, string userToLoad="");
         ManyWells<TWellPoint> GetScreenFull();
         TUserData GetUserDataDefault();
-
+        IList<KeyValuePair<string, double>> LoadAndCreateScoreBoards();
     }
 }

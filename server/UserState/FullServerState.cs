@@ -104,7 +104,7 @@ namespace UserState
             return data;
         }
 
-        protected override WellPoint GetInitialPoint()
+        protected WellPoint GetInitialPoint()
         {
             return _dummyUserData.wellPoints[0];
         }
