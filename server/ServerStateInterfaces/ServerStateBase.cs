@@ -538,7 +538,7 @@ namespace ServerStateInterfaces
         {
             UserResultFinal<TWellPoint> botResult = null;
             var key = new UserResultId(BotUserName, serverGameIndex, serverGameIndex);
-            var getResult = _resultingTrajectories.TryGetValue(key, out botResult);
+            //var getResult = _resultingTrajectories.TryGetValue(key, out botResult);
             return botResult;
         }
 
@@ -745,35 +745,7 @@ namespace ServerStateInterfaces
             }
 
             return null;
-            ////try loading from folder
-            //else
-            //{
-            //    try
-            //    {
 
-            //        var scores = LoadScoresForGameFromFile(folderId, gameSeed);
-            //        var userResult = scores.First(x => x.UserName == pair1.Key.UserName);
-            //        var len = userResult.TrajectoryWithScore.Count;
-            //        var valueScore = userResult.TrajectoryWithScore[len - 1].Score;
-            //        System.Console.WriteLine("Warning: This code should not be reached");
-            //        var score = new MyScore()
-            //        {
-            //            ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
-            //            ScoreValue = valueScore,
-            //            YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
-            //            UserName = pair1.Key.UserName,
-            //        };
-            //        return score;
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        var score = new MyScore()
-            //        {
-            //            UserName = pair.Key.UserName,
-            //        };
-            //        return score;
-            //    }
-            //}
 
         }
 
@@ -809,18 +781,6 @@ namespace ServerStateInterfaces
             }
         }
 
-        //private void CleanNewResultingTrajectories(int n = 60)
-        //{
-        //    if (_newResultingTrajectories.Count > n)
-        //    {
-        //        var pairs = _newResultingTrajectories.ToList();
-        //        pairs.Sort((pair1,pair2) => (int) (pair1.Value.TimeTicks - pair2.Value.TimeTicks));
-        //        for (var i = 0; i < pairs.Count - n; ++i)
-        //        {
-        //            _newResultingTrajectories.TryRemove(pairs[i].Key, out _);
-        //        }
-        //    }
-        //}
 
         protected void PushToResultingTrajectories(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair)
         {
@@ -867,8 +827,8 @@ namespace ServerStateInterfaces
             //this method does NOT lock
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var resultDistribution = userPair.GetEvalautionLocked(trajectory);
-            var scorePair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
-            PushToResultingTrajectories(scorePair);
+            //var scorePair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
+            //PushToResultingTrajectories(scorePair);
             return resultDistribution;
         }
 
@@ -879,8 +839,8 @@ namespace ServerStateInterfaces
             var updatedUser = userPair.StopUserLocked(EvaluatorTruth, GetTruthsForEvaluation());
             KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
             pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
-            PushToResultingTrajectories(pair);
             var shareId = DumpUserResultToFileOnStop(pair);
+            PushToResultingTrajectories(pair);
 
             var gameNumber = userPair.GameNumberLocked;
             var serverGameIndex = userPair.GetLevelIndex(gameNumber, _levelDescriptions.Length);
@@ -957,8 +917,8 @@ namespace ServerStateInterfaces
             var userPair = _users.GetOrAdd(userId, GetNewDefaultUserPair);
             var updatedUser = userPair.UpdateUserLocked(load, _secrets, EvaluatorTruth, GetTruthsForEvaluation());
             KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
-            pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
-            PushToResultingTrajectories(pair);
+            //pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
+            //PushToResultingTrajectories(pair);
             return updatedUser;
         }
 
