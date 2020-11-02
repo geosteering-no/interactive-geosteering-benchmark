@@ -29,9 +29,9 @@ namespace ServerStateInterfaces
         protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
             _resultingTrajectories = 
                 new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
-        protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
-            _newResultingTrajectories = 
-                new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
+        //protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
+        //    _newResultingTrajectories = 
+        //        new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
         /// <summary>
         /// We never write to this one
         /// </summary>
@@ -809,25 +809,25 @@ namespace ServerStateInterfaces
             }
         }
 
-        private void CleanNewResultingTrajectories(int n = 60)
-        {
-            if (_newResultingTrajectories.Count > n)
-            {
-                var pairs = _newResultingTrajectories.ToList();
-                pairs.Sort((pair1,pair2) => (int) (pair1.Value.TimeTicks - pair2.Value.TimeTicks));
-                for (var i = 0; i < pairs.Count - n; ++i)
-                {
-                    _newResultingTrajectories.TryRemove(pairs[i].Key, out _);
-                }
-            }
-        }
+        //private void CleanNewResultingTrajectories(int n = 60)
+        //{
+        //    if (_newResultingTrajectories.Count > n)
+        //    {
+        //        var pairs = _newResultingTrajectories.ToList();
+        //        pairs.Sort((pair1,pair2) => (int) (pair1.Value.TimeTicks - pair2.Value.TimeTicks));
+        //        for (var i = 0; i < pairs.Count - n; ++i)
+        //        {
+        //            _newResultingTrajectories.TryRemove(pairs[i].Key, out _);
+        //        }
+        //    }
+        //}
 
         protected void PushToResultingTrajectories(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair)
         {
             _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
                 (key, value) => pair.Value);
-            _newResultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
-                (key, value) => pair.Value);
+            //_newResultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
+            //    (key, value) => pair.Value);
 
         }
 
