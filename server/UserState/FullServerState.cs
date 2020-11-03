@@ -155,7 +155,7 @@ namespace UserState
 
         protected void BotReportingCallback(KeyValuePair<UserResultId, UserResultFinal<WellPoint>> pair)
         {
-            PushToResultingTrajectories(pair);
+            //PushToResultingTrajectories(pair);
             DumpUserResultToFileOnStop(pair);
         }
 

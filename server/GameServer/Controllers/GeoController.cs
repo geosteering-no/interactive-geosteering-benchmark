@@ -110,8 +110,8 @@ namespace GameServer.Controllers
         }
 
 
-        [Route("ratings")]
-        [HttpGet]
+        //[Route("ratingsOl")]
+        //[HttpGet]
         public ContentResult GetServerRatings([FromQuery] string fgi = null)
         {
             var time = DateTime.Now;
@@ -155,14 +155,14 @@ namespace GameServer.Controllers
         }
 
 
-        [Route("ratings3")]
+        [Route("ratings")]
         [HttpGet]
-        public ContentResult GetServerRatingsFromFiles()
+        public ContentResult GetServerRatingsFromFiles([FromQuery] string fgi = null)
         {
             var time = DateTime.Now;
             _logger.LogInformation(time.ToLongTimeString() + ": Sending ratings");
 
-            var ratings = _stateServer.LoadAndCreateScoreBoards();
+            var ratings = _stateServer.CreateScoreBoardNRoundsFromFiles();
 
             int i = 0;
 

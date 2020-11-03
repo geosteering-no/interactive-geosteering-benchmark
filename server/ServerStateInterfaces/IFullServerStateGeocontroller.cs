@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ServerDataStructures;
 
 namespace ServerStateInterfaces
@@ -38,6 +39,6 @@ namespace ServerStateInterfaces
         TUserData LoadNextUserStateFromFile(bool nextUser=false, string userToLoad="");
         ManyWells<TWellPoint> GetScreenFull();
         TUserData GetUserDataDefault();
-        IList<KeyValuePair<string, double>> LoadAndCreateScoreBoards();
+        IList<KeyValuePair<string, double>> CreateScoreBoardNRoundsFromFiles();
     }
 }

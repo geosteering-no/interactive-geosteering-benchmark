@@ -30,9 +30,9 @@ namespace ServerStateInterfaces
                     TWellPoint, TUserResult, TRealizationData>>();
 
         //protected IList<LevelDescription<TWellPoint, TRealizationData>> _scoreDataAll;
-        protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>
-            _resultingTrajectories =
-                new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
+        //protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>
+        //    _resultingTrajectories =
+        //        new ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>>();
 
         //protected ConcurrentDictionary<UserResultId, UserResultFinal<TWellPoint>> 
         //    _newResultingTrajectories = 
@@ -206,31 +206,29 @@ namespace ServerStateInterfaces
             System.IO.File.WriteAllText(dirIdHighScore + "/" + fileName, jsonStr);
         }
 
-        public void DumpAllScoreBoardToFile(
-            string dirIdHighScore = "scoreLog/")
+        //public void DumpAllScoreBoardToFile(
+        //    string dirIdHighScore = "scoreLog/")
+        //{
+        //    ;
+        //    if (!Directory.Exists(dirIdHighScore))
+        //    {
+        //        Directory.CreateDirectory(dirIdHighScore);
+        //    }
+
+        //    DumpAllScoresToFile(GetUserResultsForAllGames(), dirIdHighScore);
+
+        //    for (int i = 0; i < TOTAL_LEVELS; ++i)
+        //    {
+        //        DumpScoreBoardToFile(GetScoreboard(i),
+        //            dirIdHighScore,
+        //            "board_" + seeds[i] + ".json");
+        //    }
+
+        //}
+
+
+        public string GetUserNameDirId(string userId)
         {
-            ;
-            if (!Directory.Exists(dirIdHighScore))
-            {
-                Directory.CreateDirectory(dirIdHighScore);
-            }
-
-            DumpAllScoresToFile(GetUserResultsForAllGames(), dirIdHighScore);
-
-            for (int i = 0; i < TOTAL_LEVELS; ++i)
-            {
-                DumpScoreBoardToFile(GetScoreboard(i),
-                    dirIdHighScore,
-                    "board_" + seeds[i] + ".json");
-            }
-
-        }
-
-        //TODO extract trajectory
-        public string DumpUserResultToFileOnStop(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> resultPair)
-        {
-            var userId = resultPair.Key.UserName;
-            var serverGameSeed = seeds[resultPair.Key.GameId];
             var hashString = string.Format("{0:X}",
                 UserScorePairLockedGeneric<TUserModel, TUserDataModel, TSecretState, TWellPoint, TUserResult,
                         TRealizationData>
@@ -247,8 +245,19 @@ namespace ServerStateInterfaces
             //    userDirName = userDirName.Replace(ch, '-');
             //}
             userDirName = Regex.Replace(userDirName, @"[^A-Za-z0-9]+", "-");
-
             userDirName = userDirName + "-" + hashString;
+
+            return userDirName;
+        }
+
+
+        public string DumpUserResultToFileOnStop(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> resultPair)
+        {
+            var userId = resultPair.Key.UserName;
+            var serverGameSeed = seeds[resultPair.Key.GameId];
+
+            var userDirName = GetUserNameDirId(userId);
+
 
             var dirPrefix = "resultLog/";
             var userDirId = DateTime.Now.Ticks + "-" + userDirName;
@@ -265,7 +274,8 @@ namespace ServerStateInterfaces
             var jsonStr = JsonConvert.SerializeObject(newPair);
             File.WriteAllText(dirId + "/" + "userResultPair.json", jsonStr);
 
-            DumpAllScoreBoardToFile(dirId);
+            //FIXME see how much logging do we get
+            //DumpAllScoreBoardToFile(dirId);
             return userDirId;
         }
 
@@ -324,12 +334,43 @@ namespace ServerStateInterfaces
             return maxRating;
         }
 
+        public IList<KeyValuePair<string, double>> CreateScoreBoardNRoundsFromFiles()
+        {
+            var pair = LoadAndCreateScoreBoardUserPair();
+            var list = CreateScoreBoardNRounds(pair.Item1, pair.Item2, 3);
+            return list;
+        }
+
+        private IList<KeyValuePair<string, double>> CreateScoreBoardNRounds(Dictionary<int, LevelDescription<TWellPoint, TRealizationData, TSecretState>> boards,
+        Dictionary<string, IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>>> userScores, int numGames = 3)
+        {
+            var score3List = new List<KeyValuePair<string, double>>(userScores.Count);
+            var ratingsDict = new Dictionary<string, IList<double>>(userScores.Count);
+            //var numGames = 3;
+            foreach (var userPair in userScores)
+            {
+                var userId = userPair.Key;
+                var ratings = ComputeRatingsForUser(boards, userPair.Value);
+                ratingsDict.Add(userId, ratings);
+
+                if (ratings.Count >= numGames)
+                {
+                    score3List.Add(new KeyValuePair<string, double>(userId, ratings[numGames - 1]));
+                }
+            }
+
+            var scoreBoard = score3List.OrderByDescending(x => x.Value).ToList();
+
+            return scoreBoard;
+        }
 
         /// <summary>
         /// This gets the dictionary containing all standings
         /// </summary>
         /// <returns></returns>
-        public IList<KeyValuePair<string, double>> LoadAndCreateScoreBoards()
+        public Tuple<Dictionary<int, LevelDescription<TWellPoint, TRealizationData, TSecretState>>, 
+            Dictionary<string, IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>>>> 
+            LoadAndCreateScoreBoardUserPair()
         {
             var dirId = "resultLog/";
             var allDirectories = Directory.GetDirectories(dirId);
@@ -371,25 +412,36 @@ namespace ServerStateInterfaces
             //{
             //    board.UserResults = board.UserResults.OrderBy(x => GetFinalScore(x)).ToList();
             //}
+            return new Tuple<Dictionary<int, LevelDescription<TWellPoint, TRealizationData, TSecretState>>, 
+                Dictionary<string, IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>>>>(
+                boards, userScores);
+        }
 
-            var score3List = new List<KeyValuePair<string, double>>(userScores.Count);
-            var ratingsDict = new Dictionary<string, IList<double>>(userScores.Count);
-            var numGames = 3;
-            foreach (var userPair in userScores)
+        public MyScore GetMyFullScore(UserResultId resultId, UserResultFinal<TWellPoint> result, bool getRating = true)
+        {
+            var boardsAndResults = LoadAndCreateScoreBoardUserPair();
+            var boards = boardsAndResults.Item1;
+            var resultsAllUsers = boardsAndResults.Item2;
+            var gameSeed = resultId.GameId;
+            var serverGameIndex = GetServerGameIndex(gameSeed);
+            var valueScore = GetFinalScore(result);
+            var userName = resultId.UserName;
+            var results = boards[resultId.GameId].UserResults;
+
+            var score = new MyScore()
             {
-                var userId = userPair.Key;
-                var ratings = ComputeRatingsForUser(boards, userPair.Value);
-                ratingsDict.Add(userId, ratings);
-                
-                if (ratings.Count >= numGames)
-                {
-                    score3List.Add(new KeyValuePair<string, double>(userId, ratings[numGames-1]));
-                }
+                ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
+                ScoreValue = valueScore,
+                YouDidBetterThan = _GetRatingPercent(results, result),
+                UserName = userName,
+            };
+            if (getRating)
+            {
+                var resultsForUser = resultsAllUsers[userName];
+                score.Rating = ComputeRatingsForUser(boards, resultsForUser);
+                //GetRating(userName, GetResultsForUser(GetUserResultsForAllGames(), userName));
             }
-
-            var scoreBoard = score3List.OrderByDescending(x => x.Value).ToList();
-            
-            return scoreBoard;
+            return score;
         }
 
         private static double GetFinalScore(UserResultFinal<TWellPoint> userResult)
@@ -490,6 +542,8 @@ namespace ServerStateInterfaces
 
         private string lastLoadedUser = "";
         private string lastLoadedUserFile = "";
+        private IFullServerStateGeocontroller<TWellPoint, TUserDataModel, TUserResult, LevelDescription<TWellPoint, TRealizationData, TSecretState>>
+            _fullServerStateGeocontrollerImplementation;
 
         private string _GetNextDir()
         {
@@ -554,6 +608,11 @@ namespace ServerStateInterfaces
             return userState;
         }
 
+        public ManyWells<TWellPoint> GetScreenFull()
+        {
+            return _fullServerStateGeocontrollerImplementation.GetScreenFull();
+        }
+
 
         /// <summary>
         /// this should call dump secret stateGeocontroller to file
@@ -588,43 +647,43 @@ namespace ServerStateInterfaces
 
 
 
-        public ManyWells<TWellPoint> GetScreenFull()
-        {
-            var wells = new ManyWells<TWellPoint>();
-            var allTrajectoryKeys = _resultingTrajectories.Keys;
-            foreach (var userResultId in allTrajectoryKeys)
-            {
-                UserResultFinal<TWellPoint> curTrajectory;
-                var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
-                if (result)
-                {
-                    wells.UserResults.Add(TrajectoryOutputSingle<TWellPoint>.FromUserResult(curTrajectory));
-                }
-            }
+        //public ManyWells<TWellPoint> GetScreenFull()
+        //{
+        //    var wells = new ManyWells<TWellPoint>();
+        //    var allTrajectoryKeys = _resultingTrajectories.Keys;
+        //    foreach (var userResultId in allTrajectoryKeys)
+        //    {
+        //        UserResultFinal<TWellPoint> curTrajectory;
+        //        var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
+        //        if (result)
+        //        {
+        //            wells.UserResults.Add(TrajectoryOutputSingle<TWellPoint>.FromUserResult(curTrajectory));
+        //        }
+        //    }
 
-            return wells;
-        }
+        //    return wells;
+        //}
 
-        public IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> GetUserResultsForAllGames()
-        {
-            var allTrajectoryKeys = _resultingTrajectories.Keys;
-            var currentScores = new List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>>();
-            foreach (var userResultId in allTrajectoryKeys)
-            {
-                UserResultFinal<TWellPoint> curTrajectory;
-                var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
-                if (result)
-                {
-                    var serverGameSeed = seeds[userResultId.GameId];
-                    var newPair = new KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>(
-                        new UserResultId(userResultId.UserName, userResultId.GameNumberForUser, serverGameSeed),
-                        curTrajectory);
-                    currentScores.Add(newPair);
-                }
-            }
+        //public IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> GetUserResultsForAllGames()
+        //{
+        //    var allTrajectoryKeys = _resultingTrajectories.Keys;
+        //    var currentScores = new List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>>();
+        //    foreach (var userResultId in allTrajectoryKeys)
+        //    {
+        //        UserResultFinal<TWellPoint> curTrajectory;
+        //        var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
+        //        if (result)
+        //        {
+        //            var serverGameSeed = seeds[userResultId.GameId];
+        //            var newPair = new KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>(
+        //                new UserResultId(userResultId.UserName, userResultId.GameNumberForUser, serverGameSeed),
+        //                curTrajectory);
+        //            currentScores.Add(newPair);
+        //        }
+        //    }
 
-            return currentScores;
-        }
+        //    return currentScores;
+        //}
 
         private static List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> GetResultsForUser(IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> current, string userId)
         {
@@ -635,24 +694,24 @@ namespace ServerStateInterfaces
             return selectedPairs;
         }
 
-        public IList<UserResultFinal<TWellPoint>> GetUserResultsForGame(int serverGameIndex)
-        {
-            serverGameIndex %= _levelDescriptions.Length;
-            var allTrajectoryKeys = _resultingTrajectories.Keys;
-            var selectedKeys = allTrajectoryKeys.Where(key => key.GameId == serverGameIndex);
-            var currentScores = new List<UserResultFinal<TWellPoint>>();
-            foreach (var userResultId in selectedKeys)
-            {
-                UserResultFinal<TWellPoint> curTrajectory;
-                var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
-                if (result)
-                {
-                    currentScores.Add(curTrajectory);
-                }
-            }
+        //public IList<UserResultFinal<TWellPoint>> GetUserResultsForGame(int serverGameIndex)
+        //{
+        //    serverGameIndex %= _levelDescriptions.Length;
+        //    var allTrajectoryKeys = _resultingTrajectories.Keys;
+        //    var selectedKeys = allTrajectoryKeys.Where(key => key.GameId == serverGameIndex);
+        //    var currentScores = new List<UserResultFinal<TWellPoint>>();
+        //    foreach (var userResultId in selectedKeys)
+        //    {
+        //        UserResultFinal<TWellPoint> curTrajectory;
+        //        var result = _resultingTrajectories.TryGetValue(userResultId, out curTrajectory);
+        //        if (result)
+        //        {
+        //            currentScores.Add(curTrajectory);
+        //        }
+        //    }
 
-            return currentScores;
-        }
+        //    return currentScores;
+        //}
 
         public UserResultFinal<TWellPoint> GetBotResultForGame(int serverGameIndex)
         {
@@ -662,90 +721,90 @@ namespace ServerStateInterfaces
             return botResult;
         }
 
-        private IList<double> GetRating(string userName, 
-            IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> current, 
-            IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> original = null,
-            string folderName = "")
-        {
-            List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> resultsForUser = null;
-            var exclude = 1;
-            if (original == null)
-            {
-                resultsForUser = GetResultsForUser(current, userName);
-                original = current;
-            }
-            else
-            {
-                resultsForUser = GetResultsForUser(original, userName);
-                exclude = 0;
-            }
+        //private IList<double> GetRating(string userName, 
+        //    IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> current, 
+        //    IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> original = null,
+        //    string folderName = "")
+        //{
+        //    List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> resultsForUser = null;
+        //    var exclude = 1;
+        //    if (original == null)
+        //    {
+        //        resultsForUser = GetResultsForUser(current, userName);
+        //        original = current;
+        //    }
+        //    else
+        //    {
+        //        resultsForUser = GetResultsForUser(original, userName);
+        //        exclude = 0;
+        //    }
             
             
 
-            var resCount = resultsForUser.Count;
+        //    var resCount = resultsForUser.Count;
 
-            var oneGameRatings = new double[resCount];
-            var curTotal = 0.0;
-            var totalRatingUpTo = new double[resCount];
-            var maxRating = new double[resCount];
+        //    var oneGameRatings = new double[resCount];
+        //    var curTotal = 0.0;
+        //    var totalRatingUpTo = new double[resCount];
+        //    var maxRating = new double[resCount];
 
-            for (var index = 0; index < resCount; index++)
-            {
-                var keyValuePair = resultsForUser[index];
-                //if (keyValuePair.Key.GameNumberForUser != index)
-                //{
-                //    throw new InvalidOperationException("User has not done all games");
-                //}
+        //    for (var index = 0; index < resCount; index++)
+        //    {
+        //        var keyValuePair = resultsForUser[index];
+        //        //if (keyValuePair.Key.GameNumberForUser != index)
+        //        //{
+        //        //    throw new InvalidOperationException("User has not done all games");
+        //        //}
 
-                var serverIndex = seeds.ToList().FindIndex(x => x == keyValuePair.Key.GameId);
+        //        var serverIndex = seeds.ToList().FindIndex(x => x == keyValuePair.Key.GameId);
                 
 
-                double curRating = 0;
-                //the game is active on the server
-                if (serverIndex != -1 && serverIndex<TOTAL_LEVELS)
-                {
-                    curRating = GetPercentile100ForGame(serverIndex, GetFinalScore(keyValuePair.Value), exclude);
-                }
-                else
-                {
-                    //this requests from a board
-                    curRating = LoadPercentile100ForGame(GetFinalScore(keyValuePair.Value), folderName, keyValuePair.Key.GameId);
-                }
+        //        double curRating = 0;
+        //        //the game is active on the server
+        //        if (serverIndex != -1 && serverIndex<TOTAL_LEVELS)
+        //        {
+        //            curRating = GetPercentile100ForGame(serverIndex, GetFinalScore(keyValuePair.Value), exclude);
+        //        }
+        //        else
+        //        {
+        //            //this requests from a board
+        //            curRating = LoadPercentile100ForGame(GetFinalScore(keyValuePair.Value), folderName, keyValuePair.Key.GameId);
+        //        }
 
-                oneGameRatings[index] = curRating;
+        //        oneGameRatings[index] = curRating;
 
-                //update averages
-                for (var j = 0; j < index; ++j)
-                {
-                    totalRatingUpTo[j] = totalRatingUpTo[j] - oneGameRatings[index-j-1] + curRating;
-                    if (totalRatingUpTo[j] / (j+1) > maxRating[j])
-                    {
-                        maxRating[j] = totalRatingUpTo[j] / (j+1);
-                    }
-                }
+        //        //update averages
+        //        for (var j = 0; j < index; ++j)
+        //        {
+        //            totalRatingUpTo[j] = totalRatingUpTo[j] - oneGameRatings[index-j-1] + curRating;
+        //            if (totalRatingUpTo[j] / (j+1) > maxRating[j])
+        //            {
+        //                maxRating[j] = totalRatingUpTo[j] / (j+1);
+        //            }
+        //        }
 
-                totalRatingUpTo[index] = curTotal + curRating;
-                maxRating[index] = totalRatingUpTo[index] / (index + 1);
-                curTotal = totalRatingUpTo[index];
+        //        totalRatingUpTo[index] = curTotal + curRating;
+        //        maxRating[index] = totalRatingUpTo[index] / (index + 1);
+        //        curTotal = totalRatingUpTo[index];
 
-            }
+        //    }
 
 
-            return maxRating;
-        }
+        //    return maxRating;
+        //}
 
-        public double GetPercentile100ForGame(int serverGameIndex, double myScore, int exclude = 1)
-        {
-            serverGameIndex %= _levelDescriptions.Length;
-            var results = GetUserResultsForGame(serverGameIndex);
-            double lower = results.Select(GetFinalScore).Count(value => value < myScore);
-            var total = results.Count - exclude;
-            if (total == 0)
-            {
-                return 100;
-            }
-            return lower / total * 100.0;
-        }
+        //public double GetPercentile100ForGame(int serverGameIndex, double myScore, int exclude = 1)
+        //{
+        //    serverGameIndex %= _levelDescriptions.Length;
+        //    var results = GetUserResultsForGame(serverGameIndex);
+        //    double lower = results.Select(GetFinalScore).Count(value => value < myScore);
+        //    var total = results.Count - exclude;
+        //    if (total == 0)
+        //    {
+        //        return 100;
+        //    }
+        //    return lower / total * 100.0;
+        //}
 
         public double LoadPercentile100ForGame(double myScore, string folderName, int gameId)
         {
@@ -761,15 +820,15 @@ namespace ServerStateInterfaces
 
 
 
-        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int serverGameIndex)
-        {
-            serverGameIndex %= _levelDescriptions.Length;
-            var results = GetUserResultsForGame(serverGameIndex);
-            var level = _levelDescriptions[serverGameIndex];
-            level.UserResults = results;
-            level.BotResult = GetBotResultForGame(serverGameIndex);
-            return level;
-        }
+        //public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int serverGameIndex)
+        //{
+        //    serverGameIndex %= _levelDescriptions.Length;
+        //    var results = GetUserResultsForGame(serverGameIndex);
+        //    var level = _levelDescriptions[serverGameIndex];
+        //    level.UserResults = results;
+        //    level.BotResult = GetBotResultForGame(serverGameIndex);
+        //    return level;
+        //}
 
         public double GetScorePercentForGame(int serverGameIndex, double myScore)
         {
@@ -778,52 +837,38 @@ namespace ServerStateInterfaces
             return myScore / best * 100.0;
         }
 
-        public Dictionary<string, UserRating> GetAllRatings()
-        {
-            var allResults = GetUserResultsForAllGames();
-            var result = new Dictionary<string, UserRating>();
-            foreach (var keyValuePair in allResults)
-            {
-                var userName = keyValuePair.Key.UserName;
-                if (result.ContainsKey(userName))
-                {
-                    continue;
-                }
+        //public Dictionary<string, UserRating> GetAllRatings()
+        //{
+        //    var allResults = GetUserResultsForAllGames();
+        //    var result = new Dictionary<string, UserRating>();
+        //    foreach (var keyValuePair in allResults)
+        //    {
+        //        var userName = keyValuePair.Key.UserName;
+        //        if (result.ContainsKey(userName))
+        //        {
+        //            continue;
+        //        }
 
-                var userResults = GetResultsForUser(allResults, userName).OrderBy(x => -x.Key.GameNumberForUser).ToList();
-                var lastResultTicks = userResults.First().Value.TimeTicks;
-                //var time0 = new DateTime(userResults[0].Value.TimeTicks);
-                //var time1 = new DateTime(userResults[1].Value.TimeTicks);
-                //var time2 = new DateTime(userResults[2].Value.TimeTicks);
-                //var ourTime = new DateTime(lastResultTicks);
-                var ratings = GetRating(userName, userResults);
-                var rating = new UserRating()
-                {
-                    Rating = ratings,
-                    TimeTicks = lastResultTicks,
-                    UserName = userName
-                };
-                result.Add(userName, rating);
-            }
+        //        var userResults = GetResultsForUser(allResults, userName).OrderBy(x => -x.Key.GameNumberForUser).ToList();
+        //        var lastResultTicks = userResults.First().Value.TimeTicks;
+        //        //var time0 = new DateTime(userResults[0].Value.TimeTicks);
+        //        //var time1 = new DateTime(userResults[1].Value.TimeTicks);
+        //        //var time2 = new DateTime(userResults[2].Value.TimeTicks);
+        //        //var ourTime = new DateTime(lastResultTicks);
+        //        var ratings = GetRating(userName, userResults);
+        //        var rating = new UserRating()
+        //        {
+        //            Rating = ratings,
+        //            TimeTicks = lastResultTicks,
+        //            UserName = userName
+        //        };
+        //        result.Add(userName, rating);
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        public MyScore GetMyFullScore(int serverGameIndex, double valueScore, string userName, bool getRating = false)
-        {
-            var score = new MyScore()
-            {
-                ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
-                ScoreValue = valueScore,
-                YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
-                UserName = userName,
-            };
-            if (getRating)
-            {
-                score.Rating = GetRating(userName, GetResultsForUser(GetUserResultsForAllGames(), userName));
-            }
-            return score;
-        }
+
 
         public string LoadFriendUserNameFromFile(string folderId)
         {
@@ -836,6 +881,16 @@ namespace ServerStateInterfaces
             return pair.Key.UserName;
         }
 
+        public Dictionary<string, UserRating> GetAllRatings()
+        {
+            return _fullServerStateGeocontrollerImplementation.GetAllRatings();
+        }
+
+        private int GetServerGameIndex(int gameSeed)
+        {
+            var serverGameIndex = seeds.ToList().FindIndex(x => x == gameSeed);
+            return serverGameIndex;
+        }
 
         //TODO remove
         private MyScore LoadUserResultFromFileForGame(string folderId, int gameSeed)
@@ -860,7 +915,8 @@ namespace ServerStateInterfaces
                 {
                     ScorePercent = GetScorePercentForGame(serverGameIndex, valueScore),
                     ScoreValue = valueScore,
-                    YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
+                    //TODO fix
+                    //YouDidBetterThan = GetPercentile100ForGame(serverGameIndex, valueScore),
                     UserName = pair1.Key.UserName,
                 };
                 return score;
@@ -872,15 +928,14 @@ namespace ServerStateInterfaces
         }
 
 
-        //TODO remove
-        protected void PushToResultingTrajectories(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair)
-        {
-            _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
-                (key, value) => pair.Value);
-            //_newResultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
-            //    (key, value) => pair.Value);
+        //protected void PushToResultingTrajectories(KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair)
+        //{
+        //    _resultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
+        //        (key, value) => pair.Value);
+        //    //_newResultingTrajectories.AddOrUpdate(pair.Key, pair.Value,
+        //    //    (key, value) => pair.Value);
 
-        }
+        //}
 
 
         public virtual TUserDataModel LossyCompress(TUserDataModel data)
@@ -888,12 +943,25 @@ namespace ServerStateInterfaces
             return data;
         }
 
+        public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int serverGameIndex)
+        {
+            return _fullServerStateGeocontrollerImplementation.GetScoreboard(serverGameIndex);
+        }
+
         public abstract void AddBotUserDefault();
 
 
         public bool UserExists(string userId)
         {
-            return _users.ContainsKey(userId);
+            var dirId = "resultLog/";
+            var allDirectories = Directory.GetDirectories(dirId);
+            var userDirId = GetUserNameDirId(userId);
+            if (allDirectories.FirstOrDefault(x => x.Contains(userDirId)) != null)
+            {
+                return true;
+            }
+            return false;
+            //return _users.ContainsKey(userId);
         }
 
         public TUserDataModel GetUserDataDefault()
@@ -936,31 +1004,29 @@ namespace ServerStateInterfaces
             KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
             pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             var shareId = DumpUserResultToFileOnStop(pair);
-            PushToResultingTrajectories(pair);
-
-            var gameNumber = userPair.GameNumberLocked;
-            var serverGameIndex = userPair.GetLevelIndex(gameNumber, _levelDescriptions.Length);
-            var gameSeed = seeds[serverGameIndex];
+            var serverGameIndex = GetServerGameIndex(pair.Key.GameId);
+            var gameResultId = pair.Key;
+            var userResult = pair.Value;
 
             //handling of friends score
             MyScore friendsScore = null;
-            try
-            {
-                if (friendSaveId != null)
-                {
-                    friendsScore = LoadUserResultFromFileForGame(friendSaveId, gameSeed);
-                    if (friendsScore != null)
-                    {
-                        friendsScore.SharingId = friendSaveId;
-                        friendsScore.Rating = GetRating(friendsScore.UserName, GetUserResultsForAllGames(),
-                            LoadAllScoresFromFile(friendSaveId), friendSaveId);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                //pass
-            }
+            //try
+            //{
+            //    if (friendSaveId != null)
+            //    {
+            //        friendsScore = LoadUserResultFromFileForGame(friendSaveId, gameSeed);
+            //        if (friendsScore != null)
+            //        {
+            //            friendsScore.SharingId = friendSaveId;
+            //            friendsScore.Rating = GetRating(friendsScore.UserName, GetUserResultsForAllGames(),
+            //                LoadAllScoresFromFile(friendSaveId), friendSaveId);
+            //        }
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    //pass
+            //}
             //if (friendsScore == null)
             //{
             //    friendsScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), BotUserName, true);
@@ -992,7 +1058,8 @@ namespace ServerStateInterfaces
 
 
             MyScore myScore;
-            myScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId, true);
+            //myScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId, true);
+            myScore = GetMyFullScore(gameResultId, userResult);
             myScore.SharingId = shareId;
             myScore.FriendsScore = friendsScore;
             myScore.AiScore = aiScore;
