@@ -422,11 +422,11 @@ namespace ServerStateInterfaces
             var boardsAndResults = LoadAndCreateScoreBoardUserPair();
             var boards = boardsAndResults.Item1;
             var resultsAllUsers = boardsAndResults.Item2;
-            var gameSeed = resultId.GameId;
-            var serverGameIndex = GetServerGameIndex(gameSeed);
+            var gameSeed = seeds[resultId.GameId];
+            var serverGameIndex = resultId.GameId;
             var valueScore = GetFinalScore(result);
             var userName = resultId.UserName;
-            var results = boards[resultId.GameId].UserResults;
+            var results = boards[gameSeed].UserResults;
 
             var score = new MyScore()
             {
@@ -1004,7 +1004,7 @@ namespace ServerStateInterfaces
             KeyValuePair<UserResultId, UserResultFinal<TWellPoint>> pair;
             pair = userPair.GetUserResultScorePairLocked(_levelDescriptions.Length);
             var shareId = DumpUserResultToFileOnStop(pair);
-            var serverGameIndex = GetServerGameIndex(pair.Key.GameId);
+            var serverGameIndex = pair.Key.GameId;
             var gameResultId = pair.Key;
             var userResult = pair.Value;
 
