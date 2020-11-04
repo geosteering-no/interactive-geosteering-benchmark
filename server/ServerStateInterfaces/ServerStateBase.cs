@@ -373,6 +373,11 @@ namespace ServerStateInterfaces
             LoadAndCreateScoreBoardUserPair()
         {
             var dirId = "resultLog/";
+            if (!Directory.Exists(dirId))
+            {
+                Directory.CreateDirectory(dirId);
+            }
+
             var allDirectories = Directory.GetDirectories(dirId);
             Array.Sort(allDirectories);
             var boards = new Dictionary<int, LevelDescription<TWellPoint, TRealizationData, TSecretState>>();
@@ -417,7 +422,7 @@ namespace ServerStateInterfaces
                 boards, userScores);
         }
 
-        public MyScore GetMyFullScore(UserResultId resultId, UserResultFinal<TWellPoint> result, bool getRating = true)
+        public MyScore GetMyFullScore(UserResultId resultId, UserResultFinal<TWellPoint> result, bool getRating = true, bool getBotResult = true, string friendsSaveId = "")
         {
             var boardsAndResults = LoadAndCreateScoreBoardUserPair();
             var boards = boardsAndResults.Item1;
@@ -435,6 +440,64 @@ namespace ServerStateInterfaces
                 YouDidBetterThan = _GetRatingPercent(results, result),
                 UserName = userName,
             };
+            if (getBotResult)
+            {
+                if (resultsAllUsers.ContainsKey(BotUserName))
+                {
+                    var botsResults = resultsAllUsers[BotUserName];
+                    try
+                    {
+                        var botsResultCurGame = botsResults.Last(
+                            x => x.Key.GameId == gameSeed);
+                        var botsFinalScore = GetFinalScore(botsResultCurGame.Value);
+                        score.AiScore = new MyScore()
+                        {
+                            ScorePercent = GetScorePercentForGame(serverGameIndex, botsFinalScore),
+                            ScoreValue = botsFinalScore,
+                            UserName = BotUserName
+                        };
+
+                    }
+                    catch (InvalidOperationException e)
+                    {
+                        System.Console.WriteLine("Warning, no bot result for the game " + resultId + "\n" + e);
+                    }
+                }
+            }
+
+            if (friendsSaveId != "")
+            {
+                try
+                {
+                    var friendsName = LoadFriendUserNameFromFile(friendsSaveId);
+                    if (resultsAllUsers.ContainsKey(friendsName))
+                    {
+                        var friendsResults = resultsAllUsers[friendsName];
+                        try
+                        {
+                            var friendsResultCurGame
+                                = friendsResults.Last(
+                                    x => x.Key.GameId == gameSeed);
+                            var friendsFinalScore = GetFinalScore(friendsResultCurGame.Value);
+                            score.FriendsScore = new MyScore()
+                            {
+                                ScorePercent = GetScorePercentForGame(serverGameIndex, friendsFinalScore),
+                                ScoreValue = friendsFinalScore,
+                                UserName = friendsName
+                            };
+
+                        }
+                        catch (InvalidOperationException e)
+                        {
+                            System.Console.WriteLine("Warning, no friends result for the game " + resultId + "\n" + e);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.Console.WriteLine("Error while loading friends score " + friendsSaveId + "\n" + e);
+                }
+            }
             if (getRating)
             {
                 var resultsForUser = resultsAllUsers[userName];
@@ -954,6 +1017,10 @@ namespace ServerStateInterfaces
         public bool UserExists(string userId)
         {
             var dirId = "resultLog/";
+            if (!Directory.Exists(dirId))
+            {
+                Directory.CreateDirectory(dirId);
+            }
             var allDirectories = Directory.GetDirectories(dirId);
             var userDirId = GetUserNameDirId(userId);
             if (allDirectories.FirstOrDefault(x => x.Contains(userDirId)) != null)
@@ -1008,61 +1075,12 @@ namespace ServerStateInterfaces
             var gameResultId = pair.Key;
             var userResult = pair.Value;
 
-            //handling of friends score
-            MyScore friendsScore = null;
-            //try
-            //{
-            //    if (friendSaveId != null)
-            //    {
-            //        friendsScore = LoadUserResultFromFileForGame(friendSaveId, gameSeed);
-            //        if (friendsScore != null)
-            //        {
-            //            friendsScore.SharingId = friendSaveId;
-            //            friendsScore.Rating = GetRating(friendsScore.UserName, GetUserResultsForAllGames(),
-            //                LoadAllScoresFromFile(friendSaveId), friendSaveId);
-            //        }
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    //pass
-            //}
-            //if (friendsScore == null)
-            //{
-            //    friendsScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), BotUserName, true);
-            //}
-
-
-            //handling of AI score
-            MyScore aiScore = null;
-            try
-            {
-                if (serverGameIndex >= 0)
-                {
-                    var aiResult = GetBotResultForGame(serverGameIndex);
-                    var aiScoreValue = aiResult.TrajectoryWithScore[aiResult.TrajectoryWithScore.Count - 1].Score;
-                    aiScore = new MyScore()
-                    {
-                        UserName = BotUserName,
-                        ScoreValue = aiScoreValue,
-                        //Rating = GetRating(BotUserName, GetUserResultsForAllGames(), )
-                        //TODO add rating
-                    };
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Warning: AI is probably not finished");
-                //pass
-            }
-
-
             MyScore myScore;
             //myScore = GetMyFullScore(pair.Key.GameId, GetFinalScore(pair.Value), userId, true);
-            myScore = GetMyFullScore(gameResultId, userResult);
+            myScore = GetMyFullScore(gameResultId, userResult, friendsSaveId: friendSaveId);
             myScore.SharingId = shareId;
-            myScore.FriendsScore = friendsScore;
-            myScore.AiScore = aiScore;
+            //myScore.FriendsScore = friendsScore;
+            //myScore.AiScore = aiScore;
             return myScore;
         }
 
