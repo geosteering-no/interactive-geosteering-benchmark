@@ -153,7 +153,7 @@ function draw() {
 			image(legendBuffer, canvasWidth - legendBuffer.width, legendOffsetTop,
 				legendBuffer.width, legendBuffer.height);
 		}
-		if (oldLegendBuffer != null) {
+		if (false && oldLegendBuffer != null) {
 			fill(200);
 			//rect(canvasWidth - legendBuffer.width, legendBuffer.height, legendBuffer.width, legendBuffer.height);
 			//oldLegendBuffer.image(legendBuffer, 0, 0, legendBuffer.width, legendBuffer.height);
@@ -182,13 +182,13 @@ function draw() {
 
 
 
-	timerCountdown--;
-	if (timerCountdown <= 0) {
-		timerCountdown = frameRate() * 10;
-		if (revealIndex < 0) {
-			fetchScoreData();
-		}
-	}
+	// timerCountdown--;
+	// if (timerCountdown <= 0) {
+	// 	timerCountdown = frameRate() * 10;
+	// 	if (revealIndex < 0) {
+	// 		fetchScoreData();
+	// 	}
+	// }
 }
 
 
@@ -272,7 +272,7 @@ function drawAllWells() {
 				.map(function (withScore) {
 					return withScore.wellPoint;
 				});
-			if (fromTop < colors.length) {
+			if (fromTop < colors.length - showBotCheckBox.checked()) {
 				wellBuffer.stroke(colors[fromTop]);
 				wellBuffer.fill(colors[fromTop]);
 				wellBuffer.strokeWeight(thicknessMultLine * allWellData.height / wellBuffer.height * 2);
@@ -298,9 +298,9 @@ function drawAllWells() {
 				// 	prevBest
 				// }
 			} else {
-				wellBuffer.stroke(220);
-				wellBuffer.stroke(220);
-				wellBuffer.strokeWeight(thicknessMultLine * allWellData.height / wellBuffer.height);
+				wellBuffer.stroke(220, 100);
+				// wellBuffer.stroke(220);
+				wellBuffer.strokeWeight(thicknessMultLine * allWellData.height / wellBuffer.height / 2);
 			}
 
 			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
@@ -311,8 +311,8 @@ function drawAllWells() {
 
 		//best trajectory
 		if (showBotCheckBox.checked() && allWellData.botResult != undefined && allWellData.botResult != null){
-			wellBuffer.stroke(colorBest);
-			wellBuffer.fill(colorBest);
+			wellBuffer.stroke(colors[2]);
+			wellBuffer.fill(colors[2]);
 			wellBuffer.strokeWeight(thicknessMultLine * allWellData.height / wellBuffer.height * 2);
 			var userPoints = allWellData.botResult.trajectoryWithScore.slice(0)
 				.map(function (withScore) {
@@ -328,8 +328,8 @@ function drawAllWells() {
 				shortUserName = shortUserName.substr(0, 30);
 			}
 
-			var fromTop = 3;
-			legendBuffer.fill(colorBest);
+			var fromTop = 2;
+			legendBuffer.fill(colors[2]);
 			legendBuffer.textAlign(LEFT);
 			legendBuffer.text(shortUserName + " : ", 0, textShift + (fromTop) * legendBuffer.height / legendLength,
 				legendBuffer.width * 0.75, legendBuffer.windowHeight / legendLength);
@@ -343,7 +343,7 @@ function drawAllWells() {
 
 			drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
 		}
-		else 
+		
 		if (allWellData.bestPossible != null) {
 			wellBuffer.stroke(colorBest);
 			wellBuffer.fill(colorBest);

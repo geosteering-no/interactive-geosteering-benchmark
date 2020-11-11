@@ -32,12 +32,12 @@ namespace ServerStateInterfaces
 
         string LoadFriendUserNameFromFile(string folderId);
 
-        Dictionary<string, UserRating> GetAllRatings();
+        //Dictionary<string, UserRating> GetAllRatings();
 
         bool UserExists(string str);
         TScoreData LoadScoreboardFromFile(string fileName);
         TUserData LoadNextUserStateFromFile(bool nextUser=false, string userToLoad="");
-        ManyWells<TWellPoint> GetScreenFull();
+        //ManyWells<TWellPoint> GetScreenFull();
         TUserData GetUserDataDefault();
         IList<KeyValuePair<string, double>> CreateScoreBoardNRoundsFromFiles();
     }

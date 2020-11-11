@@ -62,6 +62,8 @@ namespace UserState
 
         }
 
+
+
         protected override TrueModelState[] InitializeNewSyntheticTruths()
         {
             for (int i = 0; i < _secrets.Length; ++i)

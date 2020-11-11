@@ -388,6 +388,9 @@ namespace ServerStateInterfaces
                 boards.Add(seeds[i], new LevelDescription<TWellPoint, TRealizationData, TSecretState>());
                 boards[seeds[i]].UserResults = new List<UserResultFinal<TWellPoint>>();
             }
+
+            var totalGames = 0;
+
             //this gives a list of rounds and all boards
             foreach (var directory in allDirectories)
             {
@@ -406,12 +409,17 @@ namespace ServerStateInterfaces
                     }
                     var curList = userScores[key.UserName];
                     curList.Add(pair);
+                    totalGames++;
                 }
                 catch (Exception e)
                 {
                     System.Console.Write("Probably no needed file in a dir: " + e);
                 }
             }
+
+            System.Console.WriteLine("total " + totalGames);
+            System.Console.WriteLine("total users " + userScores.Count);
+            System.Console.WriteLine("average games per user " + totalGames * 1.0 / userScores.Count);
 
             //foreach (var board in boards.Values)
             //{
@@ -605,8 +613,8 @@ namespace ServerStateInterfaces
 
         private string lastLoadedUser = "";
         private string lastLoadedUserFile = "";
-        private IFullServerStateGeocontroller<TWellPoint, TUserDataModel, TUserResult, LevelDescription<TWellPoint, TRealizationData, TSecretState>>
-            _fullServerStateGeocontrollerImplementation;
+        //private IFullServerStateGeocontroller<TWellPoint, TUserDataModel, TUserResult, LevelDescription<TWellPoint, TRealizationData, TSecretState>>
+        //    _fullServerStateGeocontrollerImplementation;
 
         private string _GetNextDir()
         {
@@ -671,10 +679,10 @@ namespace ServerStateInterfaces
             return userState;
         }
 
-        public ManyWells<TWellPoint> GetScreenFull()
-        {
-            return _fullServerStateGeocontrollerImplementation.GetScreenFull();
-        }
+        //public ManyWells<TWellPoint> GetScreenFull()
+        //{
+        //    return _fullServerStateGeocontrollerImplementation.GetScreenFull();
+        //}
 
 
         /// <summary>
@@ -776,13 +784,13 @@ namespace ServerStateInterfaces
         //    return currentScores;
         //}
 
-        public UserResultFinal<TWellPoint> GetBotResultForGame(int serverGameIndex)
-        {
-            UserResultFinal<TWellPoint> botResult = null;
-            var key = new UserResultId(BotUserName, serverGameIndex, serverGameIndex);
-            //var getResult = _resultingTrajectories.TryGetValue(key, out botResult);
-            return botResult;
-        }
+        //public UserResultFinal<TWellPoint> GetBotResultForGame(int serverGameIndex)
+        //{
+        //    UserResultFinal<TWellPoint> botResult = null;
+        //    var key = new UserResultId(BotUserName, serverGameIndex, serverGameIndex);
+        //    //var getResult = _resultingTrajectories.TryGetValue(key, out botResult);
+        //    return botResult;
+        //}
 
         //private IList<double> GetRating(string userName, 
         //    IList<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>> current, 
@@ -944,10 +952,10 @@ namespace ServerStateInterfaces
             return pair.Key.UserName;
         }
 
-        public Dictionary<string, UserRating> GetAllRatings()
-        {
-            return _fullServerStateGeocontrollerImplementation.GetAllRatings();
-        }
+        //public Dictionary<string, UserRating> GetAllRatings()
+        //{
+        //    return _fullServerStateGeocontrollerImplementation.GetAllRatings();
+        //}
 
         private int GetServerGameIndex(int gameSeed)
         {
@@ -1008,7 +1016,18 @@ namespace ServerStateInterfaces
 
         public LevelDescription<TWellPoint, TRealizationData, TSecretState> GetScoreboard(int serverGameIndex)
         {
-            return _fullServerStateGeocontrollerImplementation.GetScoreboard(serverGameIndex);
+            //var onlineBoard = _fullServerStateGeocontrollerImplementation.GetScoreboard(serverGameIndex);
+            var onlineBoard = _levelDescriptions[serverGameIndex];
+            var pair = LoadAndCreateScoreBoardUserPair();
+            var levelDict = pair.Item1;
+            var offlineBoard = levelDict[seeds[serverGameIndex]];
+            onlineBoard.UserResults = offlineBoard.UserResults;
+            var botUser = pair.Item2[BotUserName];
+            var botUserResultPair = botUser.First(x => x.Key.GameId == seeds[serverGameIndex]);
+            onlineBoard.BotResult = botUserResultPair.Value;
+            
+
+            return onlineBoard;
         }
 
         public abstract void AddBotUserDefault();

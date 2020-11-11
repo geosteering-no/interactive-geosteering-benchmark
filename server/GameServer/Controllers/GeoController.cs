@@ -110,49 +110,7 @@ namespace GameServer.Controllers
         }
 
 
-        //[Route("ratingsOl")]
-        //[HttpGet]
-        public ContentResult GetServerRatings([FromQuery] string fgi = null)
-        {
-            var time = DateTime.Now;
-            _logger.LogInformation(time.ToLongTimeString() + ": Sending ratings");
-            var result = _stateServer.GetAllRatings();
-            var filtered = result.Values.Where(x => x.Rating.Count >= 3);
-            filtered = filtered.OrderBy(x => -x.Rating[2]);
-            int i = 0;
 
-            var dynamicText = System.IO.File.ReadAllText("wwwroot/responces/table.html2");
-
-            var line = new StringBuilder();
-
-            foreach (var userRating in filtered)
-            {
-                i++;
-                var userName = userRating.UserName;
-                if (userName.Length > 25)
-                {
-                    userName = userName.Substring(0, 23)+"...";
-                }
-                var rating = userRating.Rating[2];
-                line.Append("<tr><td>");
-                line.Append(i);
-                line.Append("</td><td class=\"tduser\">");
-                line.Append(userName);
-                line.Append("</td><td>");
-                line.Append(Math.Round(rating) + "%");
-                line.Append("</td></tr>\n");
-            }
-
-            var str = line.ToString();
-            dynamicText = dynamicText.Replace("{{TABLE_HERE}}", str);
-            var myResult = new ContentResult()
-            {
-                ContentType = "text/html",
-                Content = dynamicText
-            };
-
-            return myResult;
-        }
 
 
         [Route("ratings")]
@@ -552,17 +510,17 @@ namespace GameServer.Controllers
             return lossyRes;
         }
 
-        //TODO make sure not to get too many requests
-        [Route("screen")]
-        public ManyWells<WellPoint> GetUserState([FromQuery] object obj)
-        {
-            var time = DateTime.Now;
-            _logger.LogInformation(time.ToLongTimeString() + ": someone requested screen.");
-            ManyWells<WellPoint> res;
-            res = _stateServer.GetScreenFull();
-            _logger.LogInformation("Sending screen in {1}ms", (DateTime.Now - time).TotalMilliseconds);
-            return res;
-        }
+        ////TODO make sure not to get too many requests
+        //[Route("screen")]
+        //public ManyWells<WellPoint> GetUserState([FromQuery] object obj)
+        //{
+        //    var time = DateTime.Now;
+        //    _logger.LogInformation(time.ToLongTimeString() + ": someone requested screen.");
+        //    ManyWells<WellPoint> res;
+        //    res = _stateServer.GetScreenFull();
+        //    _logger.LogInformation("Sending screen in {1}ms", (DateTime.Now - time).TotalMilliseconds);
+        //    return res;
+        //}
     }
 
 }
