@@ -824,20 +824,21 @@ function endGameModal(myResult, linkTextSocial, link) {
         html += "<p>Challenge a friend to beat your score by clicking any of the share options, or start a new round!"
         +"</p>";
       }
-      html += "<p>Steer through "+ (3 - myResult.rating.length)+" more rounds to get into our <b>prize draw!</b></p>";
+      html += "<p>Steer through "+ (3 - myResult.rating.length)+" more rounds to get into our <b>score board!</b></p>";
     }
     else{
       var getUrl = window.location;
       var baseUrl = getUrl.protocol + "//" + getUrl.host;
       html += "<p>Your rating from 3 best rounds is <b>"+Math.round(myResult.rating[2])+
         "%</b>.  ";
-      html += "To register in the <b>competition for the main prize</b> and help us with research, please fill the survey. "
+      html += "To register in the <b>competition</b> and help us with research, please fill the survey. "
         +"</p>";      
       html += "<p><a href=\"https://docs.google.com/forms/d/e/1FAIpQLScdge3rYD5UtpjkF_-jNAW_LqjGGdDM3zRG_s3jfZbh52DtAA/viewform?usp=sf_link\" target=\"_blank\">Fill in the survey (new tab)</a>"
         +"</p>";
-      html += "<p> A random lucky form respondent will recieve a <b>research-supporter prize!</b> ";
-      html += "Use the quick links or the copy-URL button below to share your score on social media. "+
-        "Add <b>#geobanana</b> when sharing to enter our <b>bonus social prize</b> draw!</p> ";
+      html += "<p>"
+      // html += "A random lucky form respondent will recieve a <b>research-supporter prize!</b> ";
+      html += "Use the quick links or the copy-URL button below to share your score on social media. ";
+      // "Add <b>#geobanana</b> when sharing to enter our <b>bonus social prize</b> draw!</p> ";
       
       html += "<p><a href=\""+baseUrl+"/geo/ratings\" target=\"_blank\">See current score-board (new tab)</a></p>";
       html += "<p>This competition runs from November 2 to November 10, 2020. Pass more rounds to get even better score! </p>";      
