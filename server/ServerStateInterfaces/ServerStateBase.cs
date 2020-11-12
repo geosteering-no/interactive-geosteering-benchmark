@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Xml.Schema;
 using Newtonsoft.Json;
 using ServerDataStructures;
 using static System.IO.Path;
@@ -399,17 +400,25 @@ namespace ServerStateInterfaces
                     var dir = directory.Substring(directory.LastIndexOf('/') + 1);
                     var pair = LoadUserResultPairFromFile(dir);
                     var key = pair.Key;
-                    //board
-                    var curBoard = boards[key.GameId];
-                    curBoard.UserResults.Add(pair.Value);
+
                     //user
                     if (!userScores.ContainsKey(key.UserName))
                     {
                         userScores.Add(key.UserName, new List<KeyValuePair<UserResultId, UserResultFinal<TWellPoint>>>());
                     }
                     var curList = userScores[key.UserName];
+                    //if (curList.Count >= 10)
+                    //{
+                    //    continue;
+                    //}
+
+
                     curList.Add(pair);
                     totalGames++;
+
+                    //board
+                    var curBoard = boards[key.GameId];
+                    curBoard.UserResults.Add(pair.Value);
                 }
                 catch (Exception e)
                 {
