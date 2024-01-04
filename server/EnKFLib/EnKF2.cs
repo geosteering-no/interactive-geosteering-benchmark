@@ -124,26 +124,6 @@ namespace EnKFLib
             return randNormal;
         }
 
-        ///// <summary>
-        ///// Computes outer square of a vector
-        ///// TODO: move to IRIS.Matrix
-        ///// </summary>
-        ///// <param name="v"></param>
-        ///// <returns></returns>
-        //private Matrix OuterSquare(Vector v)
-        //{
-        //    int size = v.size();
-        //    Matrix res = new DenseMatrix(size, size);
-        //    for (int i = 0; i < size; ++i)
-        //    {
-        //        for (int j = 0; j < size; ++j)
-        //        {
-        //            res[i, j] = v[i] * v[j];
-        //        }
-        //    }
-        //    return res;
-        //}
-
         #endregion
 
 
@@ -397,7 +377,6 @@ namespace EnKFLib
                     dataVectors.Add(prov.DataValue);
                 }
                 _observation = DataUtils.CollectIntoVector(dataVectors);
-                //_dataCovarience = new IRIS.Matrix.Sparse.DiagonalMatrix(vec);
             }
 
 
@@ -450,8 +429,6 @@ namespace EnKFLib
         private Vector solve(Matrix m, Vector b)
         {
             Vector sol = new DenseVector(b.Count);
-            //IRIS.Matrix.Sparse.AbstractIterativeSolver solver = new IRIS.Matrix.Sparse.GMRES(b);
-            //solver.setPreconditioner(pr);
             var solver = new MathNet.Numerics.LinearAlgebra.Double.Solvers.BiCgStab();
             var iterator = new MathNet.Numerics.LinearAlgebra.Solvers.Iterator<double>();
             var prcond = new MathNet.Numerics.LinearAlgebra.Double.Solvers.DiagonalPreconditioner();
@@ -759,47 +736,6 @@ namespace EnKFLib
             //return sum/_newData.Count;
             throw new NotImplementedException();
         }
-
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="dataPoint">Should represent a data identification stamp</param>
-        ///// <param name="_modelledData"></param>
-        //public void Update(double multiStepMult = 1.0)
-        //{
-
-        //    ////setting data
-        //    //IList<Vector> dataVectors = _modelledData;
-
-        //    ////update matrices
-        //    //UpdateCovarienceOfPredictedData(dataVectors);
-        //    //UpdateCrossCovarienceModelToData(dataVectors, ensemble);
-
-
-        //    ////update ensemble
-        //    //for (int i = 0; i < EnsembleCount; ++i)
-        //    //{
-        //    //    Vector tmpV = measuredData.copy();
-        //    //    tmpV.add(GetDataNoise(multiStepMult));
-        //    //    tmpV.add(-1.0, _modelledData[i]);
-        //    //    Matrix tmpMatr = predictedDataCovarience_.copy();
-        //    //    tmpMatr.add(multiStepMult, _dataCovarience);
-        //    //    Vector sol = new DenseVector(DataSize);
-        //    //    //IRIS.Matrix.Sparse.Preconditioner pr = new IRIS.Matrix.Sparse.DiagonalPreconditioner(DataSize);
-        //    //    IRIS.Matrix.Sparse.AbstractIterativeSolver solver = new IRIS.Matrix.Sparse.GMRES(tmpV);
-        //    //    //solver.setPreconditioner(pr);
-        //    //    sol = solver.solve(tmpMatr, tmpV, sol);
-        //    //    Vector toAdd = new DenseVector(ParameterSize);
-        //    //    toAdd = crossCovarienceParametersToData_.mult(sol, toAdd);
-        //    //    ensemble[i].add(toAdd);
-        //    //}
-
-        //    ////newGeneratedData = GenerateDataVectors();
-        //    ////oldGeneratedData = new List<Vector>(dataVectors);
-        //}
-
-
 
 
 

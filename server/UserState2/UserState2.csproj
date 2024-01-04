@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ResistivitySimulator\ResistivitySimulator.csproj" />
     <ProjectReference Include="..\ServerDataStructures2\ServerDataStructures2.csproj" />
     <ProjectReference Include="..\ServerStateInterfaces2\ServerStateInterfaces2.csproj" />
+    <ProjectReference Include="..\TrajectoryOptimization\TrajectoryOptimization.csproj" />
   </ItemGroup>
 
 </Project>

@@ -16,7 +16,6 @@ namespace Vectorizable
         /// Updates the model given new vector of the same size
         /// </summary>
         MathNet.Numerics.LinearAlgebra.Double.Vector Vector {get; set;}
-        //bool FromVector(IRIS.Matrix.Vector vec);
         //IList<double> ToDoubleList();
 
         /// <summary>

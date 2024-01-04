@@ -19,6 +19,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnKFLib", "EnKFLib\EnKFLib.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vectorizable", "Vectorizable\Vectorizable.csproj", "{D8702E04-B32D-4DA5-9DF2-7546C6579B44}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResistivitySimulator", "ResistivitySimulator\ResistivitySimulator.csproj", "{DC283E8D-F0B6-4350-B174-9D9F9FAB3AD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrajectoryOptimization", "TrajectoryOptimization\TrajectoryOptimization.csproj", "{FFFE330D-5977-464E-87C6-826A7E35036C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrajectoryInterfaces", "TrajectoryInterfaces\TrajectoryInterfaces.csproj", "{9D915121-2B8B-44AA-B6D5-2F735BD338DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Variogram", "Variogram\Variogram.csproj", "{9EAF5958-FB9C-4C5A-943E-7C66F37E5802}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomNumberGenerator", "RandomNumberGenerator\RandomNumberGenerator.csproj", "{1C3C0480-52D6-4078-AD69-3C4542E45AB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +67,26 @@ Global
 		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC283E8D-F0B6-4350-B174-9D9F9FAB3AD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC283E8D-F0B6-4350-B174-9D9F9FAB3AD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC283E8D-F0B6-4350-B174-9D9F9FAB3AD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC283E8D-F0B6-4350-B174-9D9F9FAB3AD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFFE330D-5977-464E-87C6-826A7E35036C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFFE330D-5977-464E-87C6-826A7E35036C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFFE330D-5977-464E-87C6-826A7E35036C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFFE330D-5977-464E-87C6-826A7E35036C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D915121-2B8B-44AA-B6D5-2F735BD338DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D915121-2B8B-44AA-B6D5-2F735BD338DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D915121-2B8B-44AA-B6D5-2F735BD338DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D915121-2B8B-44AA-B6D5-2F735BD338DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EAF5958-FB9C-4C5A-943E-7C66F37E5802}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EAF5958-FB9C-4C5A-943E-7C66F37E5802}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EAF5958-FB9C-4C5A-943E-7C66F37E5802}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EAF5958-FB9C-4C5A-943E-7C66F37E5802}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C3C0480-52D6-4078-AD69-3C4542E45AB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C3C0480-52D6-4078-AD69-3C4542E45AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C3C0480-52D6-4078-AD69-3C4542E45AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C3C0480-52D6-4078-AD69-3C4542E45AB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

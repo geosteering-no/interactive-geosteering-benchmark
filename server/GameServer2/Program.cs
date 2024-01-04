@@ -1,7 +1,5 @@
-using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using System.IO;
 
 namespace GameServer
 {
@@ -12,8 +10,9 @@ namespace GameServer
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     var hostUrl = "http://0.0.0.0:80";
@@ -25,6 +24,6 @@ namespace GameServer
                     .UseWebRoot(www)
                     .UseStaticWebAssets();
                 });
-
+        }
     }
 }

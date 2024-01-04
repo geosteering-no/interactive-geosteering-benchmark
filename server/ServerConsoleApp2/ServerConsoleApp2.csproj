@@ -10,6 +10,9 @@
   <ItemGroup>
     <ProjectReference Include="..\ServerDataStructures2\ServerDataStructures2.csproj" />
     <ProjectReference Include="..\ServerObjectives2\ServerObjectives2.csproj" />
+    <ProjectReference Include="..\ServerStateInterfaces2\ServerStateInterfaces2.csproj" />
+    <ProjectReference Include="..\TrajectoryInterfaces\TrajectoryInterfaces.csproj" />
+    <ProjectReference Include="..\UserState2\UserState2.csproj" />
   </ItemGroup>
 
 </Project>
