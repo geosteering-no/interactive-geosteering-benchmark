@@ -3,18 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer", "GameServer\GameServer.csproj", "{25EEBB69-15A1-4734-803F-96208442C21D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerStateInterfaces", "ServerStateInterfaces\ServerStateInterfaces.csproj", "{11867F26-51BA-44C3-9FD4-F071145D9299}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserState", "UserState\UserState.csproj", "{83ED3112-42A0-4600-B145-3910EA6C615F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerConsoleApp", "serverConsoleApp\ServerConsoleApp.csproj", "{DA9B5D6B-42D5-4938-BDD7-4201260E84FF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerObjectives", "ServerObjectives\ServerObjectives.csproj", "{DEBBD503-C2C0-437C-840E-7DF682EFAF91}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerDataStructures", "ServerDataStructures\ServerDataStructures.csproj", "{3543B534-EC3B-4BB5-80E7-CA0208E3A488}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerDataStructures2", "ServerDataStructures2\ServerDataStructures2.csproj", "{99CFBC24-835E-40DC-A7AC-9E3A8782E90C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerObjectives2", "ServerObjectives2\ServerObjectives2.csproj", "{7B4BCA5E-E038-42C1-BF07-BCEDE3B6F61B}"
@@ -33,30 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{25EEBB69-15A1-4734-803F-96208442C21D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25EEBB69-15A1-4734-803F-96208442C21D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{25EEBB69-15A1-4734-803F-96208442C21D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25EEBB69-15A1-4734-803F-96208442C21D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{11867F26-51BA-44C3-9FD4-F071145D9299}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{11867F26-51BA-44C3-9FD4-F071145D9299}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{11867F26-51BA-44C3-9FD4-F071145D9299}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{11867F26-51BA-44C3-9FD4-F071145D9299}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83ED3112-42A0-4600-B145-3910EA6C615F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83ED3112-42A0-4600-B145-3910EA6C615F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83ED3112-42A0-4600-B145-3910EA6C615F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83ED3112-42A0-4600-B145-3910EA6C615F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA9B5D6B-42D5-4938-BDD7-4201260E84FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA9B5D6B-42D5-4938-BDD7-4201260E84FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA9B5D6B-42D5-4938-BDD7-4201260E84FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA9B5D6B-42D5-4938-BDD7-4201260E84FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DEBBD503-C2C0-437C-840E-7DF682EFAF91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DEBBD503-C2C0-437C-840E-7DF682EFAF91}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DEBBD503-C2C0-437C-840E-7DF682EFAF91}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DEBBD503-C2C0-437C-840E-7DF682EFAF91}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3543B534-EC3B-4BB5-80E7-CA0208E3A488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3543B534-EC3B-4BB5-80E7-CA0208E3A488}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3543B534-EC3B-4BB5-80E7-CA0208E3A488}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3543B534-EC3B-4BB5-80E7-CA0208E3A488}.Release|Any CPU.Build.0 = Release|Any CPU
 		{99CFBC24-835E-40DC-A7AC-9E3A8782E90C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{99CFBC24-835E-40DC-A7AC-9E3A8782E90C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99CFBC24-835E-40DC-A7AC-9E3A8782E90C}.Release|Any CPU.ActiveCfg = Release|Any CPU
