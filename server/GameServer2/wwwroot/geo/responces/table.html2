@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html><html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width">
+    <link rel="stylesheet" type="text/css" href="login-style.css">
+    <link rel="stylesheet" type="text/css" href="alternate.css">
+
+    <!-- Tags to make nice preview here -->
+    <meta property="og:site_name" content="GEOSTEERING the NORCE way"/>
+    <meta property="og:title" 
+        content="GEOSTEERING game the NORCE way"/>
+    <meta property="og:description" 
+        content="Live ranking based on three best consecutive games"/>
+    <meta property="og:image" content="./assets/hero.png">
+    <meta property="og:url" content="http://game.geosteering.no/">
+    <!-- <meta property="og:type" content="blog"/> -->
+</head>
+<body>
+    <header>
+        <!-- Title / Welcome text -->
+        <a href=http://game.geosteering.no>
+        <h1 class="">GEOSTEERING game the NORCE way</h1>
+        </a>
+    </header>
+    <main>
+
+        <div class="login container">
+
+            <!-- Challenger Text Score -->
+            <h3 class="" id="challengeText" style="margin-bottom:0.25rem">
+                Live ranking based on three best concecutive games
+            </h3>
+            <center>
+                <table class="alternate" align="right|left|right">
+                    <tr>
+                      <th>
+                        Rank 
+                      </th>
+                      <th class="tduser">
+                        Name
+                      </th>
+                      <th>
+                        Rating
+                      </th>
+                    </tr>
+                    {{TABLE_HERE}}
+                    </table>
+            </center>
+        </div>
+
+        <div>
+            Read Alyaev et al.[2019]: <a href="https://doi.org/10.1016/j.petrol.2019.106381">A decision support system for multi-target geosteering</a>
+        </div>
+
+
+    </main>
+</body>
+
+<footer>
+    <div>
+        <!-- Sponser/Team -->
+        <div id="sponsor-list" class="container">
+            <h2 class="pt-5 mb-0 mt-4">Competion Sponsors</h2>
+            <ul>                       
+                <li>
+                    <picture>
+                        <a href="https://www.forskningsradet.no/en/">
+                            <img src="./assets/nfr.png" alt="The Research Council of Norway" />
+                        </a>
+                    </picture>
+                </li>
+                <li>
+                    <picture>
+                        <a href="https://www.equinor.com/en.html">
+                            <img src="./assets/equinor.svg" alt="Equinor" />
+                        </a>
+                    </picture>
+                </li>
+                <li>
+                    <picture>
+                        <a href="https://varenergi.no/">
+                            <img src="./assets/var-energi-black.svg" alt="Vår Energi" />
+                        </a>
+                    </picture>
+                </li>
+                
+                <li>
+                    <picture>
+                        <a href="https://www.akerbp.com/en/">
+                            <img src="./assets/akerbp.png" alt="Aker BP"/>
+                        </a>
+                    </picture>
+                </li>
+                <li>
+                    <picture>
+                        <a href="https://www.bakerhughes.com/">
+                            <img src="./assets/baker.jpg" alt="Baker Hughes"/>
+                        </a>
+                    </picture>
+                </li>      
+                <li>
+                    <picture>
+                        <a href="https://www.norceresearch.no/en/">
+                            <img src="./assets/norce.png" alt="NORCE"/>
+                        </a>
+                    </picture>
+                </li>
+                <li>
+                    <picture>
+                        <a href="https://openlab.app/">
+                            <img class="img-svg" src="./assets/openlab.svg" alt="Openlab">                            
+                        </a>
+                    </picture>
+                </li>
+            </ul>
+        </div>
+        <div id="aknowledgement-list" class="container">
+            <h2 class="pt-5 mb-0 mt-4">The creative team at NORCE</h2>
+            <ul>
+                <li>
+                    <a href="https://www.norceresearch.no/en/persons/sergey-alyaev">
+                    <picture><img class="default" src="./assets/sergey.jpg" alt="Sergey Alyaev" /></picture>                       
+                    <h4>Sergey Alyaev</h4>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.webstep.no/ansatt/morten-bendiksen/">
+                    <picture><img class="default" src="./assets/morten.jpg" alt="Morten Bendiksen" /></picture>                       
+                    <h4>Morten Bendiksen</h4>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.norceresearch.no/en/persons/andrew-holsaeter">
+                    <picture>
+                    <img class="default" src="./assets/andrew.jpg" alt="Andrew Holsaeter" />
+                    </picture>                       
+                    <h4>Andrew Holsaeter</h4>
+                    </a>
+                </li>
+                <li><picture>
+                    <img class="default" src="./assets/sofija.jpg" alt="Sofija Ivanova" /></picture>                       
+                    <h4>Sofija Ivanova</h4>
+                </li>
+                <li>
+                    <a href="https://www.norceresearch.no/en/persons/robert-ewald">
+                    <picture>
+                    <img class="default" src="./assets/robert.jpg" alt="Robert Ewald" />
+                    </picture>                       
+                    <h4>Robert Ewald</h4>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="contact">
+    With all requests concerning the competition platform, please contact <a href="mailto:Sergey.Alyaev@norceresearch.no">Sergey.Alyaev@norceresearch.no</a>
+</div>
+</footer>
+
+</html>
+
+<script>
+
+    // // Challenger
+    // // Get challenger username and score
+    // var challenger = "Sergey"
+    // var score = 3674;
+
+    // var challengeDiv = $("#challengeText");
+    // var instructionsDiv = $("#instructionsTitle");
+    
+    // var challengeText;
+    // var instructionsText;
+    
+    // if (challenger && score){
+    //     challengeText = challenger + " has challenged you! See if you can beat their score of " + score.toString() + "!";
+    //     instructionsText = "Here's how to beat their score:"
+        
+    // }
+    // else{
+    //     challengeText = "Steer your wells and then challenge your friends to beat your score!";
+    //     instructionsText = "Here's how to score:";
+    // }
+
+    // challengeDiv.text(challengeText);
+    // instructionsDiv.text(instructionsText);
+
+    $('document').ready(function(){
+    
+    $('#newUserBtn').on('click',function(e){
+      e.preventDefault();
+      $('#myModal').modal('toggle');
+  
+    });
+  
+    $('#continuebtn').on('click',function(){
+      $('form').submit();
+    });
+  });
+</script>
