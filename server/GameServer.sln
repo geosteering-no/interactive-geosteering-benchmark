@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer2", "GameServer2\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserState2", "UserState2\UserState2.csproj", "{6C47FFB2-C2E5-4C1A-BDB9-AD0F11676C7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnKFLib", "EnKFLib\EnKFLib.csproj", "{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vectorizable", "Vectorizable\Vectorizable.csproj", "{D8702E04-B32D-4DA5-9DF2-7546C6579B44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{6C47FFB2-C2E5-4C1A-BDB9-AD0F11676C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C47FFB2-C2E5-4C1A-BDB9-AD0F11676C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C47FFB2-C2E5-4C1A-BDB9-AD0F11676C7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
