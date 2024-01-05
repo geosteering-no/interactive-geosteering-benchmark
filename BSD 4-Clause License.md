@@ -1,6 +1,6 @@
 BSD 4-Clause License
 
-Copyright (c) 2024, NORCE Norwegian Research Centre, Sergey Alyaev, Andrew Holsaeter, Erich Suter, Morten Bendiksen, Sofija Ivanova
+Copyright (c) 2024, NORCE Norwegian Research Centre, Sergey Alyaev, Andrew Holsaeter, Erich Suter, Morten Bendiksen, Sofija Ivanova, Kristian Fossum
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
