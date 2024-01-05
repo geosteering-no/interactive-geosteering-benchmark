@@ -13,21 +13,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerConsoleApp2", "Server
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameServer2", "GameServer2\GameServer2.csproj", "{4BEFD9EE-86A1-4829-A442-3202D3399605}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserState2", "UserState2\UserState2.csproj", "{6C47FFB2-C2E5-4C1A-BDB9-AD0F11676C7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserState2", "UserState2\UserState2.csproj", "{6C47FFB2-C2E5-4C1A-BDB9-AD0F11676C7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnKFLib", "EnKFLib\EnKFLib.csproj", "{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vectorizable", "Vectorizable\Vectorizable.csproj", "{D8702E04-B32D-4DA5-9DF2-7546C6579B44}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vectorizable", "Vectorizable\Vectorizable.csproj", "{D8702E04-B32D-4DA5-9DF2-7546C6579B44}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResistivitySimulator", "ResistivitySimulator\ResistivitySimulator.csproj", "{DC283E8D-F0B6-4350-B174-9D9F9FAB3AD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResistivitySimulator", "ResistivitySimulator\ResistivitySimulator.csproj", "{DC283E8D-F0B6-4350-B174-9D9F9FAB3AD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrajectoryOptimization", "TrajectoryOptimization\TrajectoryOptimization.csproj", "{FFFE330D-5977-464E-87C6-826A7E35036C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrajectoryOptimization", "TrajectoryOptimization\TrajectoryOptimization.csproj", "{FFFE330D-5977-464E-87C6-826A7E35036C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrajectoryInterfaces", "TrajectoryInterfaces\TrajectoryInterfaces.csproj", "{9D915121-2B8B-44AA-B6D5-2F735BD338DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrajectoryInterfaces", "TrajectoryInterfaces\TrajectoryInterfaces.csproj", "{9D915121-2B8B-44AA-B6D5-2F735BD338DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Variogram", "Variogram\Variogram.csproj", "{9EAF5958-FB9C-4C5A-943E-7C66F37E5802}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Variogram", "Variogram\Variogram.csproj", "{9EAF5958-FB9C-4C5A-943E-7C66F37E5802}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomNumberGenerator", "RandomNumberGenerator\RandomNumberGenerator.csproj", "{1C3C0480-52D6-4078-AD69-3C4542E45AB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomNumberGenerator", "RandomNumberGenerator\RandomNumberGenerator.csproj", "{1C3C0480-52D6-4078-AD69-3C4542E45AB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EnKFLib2", "EnKFLib2\EnKFLib2.csproj", "{B3B48E9B-88EE-4062-BD88-4D3E4969BB30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,10 +59,6 @@ Global
 		{6C47FFB2-C2E5-4C1A-BDB9-AD0F11676C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C47FFB2-C2E5-4C1A-BDB9-AD0F11676C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C47FFB2-C2E5-4C1A-BDB9-AD0F11676C7F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21D5BFE7-A0FC-46B8-AB97-CF1DB45409B5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8702E04-B32D-4DA5-9DF2-7546C6579B44}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,6 +83,10 @@ Global
 		{1C3C0480-52D6-4078-AD69-3C4542E45AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C3C0480-52D6-4078-AD69-3C4542E45AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C3C0480-52D6-4078-AD69-3C4542E45AB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3B48E9B-88EE-4062-BD88-4D3E4969BB30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3B48E9B-88EE-4062-BD88-4D3E4969BB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3B48E9B-88EE-4062-BD88-4D3E4969BB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3B48E9B-88EE-4062-BD88-4D3E4969BB30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

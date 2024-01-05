@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EnKFLib\EnKFLib.csproj" />
+    <ProjectReference Include="..\EnKFLib2\EnKFLib2.csproj" />
     <ProjectReference Include="..\RandomNumberGenerator\RandomNumberGenerator.csproj" />
     <ProjectReference Include="..\TrajectoryOptimization\TrajectoryOptimization.csproj" />
     <ProjectReference Include="..\Variogram\Variogram.csproj" />
