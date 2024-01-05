@@ -555,3 +555,5 @@ server/GameServer/resultLogOld/
 server/GameServer/userLogOld/
 server/GameServer/userLog/
 server/GameServer/resultLogOldNewer/
+
+.DS_Store
