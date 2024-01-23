@@ -688,7 +688,6 @@ function drawGeomodelToBuffer(scoredata) {
 	} else {
 		console.log("drawing triangles");
 		// draw triangles for debug
-		//TODO check colors again
 		var points = 3;
 		var shapes = 256;
 		//var fixColor = 0.8;

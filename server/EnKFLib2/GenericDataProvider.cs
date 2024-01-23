@@ -15,9 +15,6 @@ namespace EnKFLib
 
         private IList<IData<ParameterType, ValueType>> dataList = new List<IData<ParameterType, ValueType>>();
 
-
-        //TODO implement adding data to reduce the surtainty of older to be consistent
-
         public IList<IData<ParameterType, ValueType>> DataList
         {
             get { return dataList; }
@@ -75,18 +72,7 @@ namespace EnKFLib
         {
             get 
             {
-                //TODO do the check zero index existance
                 var variences = ErrorVarienceList;
-                //Vector vec = new DenseVector(dataList.Count * dataList[0].ErrorVarience.VectorSize);
-                //int i = 0;
-                //foreach (Vector val in ErrorVarienceList)
-                //{
-                //    foreach (VectorEntry entry in val)
-                //    {
-                //        vec[i] = entry.get();
-                //        i++;
-                //    }
-                //}
 
                 var vec = DataUtils.CollectIntoVector(variences);
                 return vec;

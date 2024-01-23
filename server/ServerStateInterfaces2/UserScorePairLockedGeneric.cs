@@ -48,22 +48,6 @@ namespace ServerStateInterfaces
             }
         }
 
-        ///// <summary>
-        ///// locked
-        ///// </summary>
-        //private int GameIndexLocked
-        //{
-        //    get
-        //    {
-        //        //we lock to prevent game advancement 
-        //        // TODO consider removing
-        //        lock (_thisUserLockObject)
-        //        {
-        //            return _gameNumber;
-        //        }
-        //    }
-        //}
-
         private UserResultFinal<TWellPoint> ScoreUnlocked
         {
             get

@@ -94,7 +94,6 @@ function drawRealizationToBuffer(buffer, xlist, real) {
         //console.log("poly:" + polygoni);
         var polytop = real.yLists[polygoni * 2];
         var polybottom = real.yLists[polygoni * 2 + 1];
-        //TODO do shape intersection
         buffer.beginShape();
         for (var vertexi = 0; vertexi < polytop.length; vertexi++) {
             var y = polytop[vertexi];

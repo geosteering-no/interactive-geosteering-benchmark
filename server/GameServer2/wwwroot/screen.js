@@ -409,7 +409,6 @@ function drawAllWells() {
 		// 	// 	prevBest
 		// 	// }
 
-		// 	//TODO fix the link
 
 		// 	drawUserWellToBuffer(wellBuffer, userPoints, revealIndex + 1);
 		// }

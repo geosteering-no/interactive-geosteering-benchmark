@@ -103,11 +103,6 @@ namespace ResistivitySimulator
             }
         }
 
-        public void DrawOnGraphics(Graphics gr, int transperancy)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// 
         /// </summary>

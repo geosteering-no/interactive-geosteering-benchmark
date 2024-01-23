@@ -109,10 +109,6 @@ namespace Variogram
             return (Vector) sample.Column(0);
         }
 
-        public IList<Vector> DrawVectors(int n)
-        {
-            throw new NotImplementedException();
-        }
     }
 
 

@@ -197,79 +197,6 @@ namespace EnKFLib
 
         }
 
-
-        ////TODO consider doing elsewhere
-        ///// <summary>
-        ///// assumes uncorelated noise
-        ///// </summary>
-        ///// <returns></returns>
-        //private Vector GetDataNoise(double multiplier = 1)
-        //{
-        //    Vector res = new DenseVector(DataSize);
-        //    for (int i = 0; i < DataSize; ++i)
-        //    {
-        //        res[i] = NextNormalRandomValue(0, _dataCovarience[i, i] * multiplier);
-        //    }
-        //    return res;
-        //}
-
-        //public Vector GetMeanVector(IList<Vector> dataVectors)
-        //{
-        //    if (dataVectors.Count == 0)
-        //    {
-        //        return null;
-        //    }
-        //    Vector res = new DenseVector(dataVectors[0].size());
-        //    foreach (Vector v in dataVectors)
-        //    {
-        //        res.add(v);
-        //    }
-        //    res.scale(1.0 / dataVectors.Count);
-        //    return res;
-        //}
-
-
-        ////TODO consider changing to matrix notation
-        ///// <summary>
-        ///// Computes covarience between components for the given ensemble of vectors
-        ///// </summary>
-        ///// <param name="vectors"></param>
-        ///// <returns></returns>
-        //private Matrix GetVectorCovarience(IList<Vector> vectors)
-        //{
-        //    int vectorSize = vectors[0].size();
-        //    int vectorsCount = vectors.Count;
-
-        //    //Matrix cov = new DenseMatrix(vectorsCount, vectorsCount);
-        //    //C^e_DD
-        //    predictedDataCovarience_ = new DenseMatrix(vectorSize, vectorSize);
-        //    //List<Vector> dataVectors = new List<Vector>(EnsembleCount);
-        //    //foreach (Vector v in ensemble)
-        //    //{
-        //    //    dataVectors.Add(modelToData(v));
-        //    //}
-        //    Vector meanData = GetMeanVector(vectors);
-        //    DenseMatrix ddBar = new DenseMatrix(vectorSize, vectorsCount);
-        //    for (int i = 0; i < vectorsCount; ++i)
-        //    {
-        //        Vector tmpI = vectors[i].copy();
-        //        tmpI.add(-1.0, meanData);
-        //        for (int j = 0; j < vectorSize; ++j)
-        //        {
-        //            ddBar[j, i] = tmpI[j];
-        //        }
-        //        //for (int j = 0; j < EnsembleCount; ++j)
-        //        //{
-        //        //    Vector tmpJ = dataVectors[j].copy();
-        //        //    tmpJ.add(-1.0,meanData);
-        //        //    predictedDataCovarience_[i, j] = 1.0 / (EnsembleCount - 1) * tmpI.dot(tmpJ);
-        //        //}
-        //    }
-        //    Matrix cov = ddBar.transBmult(1.0 / (vectorsCount - 1), ddBar, predictedDataCovarience_);
-        //    return cov;
-        //}
-
-
         /// <summary>
         /// TODO: utilize GetVectorCovarience function
         /// </summary>
@@ -474,7 +401,6 @@ namespace EnKFLib
 
         public Matrix GetCenteredMatrix(Matrix dataMatrix)
         {
-            //TODO , Matrix storage = null
             //Each ensemble member is a column
             int n = dataMatrix.ColumnCount;
             var I = _mBuild.DiagonalIdentity(n);
@@ -652,7 +578,8 @@ namespace EnKFLib
             //TODO fix Rolf's adaptivity 
             //_observation is the observation
             var misfit = perturbedData - _modelledData;
-            var mismatchMetricBefore = misfit.L2Norm(); // TODO do L2 weighted with Cd (expected data covrience)
+            var mismatchMetricBefore = misfit.L2Norm(); 
+            // TODO do L2 weighted with Cd (expected data covrience)
             TimeSpan timeExplicitDataPerturb = DateTime.Now - start;
             System.Console.WriteLine("Perturbation time " + timeExplicitDataPerturb.TotalMilliseconds);
 
@@ -684,26 +611,6 @@ namespace EnKFLib
 
                 //put back the results
 
-                ////Generate or update matrices            
-                ////TODO fix the rest
-                ////UpdateCovarienceOfPredictedData(_modelledData);
-
-                //predictedDataCovarience_ = (Matrix)predictedDataCovarience_.Add(_dataCovarience);
-                //ComputeWeightMultiplier_dev();
-
-                ////UpdateCrossCovarienceModelToData(_modelledData, _ensembleOfModels);
-
-
-
-                ////_newEnsemble = new List<Vector>(_ensembleOfModels.Count);
-                ////IEnumerator<Vector> dataEnum = _modelledData.GetEnumerator();
-                ////foreach (Vector v in _ensembleOfModels)
-                ////{
-                ////    dataEnum.MoveNext();
-                ////    _newEnsemble.Add(update(v, dataEnum.Current));
-                ////}
-                ////dataEnum.Dispose();
-
                 _newEnsemble = (Matrix) newEnsembleModels;
                 PutBackEnsemble(_newEnsemble);
             }
@@ -723,21 +630,6 @@ namespace EnKFLib
         {
             //PutBackEnsemble(_newEnsemble);
         }
-
-        public double distanceToData()
-        {
-            //double sum = 0;
-            //foreach (Vector generatedData in _newData)
-            //{
-            //    Vector diff = generatedData.copy();
-            //    diff.add(-1.0, _observation);
-            //    sum += diff.norm(AbstractVector.NormType.Two);
-            //}
-            //return sum/_newData.Count;
-            throw new NotImplementedException();
-        }
-
-
 
         /// <summary>
         /// Multi-step update

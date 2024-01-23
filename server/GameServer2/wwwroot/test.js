@@ -46,7 +46,6 @@ var nextAngles = [
   beginAngle - maxAngleChange * 1.7,
   beginAngle - maxAngleChange * 1.8];
 var editNextAngleNo = 0;
-//TODO consider init form data
 
 
 var updateTimerEnabled = false;

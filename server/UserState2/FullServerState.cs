@@ -193,31 +193,6 @@ namespace UserState
             return result;
         }
 
-
-
-
-
-        //public bool UpdateUserLocked(string userId, IContinousState updatePoint = default)
-        //{
-        //    if (!UserExists(userId))
-        //    {
-        //        return false;
-        //    }
-
-        //    var curUser = GetUser(userId);
-        //    //TODO update at a ref point
-        //    //TODO accept only certain points
-
-        //    //var updatePoint = (ContinousState)load ?? curUser.GetNextStateDefault();
-
-
-        //    Console.WriteLine("Using Default next point for the update: " + updatePoint);
-        //    var result = curUser.OfferUpdatePoint(updatePoint, _syntheticTruth.GetData);
-        //    //Console.WriteLine("Update successful: " + result);
-        //    return result;
-        //}
-
-
     }
 }
 

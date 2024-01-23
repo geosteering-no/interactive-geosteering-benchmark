@@ -127,11 +127,8 @@ namespace ServerStateInterfaces
             }
         }
 
-        //public static Get
-
         public static WellPoint GetNextStateDefaultStatic()
         {
-            //TODO consider a better implementation, but this is not needed functionality once client is good
             var point = new WellPoint()
             {
                 X = X_TOP_LEFT,

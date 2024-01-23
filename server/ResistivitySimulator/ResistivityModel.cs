@@ -156,7 +156,6 @@ namespace ResistivitySimulator
             //res[3] = (res[1] + res[2])/2.0;
 
             return res;
-            //throw new NotImplementedException();
         }
     }
 }

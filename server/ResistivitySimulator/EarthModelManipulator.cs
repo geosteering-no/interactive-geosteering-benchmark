@@ -40,22 +40,6 @@ namespace ResistivitySimulator
             return _xPositions[ind + 1] - _xPositions[ind];
         }
 
-        public EarthModelManipulator Clone()
-        {
-            EarthModelManipulator clone = new EarthModelManipulator();
-            clone._xPositions = _xPositions;
-            clone._numRealizations = _numRealizations;
-            foreach (var model in Realizations)
-            {
-                //EarthModelRelization newModel = new EarthModelRelization(clone, model.
-                throw new NotImplementedException();
-                //TODO fix
-                //clone.Realizations.Add(new EarthModelRelization(clone, model));
-            }
-            return clone;
-            //clone.
-        }
-
         public double IntervalStart(int ind)
         {
             return _xPositions[ind];
@@ -98,13 +82,6 @@ namespace ResistivitySimulator
                 return 12;
             }
         }
-
-        public void AddFaultNear(Fault f, double deviation = 1)
-        {
-            throw new NotImplementedException();
-            ////Shift left-right; increase displacement
-        }
-
 
         /// <summary>
         /// 
@@ -519,19 +496,6 @@ namespace ResistivitySimulator
                         // OBS: could do that. Do not know what will happen if I do it the planned way ...
                         // sizeReduction = reduction in thickness in the Sergey's code: but that is normally set to false
 
-                        {
-                            // Skip trend test for now - is it necessary at all when using thicknesses?
-
-                            //double sizeReductionUp = 0.0;
-                            //double sizeReduction2 = 0.0;
-                            //if (sizeReduction)
-                            //{
-                            //    throw new NotImplementedException();
-                            //    sizeReductionUp = (topInterface[i - 1] - bottomInterface[i - 1]) / numberOfPoints;
-                            //    sizeReduction2 = (topInterface[i - 1] - bottomInterface[i - 1]) / numberOfPoints;
-                            //}
-                        }
-
                         IList<double> currThickness = thicknesses[layerNum];
                         currThickness.Add(currThickness[i - 1] + /* trend */ +
                                               rNumGen.NextNormalRandomValueStatic(
@@ -560,130 +524,6 @@ namespace ResistivitySimulator
             return new EarthModelRealizationMultipleLayers(this, topInterface, thicknesses,
                 resistivities, OWCRealized, resistivityBelowOWC, targetLayers, considerSpecificTargetGeobody);
         }
-
-        //public IEarthModelRealization GenerateRealizationMultipleLayer(int numberOfPoints,
-        //    double topReservoir, double topDeviation, List<double> thicknessLayer, double deviationThickness,
-        //    List<double> resistivities, bool sizeReduction = false)
-        //{
-        //    if (thicknessLayer.Count != resistivities.Count)
-        //    {
-        //        throw new ArgumentOutOfRangeException();
-        //    }
-
-        //    int numLayers = thicknessLayer.Count;
-        //    List<List<double>> stratigraphicInterfaces = new List<List<double>>(numLayers + 1); // Add one for the reservoir bottom
-        //    //for (int layerNum = 0; layerNum < numLayers + 1; layerNum++)
-        //    //{
-        //    //    stratigraphicInterfaces.Add(new List<double>(numberOfPoints));
-        //    //}
-
-        //    for (int i = 0; i < numberOfPoints; i++)
-        //    {
-        //        if (i == 0)
-        //        {
-        //            // Set up the first point for all stratigraphic interfaces
-        //            for (int interfaceNum = 0; interfaceNum < numLayers + 1; interfaceNum++)
-        //            {
-        //                List<double> currInterface = new List<double>(numberOfPoints);
-        //                if (interfaceNum == 0)
-        //                {
-        //                    currInterface.Add(MyFunctions.Default.RandomNumberGenerator.RandomNumberGenerator.NextNormalRandomValueStatic(
-        //                        topReservoir, topDeviation));
-        //                }
-        //                else
-        //                {
-        //                    double topInterfaceAbove = stratigraphicInterfaces[interfaceNum - 1][i];
-        //                    currInterface.Add(MyFunctions.Default.RandomNumberGenerator.RandomNumberGenerator.NextNormalRandomValueStatic(
-        //                        topInterfaceAbove - thicknessLayer[interfaceNum - 1], deviationThickness));
-        //                }
-        //                stratigraphicInterfaces.Add(currInterface);
-        //            }
-        //        }
-        //        else if (i == 1)
-        //        {
-        //            // Set up second point for all stratigraphic interfaces
-        //            for (int interfaceNum = 0; interfaceNum < numLayers + 1; interfaceNum++)
-        //            {
-        //                List<double> currInterface = stratigraphicInterfaces[interfaceNum];
-        //                if (interfaceNum == 0)
-        //                {
-        //                    currInterface.Add(currInterface[i - 1] +
-        //                               MyFunctions.Default.RandomNumberGenerator.RandomNumberGenerator.NextNormalRandomValueStatic(
-        //                                   0.0, 0.1 * topDeviation));
-        //                }
-        //                else
-        //                {
-        //                    double pointInterfaceAbove = stratigraphicInterfaces[interfaceNum - 1][i];
-        //                    double pointAboveThicknessAdjusted = pointInterfaceAbove - thicknessLayer[interfaceNum - 1];
-        //                    // No uncertainty in thickness: just add the point
-        //                    currInterface.Add(pointAboveThicknessAdjusted);
-        //                    // TODO: check if the part below should be implemented
-        //                    // If uncertainty in thickness: 1) we risk overprinting, 2) need to check how it is handled vs. horizontal trends
-        //                    //currInterface.Add(currInterface[pointNum - 1] +
-        //                    //           MyFunctions.Default.RandomNumberGenerator.RandomNumberGenerator.NextNormalRandomValueStatic(
-        //                    //               0.0, 0.1 * deviation));
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            // TODO: check this: how the trend should be calculated for the layers below the top
-
-        //            // Trend: reduce angle of steeply dipping surfaces
-        //            // Calculate trend from the top layer (is that correct?)
-        //            List<double> topInterface = stratigraphicInterfaces[0];
-        //            List<double> bottomInterface = stratigraphicInterfaces[1];
-        //            var trend = ((topInterface[i - 1] - topInterface[i - 2]) + (bottomInterface[i - 1] - bottomInterface[i - 2])) / 2;
-        //            var trendTest =
-        //                Math.Abs(MyFunctions.Default.RandomNumberGenerator.RandomNumberGenerator.NextNormalRandomValueStatic
-        //                    (0.0, 0.1 * topDeviation));
-        //            if (Math.Abs(trend) > trendTest)
-        //            {
-        //                trend = Math.Sign(trend) * trendTest;
-        //            }
-
-        //            // Adds one point for all interfaces: not optimal (should do one by one interface)
-        //            for (int interfaceNum = 1; interfaceNum < numLayers + 1; interfaceNum++)
-        //            {
-
-        //                // The code for only two layers calculates a trend for each of the two reservoir layers
-        //                // Here we simple let thickness be constant: no uncertainty except in top layer
-        //                // Moreover, all layers are handled equally, does not differ between reservoir and non-reservoir
-        //                // OBS: could do that. Do not know what will happen if I do it the planned way ...
-        //                // sizeReduction = reduction in thickness in the Sergey's code: but that is normally set to false
-        //                // trendTest: only a modification of the sign?
-        //                // TODO: do this trend test and update successively for each layer in downwards direction. See what happens. Easy to implement.
-
-
-        //                // TODO as suggested on the previous line
-        //                double sizeReductionUp = 0.0;
-        //                double sizeReduction2 = 0.0;
-        //                if (sizeReduction)
-        //                {
-        //                    throw new NotImplementedException();
-        //                    sizeReductionUp = (topInterface[i - 1] - bottomInterface[i - 1]) / numberOfPoints;
-        //                    sizeReduction2 = (topInterface[i - 1] - bottomInterface[i - 1]) / numberOfPoints;
-        //                }
-
-        //                // TODO: the last one of the interfaces is not updated
-        //                List<double> interfaceBoundary = stratigraphicInterfaces[interfaceNum - 1];
-        //                interfaceBoundary.Add(interfaceBoundary[i - 1] + trend +
-        //                           MyFunctions.Default.RandomNumberGenerator.RandomNumberGenerator.NextNormalRandomValueStatic(
-        //                               0.0, 0.1 * topDeviation));
-        //            }
-        //        }
-        //    }
-
-        //    int aa = 0;
-        //    //throw new NotImplementedException();
-        //    return null;
-
-        //    // TODO: check for negative thickness. If negative, just set to zero.  This is what 710 does.
-
-        //    // TODO: should take thicknesses as input. And model with THICKNESSES above here.
-        //    // The stratigraphic interfaces are only for visualization.
-        //    //return new EarthModelRealizationMultipleLayers(this, reservoirTop, thicknessLayers, resistivityPerLayer);
-        //}
 
         public void GenerateRealizationsInclined(int numberOfPoints, double minX, double maxX,
             double upper, double lower, double deviation)

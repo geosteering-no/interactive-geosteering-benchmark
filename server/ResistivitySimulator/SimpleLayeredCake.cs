@@ -31,11 +31,6 @@ namespace ResistivitySimulator
             }
         }
 
-        public void DrawOnGraphics(Graphics gr, int transperancy)
-        {
-            throw new NotImplementedException();
-        }
-
         public double GetResistivity(Point2DDouble position)
         {
             return GetResistivity(position.X, position.Y);

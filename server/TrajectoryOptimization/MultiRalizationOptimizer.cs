@@ -108,7 +108,6 @@ namespace TrajectoryOptimization
             ContinousState bestNext = null;
             foreach (var nextState in ProposedNext)
             {
-                //TODO fix
                 //nothing
                 var meanValueForChoice = 0.0;
                 //immidiate reward

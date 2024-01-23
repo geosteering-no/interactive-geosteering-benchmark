@@ -116,9 +116,7 @@ namespace TrajectoryOptimization
                 X = x,
                 Y = y,
                 //Alpha = angle1
-            };
-            //TODO remove the exception here was a bug before
-            //throw new NotImplementedException("The angle on the previous is not computed");
+            };          
             return contState;
         }
 
@@ -353,7 +351,8 @@ namespace TrajectoryOptimization
 
         /// <summary>
         /// Add a an objective function with weight
-        /// An average value for a trajectory segment is used //TODO consider changing behaviour
+        /// An average value for a trajectory segment is used 
+        /// //TODO consider changing behaviour
         /// </summary>
         /// <param name="func"></param>
         /// <param name="weight"></param>
@@ -573,8 +572,6 @@ namespace TrajectoryOptimization
         }
 
 
-
-        //TODO reuse existing code?
         /// <summary>
         /// 
         /// </summary>

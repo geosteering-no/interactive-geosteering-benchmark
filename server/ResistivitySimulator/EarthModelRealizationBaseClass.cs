@@ -72,17 +72,6 @@ namespace ResistivitySimulator
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="gr"></param>
-        /// <param name="transparency"></param>
-        public void DrawOnGraphics(Graphics gr, int transparency)
-        {
-            var bounds = gr.ClipBounds;
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="x"></param>
         /// <param name="z"></param>
         /// <returns></returns>

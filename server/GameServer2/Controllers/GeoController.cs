@@ -20,7 +20,6 @@ namespace GameServer.Controllers
     [ApiController]
     [Route("[controller]")]
     public class GeoController : ControllerBase
-        //TODO consider changing to Geocontroller<TWellPoint>
     {
         private const string ADMIN_SECRET_USER_NAME =
             "REmarIdYWorYpiETerdReMnAriDaYEpOsViABLEbACRoNCeNERbAlTIveIDECoMErTiOcHonypoLosenTioClATeRIGENEGMAty";
@@ -510,17 +509,6 @@ namespace GameServer.Controllers
             return lossyRes;
         }
 
-        ////TODO make sure not to get too many requests
-        //[Route("screen")]
-        //public ManyWells<WellPoint> GetUserState([FromQuery] object obj)
-        //{
-        //    var time = DateTime.Now;
-        //    _logger.LogInformation(time.ToLongTimeString() + ": someone requested screen.");
-        //    ManyWells<WellPoint> res;
-        //    res = _stateServer.GetScreenFull();
-        //    _logger.LogInformation("Sending screen in {1}ms", (DateTime.Now - time).TotalMilliseconds);
-        //    return res;
-        //}
     }
 
 }
