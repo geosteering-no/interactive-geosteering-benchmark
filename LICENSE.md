@@ -1,6 +1,6 @@
 University of Illinois/NCSA Open Source License
 
-Copyright (c) [year] [fullname]. All rights reserved.
+Copyright (c) 2023 Sergey Alyaev, Andrew Holsaeter, Morten Bendiksen, Sofija Ivanova, Erich Suter, Kristian Fossum, Robert Ewald, NORCE Norwegian Research Centre AS. All rights reserved.
 
 Developed by: [project]
               [fullname]
