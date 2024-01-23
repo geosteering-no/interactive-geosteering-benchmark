@@ -15,7 +15,7 @@ modification, are permitted provided that the following conditions are met:
 
 3. All advertising materials mentioning features or use of this software must
    display the following acknowledgement:
-     This product includes software developed by NORCE Norwegian Research Centre AS within projects "Geosteering for Improved Oil Recovery" (Research Council of Norway grant #268122, supported by Aker BP, Equinor, Vår Energi and Baker Hughes) and "DISTINGUISH: Decision support using neural networks to predict geological uncertainties when geosteering" (Research Council of Norway grant #344236, supported by Aker BP and Equinor).
+     This product includes software developed by NORCE Norwegian Research Centre AS within projects "Geosteering for Improved Oil Recovery" (Research Council of Norway grant #268122)
 
 4. Neither the name of the copyright holder nor the names of its
    contributors may be used to endorse or promote products derived from
