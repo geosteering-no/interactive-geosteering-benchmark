@@ -72,9 +72,10 @@
                     Read and cite our papers about the competition platform and the AI (it's free):
                 </h4>
                 <ul class="instructions">
-                    <li>The AI: <a href="https://doi.org/10.1016/j.petrol.2019.106381">Alyaev et al.[2019]: A decision support system for multi-target geosteering</a></li>
-                    <li>The platform and the previous competition: <a href="https://arxiv.org/abs/2011.00733">Alyaev et al.[2020] (preprint): An interactive sequential-decision benchmark from geosteering</a></li>
-                    <li>Summary of our paper in SPE JPT: <a href="https://pubs.spe.org/en/jpt/jpt-article-detail/?art=4530">New Geosteering Work Flow Integrates Real-Time Measurements With Geomodels</a></li>
+                    <li>The decision-support-system AI: <a href="https://doi.org/10.1016/j.petrol.2019.106381">Alyaev et al. [2019]: A decision support system for multi-target geosteering</a></li>
+                    <li>The benchmark platform and its application: <a href="https://doi.org/10.1016/j.acags.2021.100072">Alyaev et al. [2021]: An interactive sequential-decision benchmark from geosteering</a></li>
+                    <li>Report of user-system interaction: <a href="https://doi.org/10.2118/204133-MS">Alyaev et al. [2021spe]: Systematic Decisions Under Uncertainty: An Experiment Towards Better Geosteering Operations</a></li>
+                    <li>Summary of our initial DSS concept in SPE JPT: <a href="https://doi.org/10.2118/0918-0102-JPT">Wilson [2018]: New Geosteering Work Flow Integrates Real-Time Measurements With Geomodels</a></li>
                 </ul>
             </div>
         </div>
@@ -121,7 +122,7 @@
                         </p>
                         <p>
                             <strong>Data usage: </strong>
-                            NORCE reserves the right to use this 
+                            The server owner reserves the right to use this 
                             anonymised game data for further research and marketing purposes.
                         </p>
                         <p>
@@ -144,98 +145,33 @@
 
 <footer>
     <div>
-        <!-- Sponser/Team -->
+        <!-- Sponsor/Team -->
         <div id="sponsor-list" class="container">
-            <h2 class="pt-5 mb-0 mt-4">Competion Sponsors</h2>
-            <ul>                       
-                <li>
-                    <picture>
-                        <a href="https://www.forskningsradet.no/en/">
-                            <img src="./assets/nfr.png" alt="The Research Council of Norway" />
-                        </a>
-                    </picture>
-                </li>
-                <li>
-                    <picture>
-                        <a href="https://www.equinor.com/en.html">
-                            <img src="./assets/equinor.svg" alt="Equinor" />
-                        </a>
-                    </picture>
-                </li>
-                <li>
-                    <picture>
-                        <a href="https://varenergi.no/">
-                            <img src="./assets/var-energi-black.svg" alt="Vår Energi" />
-                        </a>
-                    </picture>
-                </li>
-                
-                <li>
-                    <picture>
-                        <a href="https://www.akerbp.com/en/">
-                            <img src="./assets/akerbp.png" alt="Aker BP"/>
-                        </a>
-                    </picture>
-                </li>
-                <li>
-                    <picture>
-                        <a href="https://www.bakerhughes.com/">
-                            <img src="./assets/baker.jpg" alt="Baker Hughes"/>
-                        </a>
-                    </picture>
-                </li>      
-                <li>
-                    <picture>
-                        <a href="https://www.norceresearch.no/en/">
-                            <img src="./assets/norce.png" alt="NORCE"/>
-                        </a>
-                    </picture>
-                </li>
-                <li>
-                    <picture>
-                        <a href="https://openlab.app/">
-                            <img class="img-svg" src="./assets/openlab.svg" alt="Openlab">                            
-                        </a>
-                    </picture>
-                </li>
-            </ul>
+            <h2 class="pt-5 mb-0 mt-4">Acknowledgements</h2>
+            <p>
+                This <b>Interactive Sequential-decision Geosteering Benchmark</b> software
+                was supported by the research project <b>Geosteering for IOR</b>
+                (NFR-Petromaks2 project no. 268122) hosted by NORCE and funded by the Research Council of Norway, Aker BP, Equinor, Vår Energi, and Baker Hughes Norge.
+                The open-source release of the code is supported by the research project <b>DISTINGUISH</b>
+                (NFR-Petromaks2 project no. 344236) hosted by NORCE and funded by the Research Council of Norway, Aker BP, and Equinor.
+            </p>
         </div>
         <div id="aknowledgement-list" class="container">
-            <h2 class="pt-5 mb-0 mt-4">The creative team at NORCE</h2>
-            <ul>
-                <li>
+            <h2 class="pt-5 mb-0 mt-4">The creative development team at NORCE</h2>
+                <p>
                     <a href="https://www.norceresearch.no/en/persons/sergey-alyaev">
-                    <picture><img class="default" src="./assets/sergey.jpg" alt="Sergey Alyaev" /></picture>                       
-                    <h4>Sergey Alyaev</h4>
-                    </a>
-                </li>
-                <li>
-                    <a href="https://www.webstep.no/ansatt/morten-bendiksen/">
-                    <picture><img class="default" src="./assets/morten.jpg" alt="Morten Bendiksen" /></picture>                       
-                    <h4>Morten Bendiksen</h4>
-                    </a>
-                </li>
-                <li>
+                    Sergey Alyaev</a> (lead developer and principal investigator),
                     <a href="https://www.norceresearch.no/en/persons/andrew-holsaeter">
-                    <picture>
-                    <img class="default" src="./assets/andrew.jpg" alt="Andrew Holsaeter" />
-                    </picture>                       
-                    <h4>Andrew Holsaeter</h4>
-                    </a>
-                </li>
-                <li><picture>
-                    <img class="default" src="./assets/sofija.jpg" alt="Sofija Ivanova" /></picture>                       
-                    <h4>Sofija Ivanova</h4>
-                </li>
-                <li>
+                    Andrew Holsaeter</a> (front-end and GUI refinement),
+                    <a href="https://www.webstep.no/ansatt/morten-bendiksen/">
+                    Morten Bendiksen</a> (server and client-server interaction development),
+                    Sofija Ivanova (user-experience design),
+                    Erich Suter (decision-support-system contributions),
+                    <a href="https://www.norceresearch.no/en/persons/kristian-fossum">
+                    Kristian Fossum</a> (decision-support-system contributions), 
                     <a href="https://www.norceresearch.no/en/persons/robert-ewald">
-                    <picture>
-                    <img class="default" src="./assets/robert.jpg" alt="Robert Ewald" />
-                    </picture>                       
-                    <h4>Robert Ewald</h4>
-                    </a>
-                </li>
-            </ul>
+                        Robert Ewald</a> (help with initial deployment).
+            </p>
         </div>
     </div>
     <div class="contact">

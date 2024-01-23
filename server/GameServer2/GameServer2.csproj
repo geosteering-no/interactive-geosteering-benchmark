@@ -19,4 +19,40 @@
     <ProjectReference Include="..\UserState2\UserState2.csproj" />
   </ItemGroup>
 
+    <Target Name="CopyWWW" AfterTargets="PostBuildEvent">
+	    <ItemGroup>
+		    <!-- Because this ItemGroup is inside the target, this will enumerate
+                    all files just before calling Copy. If the ItemGroup were outside
+                    the target , it would enumerate the files during evaluation, before
+                    the build starts, which may miss files created during the build. -->
+		    <MyWebSourceFiles Include="$(SolutionDir)GameServer2/wwwroot/*.*" />
+	    </ItemGroup>
+
+	    <Copy SourceFiles="@(MyWebSourceFiles)" DestinationFolder="$(ProjectDir)wwwroot/geo" />
+    </Target>
+
+	<Target Name="CopyAssets" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<!-- Because this ItemGroup is inside the target, this will enumerate
+                all files just before calling Copy. If the ItemGroup were outside
+                the target , it would enumerate the files during evaluation, before
+                the build starts, which may miss files created during the build. -->
+			<MyWebAssetFiles Include="$(SolutionDir)GameServer2/wwwroot/assets/*.*" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(MyWebAssetFiles)" DestinationFolder="$(ProjectDir)wwwroot/geo/assets" />
+	</Target>
+
+	<Target Name="CopyHelp" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<!-- Because this ItemGroup is inside the target, this will enumerate
+                all files just before calling Copy. If the ItemGroup were outside
+                the target , it would enumerate the files during evaluation, before
+                the build starts, which may miss files created during the build. -->
+			<MyWebHelpFiles Include="$(SolutionDir)GameServer2/wwwroot/assets/help/*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(MyWebHelpFiles)" DestinationFolder="$(ProjectDir)wwwroot/geo/assets/help" />
+	</Target>
+
+
 </Project>
