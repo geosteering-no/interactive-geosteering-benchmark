@@ -15,7 +15,7 @@ modification, are permitted provided that the following conditions are met:
 
 3. All advertising materials mentioning features or use of this software must
    display the following acknowledgement:
-     This product includes software developed by Geosteering for IOR (RCN #268122), DISTINGUISH (RCN 344236).
+     This product includes software developed by G4IOR (RCN #268122), DISTINGUISH (RCN #344236).
 
 4. Neither the name of the copyright holder nor the names of its
    contributors may be used to endorse or promote products derived from
