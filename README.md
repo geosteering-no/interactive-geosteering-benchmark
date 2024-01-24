@@ -1,5 +1,5 @@
 # Interactive Sequential-decision Geosteering Benchmark
-Also known as **NORCE Geosteering Game 2019** and **Project Geobanana**
+Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
 
 ## Contents
 Server/Client for Geosteering Competition Platform
