@@ -104,9 +104,9 @@ keywords = {Geosteering, Sequential decision, Dynamic programming, Statistical i
 For useful advice to NORCE colleagues: **Kristian Fossum**, **Robert Ewald**, and **Rolf Johan Lorentzen**.
 
 ### Acknowledgements 
-                The development of this software
-                was supported by the research project <b>Geosteering for IOR</b>
-                (NFR-Petromaks2 project no. 268122) hosted by NORCE and funded by the Research Council of Norway, Aker BP, Equinor, Vår Energi, and Baker Hughes Norge.
-                The open-source release of the code is supported by the research project <b>DISTINGUISH</b>
-                (NFR-Petromaks2 project no. 344236) hosted by NORCE and funded by the Research Council of Norway, Aker BP, and Equinor.
+The development of this software
+was supported by the research project <b>Geosteering for IOR</b>
+(NFR-Petromaks2 project no. 268122) hosted by NORCE and funded by the Research Council of Norway, Aker BP, Equinor, Vår Energi, and Baker Hughes Norge.
+The open-source release of the code is supported by the research project <b>DISTINGUISH</b>
+(NFR-Petromaks2 project no. 344236) hosted by NORCE and funded by the Research Council of Norway, Aker BP, and Equinor.
 
