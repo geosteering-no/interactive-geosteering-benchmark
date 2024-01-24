@@ -1,0 +1,1 @@
+dotnet build GameServer2/GameServer2.csproj /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary 
