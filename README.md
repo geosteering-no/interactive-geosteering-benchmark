@@ -2,24 +2,35 @@
 Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
 
 ## Contents
-Server/Client for Geosteering Competition Platform
+ - Server,
+ - Client, and
+ - Ensemble-Based Decision Support System
+for **Interactive Sequential-decision Geosteering Benchmark Platform**
 
 ### Server
-Dotnet Core 3.0 Kestrel Server
+1. Dotnet Kestrel Server
+2.	Cookie-based identification
+3.	JSON-based get/post requests (including send angle and timestamp, get points 4*80*100)
+4.	Get-again request
+5.	The same data twice does not change anything
+6.	Logging all user actions on the backend 
 
-TODO: review the server instructions
+### Client
+1. Written in javascript using the [p5](https://p5js.org/) client-side library
+2. Visualization of uncertainty
+3. Visualization of the tool's depth of detection
+4. Ability to evaluate the objective function within the predicted uncertainty
 
-#### Requires:
-* Asp.NetCore 3.0
-  * Which requires Visual Studio 2019 or MSBuild 16(??)
+### Ensemble-Based Decision Support System
+1. Custom multi-layer toy geomodel and a simplified electromagnetic sensing tool 
+2. Ensemble Kalman Filter implementation (in C#) to reduce uncertainty
+3. Novel automated decision-support-system (DSS) bot with discrete dynamic programming for global and robust optimization under uncertainty
+The default DSS is integrated into the backend, but third-party bots are supported via REST API.
 
-#### Server Overview
-1.	Cookie-based identification
-2.	JSON-based get/post requests (send angle, and timestamp*, get points 4*80*100)
-3.	Get again request
-4.	Same data twice does not change anything
-5.	AJAX request solves everything
-6.	Logging all on backend 
+## Instalation
+
+### Requirements
+The current solution and project files are configure for **.NET Core Runtime 8.0**
 
 #### Publishing server
 This may require building in release first?
@@ -29,9 +40,7 @@ This may require building in release first?
    * Run command:  `dotnet publish -c Release -r win10-x64 --self-contained true`
 3. The self-contained folder should now be located at GameServer/bin/Release/netcoreapp3.0/\<target-os>/
 
-### Client
-Written in javascript using the [p5](https://p5js.org/) client-side library
-
+4. 
 ## Citing and details: 
 
 The repository contains the results of two software projects:
