@@ -8,6 +8,7 @@ Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
 for **Interactive Sequential-decision Geosteering Benchmark Platform**
 
 ### Server
+write direcgtory
 1. Dotnet Kestrel Server
 2.	Cookie-based identification
 3.	JSON-based get/post requests (including send angle and timestamp, get points 4*80*100)
@@ -16,23 +17,26 @@ for **Interactive Sequential-decision Geosteering Benchmark Platform**
 6.	Logging all user actions on the backend 
 
 ### Client
+write direcgtory
 1. Written in javascript using the [p5](https://p5js.org/) client-side library
 2. Visualization of uncertainty
 3. Visualization of the tool's depth of detection
 4. Ability to evaluate the objective function within the predicted uncertainty
 
 ### Ensemble-Based Decision Support System
+write directory for each item
 1. Custom multi-layer toy geomodel and a simplified electromagnetic sensing tool 
 2. Ensemble Kalman Filter implementation (in C#) to reduce uncertainty
 3. Novel automated decision-support-system (DSS) bot with discrete dynamic programming for global and robust optimization under uncertainty
 The default DSS is integrated into the backend, but third-party bots are supported via REST API.
 
-## Instalation
+## Installation and execution
 
 ### Requirements
-The current solution and project files are configure for **.NET Core Runtime 8.0**
+The current solution and project files are configured for **.NET Core Runtime 8.0**
+Download instructions
 
-#### Publishing server
+### Building (Publishing) Server
 This may require building in release first?
 1. Navigate to folder which contains GameServer.csproj
 2. Run the command `dotnet publish -c Release -r <target-os> --self-contained true`
@@ -40,7 +44,17 @@ This may require building in release first?
    * Run command:  `dotnet publish -c Release -r win10-x64 --self-contained true`
 3. The self-contained folder should now be located at GameServer/bin/Release/netcoreapp3.0/\<target-os>/
 
-4. 
+### Running server
+
+#### Windows
+#### Mac-OS (arm-64)
+#### Linux
+
+### Debugging and developing
+
+MS VS
+
+
 ## Citing and details: 
 
 The repository contains the results of two software projects:
