@@ -157,10 +157,10 @@ keywords = {Geosteering, Sequential decision, Dynamic programming, Statistical i
 
 ## Contributors
 
-- **Sergey Alyaev** (aka [alin256](https://github.com/alin256): lead developer and principal investigator)
+- **Sergey Alyaev** (aka [alin256](https://github.com/alin256): lead developer of all components and principal investigator)
+- **Morten Bendiksen** (server, GUI, and client-server interaction development)
 - **Andrew Holsaeter** (front-end and GUI refinement)
 - **Erich Suter** (decision-support-system contributions)
-- **Morten Bendiksen** (server and client-server interaction development)
 - **Sofija Ivanova** (user-experience design)
 ### Special thanks
 For useful advice to NORCE colleagues: **Kristian Fossum**, **Robert Ewald**, and **Rolf Johan Lorentzen**.
@@ -173,5 +173,5 @@ was supported by the research project <b>Geosteering for IOR</b>
 The open-source release of the code is supported by the research project <b>DISTINGUISH</b>
 (NFR-Petromaks2 project no. 344236) hosted by NORCE and funded by the Research Council of Norway, Aker BP, and Equinor.
 
-For details visit the project website **[geosteering.no](https://geosteering.no/)**.
+For details, visit the project website **[geosteering.no](https://geosteering.no/)**.
 
