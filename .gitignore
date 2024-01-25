@@ -559,3 +559,4 @@ server/GameServer/resultLogOldNewer/
 .DS_Store
 /server/GameServer2/resultLog
 server/GameServer2/userLog
+server/GameServer2/wwwroot/geo/
