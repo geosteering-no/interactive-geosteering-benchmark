@@ -2,9 +2,9 @@
 Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
 
 ## Contents
- 1. Server
- 2. Client
- 3. Ensemble-Based Decision Support System
+ 1. **Server**
+ 2. **Client**
+ 3. **Ensemble-Based Decision Support System**
 
 for **Interactive Sequential-decision Geosteering Benchmark Platform**
 
@@ -17,7 +17,9 @@ Server description and features:
 3.	JSON-based get/post requests (including send angle and timestamp, get points 4*80*100)
 4.	Get-again request
 5.	The same data twice does not change anything
-6.	Logging all user actions on the backend 
+6.	Logging all user actions on the backend
+
+The folder [/server/ServerObjectives2](/server/ServerObjectives2) contains the implementation of objective functions used for the benchmark; see [Alyaev et al. (2021)](https://doi.org/10.1016/j.acags.2021.100072)cited below.
 
 ### 2. Client
 The client web files are served by the Server and are located in the folder [/server/GameServer2/wwwroot](/server/GameServer2/wwwroot).
@@ -29,11 +31,14 @@ Client description and features:
 4. Ability to evaluate the objective function within the predicted uncertainty
 
 ### 3. Ensemble-Based Decision Support System
-write directory for each item
-1. Custom multi-layer toy geomodel and a simplified electromagnetic sensing tool 
-2. Ensemble Kalman Filter implementation (in C#) to reduce uncertainty
-3. Novel automated decision-support-system (DSS) bot with discrete dynamic programming for global and robust optimization under uncertainty
+Ensemble-Based Decision Support System components (and corresponding project folders):
+1. Custom multi-layer toy geomodel and a simplified electromagnetic sensing tool ([/server/ResistivitySimulator](/server/ResistivitySimulator))
+2. Ensemble Kalman Filter implementation (in C#) to reduce uncertainty ([/server/EnKFLib2](/server/EnKFLib2))
+3. Novel automated decision-support-system (DSS) bot with discrete dynamic programming for global and robust optimization under uncertainty ([/server/TrajectoryOptimization](/server/TrajectoryOptimization))
+
 The default DSS is integrated into the backend, but third-party bots are supported via REST API.
+
+Other directories contain utility libraries. 
 
 ## Installation and execution
 
@@ -89,7 +94,6 @@ pages = {100072},
 year = {2021},
 issn = {2590-1974},
 doi = {https://doi.org/10.1016/j.acags.2021.100072},
-url = {https://www.sciencedirect.com/science/article/pii/S2590197421000203},
 author = {Sergey Alyaev and Sofija Ivanova and Andrew Holsaeter and Reidar Brumer Bratvold and Morten Bendiksen},
 keywords = {Interactive benchmark, Sequential geosteering decisions, Uncertainty quantification, Expert decisions, Experimental study, Decision support system}
 }
@@ -115,7 +119,6 @@ pages = {106381},
 year = {2019},
 issn = {0920-4105},
 doi = {https://doi.org/10.1016/j.petrol.2019.106381},
-url = {https://www.sciencedirect.com/science/article/pii/S0920410519308022},
 author = {Sergey Alyaev and Erich Suter and Reider Brumer Bratvold and Aojie Hong and Xiaodong Luo and Kristian Fossum},
 keywords = {Geosteering, Sequential decision, Dynamic programming, Statistical inversion, Well placement decision, Multi-objective optimization},
 }
