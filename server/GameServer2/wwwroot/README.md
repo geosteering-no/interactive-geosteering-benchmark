@@ -1,6 +1,6 @@
 # GUI for GEOSTEERING benchmark the NORCE way
 
-## Other issues
+## Issues with custom decision robots
 
 To request help with the development of bots, please create an issue.
 
