@@ -5,10 +5,13 @@ Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
  - Server,
  - Client, and
  - Ensemble-Based Decision Support System
+
 for **Interactive Sequential-decision Geosteering Benchmark Platform**
 
 ### Server
-write direcgtory
+The server project is located in folder [/server/GameServer2](/server/GameServer2).
+
+Server description and features:
 1. Dotnet Kestrel Server
 2.	Cookie-based identification
 3.	JSON-based get/post requests (including send angle and timestamp, get points 4*80*100)
@@ -18,7 +21,7 @@ write direcgtory
 
 ### Client
 write direcgtory
-1. Written in javascript using the [p5](https://p5js.org/) client-side library
+1. Written in javascript using the [p5.js](https://p5js.org/) client-side library
 2. Visualization of uncertainty
 3. Visualization of the tool's depth of detection
 4. Ability to evaluate the objective function within the predicted uncertainty
