@@ -24,11 +24,10 @@ Server description and features:
 5.	The same data twice does not change anything
 6.	Logging all user actions on the backend
 
+#### Known issue:
 The folder [/server/ServerObjectives2](/server/ServerObjectives2) contains the implementation of objective functions used for the benchmark; see [Alyaev et al. (2021)](https://doi.org/10.1016/j.acags.2021.100072) cited below.
-
 Note, [server/GameServer2/Controllers/GeoController.cs](server/GameServer2/Controllers/GeoController.cs) contains a non-encrypted string `private const string ADMIN_SECRET_USER_NAME`. 
-
-It is recommended to change them if you want to keep this information from the users. **Fixing it is an open issue**.
+It is recommended to change them if you want to keep this information from the users. **Fixing it is an open [issue](/issues/3)**.
 
 See [server/GameServer2/README](server/GameServer2) for details.
 
