@@ -24,7 +24,12 @@ Server description and features:
 5.	The same data twice does not change anything
 6.	Logging all user actions on the backend
 
+#### Known issue:
 The folder [/server/ServerObjectives2](/server/ServerObjectives2) contains the implementation of objective functions used for the benchmark; see [Alyaev et al. (2021)](https://doi.org/10.1016/j.acags.2021.100072) cited below.
+Note, [server/GameServer2/Controllers/GeoController.cs](server/GameServer2/Controllers/GeoController.cs) contains a non-encrypted string `private const string ADMIN_SECRET_USER_NAME`. 
+It is recommended to change them if you want to keep this information from the users. **Fixing it is an open [issue](/issues/3)**.
+
+See [server/GameServer2/README](server/GameServer2) for details.
 
 ### 2. Client
 The client web files are served by the Server and are located in the folder [/server/GameServer2/wwwroot](/server/GameServer2/wwwroot).
@@ -52,11 +57,17 @@ Other directories contain utility libraries.
 ## Installation and execution
 
 ### Requirements
-The current solution and project files are configured for **.NET 8.0**.
+The current solution and project files are configured for **.NET 8.0 SDK**.
 
-**.NET 8.0** is available for many platforms and can be installed from its official site following the instructions: 
+**.NET 8.0 SDK** is available for many platforms and can be installed from its official site following the instructions: 
 
 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+
+#### Ubuntu 22.04 (x64)
+
+On many Ubuntu distros, one can install `dotnet-sdk-8.0` using the package manager. However, instructions get outdated often.
+
+As of 2024-01-25, the easiest is to install `dotnet-sdk-8.0` from [Microsoft package repository](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository).
 
 ### Building (Publishing) Server
 
@@ -84,9 +95,25 @@ Run:
 ./GameServer2
 ```
 
-#### Windows
+#### Windows (x64)
+Go to directory:
+```
+cd server\GameServer2\bin\Release\net8.0\win-x64\publish\
+```
+Run:
+```
+.\GameServer2.exe
+```
 
-#### Linux
+#### Linux (x64), checked with Ubuntu 22.04
+Go to directory:
+```
+cd server/GameServer2/bin/Release/net8.0/linux-x64/publish
+```
+Run:
+```
+./GameServer2
+```
 
 ### Debugging and developing
 
