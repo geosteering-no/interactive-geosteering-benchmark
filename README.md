@@ -84,7 +84,15 @@ Run:
 ./GameServer2
 ```
 
-#### Windows
+#### Windows (x64)
+Go to directory:
+```
+cd server\GameServer2\bin\Release\net8.0\win-x64\publish\
+```
+Run:
+```
+.\GameServer2.exe
+```
 
 #### Linux
 
