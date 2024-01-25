@@ -58,6 +58,12 @@ The current solution and project files are configured for **.NET 8.0**.
 
 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 
+#### Ubuntu 22.04
+
+On many Ubuntu distros, one can install **.NET** using package manager. However, instructions get outdated often.
+
+As of 2024-01-25, the easiest is to install **.NET 8.0** from [Microsoft package repository](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository).
+
 ### Building (Publishing) Server
 
 Build and publish the Server project [server/GameServer2/GameServer2.csproj](server/GameServer2/GameServer2.csproj) by running:
