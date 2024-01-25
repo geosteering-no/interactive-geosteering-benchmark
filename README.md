@@ -157,11 +157,11 @@ keywords = {Geosteering, Sequential decision, Dynamic programming, Statistical i
 
 ## Contributors
 
-**Sergey Alyaev** (aka [alin256](https://github.com/alin256): lead developer and principal investigator),
-**Andrew Holsaeter** (front-end and GUI refinement),
-**Morten Bendiksen** (server and client-server interaction development),
-**Sofija Ivanova** (user-experience design), and
-**Erich Suter** (decision-support-system contributions).
+- **Sergey Alyaev** (aka [alin256](https://github.com/alin256): lead developer and principal investigator)
+- **Andrew Holsaeter** (front-end and GUI refinement)
+- **Erich Suter** (decision-support-system contributions)
+- **Morten Bendiksen** (server and client-server interaction development)
+- **Sofija Ivanova** (user-experience design)
 ### Special thanks
 For useful advice to NORCE colleagues: **Kristian Fossum**, **Robert Ewald**, and **Rolf Johan Lorentzen**.
 
