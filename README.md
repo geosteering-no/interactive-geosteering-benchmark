@@ -57,17 +57,17 @@ Other directories contain utility libraries.
 ## Installation and execution
 
 ### Requirements
-The current solution and project files are configured for **.NET 8.0**.
+The current solution and project files are configured for **.NET 8.0 SDK**.
 
-**.NET 8.0** is available for many platforms and can be installed from its official site following the instructions: 
+**.NET 8.0 SDK** is available for many platforms and can be installed from its official site following the instructions: 
 
 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 
 #### Ubuntu 22.04
 
-On many Ubuntu distros, one can install **.NET** using package manager. However, instructions get outdated often.
+On many Ubuntu distros, one can install `dotnet-sdk-8.0` using the package manager. However, instructions get outdated often.
 
-As of 2024-01-25, the easiest is to install **.NET 8.0** from [Microsoft package repository](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository).
+As of 2024-01-25, the easiest is to install `dotnet-sdk-8.0` from [Microsoft package repository](https://learn.microsoft.com/en-us/dotnet/core/install/linux-ubuntu#register-the-microsoft-package-repository).
 
 ### Building (Publishing) Server
 
