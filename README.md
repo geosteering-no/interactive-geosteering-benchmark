@@ -2,9 +2,9 @@
 Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
 
 ## Contents
- - 1. Server
- - 2. Client
- - 3. Ensemble-Based Decision Support System
+ 1. Server
+ 2. Client
+ 3. Ensemble-Based Decision Support System
 
 for **Interactive Sequential-decision Geosteering Benchmark Platform**
 
