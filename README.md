@@ -19,7 +19,7 @@ Server description and features:
 5.	The same data twice does not change anything
 6.	Logging all user actions on the backend
 
-The folder [/server/ServerObjectives2](/server/ServerObjectives2) contains the implementation of objective functions used for the benchmark; see [Alyaev et al. (2021)](https://doi.org/10.1016/j.acags.2021.100072)cited below.
+The folder [/server/ServerObjectives2](/server/ServerObjectives2) contains the implementation of objective functions used for the benchmark; see [Alyaev et al. (2021)](https://doi.org/10.1016/j.acags.2021.100072) cited below.
 
 ### 2. Client
 The client web files are served by the Server and are located in the folder [/server/GameServer2/wwwroot](/server/GameServer2/wwwroot).
