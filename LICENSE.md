@@ -1,6 +1,6 @@
 BSD 4-Clause License
 
-Copyright (c) 2023 S. Alyaev, A. Holsaeter, E. Suter, M. Bendiksen, S. Ivanova, NORCE Norwegian Research Centre AS
+Copyright (c) 2023 S. Alyaev, M. Bendiksen, A. Holsaeter, E. Suter, S. Ivanova, NORCE Norwegian Research Centre AS
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
