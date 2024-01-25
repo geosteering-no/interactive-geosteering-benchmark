@@ -31,9 +31,13 @@ The client web files are served by the Server and are located in the folder [/se
 
 Client description and features:
 1. Written in javascript using the [p5.js](https://p5js.org/) client-side library
-2. Visualization of uncertainty
+2. Visualization of ensemble-based uncertainty
 3. Visualization of the tool's depth of detection
 4. Ability to evaluate the objective function within the predicted uncertainty
+
+The client interface is complicated at first glance. User instructions are available in a **[PowerPoint](/Suplementary-files/manual.pptx)** or as **[graphical instruction](/server/GameServer2/wwwroot/assets/help/manual)**. The latter are accessible from the client by pressing the (i) button on top.
+
+![user interface](/Suplementary-files/gui.png)
 
 ### 3. Ensemble-Based Decision Support System
 Ensemble-Based Decision Support System components (and corresponding project folders):
