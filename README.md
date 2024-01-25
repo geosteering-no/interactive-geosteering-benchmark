@@ -105,7 +105,7 @@ Run:
 .\GameServer2.exe
 ```
 
-#### Ubuntu 22.04 (x64)
+#### Linux (x64), checked with Ubuntu 22.04
 Go to directory:
 ```
 cd server/GameServer2/bin/Release/net8.0/linux-x64/publish
