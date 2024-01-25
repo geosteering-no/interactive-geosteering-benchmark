@@ -2,14 +2,14 @@
 Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
 
 ## Contents
- - Server,
- - Client, and
- - Ensemble-Based Decision Support System
+ - 1. Server
+ - 2. Client
+ - 3. Ensemble-Based Decision Support System
 
 for **Interactive Sequential-decision Geosteering Benchmark Platform**
 
-### Server
-The server project is located in folder [/server/GameServer2](/server/GameServer2).
+### 1. Server
+The server project is located in the folder [/server/GameServer2](/server/GameServer2).
 
 Server description and features:
 1. Dotnet Kestrel Server
@@ -19,14 +19,16 @@ Server description and features:
 5.	The same data twice does not change anything
 6.	Logging all user actions on the backend 
 
-### Client
-write direcgtory
+### 2. Client
+The client web files are served by the Server and are located in the folder [/server/GameServer2/wwwroot](/server/GameServer2/wwwroot).
+
+Client description and features:
 1. Written in javascript using the [p5.js](https://p5js.org/) client-side library
 2. Visualization of uncertainty
 3. Visualization of the tool's depth of detection
 4. Ability to evaluate the objective function within the predicted uncertainty
 
-### Ensemble-Based Decision Support System
+### 3. Ensemble-Based Decision Support System
 write directory for each item
 1. Custom multi-layer toy geomodel and a simplified electromagnetic sensing tool 
 2. Ensemble Kalman Filter implementation (in C#) to reduce uncertainty
