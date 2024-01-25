@@ -3,7 +3,7 @@ Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
 
 The project allows one to compare the decision skills of people and robots for a synthetic multi-target geosteering scenario.
 
-Here is an example of trajectories taken from the results of the Geosteering Competition 2019. Read [Alyaev et al. (2021)](https://doi.org/10.1016/j.acags.2021.100072) cited below for details.
+Here is an example of trajectories taken from the results of the Geosteering Competition 2019. Read [Alyaev et al. (2021)]([https://doi.org/10.1016/j.acags.2021.100072](#1-web-based-interactive-sequential-decision-geosteering-platform-and-benchmark) for details.
 ![Trajectories taken from the results of the Geosteering Competition 2019 comparing robot with humans](/server/GameServer2/wwwroot/assets/hero.png)
 
 ## Contents
