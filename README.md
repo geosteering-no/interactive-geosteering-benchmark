@@ -27,13 +27,10 @@ Server description and features:
 The folder [/server/ServerObjectives2](/server/ServerObjectives2) contains the implementation of objective functions used for the benchmark; see [Alyaev et al. (2021)](https://doi.org/10.1016/j.acags.2021.100072) cited below.
 
 Note, [server/GameServer2/Controllers/GeoController.cs](server/GameServer2/Controllers/GeoController.cs) contains a non-encrypted string `private const string ADMIN_SECRET_USER_NAME`. 
-It is a user_name that redirects the client to the admin view. 
-It is checked when accessing the following functions 
-- ResetAllScores
-- LevelDescription
-- LoadNextUserDataFromFile
 
 It is recommended to change them if you want to keep this information from the users. **Fixing it is an open issue**.
+
+See [server/GameServer2/README](server/GameServer2) for details.
 
 ### 2. Client
 The client web files are served by the Server and are located in the folder [/server/GameServer2/wwwroot](/server/GameServer2/wwwroot).
