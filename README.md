@@ -6,7 +6,7 @@ Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
  2. **Client**
  3. **Ensemble-Based Decision Support System**
 
-for **Interactive Sequential-decision Geosteering Benchmark Platform**
+which comprise the Interactive Sequential-decision Geosteering Benchmark Platform.
 
 ### 1. Server
 The server project is located in the folder [/server/GameServer2](/server/GameServer2).
