@@ -56,7 +56,7 @@ Build and publish the Server project [server/GameServer2/GameServer2.csproj](ser
 dotnet publish server/GameServer2/GameServer2.csproj -c Release --self-contained true
 ```
 
-The self-contained folder should now be located at **server/GameServer2/bin/Release/net8.0/<Target-OS>/publish/**,
+The self-contained folder should now be located at **server/GameServer2/bin/Release/net8.0/\<Target-OS>/publish/**,
 where Target-OS is the identifier of your operating system.
 
 ### Running server
