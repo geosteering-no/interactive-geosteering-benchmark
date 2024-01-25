@@ -61,14 +61,31 @@ where Target-OS is the identifier of your operating system.
 
 ### Running server
 
-#### Windows
+To start the server, run the "published" executable in **publish** directory.
+
+Here are some examples depending on your OS:
+
 #### Mac-OS (arm-64)
+Go to directory:
+```
+cd server/GameServer2/bin/Release/net8.0/osx-arm64/publish
+```
+Run:
+```
+./GameServer2
+```
+
+#### Windows
+
 #### Linux
 
 ### Debugging and developing
 
-MS VS
+Use a debugger tool in [Microsoft Visual Studio](https://visualstudio.microsoft.com/) (Windows only) or [Microsoft VS Code](https://code.visualstudio.com/) for debugging and developing.
 
+In **Visual Studio** open `server/GameServer.sln`
+
+In **VS Code** open the project root directory.
 
 ## Citing and details: 
 
