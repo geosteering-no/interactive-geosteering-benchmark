@@ -733,7 +733,7 @@ function formatModalShareLinks(percentile, linkID, scoreForOneRound = true){
     var baseUrl = getUrl.protocol + "//" + getUrl.host;
     //var share_url = baseUrl+"?fgi="+linkID;
     var share_url = linkID;
-    var share_text = "I ranked higher then " + rating.toString() + "%25 in a round on "+getUrl.host+"! Think you can beat me%3F";
+    var share_text = "I ranked higher than " + rating.toString() + "%25 in a round on "+getUrl.host+"! Think you can beat me%3F";
     if (!scoreForOneRound){
       share_text = "I ranked in the top " + rating.toString() + "%25 on "+getUrl.host+"! Think you can beat me%3F";
     }
