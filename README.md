@@ -43,16 +43,21 @@ Other directories contain utility libraries.
 ## Installation and execution
 
 ### Requirements
-The current solution and project files are configured for **.NET Core Runtime 8.0**
-Download instructions
+The current solution and project files are configured for **.NET 8.0**.
+
+**.NET 8.0** is available for many platforms and can be installed from its official site following the instructions: 
+
+https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 
 ### Building (Publishing) Server
-This may require building in release first?
-1. Navigate to folder which contains GameServer.csproj
-2. Run the command `dotnet publish -c Release -r <target-os> --self-contained true`
-   * For 64 bit windows 10: \<target-os> = win10-x64
-   * Run command:  `dotnet publish -c Release -r win10-x64 --self-contained true`
-3. The self-contained folder should now be located at GameServer/bin/Release/netcoreapp3.0/\<target-os>/
+
+Build and publish the Server project [server/GameServer2/GameServer2.csproj](server/GameServer2/GameServer2.csproj) by running:
+```
+dotnet publish server/GameServer2/GameServer2.csproj -c Release --self-contained true
+```
+
+The self-contained folder should now be located at **server/GameServer2/bin/Release/net8.0/<Target-OS>/publish/**,
+where Target-OS is the identifier of your operating system.
 
 ### Running server
 
