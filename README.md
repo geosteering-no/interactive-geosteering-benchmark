@@ -63,7 +63,7 @@ The current solution and project files are configured for **.NET 8.0 SDK**.
 
 https://dotnet.microsoft.com/en-us/download/dotnet/8.0
 
-#### Ubuntu 22.04
+#### Ubuntu 22.04 (x64)
 
 On many Ubuntu distros, one can install `dotnet-sdk-8.0` using the package manager. However, instructions get outdated often.
 
@@ -105,7 +105,15 @@ Run:
 .\GameServer2.exe
 ```
 
-#### Linux
+#### Ubuntu 22.04 (x64)
+Go to directory:
+```
+cd server/GameServer2/bin/Release/net8.0/linux-x64/publish
+```
+Run:
+```
+./GameServer2
+```
 
 ### Debugging and developing
 
