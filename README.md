@@ -19,7 +19,7 @@ The server project is located in the folder [/server/GameServer2](/server/GameSe
 Server description and features:
 1. Dotnet Kestrel Server
 2.	Cookie-based identification
-3.	JSON-based get/post requests (including send angle and timestamp, get points 4*80*100)
+3.	JSON-based get/post requests (including send angle and timestamp, get points (4x80x100 parameters))
 4.	Get-again request
 5.	The same data twice does not change anything
 6.	Logging all user actions on the backend
