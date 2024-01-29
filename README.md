@@ -1,5 +1,5 @@
 # Interactive Sequential-decision Geosteering Benchmark
-Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
+Also known as **NORCE Geosteering Game 2019** or **Project Geobanana** or **geosteering.net**
 
 The project allows to compare the decision skills of people and robots for a synthetic multi-target geosteering scenario.
 
