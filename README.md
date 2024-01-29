@@ -1,7 +1,7 @@
 # Interactive Sequential-decision Geosteering Benchmark
 Also known as **NORCE Geosteering Game 2019** or **Project Geobanana**
 
-The project allows one to compare the decision skills of people and robots for a synthetic multi-target geosteering scenario.
+The project allows to compare the decision skills of people and robots for a synthetic multi-target geosteering scenario.
 
 Here is an example of trajectories taken from the results of the Geosteering Competition 2019. Read [Alyaev et al. (2021)](#1-web-based-interactive-sequential-decision-geosteering-platform-and-benchmark) for details.
 ![Trajectories taken from the results of the Geosteering Competition 2019 comparing robot with humans](/server/GameServer2/wwwroot/assets/hero.png)
@@ -184,7 +184,7 @@ keywords = {Geosteering, Sequential decision, Dynamic programming, Statistical i
 
 ## Contributors
 
-- **Sergey Alyaev** (aka [alin256](https://github.com/alin256): lead developer of all components and principal investigator)
+- **Sergey Alyaev** (aka [alin256](https://github.com/alin256): lead developer of all components)
 - **Morten Bendiksen** (server, GUI, and client-server interaction development)
 - **Andrew Holsaeter** (aka [holsaeter](https://github.com/holsaeter): front-end and GUI refinement)
 - **Erich Suter** (decision-support-system contributions)
