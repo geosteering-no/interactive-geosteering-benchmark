@@ -186,7 +186,7 @@ keywords = {Geosteering, Sequential decision, Dynamic programming, Statistical i
 
 - **Sergey Alyaev** (aka [alin256](https://github.com/alin256): lead developer of all components and principal investigator)
 - **Morten Bendiksen** (server, GUI, and client-server interaction development)
-- **Andrew Holsaeter** (front-end and GUI refinement)
+- **Andrew Holsaeter** (aka [holsaeter](https://github.com/holsaeter) front-end and GUI refinement)
 - **Erich Suter** (decision-support-system contributions)
 - **Sofija Ivanova** (user-experience design)
 ### Special thanks
