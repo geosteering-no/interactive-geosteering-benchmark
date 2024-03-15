@@ -1,6 +1,8 @@
 # Interactive Sequential-decision Geosteering Benchmark
 Also known as **NORCE Geosteering Game 2019** or **Project Geobanana** or **geosteering.net**
 
+[![DOI](https://zenodo.org/badge/747224708.svg)](https://zenodo.org/doi/10.5281/zenodo.10821721)
+
 The project allows to compare the decision skills of people and robots for a synthetic multi-target geosteering scenario.
 
 Here is an example of trajectories taken from the results of the Geosteering Competition 2019. Read [Alyaev et al. (2021)](#1-web-based-interactive-sequential-decision-geosteering-platform-and-benchmark) for details.
@@ -193,6 +195,8 @@ keywords = {Geosteering, Sequential decision, Dynamic programming, Statistical i
 - **Sofija Ivanova** (user-experience design)
 ### Special thanks
 For useful advice to NORCE colleagues: **Kristian Fossum**, **Robert Ewald**, and **Rolf Johan Lorentzen**.
+
+[![DOI](https://zenodo.org/badge/747224708.svg)](https://zenodo.org/doi/10.5281/zenodo.10821721)
 
 ### Acknowledgements 
 The development of this software
